@@ -3,16 +3,20 @@
 //
 
 import Foundation
+import SZTextView
 
-public class AAGroupEditInfoController: AAViewController {
+public class AAGroupEditInfoController: AAViewController, UITextViewDelegate {
     
     private let scrollView = UIScrollView()
     private let bgContainer = UIView()
     private let topSeparator = UIView()
     private let bottomSeparator = UIView()
     
+    private let avatarView = AAAvatarView()
     private let nameInput = UITextField()
-    private let separator = UIView()
+    private let nameInputSeparator = UIView()
+    private let descriptionView = SZTextView()
+    private let descriptionSeparator = UIView()
     
     public init(gid: Int) {
         super.init()
@@ -30,28 +34,115 @@ public class AAGroupEditInfoController: AAViewController {
         
         scrollView.alwaysBounceVertical = true
         
-        separator.backgroundColor = appStyle.vcSeparatorColor
+        nameInputSeparator.backgroundColor = appStyle.vcSeparatorColor
         topSeparator.backgroundColor = appStyle.vcSeparatorColor
         bottomSeparator.backgroundColor = appStyle.vcSeparatorColor
+        descriptionSeparator.backgroundColor = appStyle.vcSeparatorColor
         
         bgContainer.backgroundColor = appStyle.vcBgColor
         
         scrollView.addSubview(bgContainer)
+        bgContainer.addSubview(avatarView)
         bgContainer.addSubview(nameInput)
-        bgContainer.addSubview(separator)
+        bgContainer.addSubview(nameInputSeparator)
+        bgContainer.addSubview(descriptionView)
+        bgContainer.addSubview(descriptionSeparator)
         bgContainer.addSubview(topSeparator)
         bgContainer.addSubview(bottomSeparator)
         view.addSubview(scrollView)
+        
+        avatarView.bind(group.name.get(), id: gid, avatar: group.avatar.get())
+        avatarView.viewDidTap = {
+            self.avatarDidTap()
+        }
+        
+        nameInput.font = UIFont.systemFontOfSize(16)
+        nameInput.placeholder = "Name"
+        nameInput.text = group.name.get()
+        
+        descriptionView.delegate = self
+        descriptionView.font = UIFont.systemFontOfSize(16)
+        descriptionView.placeholder = "Description"
+        descriptionView.text = group.about.get()
+        descriptionView.scrollEnabled = false
+        
+        navigationItem.title = "Edit Group"
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationSave"), style: .Plain, target: self, action: #selector(saveDidPressed))
     }
     
     public override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         
         scrollView.frame = CGRectMake(0, 0, view.width, view.height)
-        nameInput.frame = CGRectMake(72, 22, view.width - 72 - 10, 44)
-        separator.frame = CGRectMake(72, 66, view.width - 72, 0.5)
-        bgContainer.frame = CGRectMake(0, 0, view.width, 144)
-        topSeparator.frame = CGRectMake(0, 0, bgContainer.width, 0.5)
+        
+        nameInput.frame = CGRectMake(94, 34, view.width - 94 - 10, 24)
+        nameInputSeparator.frame = CGRectMake(94, 34 + 24, view.width - 94, 0.5)
+        avatarView.frame = CGRectMake(14, 14, 66, 66)
+        
+        descriptionSeparator.frame = CGRectMake(0, 94, view.width, 0.5)
+        topSeparator.frame = CGRectMake(0, 0, view.width, 0.5)
+        
+        layoutContainer()
+    }
+    
+    public func avatarDidTap() {
+        let hasCamera = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
+        self.showActionSheet( hasCamera ? ["PhotoCamera", "PhotoLibrary"] : ["PhotoLibrary"],
+                              cancelButton: "AlertCancel",
+                              destructButton: self.group.getAvatarModel().get() != nil ? "PhotoRemove" : nil,
+                              sourceView: self.view,
+                              sourceRect: self.view.bounds,
+                              tapClosure: { (index) -> () in
+                                if (index == -2) {
+                                    self.confirmAlertUser("PhotoRemoveGroupMessage",
+                                        action: "PhotoRemove",
+                                        tapYes: { () -> () in
+                                            Actor.removeGroupAvatarWithGid(jint(self.gid))
+                                            self.avatarView.bind(self.group.name.get(), id: self.gid, avatar: nil)
+                                        }, tapNo: nil)
+                                } else if (index >= 0) {
+                                    let takePhoto: Bool = (index == 0) && hasCamera
+                                    self.pickAvatar(takePhoto, closure: { (image) -> () in
+                                        let fileName = Actor.changeGroupAvatar(jint(self.gid), image: image)
+                                        self.avatarView.bind(self.group.name.get(), id: self.gid, fileName: CocoaFiles.pathFromDescriptor(fileName))
+                                    })
+                                }
+        })
+    }
+    
+    public func saveDidPressed() {
+        let text = nameInput.text!.trim()
+        let about = self.descriptionView.text!.trim()
+        
+        if text != group.name.get() {
+            executePromise(Actor.editGroupTitleWithGid(jint(gid), withTitle: text).then({ (v: ARVoid!) in
+                if about != self.group.about.get() {
+                    self.executePromise(Actor.editGroupAboutWithGid(jint(self.gid), withAbout: about).then({ (v: ARVoid!) in
+                        self.navigateBack()
+                    }))
+                } else {
+                    self.navigateBack()
+                }
+            }))
+        } else {
+            if about != self.group.about.get() {
+                self.executePromise(Actor.editGroupAboutWithGid(jint(self.gid), withAbout: about).then({ (v: ARVoid!) in
+                    self.navigateBack()
+                }))
+            } else {
+                self.navigateBack()
+            }
+        }
+    }
+    
+    public func textViewDidChange(textView: UITextView) {
+        layoutContainer()
+    }
+    
+    private func layoutContainer() {
+        let newSize = descriptionView.sizeThatFits(CGSize(width: view.width - 20, height: CGFloat.max))
+        descriptionView.frame = CGRectMake(10, 100, view.width - 20, max(newSize.height, 33))
+        bgContainer.frame = CGRectMake(0, 0, view.width, 100 + descriptionView.height + 8)
         bottomSeparator.frame = CGRectMake(0, bgContainer.height - 0.5, bgContainer.width, 0.5)
     }
 }

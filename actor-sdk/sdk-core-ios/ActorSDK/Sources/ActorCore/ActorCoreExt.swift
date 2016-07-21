@@ -103,8 +103,10 @@ public extension ACCocoaMessenger {
         changeMyAvatarWithDescriptor(prepareAvatar(image))
     }
     
-    public func changeGroupAvatar(gid: jint, image: UIImage) {
-        changeGroupAvatarWithGid(gid, withDescriptor: prepareAvatar(image))
+    public func changeGroupAvatar(gid: jint, image: UIImage) -> String {
+        let fileName = prepareAvatar(image)
+        changeGroupAvatarWithGid(gid, withDescriptor: fileName)
+        return fileName
     }
     
     public func requestFileState(fileId: jlong, notDownloaded: (()->())?, onDownloading: ((progress: Double) -> ())?, onDownloaded: ((reference: String) -> ())?) {

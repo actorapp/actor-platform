@@ -61,7 +61,7 @@ public class AATextCell: AATableViewCell {
         if title != nil {
             return CGFloat(size.height + 36)
         } else {
-            return CGFloat(size.height + 16)
+            return CGFloat(size.height + 15)
         }
     }
 }

@@ -16,8 +16,8 @@ public extension UIViewController {
     }
     
     public func confirmAlertUser(message: String, action: String, tapYes: ()->(), tapNo: (()->())? = nil) {
-        let controller = UIAlertController(title: nil, message: message, preferredStyle: UIAlertControllerStyle.Alert)
-        controller.addAction(UIAlertAction(title: AALocalized(message), style: UIAlertActionStyle.Default, handler: { (alertView) -> () in
+        let controller = UIAlertController(title: nil, message: AALocalized(message), preferredStyle: UIAlertControllerStyle.Alert)
+        controller.addAction(UIAlertAction(title: AALocalized(action), style: UIAlertActionStyle.Default, handler: { (alertView) -> () in
             tapYes()
         }))
         controller.addAction(UIAlertAction(title: AALocalized("AlertCancel"), style: UIAlertActionStyle.Cancel, handler: { (alertView) -> () in
@@ -48,7 +48,7 @@ public extension UIViewController {
         
         if destructButton != nil {
             controller.addAction(UIAlertAction(title: AALocalized(destructButton), style: UIAlertActionStyle.Destructive, handler: { (alertView) -> () in
-                tapClosure(index: -1)
+                tapClosure(index: -2)
             }))
         }
         

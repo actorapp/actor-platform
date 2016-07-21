@@ -20,6 +20,7 @@ public class AAGroupViewController: AAContentTableController {
         
         self.gid = gid
         self.autoTrack = true
+        self.unbindOnDissapear = true
         
         self.title = AALocalized("ProfileTitle")
     }
@@ -50,7 +51,6 @@ public class AAGroupViewController: AAContentTableController {
                     r.avatar = self.group.getAvatarModel().get()
                     r.title = self.group.getNameModel().get()
                     r.subtitle = Actor.getFormatter().formatGroupMembers(self.group.getMembersCountModel().get().intValue())
-                    self.group.getPresenceModel().get()
                 }
                 
                 r.avatarDidTap = { (view) -> () in
