@@ -608,6 +608,10 @@
 
 "ActionOpenCode" = "View Code";
 
+"ActionMute" = "Mute";
+
+"ActionUnmute" = "Unmute";
+
 /*
  * Network
  */

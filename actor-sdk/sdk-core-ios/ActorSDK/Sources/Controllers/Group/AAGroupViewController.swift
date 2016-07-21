@@ -144,7 +144,7 @@ public class AAGroupViewController: AAContentTableController {
             }
             
             // Admininstration
-            if group.isCanEditShortName.get().booleanValue() || group.isCanDelete.get().booleanValue() {
+            if group.isCanEditAdministration.get().booleanValue() || group.isCanDelete.get().booleanValue() {
                 s.common({ (r) in
                     r.content = AALocalized("GroupAdministration")
                     r.selectAction = { () -> Bool in

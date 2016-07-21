@@ -217,7 +217,7 @@ public class GroupInfoFragment extends BaseFragment {
         });
 
         // Administration
-        if (groupVM.getIsCanEditAdministration().get()) {
+        if (groupVM.getIsCanEditAdministration().get() || groupVM.getIsCanDelete().get()) {
             administrationAction.setOnClickListener(view -> {
                 startActivity(new Intent(getActivity(), GroupAdminActivity.class)
                         .putExtra(Intents.EXTRA_GROUP_ID, chatId));

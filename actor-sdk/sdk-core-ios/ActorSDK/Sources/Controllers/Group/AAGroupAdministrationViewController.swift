@@ -40,7 +40,7 @@ public class AAGroupAdministrationViewController: AAContentTableController {
                     }
                 }
                 
-                if group.isCanEditShortName.get().booleanValue() {
+                if group.isCanEditAdministration.get().booleanValue() {
                     r.style = .Navigation
                     r.selectAction = { () -> Bool in
                         self.navigateNext(AAGroupTypeViewController(gid: self.gid))

@@ -385,12 +385,12 @@ public class ConversationViewController:
                     self.inputOverlay.hidden = true
                 } else {
                     if !isMember.booleanValue() {
-                        self.inputOverlayLabel.text = "Not a member"
+                        self.inputOverlayLabel.text = AALocalized("ChatNoGroupAccess")
                     } else {
                         if Actor.isNotificationsEnabledWithPeer(self.peer) {
-                            self.inputOverlayLabel.text = "Mute"
+                            self.inputOverlayLabel.text = AALocalized("ActionMute")
                         } else {
-                            self.inputOverlayLabel.text = "Unmute"
+                            self.inputOverlayLabel.text = AALocalized("ActionUnmute")
                         }
                     }
                     self.stickersButton.hidden = true
@@ -421,10 +421,10 @@ public class ConversationViewController:
             } else if !group.isCanWriteMessage.get().booleanValue() {
                 if Actor.isNotificationsEnabledWithPeer(peer) {
                     Actor.changeNotificationsEnabledWithPeer(peer, withValue: false)
-                    inputOverlayLabel.text = "Unmute"
+                    inputOverlayLabel.text = AALocalized("ActionUnmute")
                 } else {
                     Actor.changeNotificationsEnabledWithPeer(peer, withValue: true)
-                    inputOverlayLabel.text = "Mute"
+                    inputOverlayLabel.text = AALocalized("ActionMute")
                 }
             }
         } else if peer.isPrivate {

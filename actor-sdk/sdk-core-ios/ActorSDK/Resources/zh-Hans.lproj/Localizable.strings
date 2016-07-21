@@ -613,6 +613,10 @@
 
 "ActionOpenCode" = "查看代码";
 
+"ActionMute" = "Mute";
+
+"ActionUnmute" = "Unmute";
+
 /*
  *  Network
  */

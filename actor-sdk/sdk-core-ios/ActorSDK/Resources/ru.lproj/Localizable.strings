@@ -618,6 +618,10 @@
 
 "ActionOpenCode" = "Посмотреть код";
 
+"ActionMute" = "Заглушить";
+
+"ActionUnmute" = "Включить оповещения";
+
 /*
  * Network
  */
