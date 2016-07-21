@@ -7882,6 +7882,20 @@
             "name": "Group",
             "doc": [
               "Group information",
+              "",
+              "Permissions.",
+              "Permissions of this structure is about group messages operation, such as",
+              "ability to send messages, clear chat, leave group and so on. This operations",
+              "Can be held outside of the Group Info page.",
+              "",
+              "Default value is ZERO, Opposide iz ONE. If Default is FALSE then ONE == TRUE.",
+              "If default is TRUE then ONE == FALSE.",
+              "Bits:",
+              "0 - canSendMessage. Default is FALSE.",
+              "1 - canClear. Default is FALSE.",
+              "2 - canLeave. Default is FALSE.",
+              "3 - canDelete. Default is FALSE.",
+              "",
               {
                 "type": "reference",
                 "argument": "id",
@@ -7932,9 +7946,9 @@
               },
               {
                 "type": "reference",
-                "argument": "canSendMessage",
+                "argument": "permissions",
                 "category": "full",
-                "description": "  Can user send messages. Default is equals isMember for Group and false for others."
+                "description": "  Permissions of group object"
               },
               {
                 "type": "reference",
@@ -8054,10 +8068,10 @@
               {
                 "type": {
                   "type": "opt",
-                  "childType": "bool"
+                  "childType": "int64"
                 },
                 "id": 26,
-                "name": "canSendMessage"
+                "name": "permissions"
               },
               {
                 "type": {
@@ -8144,6 +8158,22 @@
             "name": "GroupFull",
             "doc": [
               "Goup Full information",
+              "Permissions.",
+              "Idea of Group Full mermissions is about Group Info pages. This permissions",
+              "are usefull only when trying to view and update group settings and not related",
+              "to chat messages itself.",
+              "Default value is ZERO, Opposide iz ONE. If Default is FALSE then ONE == TRUE.",
+              "If default is TRUE then ONE == FALSE.",
+              "Bits:",
+              "0 - canEditInfo. Default is FALSE.",
+              "1 - canViewMembers. Default is FALSE.",
+              "2 - canInviteMembers. Default is FALSE.",
+              "3 - canInviteViaLink. Default is FALSE.",
+              "4 - canCall. Default is FALSE.",
+              "5 - canEditAdminSettings. Default is FALSE.",
+              "6 - canViewAdmins. Default is FALSE.",
+              "7 - canEditAdmins. Default is FALSE.",
+              "",
               {
                 "type": "reference",
                 "argument": "id",
@@ -8188,27 +8218,9 @@
               },
               {
                 "type": "reference",
-                "argument": "canViewMembers",
-                "category": "full",
-                "description": "  Can current user view members of the group. Default is true."
-              },
-              {
-                "type": "reference",
-                "argument": "canInvitePeople",
-                "category": "full",
-                "description": "  Can current user invite new people. Default is true."
-              },
-              {
-                "type": "reference",
                 "argument": "isSharedHistory",
                 "category": "full",
                 "description": "  Is history shared among all users. Default is false."
-              },
-              {
-                "type": "reference",
-                "argument": "canEditGroupInfo",
-                "category": "full",
-                "description": "  If current user can edit group info. Default is true."
               },
               {
                 "type": "reference",
@@ -8218,45 +8230,9 @@
               },
               {
                 "type": "reference",
-                "argument": "canEditShortName",
+                "argument": "permissions",
                 "category": "full",
-                "description": "  If not set only owner can edit group's short name"
-              },
-              {
-                "type": "reference",
-                "argument": "canEditAdminList",
-                "category": "full",
-                "description": "  If not set only owner can edit admin list"
-              },
-              {
-                "type": "reference",
-                "argument": "canViewAdminList",
-                "category": "full",
-                "description": "  If not set only owner and admins can view admin list"
-              },
-              {
-                "type": "reference",
-                "argument": "canEditAdminSettings",
-                "category": "full",
-                "description": "  If not set only owner can edit admin settings"
-              },
-              {
-                "type": "reference",
-                "argument": "canInviteViaLink",
-                "category": "full",
-                "description": "  If user can invite via link, default is false"
-              },
-              {
-                "type": "reference",
-                "argument": "canDelete",
-                "category": "full",
-                "description": "  If user can delete this group, default is false"
-              },
-              {
-                "type": "reference",
-                "argument": "canLeave",
-                "category": "hidden",
-                "description": "  If user can leave this group, default is true"
+                "description": "  Group Permissions"
               }
             ],
             "expandable": "true",
@@ -8339,32 +8315,8 @@
                   "type": "opt",
                   "childType": "bool"
                 },
-                "id": 8,
-                "name": "canViewMembers"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "bool"
-                },
-                "id": 9,
-                "name": "canInvitePeople"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "bool"
-                },
                 "id": 10,
                 "name": "isSharedHistory"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "bool"
-                },
-                "id": 13,
-                "name": "canEditGroupInfo"
               },
               {
                 "type": {
@@ -8377,58 +8329,10 @@
               {
                 "type": {
                   "type": "opt",
-                  "childType": "bool"
+                  "childType": "int64"
                 },
-                "id": 15,
-                "name": "canEditShortName"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "bool"
-                },
-                "id": 16,
-                "name": "canEditAdminList"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "bool"
-                },
-                "id": 17,
-                "name": "canViewAdminList"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "bool"
-                },
-                "id": 18,
-                "name": "canEditAdminSettings"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "bool"
-                },
-                "id": 19,
-                "name": "canInviteViaLink"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "bool"
-                },
-                "id": 20,
-                "name": "canDelete"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "bool"
-                },
-                "id": 21,
-                "name": "canLeave"
+                "id": 27,
+                "name": "permissions"
               }
             ]
           }
@@ -8936,413 +8840,6 @@
         {
           "type": "update",
           "content": {
-            "name": "GroupCanSendMessagesChanged",
-            "header": 2624,
-            "doc": [
-              "Update about can send messages changed",
-              {
-                "type": "reference",
-                "argument": "groupId",
-                "category": "full",
-                "description": "  Group Id"
-              },
-              {
-                "type": "reference",
-                "argument": "canSendMessages",
-                "category": "full",
-                "description": "  Can send messages"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "groupId"
-                },
-                "id": 1,
-                "name": "groupId"
-              },
-              {
-                "type": "bool",
-                "id": 2,
-                "name": "canSendMessages"
-              }
-            ]
-          }
-        },
-        {
-          "type": "update",
-          "content": {
-            "name": "GroupCanViewMembersChanged",
-            "header": 2625,
-            "doc": [
-              "Update about can view members changed",
-              {
-                "type": "reference",
-                "argument": "groupId",
-                "category": "full",
-                "description": "  Group Id"
-              },
-              {
-                "type": "reference",
-                "argument": "canViewMembers",
-                "category": "full",
-                "description": "  Can view members"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "groupId"
-                },
-                "id": 1,
-                "name": "groupId"
-              },
-              {
-                "type": "bool",
-                "id": 2,
-                "name": "canViewMembers"
-              }
-            ]
-          }
-        },
-        {
-          "type": "update",
-          "content": {
-            "name": "GroupCanInviteMembersChanged",
-            "header": 2626,
-            "doc": [
-              "Update about can invite members changed",
-              {
-                "type": "reference",
-                "argument": "groupId",
-                "category": "full",
-                "description": "  Group Id"
-              },
-              {
-                "type": "reference",
-                "argument": "canInviteMembers",
-                "category": "full",
-                "description": "  Can invite members"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "groupId"
-                },
-                "id": 1,
-                "name": "groupId"
-              },
-              {
-                "type": "bool",
-                "id": 2,
-                "name": "canInviteMembers"
-              }
-            ]
-          }
-        },
-        {
-          "type": "update",
-          "content": {
-            "name": "GroupCanEditInfoChanged",
-            "header": 2631,
-            "doc": [
-              "Update about can edit changed",
-              {
-                "type": "reference",
-                "argument": "groupId",
-                "category": "full",
-                "description": "  Group Id"
-              },
-              {
-                "type": "reference",
-                "argument": "canEditGroup",
-                "category": "full",
-                "description": "  Can edit group info"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "groupId"
-                },
-                "id": 1,
-                "name": "groupId"
-              },
-              {
-                "type": "bool",
-                "id": 2,
-                "name": "canEditGroup"
-              }
-            ]
-          }
-        },
-        {
-          "type": "update",
-          "content": {
-            "name": "GroupCanEditUsernameChanged",
-            "header": 2632,
-            "doc": [
-              "Update about can edit username changed",
-              {
-                "type": "reference",
-                "argument": "groupId",
-                "category": "full",
-                "description": "  Group Id"
-              },
-              {
-                "type": "reference",
-                "argument": "canEditUsername",
-                "category": "full",
-                "description": "  Can edit username"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "groupId"
-                },
-                "id": 1,
-                "name": "groupId"
-              },
-              {
-                "type": "bool",
-                "id": 2,
-                "name": "canEditUsername"
-              }
-            ]
-          }
-        },
-        {
-          "type": "update",
-          "content": {
-            "name": "GroupCanEditAdminsChanged",
-            "header": 2633,
-            "doc": [
-              "Update about can edit admins changed",
-              {
-                "type": "reference",
-                "argument": "groupId",
-                "category": "full",
-                "description": "  Group Id"
-              },
-              {
-                "type": "reference",
-                "argument": "canAssignAdmins",
-                "category": "hidden",
-                "description": "  Can assign admins"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "groupId"
-                },
-                "id": 1,
-                "name": "groupId"
-              },
-              {
-                "type": "bool",
-                "id": 2,
-                "name": "canAssignAdmins"
-              }
-            ]
-          }
-        },
-        {
-          "type": "update",
-          "content": {
-            "name": "GroupCanViewAdminsChanged",
-            "header": 2640,
-            "doc": [
-              "Update about view admings changed",
-              {
-                "type": "reference",
-                "argument": "groupId",
-                "category": "full",
-                "description": "  Group Id"
-              },
-              {
-                "type": "reference",
-                "argument": "canViewAdmins",
-                "category": "hidden",
-                "description": "  Can view admins"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "groupId"
-                },
-                "id": 1,
-                "name": "groupId"
-              },
-              {
-                "type": "bool",
-                "id": 2,
-                "name": "canViewAdmins"
-              }
-            ]
-          }
-        },
-        {
-          "type": "update",
-          "content": {
-            "name": "GroupCanInviteViaLink",
-            "header": 2646,
-            "doc": [
-              "Update about can invite via link changed",
-              {
-                "type": "reference",
-                "argument": "groupId",
-                "category": "full",
-                "description": "  Group Id"
-              },
-              {
-                "type": "reference",
-                "argument": "canInviteViaLink",
-                "category": "full",
-                "description": "  Can Invite Via link"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "groupId"
-                },
-                "id": 1,
-                "name": "groupId"
-              },
-              {
-                "type": "bool",
-                "id": 2,
-                "name": "canInviteViaLink"
-              }
-            ]
-          }
-        },
-        {
-          "type": "update",
-          "content": {
-            "name": "GroupCanLeaveChanged",
-            "header": 2647,
-            "doc": [
-              "Update about can leave changed",
-              {
-                "type": "reference",
-                "argument": "groupId",
-                "category": "full",
-                "description": "  Group Id"
-              },
-              {
-                "type": "reference",
-                "argument": "canLeaveChanged",
-                "category": "full",
-                "description": "  Can leave changed"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "groupId"
-                },
-                "id": 1,
-                "name": "groupId"
-              },
-              {
-                "type": "bool",
-                "id": 2,
-                "name": "canLeaveChanged"
-              }
-            ]
-          }
-        },
-        {
-          "type": "update",
-          "content": {
-            "name": "GroupCanDeleteChanged",
-            "header": 2648,
-            "doc": [
-              "Update about can delete changed",
-              {
-                "type": "reference",
-                "argument": "groupId",
-                "category": "full",
-                "description": "  Group Id"
-              },
-              {
-                "type": "reference",
-                "argument": "canDeleteChanged",
-                "category": "full",
-                "description": "  Can delete changed"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "groupId"
-                },
-                "id": 1,
-                "name": "groupId"
-              },
-              {
-                "type": "bool",
-                "id": 2,
-                "name": "canDeleteChanged"
-              }
-            ]
-          }
-        },
-        {
-          "type": "update",
-          "content": {
-            "name": "GroupCanEditAdminSettingsChanged",
-            "header": 2641,
-            "doc": [
-              "Update about edit admin settings changed",
-              {
-                "type": "reference",
-                "argument": "groupId",
-                "category": "full",
-                "description": "  Group Id"
-              },
-              {
-                "type": "reference",
-                "argument": "canEditAdminSettings",
-                "category": "full",
-                "description": "  Can edit admin settings"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "groupId"
-                },
-                "id": 1,
-                "name": "groupId"
-              },
-              {
-                "type": "bool",
-                "id": 2,
-                "name": "canEditAdminSettings"
-              }
-            ]
-          }
-        },
-        {
-          "type": "update",
-          "content": {
             "name": "GroupDeleted",
             "header": 2658,
             "doc": [
@@ -9362,6 +8859,80 @@
                 },
                 "id": 1,
                 "name": "groupId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupPermissionsChanged",
+            "header": 2663,
+            "doc": [
+              "Update about group permissions changed",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "permissions",
+                "category": "full",
+                "description": "  New Permissions"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "permissions"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupFullPermissionsChanged",
+            "header": 2664,
+            "doc": [
+              "Update about Full Group permissions changed",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "permissions",
+                "category": "full",
+                "description": "  New Permissions"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "permissions"
               }
             ]
           }
