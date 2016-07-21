@@ -265,6 +265,7 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                 w.isHidden(),
                 w.getGroupType(),
                 w.canSendMessage(),
+                w.isDeleted(),
                 w.getExt());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new Group(res, getWrappedExt());
@@ -282,6 +283,7 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                 w.isHidden(),
                 w.getGroupType(),
                 w.canSendMessage(),
+                w.isDeleted(),
                 w.getExt());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new Group(res, getWrappedExt());
@@ -299,6 +301,7 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                 w.isHidden(),
                 w.getGroupType(),
                 w.canSendMessage(),
+                w.isDeleted(),
                 w.getExt());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new Group(res, getWrappedExt());
@@ -316,6 +319,7 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                 w.isHidden(),
                 w.getGroupType(),
                 w.canSendMessage(),
+                w.isDeleted(),
                 ext);
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new Group(res, getWrappedExt());
@@ -333,6 +337,7 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                 w.isHidden(),
                 w.getGroupType(),
                 canWrite,
+                w.isDeleted(),
                 w.getExt());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new Group(res, getWrappedExt());
@@ -380,6 +385,7 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                 w.isHidden(),
                 w.getGroupType(),
                 w.canSendMessage(),
+                w.isDeleted(),
                 w.getExt());
 
         return new Group(res, fullExt);
@@ -447,6 +453,7 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                 w.isHidden(),
                 w.getGroupType(),
                 w.canSendMessage(),
+                w.isDeleted(),
                 w.getExt());
 
         return new Group(res, fullExt);
@@ -464,6 +471,7 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                 w.isHidden(),
                 w.getGroupType(),
                 w.canSendMessage(),
+                w.isDeleted(),
                 w.getExt());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new Group(res, getWrappedExt());

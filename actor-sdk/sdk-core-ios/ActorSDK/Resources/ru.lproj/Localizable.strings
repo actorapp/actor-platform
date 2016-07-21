@@ -290,9 +290,7 @@
 
 "GroupMembers" = "{0} УЧАСТНИКИ";
 
-"GroupAbout" = "О группе";
-
-"GroupAboutChannel" = "О канале";
+"GroupDescription" = "Описание";
 
 "GroupViewMembers" = "Участники";
 

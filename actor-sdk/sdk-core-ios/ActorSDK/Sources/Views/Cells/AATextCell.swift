@@ -33,7 +33,9 @@ public class AATextCell: AATableViewCell {
     
     public func setContent(title: String?, content: String?, isAction: Bool) {
         titleLabel.text = title
+        titleLabel.hidden = title == nil
         contentLabel.text = content
+        
         if isAction {
             contentLabel.textColor = appStyle.cellTintColor
         } else {
@@ -44,13 +46,22 @@ public class AATextCell: AATableViewCell {
     public override func layoutSubviews() {
         super.layoutSubviews()
         
-        titleLabel.frame = CGRect(x: 15, y: 7, width: contentView.bounds.width - 30, height: titleLabel.bounds.height)
-        contentLabel.frame = CGRect(x: 15, y: 27, width: contentView.bounds.width - 30, height: 10000)
+        if titleLabel.hidden {
+            contentLabel.frame = CGRect(x: 15, y: 7, width: contentView.bounds.width - 30, height: 10000)
+        } else {
+            titleLabel.frame = CGRect(x: 15, y: 7, width: contentView.bounds.width - 30, height: titleLabel.bounds.height)
+            contentLabel.frame = CGRect(x: 15, y: 27, width: contentView.bounds.width - 30, height: 10000)
+        }
         contentLabel.sizeToFit()
     }
     
-    public class func measure(text: String, width: CGFloat, enableNavigation: Bool) -> CGFloat {
+    public class func measure(title: String?, text: String, width: CGFloat, enableNavigation: Bool) -> CGFloat {
         let size = UIViewMeasure.measureText(text, width: width - 30 - (enableNavigation ? 30 : 0), fontSize: 17)
-        return CGFloat(size.height + 36)
+        
+        if title != nil {
+            return CGFloat(size.height + 36)
+        } else {
+            return CGFloat(size.height + 16)
+        }
     }
 }

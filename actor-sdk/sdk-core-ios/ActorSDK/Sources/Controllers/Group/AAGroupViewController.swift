@@ -66,14 +66,7 @@ public class AAGroupViewController: AAContentTableController {
                 }
             }
             
-            // About
-            if let about = self.group.about.get() {
-                if self.group.groupType == ACGroupType.CHANNEL() {
-                    s.text("GroupAboutChannel", content: about)
-                } else {
-                    s.text("GroupAbout", content: about)
-                }
-            }
+
             
 //            if self.group.isCanEditInfo.get().booleanValue() {
 //                
@@ -135,6 +128,18 @@ public class AAGroupViewController: AAContentTableController {
 //                }
 //            }
             
+        }
+        
+        // About
+        if let about = self.group.about.get() {
+            section { (s) in
+                
+                s.autoSeparatorTopOffset = 1
+                
+                s.header(AALocalized("GroupDescription").uppercaseString).height = 22
+                
+                s.text(nil, content: about)
+            }
         }
         
         // Calls

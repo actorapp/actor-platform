@@ -292,9 +292,7 @@
 
 "GroupViewMembers" = "Members";
 
-"GroupAbout" = "About";
-
-"GroupAboutChannel" = "About";
+"GroupDescription" = "Description";
 
 "GroupMemberAdmin" = "admin";
 

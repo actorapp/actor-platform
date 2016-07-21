@@ -172,7 +172,7 @@ public class AATextRow: AAManagedRow {
     // Cell
     
     public override func rangeCellHeightForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> CGFloat {
-        return AATextCell.measure(content!, width: table.tableView.width, enableNavigation: navigate)
+        return AATextCell.measure(title, text: content!, width: table.tableView.width, enableNavigation: navigate)
     }
     
     public override func rangeCellForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> UITableViewCell {
@@ -222,7 +222,7 @@ public extension AAManagedSection {
         return r
     }
     
-    public func text(title: String, @noescape closure: (r: AATextRow) -> ()) -> AATextRow {
+    public func text(title: String?, @noescape closure: (r: AATextRow) -> ()) -> AATextRow {
         let r = text()
         r.title = AALocalized(title)
         closure(r: r)
@@ -231,9 +231,17 @@ public extension AAManagedSection {
         return r
     }
     
-    public func text(title: String, content: String) -> AATextRow {
+    public func text(title: String?, content: String) -> AATextRow {
         let r = text()
         r.title = AALocalized(title)
+        r.content = content
+        r.initTable(self.table)
+        return r
+    }
+    
+    public func text(content: String) -> AATextRow {
+        let r = text()
+        r.title = nil
         r.content = content
         r.initTable(self.table)
         return r

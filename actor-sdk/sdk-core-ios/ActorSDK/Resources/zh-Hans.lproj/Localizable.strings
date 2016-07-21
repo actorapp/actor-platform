@@ -278,9 +278,7 @@
 
 "GroupMemberInfo" = "成员信息";
 
-"GroupAbout" = "About";
-
-"GroupAboutChannel" = "About";
+"GroupDescription" = "Description";
 
 "GroupMemberMakeAdmin" = "设为群组管理员";
 
