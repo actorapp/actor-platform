@@ -275,7 +275,7 @@ public class GroupInfoFragment extends BaseFragment {
         // Members
         //
 
-        groupUserAdapter = new MembersAdapter(getActivity());
+        groupUserAdapter = new MembersAdapter(getActivity(), getArguments().getInt("groupId"));
         bind(groupVM.getIsAsyncMembers(), groupVM.getMembers(), (isAsyncMembers, valueModel, memberList, valueModel2) -> {
             if (isAsyncMembers) {
                 groupUserAdapter.setMembers(new ArrayList<>());

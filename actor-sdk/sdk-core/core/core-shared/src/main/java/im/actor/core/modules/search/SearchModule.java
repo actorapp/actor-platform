@@ -119,9 +119,7 @@ public class SearchModule extends AbsModule {
                                 responsePeerSearch.getGroups()))
                 .map(responsePeerSearch1 ->
                         ManagedList.of(responsePeerSearch1.getSearchResults())
-                                .map(r -> new PeerSearchEntity(convert(r.getPeer()), r.getTitle(),
-                                        r.getDescription(), r.getMembersCount(), r.getDateCreated(),
-                                        r.getCreator(), r.isPublic(), r.isJoined())));
+                                .map(r -> new PeerSearchEntity(convert(r.getPeer()), r.getOptMatchString())));
     }
 
 

@@ -13,6 +13,7 @@ import im.actor.core.entity.GroupMember;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.BaseFragment;
 import im.actor.sdk.controllers.group.view.MembersAdapter;
+import im.actor.sdk.view.adapters.RecyclerListView;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
@@ -26,12 +27,6 @@ public class MembersFragment extends BaseFragment {
         return res;
     }
 
-    private static final int LIMIT = 20;
-
-    private int groupId;
-    private boolean isInitiallyLoaded;
-    private byte[] nextMembers;
-    private ArrayList<Integer> members = new ArrayList<>();
     private MembersAdapter adapter;
 
     public MembersFragment() {
@@ -41,20 +36,13 @@ public class MembersFragment extends BaseFragment {
         setShowHome(true);
     }
 
-    @Override
-    public void onCreate(Bundle saveInstance) {
-        super.onCreate(saveInstance);
-
-        groupId = getArguments().getInt("groupId");
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View res = inflater.inflate(R.layout.fragment_members, container, false);
-        adapter = new MembersAdapter(getContext());
+        adapter = new MembersAdapter(getContext(), getArguments().getInt("groupId"));
 
-        ((ListView) res.findViewById(R.id.items)).setAdapter(adapter);
+        ((RecyclerListView) res.findViewById(R.id.items)).setAdapter(adapter);
 
         return res;
     }
@@ -62,17 +50,6 @@ public class MembersFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (!isInitiallyLoaded) {
-            wrap(messenger().loadMembers(groupId, LIMIT, nextMembers)).then(groupMembersSlice -> {
-                isInitiallyLoaded = true;
-                members.addAll(groupMembersSlice.getUids());
-                nextMembers = groupMembersSlice.getNext();
-                ArrayList<GroupMember> nMembers = new ArrayList<>();
-                for (Integer uid : members) {
-                    nMembers.add(new GroupMember(uid, 0, 0, false));
-                }
-                adapter.setMembers(nMembers, false);
-            });
-        }
+        adapter.initLoad();
     }
 }
