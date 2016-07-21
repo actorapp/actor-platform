@@ -40,17 +40,18 @@ class SearchServiceImpl(implicit system: ActorSystem) extends SearchService {
         case ((pts, txts), ApiSearchPeerTypeCondition(pt)) ⇒ (pts + pt, txts)
         case ((pts, txts), _)                              ⇒ (pts, txts)
       }
+      val peerTypesSorted = peerTypes.toVector.sortBy(_.id)
 
       texts.toList match {
         case text :: Nil if text.length < 3 ⇒
           FastFuture.successful(Ok(EmptyResult))
         case text :: Nil ⇒
           val tps = if (peerTypes.isEmpty)
-            Set(ApiSearchPeerType.Public, ApiSearchPeerType.Contacts, ApiSearchPeerType.Groups)
+            Vector(ApiSearchPeerType.Groups, ApiSearchPeerType.Contacts, ApiSearchPeerType.Public)
           else
-            peerTypes
-          searchResult(tps.toVector, Some(text), optimizations)
-        case Nil ⇒ searchResult(peerTypes.toVector, None, optimizations)
+            peerTypesSorted
+          searchResult(tps, Some(text), optimizations)
+        case Nil ⇒ searchResult(peerTypesSorted, None, optimizations)
         case _   ⇒ FastFuture.successful(Error(RpcError(400, "INVALID_QUERY", "Invalid query.", canTryAgain = false, None)))
       }
     }
@@ -77,11 +78,15 @@ class SearchServiceImpl(implicit system: ActorSystem) extends SearchService {
   )(implicit client: AuthorizedClientData): Future[HandlerResult[ResponsePeerSearch]] = {
     for {
       results ← FutureExt.ftraverse(pts)(search(_, text)).map(_.reduce(_ ++ _))
-      (groupIds, userIds) = results.view.map(_.peer).foldLeft(Vector.empty[Int], Vector.empty[Int]) {
-        case ((gids, uids), ApiPeer(pt, pid)) ⇒
-          pt match {
-            case ApiPeerType.Private ⇒ (gids, uids :+ pid)
-            case ApiPeerType.Group   ⇒ (gids :+ pid, uids)
+      (groupIds, userIds, searchResults) = (results foldLeft (Vector.empty[Int], Vector.empty[Int], Vector.empty[ApiPeerSearchResult])) {
+        case (acc @ (gids, uids, rslts), found @ ApiPeerSearchResult(peer, _)) ⇒
+          if (rslts.exists(_.peer == peer)) {
+            acc
+          } else {
+            peer.`type` match {
+              case ApiPeerType.Private ⇒ (gids, uids :+ peer.id, rslts :+ found)
+              case ApiPeerType.Group   ⇒ (gids :+ peer.id, uids, rslts :+ found)
+            }
           }
       }
       //      TODO: make like here: im.actor.server.api.rpc.service.groups.GroupsServiceImpl.usersOrPeers
@@ -89,7 +94,7 @@ class SearchServiceImpl(implicit system: ActorSystem) extends SearchService {
     } yield {
       val stripEntities = optimizations.contains(ApiUpdateOptimization.STRIP_ENTITIES)
       Ok(ResponsePeerSearch(
-        searchResults = results,
+        searchResults = searchResults,
         users = if (stripEntities) Vector.empty else users.toVector,
         groups = if (stripEntities) Vector.empty else groups.toVector,
         userPeers = users.toVector map (u ⇒ ApiUserOutPeer(u.id, u.accessHash)),
@@ -149,10 +154,10 @@ class SearchServiceImpl(implicit system: ActorSystem) extends SearchService {
   // search users by nickname prefix
   private def searchGlobalUsersPrefix(text: Option[String])(implicit client: AuthorizedClientData): Future[IndexedSeq[PeerAndMatchString]] = {
     text map { query ⇒
-      globalNamesStorage.userIdsByPrefix(query) map { results ⇒
+      globalNamesStorage.userIdsByPrefix(normName(query)) map { results ⇒
         results collect {
           case (userId, nickName) if userId != client.userId ⇒
-            ApiPeer(ApiPeerType.Private, userId) → nickName
+            ApiPeer(ApiPeerType.Private, userId) → s"@$nickName"
         }
       }
     } getOrElse FastFuture.successful(Vector.empty)
@@ -161,14 +166,16 @@ class SearchServiceImpl(implicit system: ActorSystem) extends SearchService {
   // find groups by global name prefix
   private def searchGlobalGroupsPrefix(text: Option[String]): Future[IndexedSeq[PeerAndMatchString]] = {
     text map { query ⇒
-      globalNamesStorage.groupIdsByPrefix(query) map { results ⇒
+      globalNamesStorage.groupIdsByPrefix(normName(query)) map { results ⇒
         results map {
           case (groupId, globalName) ⇒
-            ApiPeer(ApiPeerType.Group, groupId) → globalName
+            ApiPeer(ApiPeerType.Group, groupId) → s"@$globalName"
         }
       }
     } getOrElse FastFuture.successful(Vector.empty)
   }
+
+  private def normName(n: String) = if (n.startsWith("@")) n.drop(1) else n
 
   private def searchContacts(text: Option[String])(implicit client: AuthorizedClientData): Future[IndexedSeq[ApiPeer]] = {
     for {
