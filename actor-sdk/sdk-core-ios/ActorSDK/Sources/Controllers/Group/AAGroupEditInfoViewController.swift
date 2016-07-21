@@ -67,7 +67,7 @@ public class AAGroupEditInfoController: AAViewController, UITextViewDelegate {
         descriptionView.scrollEnabled = false
         
         navigationItem.title = "Edit Group"
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationSave"), style: .Plain, target: self, action: #selector(saveDidPressed))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationSave"), style: .Done, target: self, action: #selector(saveDidPressed))
     }
     
     public override func viewWillLayoutSubviews() {

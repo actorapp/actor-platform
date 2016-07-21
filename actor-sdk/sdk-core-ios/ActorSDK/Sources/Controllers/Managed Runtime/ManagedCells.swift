@@ -8,6 +8,7 @@ import Foundation
 
 public class AAEditRow: AAManagedRow, UITextFieldDelegate {
     
+    public var prefix: String?
     public var text: String?
     public var placeholder: String?
     public var returnKeyType = UIReturnKeyType.Default
@@ -36,6 +37,14 @@ public class AAEditRow: AAManagedRow, UITextFieldDelegate {
         res.textField.delegate = self
         res.textField.removeTarget(nil, action: nil, forControlEvents: .AllEvents)
         res.textField.addTarget(self, action: #selector(AAEditRow.textFieldDidChange(_:)), forControlEvents: .EditingChanged)
+        
+        if prefix != nil {
+            res.textPrefix.text = prefix
+            res.textPrefix.hidden = false
+        } else {
+            res.textPrefix.hidden = true
+        }
+        
         return res
     }
     
@@ -343,6 +352,10 @@ public class AACommonRow: AAManagedRow {
     }
     
     // Binding
+    
+    public func rangeBind(table: AAManagedTable, binder: AABinder) {
+        bindAction?(r: self)
+    }
     
     public override func reload() {
         

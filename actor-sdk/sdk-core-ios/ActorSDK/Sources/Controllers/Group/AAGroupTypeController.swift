@@ -11,6 +11,7 @@ public class AAGroupTypeViewController: AAContentTableController {
     private var linkSection: AAManagedSection!
     private var publicRow: AACommonRow!
     private var privateRow: AACommonRow!
+    private var shortNameRow: AAEditRow!
     
     public init(gid: Int) {
         super.init(style: .SettingsGrouped)
@@ -21,7 +22,7 @@ public class AAGroupTypeViewController: AAContentTableController {
         } else {
             navigationItem.title = AALocalized("GroupTypeTitle")
         }
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationSave"), style: .Plain, target: self, action: #selector(saveDidTap))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationSave"), style: .Done, target: self, action: #selector(saveDidTap))
     }
     
     public required init(coder aDecoder: NSCoder) {
@@ -29,6 +30,8 @@ public class AAGroupTypeViewController: AAContentTableController {
     }
     
     public override func tableDidLoad() {
+        
+        self.isPublic = group.shortName.get() != nil
 
         section { (s) in
 
@@ -86,7 +89,12 @@ public class AAGroupTypeViewController: AAContentTableController {
         }
         
         self.linkSection = section { (s) in
-            s.headerText = "Hey!"
+            s.footerText = "People can share this link with others and find your channel using search."
+            self.shortNameRow = s.edit({ (r) in
+                r.autocapitalizationType = .None
+                r.prefix = "actor.im/join/"
+                r.text = self.group.shortName.get()
+            })
         }
         if !self.isPublic {
             managedTable.sections.removeAtIndex(1)
@@ -94,6 +102,23 @@ public class AAGroupTypeViewController: AAContentTableController {
     }
     
     public func saveDidTap() {
+        let nShortName: String?
+        if self.isPublic {
+            if self.shortNameRow.text!.trim().length > 0 {
+                nShortName = self.shortNameRow.text!.trim()
+            } else {
+                nShortName = nil
+            }
+        } else {
+            nShortName = nil
+        }
         
+        if nShortName != group.shortName.get() {
+            executePromise(Actor.editGroupShortNameWithGid(jint(self.gid), withAbout: nShortName).then({ (r:ARVoid!) in
+                self.navigateBack()
+            }))
+        } else {
+            navigateBack()
+        }
     }
 }

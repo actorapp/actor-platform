@@ -148,7 +148,7 @@ public class AAGroupViewController: AAContentTableController {
                 s.common({ (r) in
                     r.content = AALocalized("GroupAdministration")
                     r.selectAction = { () -> Bool in
-                        self.navigateNext(AAGroupTypeViewController(gid: self.gid))
+                        self.navigateNext(AAGroupAdministrationViewController(gid: self.gid))
                         return false
                     }
                 })
