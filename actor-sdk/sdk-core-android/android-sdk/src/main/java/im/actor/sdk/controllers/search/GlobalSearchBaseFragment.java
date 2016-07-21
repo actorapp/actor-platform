@@ -170,16 +170,16 @@ public abstract class GlobalSearchBaseFragment extends BaseFragment {
                                     String name = null;
                                     Avatar avatar = null;
                                     if (res.size() > 0) {
-                                        peer = res.get(0).getPeer();
-                                        name = res.get(0).getOptMatchString();
-                                        if (name == null) {
-                                            return;
-                                        }
+                                        PeerSearchEntity peerSearchEntity = res.get(0);
+                                        peer = peerSearchEntity.getPeer();
+
                                         if (peer.getPeerType() == PeerType.PRIVATE) {
                                             UserVM userVM = users().get(peer.getPeerId());
+                                            name = userVM.getName().get();
                                             avatar = userVM.getAvatar().get();
                                         } else if (peer.getPeerType() == PeerType.GROUP) {
                                             GroupVM groupVM = groups().get(peer.getPeerId());
+                                            name = groupVM.getName().get();
                                             avatar = groupVM.getAvatar().get();
                                         } else {
                                             return;
@@ -189,6 +189,10 @@ public abstract class GlobalSearchBaseFragment extends BaseFragment {
                                             if (searchDisplay.getItem(i).getPeer().equals(peer))
                                                 showResult = false;
                                             break;
+                                        }
+
+                                        if (peerSearchEntity.getOptMatchString() != null) {
+                                            name = peerSearchEntity.getOptMatchString();
                                         }
                                     }
                                     if (showResult) {
