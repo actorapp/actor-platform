@@ -169,7 +169,7 @@ private[group] final class GroupProcessor
 
   protected def handleQuery: PartialFunction[Any, Future[Any]] = {
     case _: GroupQuery if state.isNotCreated      ⇒ FastFuture.failed(GroupNotFound(groupId))
-    case _: GroupQuery if state.isDeleted         ⇒ FastFuture.failed(GroupAlreadyDeleted(groupId))
+    //    case _: GroupQuery if state.isDeleted         ⇒ FastFuture.failed(GroupAlreadyDeleted(groupId)) // TODO: figure out how to propperly handle group deletion
     case GetAccessHash()                          ⇒ getAccessHash
     case GetTitle()                               ⇒ getTitle
     case GetIntegrationToken(optClient)           ⇒ getIntegrationToken(optClient)
