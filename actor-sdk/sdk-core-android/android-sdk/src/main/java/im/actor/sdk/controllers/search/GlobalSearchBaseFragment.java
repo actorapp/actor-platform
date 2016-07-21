@@ -171,14 +171,15 @@ public abstract class GlobalSearchBaseFragment extends BaseFragment {
                                     Avatar avatar = null;
                                     if (res.size() > 0) {
                                         peer = res.get(0).getPeer();
-
+                                        name = res.get(0).getOptMatchString();
+                                        if (name == null) {
+                                            return;
+                                        }
                                         if (peer.getPeerType() == PeerType.PRIVATE) {
                                             UserVM userVM = users().get(peer.getPeerId());
-                                            name = userVM.getName().getName();
                                             avatar = userVM.getAvatar().get();
                                         } else if (peer.getPeerType() == PeerType.GROUP) {
                                             GroupVM groupVM = groups().get(peer.getPeerId());
-                                            name = groupVM.getName().getName();
                                             avatar = groupVM.getAvatar().get();
                                         } else {
                                             return;

@@ -127,6 +127,8 @@ public class SearchModule extends AbsModule {
                         updates().applyRelatedData(
                                 responsePeerSearch.getUsers(),
                                 responsePeerSearch.getGroups()))
+                .chain(responsePeerSearch2 ->
+                        updates().loadRequiredPeers(responsePeerSearch2.getUserPeers(), responsePeerSearch2.getGroupPeers()))
                 .map(responsePeerSearch1 ->
                         ManagedList.of(responsePeerSearch1.getSearchResults())
                                 .map(r -> new PeerSearchEntity(convert(r.getPeer()), r.getOptMatchString())));
