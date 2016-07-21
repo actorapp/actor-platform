@@ -103,8 +103,6 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
     @Property("readonly, nonatomic")
     private boolean isCanEditAdministration;
     @Property("readonly, nonatomic")
-    private boolean isCanEditShortName;
-    @Property("readonly, nonatomic")
     private boolean isCanViewAdmins;
     @Property("readonly, nonatomic")
     private boolean isCanEditAdmins;
@@ -238,10 +236,6 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
 
     public boolean isHaveExtension() {
         return haveExtension;
-    }
-
-    public boolean isCanEditShortName() {
-        return isCanEditShortName;
     }
 
     public boolean isCanEditAdministration() {
@@ -796,7 +790,6 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
             this.isCanInviteMembers = false;
             this.isSharedHistory = false;
             this.isCanEditInfo = false;
-            this.isCanEditShortName = false;
             this.isCanEditAdministration = false;
             this.isCanViewAdmins = false;
             this.isCanEditAdmins = false;

@@ -80,9 +80,6 @@ public class GroupVM extends BaseValueModel<Group> {
     private BooleanValueModel isCanEditAdministration;
     @NotNull
     @Property("nonatomic, readonly")
-    private BooleanValueModel isCanEditShortName;
-    @NotNull
-    @Property("nonatomic, readonly")
     private BooleanValueModel isCanEditAdmins;
     @NotNull
     @Property("nonatomic, readonly")
@@ -136,7 +133,6 @@ public class GroupVM extends BaseValueModel<Group> {
         this.isCanEditInfo = new BooleanValueModel("group." + groupId + ".can_edit_info", rawObj.isCanEditInfo());
         this.isAsyncMembers = new BooleanValueModel("group." + groupId + ".isAsyncMembers", rawObj.isAsyncMembers());
         this.isCanEditAdministration = new BooleanValueModel("group." + groupId + ".isCanEditAdministration", rawObj.isCanEditAdministration());
-        this.isCanEditShortName = new BooleanValueModel("group." + groupId + ".isCanEditShortName", rawObj.isCanEditShortName());
         this.isHistoryShared = new BooleanValueModel("group." + groupId + ".isHistoryShared", rawObj.isSharedHistory());
         this.isCanEditAdmins = new BooleanValueModel("group." + groupId + ".isCanEditAdmins", rawObj.isCanEditAdmins());
         this.isCanViewAdmins = new BooleanValueModel("group." + groupId + ".isCanViewAdmins", rawObj.isCanViewAdmins());
@@ -329,17 +325,6 @@ public class GroupVM extends BaseValueModel<Group> {
     }
 
     /**
-     * Is current user can edit short name of a group
-     *
-     * @return is current user can edit short name
-     */
-    @NotNull
-    @ObjectiveCName("getIsCanEditShortNameModel")
-    public BooleanValueModel getIsCanEditShortName() {
-        return isCanEditShortName;
-    }
-
-    /**
      * Is current user can leave group
      *
      * @return is current user can leave model
@@ -479,7 +464,6 @@ public class GroupVM extends BaseValueModel<Group> {
         isChanged |= isCanViewMembers.change(rawObj.isCanViewMembers());
         isChanged |= isCanInviteMembers.change(rawObj.isCanInviteMembers());
         isChanged |= isCanEditInfo.change(rawObj.isCanEditInfo());
-        isChanged |= isCanEditShortName.change(rawObj.isCanEditShortName());
         isChanged |= shortName.change(rawObj.getShortName());
         isChanged |= isAsyncMembers.change(rawObj.isAsyncMembers());
         isChanged |= isHistoryShared.change(rawObj.isSharedHistory());

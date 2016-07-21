@@ -67,7 +67,7 @@ public class GroupAdminFragment extends BaseFragment {
         } else {
             groupTypeValue.setText(R.string.group_type_pubic);
         }
-        if (groupVM.getIsCanEditShortName().get()) {
+        if (groupVM.getIsCanEditAdministration().get()) {
             res.findViewById(R.id.groupTypeContainer).setOnClickListener(v -> {
                 startActivity(new Intent(getContext(), GroupTypeActivity.class)
                         .putExtra(Intents.EXTRA_GROUP_ID, groupVM.getId()));
