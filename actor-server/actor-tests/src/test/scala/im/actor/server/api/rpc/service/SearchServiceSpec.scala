@@ -40,9 +40,6 @@ final class SearchServiceSpec
           groups shouldBe empty
           users.map(_.id) shouldBe Seq(user2.id)
           results.length shouldBe 1
-          val result = results.head
-
-          result.title shouldBe user2.name
       }
     }
   }
