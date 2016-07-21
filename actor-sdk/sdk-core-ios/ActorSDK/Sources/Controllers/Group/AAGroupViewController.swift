@@ -348,7 +348,7 @@ public class AAGroupViewController: AAContentTableController {
                             title = AALocalized("GroupLeaveConfirm")
                         }
                         self.confirmDestructive(title, action: AALocalized("GroupLeaveConfirmAction"), yes: { () -> () in
-                            // self.executeSafe(Actor.leaveGroupCommandWithGid(jint(self.gid))!)
+                            self.executeSafe(Actor.leaveGroupCommandWithGid(jint(self.gid)))
                         })
                         
                         return true

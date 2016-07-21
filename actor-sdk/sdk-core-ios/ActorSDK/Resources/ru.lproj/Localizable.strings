@@ -372,11 +372,22 @@
 
 "CreateGroup" = "Новая группа";
 
+"CreateChannel" = "Новый канал";
+
+
 "CreateGroupTitle" = "Новая группа";
 
 "CreateGroupNamePlaceholder" = "Название группы";
 
 "CreateGroupHint" = "Укажите название группы и поставьте фотографию";
+
+
+"CreateChannelTitle" = "Новый канал";
+
+"CreateChannelHint" = "Укажите название канала и поставьте фотографию";
+
+"CreateChannelNamePlaceholder" = "Название канала";
+
 
 "CreateGroupMembersTitle" = "Пригласить участников";
 

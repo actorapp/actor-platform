@@ -352,13 +352,24 @@
 
 "ComposeTitle" = "新消息";
 
+
 "CreateGroup" = "创建群组";
+
+"CreateChannel" = "Create Channel";
+
 
 "CreateGroupTitle" = "创建群组";
 
 "CreateGroupHint" = "请填写群组名称和图标";
 
 "CreateGroupNamePlaceholder" = "输入群组名称";
+
+"CreateChannelTitle" = "Create Channel";
+
+"CreateChannelHint" = "Please provide the channel name and an optional channel icon";
+
+"CreateChannelNamePlaceholder" = "Channel Name";
+
 
 "CreateGroupMembersTitle" = "邀请成员";
 

@@ -25,7 +25,7 @@ public class GroupMembersController: AAContactsListContentController, AAContacts
         navigationItem.title = AALocalized("CreateGroupMembersTitle")
         
         if AADevice.isiPad {
-            self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: UIBarButtonItemStyle.Plain, target: self, action: Selector("dismiss"))
+            self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: UIBarButtonItemStyle.Plain, target: self, action: #selector(dismiss))
         }
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationDone"), style: UIBarButtonItemStyle.Done, target: self, action: #selector(GroupMembersController.doNext))
@@ -81,18 +81,18 @@ public class GroupMembersController: AAContactsListContentController, AAContacts
             res.replaceIntAtIndex(UInt(i), withInt: selected[i].contact.uid)
         }
         
-//        executeSafeOnlySuccess(Actor.createGroupWithTitle(groupTitle, withAvatar: nil, withUids: res)) { (val) -> Void in
-//            let gid = (val as! JavaLangInteger).intValue
-//            if self.groupImage != nil {
-//                Actor.changeGroupAvatar(gid, image: self.groupImage!)
-//            }
-//            if let customController = ActorSDK.sharedActor().delegate.actorControllerForConversation(ACPeer.groupWithInt(gid)) {
-//                self.navigateDetail(customController)
-//            } else {
-//                self.navigateDetail(ConversationViewController(peer: ACPeer.groupWithInt(gid)))
-//            }
-//            self.dismiss()
-//        }
+        executePromise(Actor.createGroupWithTitle(groupTitle, withAvatar: nil, withUids: res)).then { (res: JavaLangInteger!) in
+            let gid = res.intValue
+            if self.groupImage != nil {
+                Actor.changeGroupAvatar(gid, image: self.groupImage!)
+            }
+            if let customController = ActorSDK.sharedActor().delegate.actorControllerForConversation(ACPeer.groupWithInt(gid)) {
+                self.navigateDetail(customController)
+            } else {
+                self.navigateDetail(ConversationViewController(peer: ACPeer.groupWithInt(gid)))
+            }
+            self.dismiss()
+        }
     }
     
     // Handling token input updates

@@ -356,13 +356,25 @@
 
 "ComposeTitle" = "Nova Mensagem";
 
+
 "CreateGroup" = "Criar Grupo";
+
+"CreateChannel" = "Create Channel";
+
 
 "CreateGroupTitle" = "Criar Grupo";
 
 "CreateGroupNamePlaceholder" = "Inserir nome do grupo";
 
 "CreateGroupHint" = "Please provide group subject and optional group icon";
+
+
+"CreateChannelTitle" = "Create Channel";
+
+"CreateChannelHint" = "Please provide the channel name and an optional channel icon";
+
+"CreateChannelNamePlaceholder" = "Channel Name";
+
 
 "CreateGroupMembersTitle" = "Invite members";
 

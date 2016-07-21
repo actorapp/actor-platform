@@ -6,6 +6,7 @@ import Foundation
 
 public class AAGroupTypeViewController: AAContentTableController {
     
+    private let isCreation: Bool
     private var isChannel: Bool = false
     private var isPublic: Bool = false
     private var linkSection: AAManagedSection!
@@ -13,7 +14,8 @@ public class AAGroupTypeViewController: AAContentTableController {
     private var privateRow: AACommonRow!
     private var shortNameRow: AAEditRow!
     
-    public init(gid: Int) {
+    public init(gid: Int, isCreation: Bool) {
+        self.isCreation = isCreation
         super.init(style: .SettingsGrouped)
         self.gid = gid
         self.isChannel = group.groupType == ACGroupType.CHANNEL()
@@ -22,7 +24,11 @@ public class AAGroupTypeViewController: AAContentTableController {
         } else {
             navigationItem.title = AALocalized("GroupTypeTitle")
         }
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationSave"), style: .Done, target: self, action: #selector(saveDidTap))
+        if isCreation {
+            navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationNext"), style: .Done, target: self, action: #selector(saveDidTap))
+        } else {
+            navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationSave"), style: .Done, target: self, action: #selector(saveDidTap))
+        }
     }
     
     public required init(coder aDecoder: NSCoder) {
@@ -115,10 +121,28 @@ public class AAGroupTypeViewController: AAContentTableController {
         
         if nShortName != group.shortName.get() {
             executePromise(Actor.editGroupShortNameWithGid(jint(self.gid), withAbout: nShortName).then({ (r:ARVoid!) in
-                self.navigateBack()
+                if (self.isCreation) {
+                    if let customController = ActorSDK.sharedActor().delegate.actorControllerForConversation(ACPeer.groupWithInt(jint(self.gid))) {
+                        self.navigateDetail(customController)
+                    } else {
+                        self.navigateDetail(ConversationViewController(peer: ACPeer.groupWithInt(jint(self.gid))))
+                    }
+                    self.dismiss()
+                } else {
+                    self.navigateBack()
+                }
             }))
         } else {
-            navigateBack()
+            if (isCreation) {
+                if let customController = ActorSDK.sharedActor().delegate.actorControllerForConversation(ACPeer.groupWithInt(jint(self.gid))) {
+                    self.navigateDetail(customController)
+                } else {
+                    self.navigateDetail(ConversationViewController(peer: ACPeer.groupWithInt(jint(self.gid))))
+                }
+                self.dismiss()
+            } else {
+                navigateBack()
+            }
         }
     }
 }

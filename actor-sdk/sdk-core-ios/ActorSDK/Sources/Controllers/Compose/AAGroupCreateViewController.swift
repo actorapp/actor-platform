@@ -6,6 +6,7 @@ import Foundation
 
 public class AAGroupCreateViewController: AAViewController, UITextFieldDelegate {
 
+    private let isChannel: Bool
     private var addPhotoButton = UIButton()
     private var avatarImageView = UIImageView()
     private var hint = UILabel()
@@ -15,13 +16,18 @@ public class AAGroupCreateViewController: AAViewController, UITextFieldDelegate 
     
     private var image: UIImage?
 
-    public override init(){
+    public init(isChannel: Bool) {
+        self.isChannel = isChannel
         super.init(nibName: nil, bundle: nil)
-        self.navigationItem.title = AALocalized("CreateGroupTitle")
+        if isChannel {
+            self.navigationItem.title = AALocalized("CreateChannelTitle")
+        } else {
+            self.navigationItem.title = AALocalized("CreateGroupTitle")
+        }
         if AADevice.isiPad {
             self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: UIBarButtonItemStyle.Plain, target: self, action: #selector(AAViewController.dismiss))
         }
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationNext"), style: UIBarButtonItemStyle.Plain, target: self, action: #selector(AAGroupCreateViewController.doNext))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationNext"), style: UIBarButtonItemStyle.Done, target: self, action: #selector(AAGroupCreateViewController.doNext))
     }
 
     public required init(coder aDecoder: NSCoder) {
@@ -77,7 +83,11 @@ public class AAGroupCreateViewController: AAViewController, UITextFieldDelegate 
         groupName.font = UIFont.systemFontOfSize(20)
         groupName.keyboardType = UIKeyboardType.Default
         groupName.returnKeyType = UIReturnKeyType.Next
-        groupName.attributedPlaceholder = NSAttributedString(string: AALocalized("CreateGroupNamePlaceholder"), attributes: [NSForegroundColorAttributeName: ActorSDK.sharedActor().style.vcHintColor])
+        if isChannel {
+            groupName.attributedPlaceholder = NSAttributedString(string: AALocalized("CreateChannelNamePlaceholder"), attributes: [NSForegroundColorAttributeName: ActorSDK.sharedActor().style.vcHintColor])
+        } else {
+            groupName.attributedPlaceholder = NSAttributedString(string: AALocalized("CreateGroupNamePlaceholder"), attributes: [NSForegroundColorAttributeName: ActorSDK.sharedActor().style.vcHintColor])
+        }
         groupName.delegate = self
         groupName.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
         groupName.autocapitalizationType = UITextAutocapitalizationType.Words
@@ -85,7 +95,12 @@ public class AAGroupCreateViewController: AAViewController, UITextFieldDelegate 
         
         groupNameFieldSeparator.backgroundColor = appStyle.vcSeparatorColor
         
-        hint.text = AALocalized("CreateGroupHint")
+        if isChannel {
+            hint.text = AALocalized("CreateChannelHint")
+        } else {
+            hint.text = AALocalized("CreateGroupHint")
+        }
+        
         hint.font = UIFont.systemFontOfSize(15)
         hint.lineBreakMode = .ByWordWrapping
         hint.numberOfLines = 0
@@ -130,12 +145,7 @@ public class AAGroupCreateViewController: AAViewController, UITextFieldDelegate 
         groupName.becomeFirstResponder()
     }
     
-//    public override func viewDidAppear(animated: Bool) {
-//        super.viewDidAppear(animated)
-//        
-//        groupName.becomeFirstResponder()
-//    }
-    
+
     public func textFieldShouldReturn(textField: UITextField) -> Bool {
         doNext()
         return false
@@ -148,6 +158,12 @@ public class AAGroupCreateViewController: AAViewController, UITextFieldDelegate 
             return
         }
         
-        navigateNext(GroupMembersController(title: title, image: image), removeCurrent: true)
+        if isChannel {
+            executePromise(Actor.createChannelWithTitle(title, withAvatar: nil)).then({ (gid: JavaLangInteger!) in
+                self.navigateNext(AAGroupTypeViewController(gid: Int(gid.intValue()), isCreation: true), removeCurrent: true)
+            })
+        } else {
+            navigateNext(GroupMembersController(title: title, image: image), removeCurrent: true)
+        }
     }
 }

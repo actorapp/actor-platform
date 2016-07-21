@@ -8,6 +8,7 @@ public class AAGroupAdministrationViewController: AAContentTableController {
     
     private var isChannel: Bool = false
     private var shortNameRow: AACommonRow!
+    private var shareHistoryRow: AACommonRow!
     
     public init(gid: Int) {
         super.init(style: .SettingsGrouped)
@@ -43,19 +44,26 @@ public class AAGroupAdministrationViewController: AAContentTableController {
                 if group.isCanEditAdministration.get().booleanValue() {
                     r.style = .Navigation
                     r.selectAction = { () -> Bool in
-                        self.navigateNext(AAGroupTypeViewController(gid: self.gid))
+                        self.navigateNext(AAGroupTypeViewController(gid: self.gid, isCreation: false))
                         return false
                     }
                 }
             })
         }
         
-        if group.isCanEditAdministration.get().booleanValue() {
+        if group.isCanEditAdministration.get().booleanValue() && !isChannel {
             section { (s) in
                 s.footerText = "All members will see all messages"
-                s.common({ (r) in
+                self.shareHistoryRow = s.common({ (r) in
                     r.content = "Share History"
-                    r.hint = "Shared"
+                    r.bindAction = { (r) in
+                        if self.group.isHistoryShared.get().booleanValue() {
+                            r.hint = "Shared"
+                        } else {
+                            r.hint = nil
+                        }
+                    }
+                    
                 })
             }
         }
@@ -77,8 +85,15 @@ public class AAGroupAdministrationViewController: AAContentTableController {
     }
     
     public override func tableWillBind(binder: AABinder) {
+        
         binder.bind(self.group.shortName) { (value: String!) in
             if let row = self.shortNameRow {
+                row.reload()
+            }
+        }
+        
+        binder.bind(self.group.isHistoryShared) { (value: JavaLangBoolean!) in
+            if let row = self.shareHistoryRow {
                 row.reload()
             }
         }
