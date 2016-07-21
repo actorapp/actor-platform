@@ -17,23 +17,11 @@ import java.util.ArrayList;
 public class ApiPeerSearchResult extends BserObject {
 
     private ApiPeer peer;
-    private String title;
-    private String description;
-    private Integer membersCount;
-    private Long dateCreated;
-    private Integer creator;
-    private Boolean isPublic;
-    private Boolean isJoined;
+    private String optMatchString;
 
-    public ApiPeerSearchResult(@NotNull ApiPeer peer, @NotNull String title, @Nullable String description, @Nullable Integer membersCount, @Nullable Long dateCreated, @Nullable Integer creator, @Nullable Boolean isPublic, @Nullable Boolean isJoined) {
+    public ApiPeerSearchResult(@NotNull ApiPeer peer, @Nullable String optMatchString) {
         this.peer = peer;
-        this.title = title;
-        this.description = description;
-        this.membersCount = membersCount;
-        this.dateCreated = dateCreated;
-        this.creator = creator;
-        this.isPublic = isPublic;
-        this.isJoined = isJoined;
+        this.optMatchString = optMatchString;
     }
 
     public ApiPeerSearchResult() {
@@ -45,51 +33,15 @@ public class ApiPeerSearchResult extends BserObject {
         return this.peer;
     }
 
-    @NotNull
-    public String getTitle() {
-        return this.title;
-    }
-
     @Nullable
-    public String getDescription() {
-        return this.description;
-    }
-
-    @Nullable
-    public Integer getMembersCount() {
-        return this.membersCount;
-    }
-
-    @Nullable
-    public Long getDateCreated() {
-        return this.dateCreated;
-    }
-
-    @Nullable
-    public Integer getCreator() {
-        return this.creator;
-    }
-
-    @Nullable
-    public Boolean isPublic() {
-        return this.isPublic;
-    }
-
-    @Nullable
-    public Boolean isJoined() {
-        return this.isJoined;
+    public String getOptMatchString() {
+        return this.optMatchString;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
         this.peer = values.getObj(1, new ApiPeer());
-        this.title = values.getString(2);
-        this.description = values.optString(3);
-        this.membersCount = values.optInt(4);
-        this.dateCreated = values.optLong(5);
-        this.creator = values.optInt(6);
-        this.isPublic = values.optBool(7);
-        this.isJoined = values.optBool(8);
+        this.optMatchString = values.optString(3);
     }
 
     @Override
@@ -98,27 +50,8 @@ public class ApiPeerSearchResult extends BserObject {
             throw new IOException();
         }
         writer.writeObject(1, this.peer);
-        if (this.title == null) {
-            throw new IOException();
-        }
-        writer.writeString(2, this.title);
-        if (this.description != null) {
-            writer.writeString(3, this.description);
-        }
-        if (this.membersCount != null) {
-            writer.writeInt(4, this.membersCount);
-        }
-        if (this.dateCreated != null) {
-            writer.writeLong(5, this.dateCreated);
-        }
-        if (this.creator != null) {
-            writer.writeInt(6, this.creator);
-        }
-        if (this.isPublic != null) {
-            writer.writeBool(7, this.isPublic);
-        }
-        if (this.isJoined != null) {
-            writer.writeBool(8, this.isJoined);
+        if (this.optMatchString != null) {
+            writer.writeString(3, this.optMatchString);
         }
     }
 
@@ -126,12 +59,7 @@ public class ApiPeerSearchResult extends BserObject {
     public String toString() {
         String res = "struct PeerSearchResult{";
         res += "peer=" + this.peer;
-        res += ", title=" + this.title;
-        res += ", description=" + this.description;
-        res += ", membersCount=" + this.membersCount;
-        res += ", dateCreated=" + this.dateCreated;
-        res += ", creator=" + this.creator;
-        res += ", isPublic=" + this.isPublic;
+        res += ", optMatchString=" + this.optMatchString;
         res += "}";
         return res;
     }

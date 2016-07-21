@@ -25,9 +25,10 @@ public class ApiGroup extends BserObject {
     private Boolean isHidden;
     private ApiGroupType groupType;
     private Boolean canSendMessage;
+    private Boolean isDeleted;
     private ApiMapValue ext;
 
-    public ApiGroup(int id, long accessHash, @NotNull String title, @Nullable ApiAvatar avatar, @Nullable Integer membersCount, @Nullable Boolean isMember, @Nullable Boolean isHidden, @Nullable ApiGroupType groupType, @Nullable Boolean canSendMessage, @Nullable ApiMapValue ext) {
+    public ApiGroup(int id, long accessHash, @NotNull String title, @Nullable ApiAvatar avatar, @Nullable Integer membersCount, @Nullable Boolean isMember, @Nullable Boolean isHidden, @Nullable ApiGroupType groupType, @Nullable Boolean canSendMessage, @Nullable Boolean isDeleted, @Nullable ApiMapValue ext) {
         this.id = id;
         this.accessHash = accessHash;
         this.title = title;
@@ -37,6 +38,7 @@ public class ApiGroup extends BserObject {
         this.isHidden = isHidden;
         this.groupType = groupType;
         this.canSendMessage = canSendMessage;
+        this.isDeleted = isDeleted;
         this.ext = ext;
     }
 
@@ -88,6 +90,11 @@ public class ApiGroup extends BserObject {
     }
 
     @Nullable
+    public Boolean isDeleted() {
+        return this.isDeleted;
+    }
+
+    @Nullable
     public ApiMapValue getExt() {
         return this.ext;
     }
@@ -106,6 +113,7 @@ public class ApiGroup extends BserObject {
             this.groupType = ApiGroupType.parse(val_groupType);
         }
         this.canSendMessage = values.optBool(26);
+        this.isDeleted = values.optBool(27);
         this.ext = values.optObj(22, new ApiMapValue());
         if (values.hasRemaining()) {
             setUnmappedObjects(values.buildRemaining());
@@ -138,6 +146,9 @@ public class ApiGroup extends BserObject {
         if (this.canSendMessage != null) {
             writer.writeBool(26, this.canSendMessage);
         }
+        if (this.isDeleted != null) {
+            writer.writeBool(27, this.isDeleted);
+        }
         if (this.ext != null) {
             writer.writeObject(22, this.ext);
         }
@@ -161,6 +172,7 @@ public class ApiGroup extends BserObject {
         res += ", isHidden=" + this.isHidden;
         res += ", groupType=" + this.groupType;
         res += ", canSendMessage=" + this.canSendMessage;
+        res += ", isDeleted=" + this.isDeleted;
         res += ", ext=" + this.ext;
         res += "}";
         return res;
