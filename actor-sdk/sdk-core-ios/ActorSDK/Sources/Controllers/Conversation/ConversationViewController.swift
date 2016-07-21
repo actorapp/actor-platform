@@ -335,6 +335,8 @@ public class ConversationViewController:
                     }
                 }
             })
+            
+            self.inputOverlay.hidden = true
         } else if (peer.peerType.ordinal() == ACPeerType.GROUP().ordinal()) {
             let group = Actor.getGroupWithGid(peer.peerId)
             let nameModel = group.getNameModel()
