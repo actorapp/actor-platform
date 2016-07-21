@@ -463,22 +463,34 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
   }
 }
 
+object DialogGroupKeys {
+  val Favourites = "favourites"
+  val Direct = "privates"
+  val Groups = "groups"
+}
+
+object DialogGroupTitles {
+  val Favourites = "Favourites"
+  val Direct = "Direct Messages"
+  val Groups = "Groups"
+}
+
 object DialogExtension extends ExtensionId[DialogExtensionImpl] with ExtensionIdProvider {
   override def lookup = DialogExtension
 
   override def createExtension(system: ExtendedActorSystem) = new DialogExtensionImpl(system)
 
   def groupKey(group: DialogGroupType) = group match {
-    case DialogGroupType.Favourites     ⇒ "favourites"
-    case DialogGroupType.DirectMessages ⇒ "privates"
-    case DialogGroupType.Groups         ⇒ "groups"
+    case DialogGroupType.Favourites     ⇒ DialogGroupKeys.Favourites
+    case DialogGroupType.DirectMessages ⇒ DialogGroupKeys.Direct
+    case DialogGroupType.Groups         ⇒ DialogGroupKeys.Groups
     case unknown                        ⇒ throw DialogErrors.UnknownDialogGroupType(unknown)
   }
 
   def groupTitle(group: DialogGroupType) = group match {
-    case DialogGroupType.Favourites     ⇒ "Favourites"
-    case DialogGroupType.DirectMessages ⇒ "Direct Messages"
-    case DialogGroupType.Groups         ⇒ "Groups"
+    case DialogGroupType.Favourites     ⇒ DialogGroupTitles.Favourites
+    case DialogGroupType.DirectMessages ⇒ DialogGroupTitles.Direct
+    case DialogGroupType.Groups         ⇒ DialogGroupTitles.Groups
     case unknown                        ⇒ throw DialogErrors.UnknownDialogGroupType(unknown)
   }
 }

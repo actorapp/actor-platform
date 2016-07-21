@@ -1,9 +1,8 @@
 package im.actor.server.sequence.operations
 
 import com.google.protobuf.ByteString
-import com.google.protobuf.wrappers.StringValue
 import im.actor.api.rpc.Update
-import im.actor.server.model.{ Peer, SerializedUpdate, UpdateMapping }
+import im.actor.server.model.{ SerializedUpdate, UpdateMapping }
 import im.actor.server.sequence.UserSequenceCommands.{ DeliverUpdate, Envelope }
 import im.actor.server.sequence.{ PushData, PushRules, SeqState, SeqUpdatesExtension }
 import akka.pattern.ask
@@ -154,7 +153,7 @@ trait DeliveryOperations { this: SeqUpdatesExtension ⇒
     (region.ref ? Envelope(userId).withDeliverUpdate(deliver)).mapTo[SeqState]
   }
 
-  private def serializedUpdate(u: Update): SerializedUpdate =
+  protected def serializedUpdate(u: Update): SerializedUpdate =
     SerializedUpdate(u.header, ByteString.copyFrom(u.toByteArray), u._relatedUserIds, u._relatedGroupIds)
 
   private def buildDeliver(

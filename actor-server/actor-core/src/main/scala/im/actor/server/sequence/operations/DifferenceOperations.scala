@@ -1,7 +1,10 @@
 package im.actor.server.sequence.operations
 
 import akka.http.scaladsl.util.FastFuture
+import im.actor.api.rpc.messaging.{ ApiDialogGroup, ApiDialogShort, UpdateChatGroupsChanged, UpdateMessageReadByMe }
+import im.actor.api.rpc.peers.ApiPeer
 import im.actor.api.rpc.sequence.UpdateEmptyUpdate
+import im.actor.server.dialog.{ DialogGroupKeys, DialogGroupTitles }
 import im.actor.server.model.{ SeqUpdate, SerializedUpdate, UpdateMapping }
 import im.actor.server.persist.sequence.UserSequenceRepo
 import im.actor.server.sequence.{ CommonState, Difference, SeqUpdatesExtension }
@@ -18,7 +21,12 @@ trait DifferenceOperations { this: SeqUpdatesExtension ⇒
 
   private type ReduceKey = String
   private object DiffAcc {
-    def empty(commonSeq: Int) = DiffAcc(commonSeq, 0, immutable.TreeMap.empty, Map.empty)
+    def empty(commonSeq: Int) = DiffAcc(
+      commonSeq = commonSeq,
+      seqDelta = 0,
+      generic = immutable.TreeMap.empty,
+      reduced = Map.empty
+    )
   }
 
   /**
@@ -42,7 +50,78 @@ trait DifferenceOperations { this: SeqUpdatesExtension ⇒
   ) {
     def nonEmpty = generic.nonEmpty || reduced.nonEmpty
 
-    def toVector = (generic ++ reduced.values).values.toVector
+    private def rewriteDialogsCounter(dialogs: IndexedSeq[ApiDialogShort], upd: UpdateMessageReadByMe) =
+      dialogs map { dlg ⇒
+        if (upd.peer == dlg.peer) {
+          dlg.copy(counter = upd.unreadCounter getOrElse 0)
+        } else {
+          dlg
+        }
+      }
+
+    def toVector = {
+      val originalUpdates = (generic ++ reduced.values).values.toVector
+
+      // If there is UpdateChatGroupsChanged in difference,
+      // we are writing up to date counters from UpdateMessageReadByMe
+      // for each peer we have in UpdateMessageReadByMe updates.
+      // After that, we update original difference
+      val optLastChatsChanged: Option[(Int, UpdateChatGroupsChanged)] =
+        originalUpdates.zipWithIndex.reverse find {
+          case (upd, i) ⇒
+            upd.header == UpdateChatGroupsChanged.header
+        } flatMap {
+          case (upd, i) ⇒
+            UpdateChatGroupsChanged.parseFrom(upd.body).right.toOption map (i → _)
+        }
+
+      optLastChatsChanged match {
+        case None ⇒ originalUpdates
+        case Some((index, chatsChanged)) ⇒
+          def singleGroup(groupKey: String) = (chatsChanged.dialogs collect {
+            case group if group.key == groupKey ⇒ group.dialogs
+          }).flatten
+
+          val (groups, direct, favourites) = (originalUpdates foldLeft (
+            singleGroup(DialogGroupKeys.Groups),
+            singleGroup(DialogGroupKeys.Direct),
+            singleGroup(DialogGroupKeys.Favourites)
+          )) {
+              case (acc @ (gr, dir, fav), upd) ⇒
+                if (upd.header == UpdateMessageReadByMe.header) {
+                  UpdateMessageReadByMe.parseFrom(upd.body).right.toOption map { upd ⇒
+                    (
+                      rewriteDialogsCounter(gr, upd),
+                      rewriteDialogsCounter(dir, upd),
+                      rewriteDialogsCounter(fav, upd)
+                    )
+                  } getOrElse acc
+                } else acc
+            }
+
+          val chatsChangedUpdated =
+            chatsChanged.copy(
+              Vector(
+                ApiDialogGroup(
+                  title = DialogGroupTitles.Groups,
+                  key = DialogGroupKeys.Groups,
+                  dialogs = groups
+                ),
+                ApiDialogGroup(
+                  title = DialogGroupTitles.Direct,
+                  key = DialogGroupKeys.Direct,
+                  dialogs = direct
+                ),
+                ApiDialogGroup(
+                  title = DialogGroupTitles.Favourites,
+                  key = DialogGroupKeys.Favourites,
+                  dialogs = favourites
+                )
+              )
+            )
+          originalUpdates.updated(index, serializedUpdate(chatsChangedUpdated))
+      }
+    }
   }
 
   def getDifference(

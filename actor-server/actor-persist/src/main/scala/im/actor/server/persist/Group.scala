@@ -93,9 +93,6 @@ object GroupRepo {
     )
   }
 
-  def findPublic =
-    groups.filter(_.isPublic === true).map(_.asGroup).result
-
   @deprecated("Replace with some sort of key-value maybe?", "2016-06-05")
   def findAllIds = allIds.result
 
