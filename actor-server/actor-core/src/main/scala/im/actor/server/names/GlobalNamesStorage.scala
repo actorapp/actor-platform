@@ -39,7 +39,7 @@ final class GlobalNamesStorageKeyValueStorage(implicit system: ActorSystem) {
    * Looks only in GlobalNamesStorage
    */
   def groupIdsByPrefix(namePrefix: String): Future[IndexedSeq[(Int, String)]] = {
-    conn.run(GlobalNamesStorage.getByPrefix(namePrefix)) map { searchResults ⇒
+    conn.run(GlobalNamesStorage.getByPrefix(normalized(namePrefix))) map { searchResults ⇒
       searchResults flatMap {
         case (fullName, bytes) ⇒
           Some(GlobalNameOwner.parseFrom(bytes)) filter (_.ownerType.isGroup) map (o ⇒ o.ownerId → fullName)
@@ -52,7 +52,7 @@ final class GlobalNamesStorageKeyValueStorage(implicit system: ActorSystem) {
    * Looks in both GlobalNamesStorage and UserRepo(compatibility mode)
    */
   def userIdsByPrefix(namePrefix: String): Future[IndexedSeq[(Int, String)]] = {
-    val kvSearch = conn.run(GlobalNamesStorage.getByPrefix(namePrefix)) map { searchResults ⇒
+    val kvSearch = conn.run(GlobalNamesStorage.getByPrefix(normalized(namePrefix))) map { searchResults ⇒
       searchResults flatMap {
         case (fullName, bytes) ⇒
           Some(GlobalNameOwner.parseFrom(bytes)) filter (_.ownerType.isUser) map (o ⇒ o.ownerId → fullName)
