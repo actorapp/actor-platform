@@ -50,8 +50,7 @@ public class AARecentViewController: AADialogsListContentController, AADialogsLi
             self.navigationItem.leftBarButtonItem!.style = UIBarButtonItemStyle.Done
             
             navigationItem.rightBarButtonItem = nil
-        }
-        else {
+        } else {
             self.navigationItem.leftBarButtonItem!.title = AALocalized("NavigationEdit")
             self.navigationItem.leftBarButtonItem!.style = UIBarButtonItemStyle.Plain
             

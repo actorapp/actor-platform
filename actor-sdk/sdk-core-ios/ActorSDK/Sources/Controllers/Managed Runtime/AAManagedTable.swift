@@ -516,7 +516,6 @@ private class AAManagedSearchController<BindCell where BindCell: AABindedSearchC
     @objc func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let item = objectAtIndexPath(indexPath)
         config.selectAction!(item)
-        // MainAppTheme.navigation.applyStatusBar()
     }
     
     // Search updating
