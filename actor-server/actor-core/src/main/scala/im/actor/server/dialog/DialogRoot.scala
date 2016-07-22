@@ -100,8 +100,7 @@ private trait DialogRootQueryHandlers {
 private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
   extends Processor[DialogRootState]
   with IncrementalSnapshots[DialogRootState]
-  with DialogRootQueryHandlers
-  with DialogRootMigration {
+  with DialogRootQueryHandlers {
   import DialogRootCommands._
   import DialogRootEvents._
   import DialogRootQueries._
@@ -134,6 +133,7 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
     case GetDialogs(endDate, limit)        ⇒ getDialogs(endDate, limit)
     case GetArchivedDialogs(offset, limit) ⇒ getArchivedDialogs(offset, limit)
   }
+
 
   override protected def handleCommand: Receive = {
     case dc: DialogCommand if dc.isInstanceOf[SendMessage] || dc.isInstanceOf[WriteMessageSelf] ⇒

@@ -117,15 +117,6 @@ final case class ActorServerBuilder(defaultConfig: Config = ConfigFactory.empty(
       system.log.debug("Starting DbExtension")
       val conn = DbExtension(system).connector
 
-      UserMigrator.migrate()
-      GroupMigrator.migrate()
-      LocalNamesMigrator.migrate()
-      GroupCreatorMemberMigrator.migrate()
-      HiddenGroupMigrator.migrate()
-      LocalNamesFromKVMigrator.migrate()
-      FillUserSequenceMigrator.migrate()
-      FixUserSequenceMigrator.migrate()
-
       system.log.debug("Writing migration timestamps")
       // multi sequence introduced
       MigrationTsActions.insertTimestamp(
