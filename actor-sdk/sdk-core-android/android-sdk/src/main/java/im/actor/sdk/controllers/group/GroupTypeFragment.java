@@ -17,7 +17,6 @@ import im.actor.core.viewmodel.GroupVM;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.BaseFragment;
-import im.actor.sdk.util.Fonts;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 

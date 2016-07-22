@@ -8,13 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
 import fr.castorflex.android.circularprogressbar.CircularProgressBar;
-import im.actor.core.entity.GroupMember;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
@@ -23,11 +19,9 @@ import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.group.view.MembersAdapter;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.DividerView;
-import im.actor.sdk.view.adapters.HeaderViewRecyclerAdapter;
 import im.actor.sdk.view.adapters.RecyclerListView;
 
 import static im.actor.sdk.util.ActorSDKMessenger.groups;
-import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
 public class MembersFragment extends BaseFragment {
 

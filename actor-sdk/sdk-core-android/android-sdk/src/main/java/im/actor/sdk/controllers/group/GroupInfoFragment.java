@@ -302,7 +302,7 @@ public class GroupInfoFragment extends BaseFragment {
                 if (groupMember.getUid() != myUid()) {
                     UserVM userVM = users().get(groupMember.getUid());
                     if (userVM != null) {
-                        onMemberClicked(userVM);
+                        onMemberClicked(userVM, groupMember.getInviterUid() == myUid());
                         return true;
                     }
                 }
@@ -352,14 +352,26 @@ public class GroupInfoFragment extends BaseFragment {
         return res;
     }
 
-    public void onMemberClicked(UserVM userVM) {
+    public void onMemberClicked(UserVM userVM, boolean isInvitedByMe) {
+
+        CharSequence[] items;
+        if (groupVM.getIsCanKickAnyone().get() || (groupVM.getIsCanKickInvited().get() && isInvitedByMe)) {
+            items = new CharSequence[]{
+                    getString(R.string.group_context_message).replace("{0}", userVM.getName().get()),
+                    getString(R.string.group_context_call).replace("{0}", userVM.getName().get()),
+                    getString(R.string.group_context_view).replace("{0}", userVM.getName().get()),
+                    getString(R.string.group_context_remove).replace("{0}", userVM.getName().get()),
+            };
+        } else {
+            items = new CharSequence[]{
+                    getString(R.string.group_context_message).replace("{0}", userVM.getName().get()),
+                    getString(R.string.group_context_call).replace("{0}", userVM.getName().get()),
+                    getString(R.string.group_context_view).replace("{0}", userVM.getName().get())
+            };
+        }
+
         new AlertDialog.Builder(getActivity())
-                .setItems(new CharSequence[]{
-                        getString(R.string.group_context_message).replace("{0}", userVM.getName().get()),
-                        getString(R.string.group_context_call).replace("{0}", userVM.getName().get()),
-                        getString(R.string.group_context_view).replace("{0}", userVM.getName().get()),
-                        getString(R.string.group_context_remove).replace("{0}", userVM.getName().get()),
-                }, (dialog, which) -> {
+                .setItems(items, (dialog, which) -> {
                     if (which == 0) {
                         startActivity(Intents.openPrivateDialog(userVM.getId(), true, getActivity()));
                     } else if (which == 1) {

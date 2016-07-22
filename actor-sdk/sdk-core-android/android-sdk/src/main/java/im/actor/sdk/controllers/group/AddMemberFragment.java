@@ -16,7 +16,6 @@ import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.contacts.BaseContactFragment;
 
-import static im.actor.sdk.util.ActorSDKMessenger.groups;
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 import static im.actor.sdk.util.ActorSDKMessenger.users;
 
