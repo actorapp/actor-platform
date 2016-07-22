@@ -310,9 +310,9 @@ public class AAGroupViewController: AAContentTableController {
                 s.common({ (r) -> () in
                     
                     if self.group.groupType == ACGroupType.CHANNEL() {
-                        r.content = AALocalized("GroupLeaveChannel")
+                        r.content = AALocalized("ChannelLeave")
                     } else {
-                        r.content = AALocalized("GroupLeave")
+                        r.content = AALocalized("ActionDeleteAndExit")
                     }
                     
                     r.style = .Destructive
@@ -325,7 +325,7 @@ public class AAGroupViewController: AAContentTableController {
                             title = AALocalized("GroupLeaveConfirm")
                         }
                         self.confirmDestructive(title, action: AALocalized("GroupLeaveConfirmAction"), yes: { () -> () in
-                            self.executeSafe(Actor.leaveGroupCommandWithGid(jint(self.gid)))
+                            self.executePromise(Actor.leaveAndDeleteGroupWithGid(jint(self.gid)))
                         })
                         
                         return true

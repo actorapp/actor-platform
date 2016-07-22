@@ -343,21 +343,6 @@
 "GroupShareAction" = "Сделать Общими";
 
 
-"GroupDeleteTitle" = "Удалить группу";
-
-"GroupDeleteTitleChannel" = "Удалить канал";
-
-"GroupDeleteHint" = "Вы потеряете все сообщения в этой группе";
-
-"GroupDeleteHintChannel" = "Вы потеряете все сообщения в этом канале";
-
-"GroupDeleteMessage" = "Вы уверены что хотите УДАЛИТЬ группу и ВСЕ сообщения в ней? Это действие необратимо.";
-
-"GroupDeleteMessageChannel" = "Вы уверены что хотите УДАЛИТЬ канал и ВСЕ сообщения в нем? Это действие необратимо.";
-
-"GroupDeleteAction" = "Удалить ВСЕ";
-
-
 
 "GroupEditTitle" = "Редактирование";
 
@@ -705,6 +690,21 @@
 "ActionMute" = "Заглушить";
 
 "ActionUnmute" = "Включить оповещения";
+
+"ActionDelete" = "Удалить";
+
+"ActionDeleteChannel" = "Удалить канал";
+
+"ActionDeleteChannelMessage" = "Стой! Удаление этого канала исключит всех подписчиков и все сообщения будут потеряны. Продолжить все равно?";
+
+"ActionDeleteGroup" = "Удалить группу";
+
+"ActionDeleteGroupMessage" = "Стой! Удаление этой группы исключит всех участников и все сообщения будут потеряны. Продолжить все равно?";
+
+"ActionDeleteAndExit" = "Удалить и выйти";
+
+"ActionClearHistory" = "Очистить историю";
+
 
 /*
  * Network

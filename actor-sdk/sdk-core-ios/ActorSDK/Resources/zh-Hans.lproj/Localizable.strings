@@ -326,21 +326,6 @@
 "GroupShareAction" = "Share";
 
 
-"GroupDeleteTitle" = "Delete Group";
-
-"GroupDeleteTitleChannel" = "Delete Channel";
-
-"GroupDeleteHint" = "You will lose all messages in this group";
-
-"GroupDeleteHintChannel" = "You will lose all messages in this channel";
-
-"GroupDeleteMessage" = "Are you sure want to DELETE group and ALL messages in it? This action irreversible.";
-
-"GroupDeleteMessageChannel" = "Are you sure want to DELETE channel and ALL messages in it? This action irreversible.";
-
-"GroupDeleteAction" = "Delete ALL";
-
-
 
 "GroupEditTitle" = "Edit Group";
 
@@ -695,6 +680,20 @@
 "ActionMute" = "Mute";
 
 "ActionUnmute" = "Unmute";
+
+"ActionDelete" = "Delete";
+
+"ActionDeleteChannel" = "Delete Channel";
+
+"ActionDeleteChannelMessage" = "Wait! Deleting this channel will remove all members and all messages will be lost. Delete the channel anyway?";
+
+"ActionDeleteGroup" = "Delete Group";
+
+"ActionDeleteGroupMessage" = "Wait! Deleting this group will remove all members and all messages will be lost. Delete the group anyway?";
+
+"ActionDeleteAndExit" = "Delete and Exit";
+
+"ActionClearHistory" = "Clear History";
 
 /*
  *  Network

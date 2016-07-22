@@ -67,7 +67,44 @@ public class AADialogsListContentController: AAContentTableController, UISearchB
                 }
                 
                 r.editAction = { (dialog: ACDialog) -> () in
-                    self.executeSafe(Actor.deleteChatCommandWithPeer(dialog.peer))
+                    if dialog.peer.isGroup {
+                        let g = Actor.getGroupWithGid(dialog.peer.peerId)
+                        let isChannel = g.groupType == ACGroupType.CHANNEL()
+                        self.alertSheet({ (a) in
+                            
+                            if g.isCanClear.get().booleanValue() {
+                                a.action(AALocalized("ActionClearHistory"), closure: {
+                                    self.executeSafe(Actor.clearChatCommandWithPeer(dialog.peer))
+                                })
+                            }
+                            
+                            if g.isCanLeave.get().booleanValue() && g.isMember.get().booleanValue(){
+                                a.destructive(AALocalized("ActionDeleteAndExit"), closure: {
+                                    self.executePromise(Actor.leaveAndDeleteGroupWithGid(dialog.peer.peerId))
+                                })
+                            } else if g.isCanDelete.get().booleanValue()  && g.isMember.get().booleanValue(){
+                                a.destructive(AALocalized(isChannel ? "ActionDeleteChannel" : "ActionDeleteGroup"), closure: {
+                                    self.executePromise(Actor.deleteGroupWithGid(dialog.peer.peerId))
+                                })
+                            } else {
+                                a.destructive(AALocalized("ActionDelete"), closure: {
+                                    self.executeSafe(Actor.deleteChatCommandWithPeer(dialog.peer))
+                                })
+                            }
+                            a.cancel = AALocalized("ActionCancel")
+                        })
+                        
+                    } else {
+                        self.alertSheet({ (a) in
+                            a.action(AALocalized("ActionClearHistory"), closure: {
+                                self.executeSafe(Actor.clearChatCommandWithPeer(dialog.peer))
+                            })
+                            a.destructive(AALocalized("ActionDelete"), closure: {
+                                self.executeSafe(Actor.deleteChatCommandWithPeer(dialog.peer))
+                            })
+                            a.cancel = AALocalized("ActionCancel")
+                        })
+                    }
                 }
             }
         }

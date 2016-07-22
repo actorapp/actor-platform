@@ -13,6 +13,7 @@ import im.actor.core.api.ApiMessageReaction;
 import im.actor.core.api.ApiPeer;
 import im.actor.core.api.updates.UpdateChatClear;
 import im.actor.core.api.updates.UpdateChatDelete;
+import im.actor.core.api.updates.UpdateChatDropCache;
 import im.actor.core.api.updates.UpdateChatGroupsChanged;
 import im.actor.core.api.updates.UpdateMessage;
 import im.actor.core.api.updates.UpdateMessageContentChanged;
@@ -97,6 +98,7 @@ public class MessagesProcessor extends AbsModule implements SequenceProcessor {
                 update instanceof UpdateMessageContentChanged ||
                 update instanceof UpdateChatClear ||
                 update instanceof UpdateChatDelete ||
+                update instanceof UpdateChatDropCache ||
                 update instanceof UpdateChatGroupsChanged ||
                 update instanceof UpdateReactionsUpdate ||
                 update instanceof UpdateMessageSent) {

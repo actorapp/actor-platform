@@ -1544,14 +1544,24 @@ public class Messenger {
      * Leave group
      *
      * @param gid group's id
-     * @return Command for execution
+     * @return Promise of Void
      */
     @NotNull
-    @ObjectiveCName("leaveGroupCommandWithGid:")
-    public Command<Void> leaveGroup(final int gid) {
-        return callback -> modules.getGroupsModule().leaveGroup(gid)
-                .then(v -> callback.onResult(v))
-                .failure(e -> callback.onError(e));
+    @ObjectiveCName("leaveGroupWithGid:")
+    public Promise<Void> leaveGroup(final int gid) {
+        return modules.getGroupsModule().leaveGroup(gid);
+    }
+
+    /**
+     * Leave and delete group
+     *
+     * @param gid group's id
+     * @return Promise of Void
+     */
+    @NotNull
+    @ObjectiveCName("leaveAndDeleteGroupWithGid:")
+    public Promise<Void> leaveAndDeleteGroup(int gid) {
+        return modules.getGroupsModule().leaveAndDeleteGroup(gid);
     }
 
     /**

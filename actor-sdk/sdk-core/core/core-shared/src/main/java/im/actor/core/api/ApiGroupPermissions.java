@@ -11,6 +11,8 @@ public enum ApiGroupPermissions {
     CLEAR(2),
     LEAVE(3),
     DELETE(4),
+    JOIN(5),
+    VIEW_INFO(6),
     UNSUPPORTED_VALUE(-1);
 
     private int value;
@@ -29,6 +31,8 @@ public enum ApiGroupPermissions {
             case 2: return ApiGroupPermissions.CLEAR;
             case 3: return ApiGroupPermissions.LEAVE;
             case 4: return ApiGroupPermissions.DELETE;
+            case 5: return ApiGroupPermissions.JOIN;
+            case 6: return ApiGroupPermissions.VIEW_INFO;
             default: return ApiGroupPermissions.UNSUPPORTED_VALUE;
         }
     }

@@ -25,6 +25,7 @@ import im.actor.core.api.rpc.RequestGetIntegrationToken;
 import im.actor.core.api.rpc.RequestInviteUser;
 import im.actor.core.api.rpc.RequestJoinGroup;
 import im.actor.core.api.rpc.RequestKickUser;
+import im.actor.core.api.rpc.RequestLeaveAndDelete;
 import im.actor.core.api.rpc.RequestLeaveGroup;
 import im.actor.core.api.rpc.RequestLoadAdminSettings;
 import im.actor.core.api.rpc.RequestLoadMembers;
@@ -171,7 +172,7 @@ public class GroupsModule extends AbsModule implements BusSubscriber {
                 .flatMap(r -> updates().waitForUpdate(r.getSeq()));
     }
 
-    public Promise<Void> kickMember(final int gid, final int uid) {
+    public Promise<Void> kickMember(int gid, int uid) {
         final long rid = RandomUtils.nextRid();
         return Promises.tuple(getGroups().getValueAsync(gid), users().getValueAsync(uid))
                 .flatMap(groupUserTuple2 ->
@@ -183,7 +184,7 @@ public class GroupsModule extends AbsModule implements BusSubscriber {
                 .flatMap(r -> updates().waitForUpdate(r.getSeq()));
     }
 
-    public Promise<Void> leaveGroup(final int gid) {
+    public Promise<Void> leaveGroup(int gid) {
         final long rid = RandomUtils.nextRid();
         return getGroups().getValueAsync(gid)
                 .flatMap(group ->
@@ -191,6 +192,14 @@ public class GroupsModule extends AbsModule implements BusSubscriber {
                                 new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()),
                                 rid,
                                 ApiSupportConfiguration.OPTIMIZATIONS)))
+                .flatMap(r -> updates().waitForUpdate(r.getSeq()));
+    }
+
+    public Promise<Void> leaveAndDeleteGroup(int gid) {
+        return getGroups().getValueAsync(gid)
+                .flatMap(group ->
+                        api(new RequestLeaveAndDelete(
+                                new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()))))
                 .flatMap(r -> updates().waitForUpdate(r.getSeq()));
     }
 
@@ -284,10 +293,10 @@ public class GroupsModule extends AbsModule implements BusSubscriber {
                         api(new RequestLoadMembers(
                                 new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()),
                                 limit, next)))
-                .chain(r -> updates().loadRequiredPeers(r.getMembers(), new ArrayList<>()))
+                .chain(r -> updates().loadRequiredPeers(r.getUsers(), new ArrayList<>()))
                 .map(r -> {
                     ArrayList<Integer> members = new ArrayList<>();
-                    for (ApiUserOutPeer p : r.getMembers()) {
+                    for (ApiUserOutPeer p : r.getUsers()) {
                         members.add(p.getUid());
                     }
                     return new GroupMembersSlice(members, r.getNext());

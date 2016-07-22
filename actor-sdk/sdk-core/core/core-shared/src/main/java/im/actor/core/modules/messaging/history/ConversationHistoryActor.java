@@ -21,8 +21,10 @@ import im.actor.core.entity.content.AbsContent;
 import im.actor.core.modules.api.ApiSupportConfiguration;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.ModuleActor;
+import im.actor.runtime.actors.ask.AskMessage;
 import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.function.Consumer;
+import im.actor.runtime.promise.Promise;
 
 public class ConversationHistoryActor extends ModuleActor {
 
@@ -39,7 +41,7 @@ public class ConversationHistoryActor extends ModuleActor {
     private long historyMaxDate;
     private boolean historyLoaded;
 
-    private boolean isLoading = false;
+    private boolean isFreezed = false;
 
     public ConversationHistoryActor(Peer peer, ModuleContext context) {
         super(context);
@@ -60,15 +62,27 @@ public class ConversationHistoryActor extends ModuleActor {
     }
 
     private void onLoadMore() {
-        if (isLoading || historyLoaded) {
+        if (isFreezed || historyLoaded) {
             return;
         }
-        isLoading = true;
+        isFreezed = true;
         api(new RequestLoadHistory(buidOutPeer(peer), historyMaxDate, null, LIMIT, ApiSupportConfiguration.OPTIMIZATIONS))
                 .chain(r -> updates().applyRelatedData(r.getUsers(), r.getGroups()))
                 .chain(r -> updates().loadRequiredPeers(r.getUserPeers(), r.getGroupPeers()))
                 .then(applyHistory(peer))
-                .then(responseLoadHistory -> isLoading = false);
+                .then(responseLoadHistory -> {
+                    isFreezed = false;
+                    unstashAll();
+                });
+    }
+
+    private void onReset() {
+        historyMaxDate = 0;
+        preferences().putLong(KEY_LOADED_DATE, Long.MAX_VALUE);
+        historyLoaded = false;
+        preferences().putBool(KEY_LOADED, false);
+        preferences().putBool(KEY_LOADED_INIT, false);
+        self().send(new LoadMore());
     }
 
     private Consumer<ResponseLoadHistory> applyHistory(final Peer peer) {
@@ -122,6 +136,21 @@ public class ConversationHistoryActor extends ModuleActor {
                 });
     }
 
+
+    @Override
+    public Promise onAsk(Object message) throws Exception {
+        if (message instanceof Reset) {
+            if (isFreezed) {
+                stash();
+                return null;
+            }
+            onReset();
+            return Promise.success(null);
+        } else {
+            return super.onAsk(message);
+        }
+    }
+
     @Override
     public void onReceive(Object message) {
         if (message instanceof LoadMore) {
@@ -132,6 +161,10 @@ public class ConversationHistoryActor extends ModuleActor {
     }
 
     public static class LoadMore {
+
+    }
+
+    public static class Reset implements AskMessage<Void> {
 
     }
 }

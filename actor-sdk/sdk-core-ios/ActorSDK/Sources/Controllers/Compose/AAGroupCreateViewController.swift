@@ -140,11 +140,9 @@ public class AAGroupCreateViewController: AAViewController, UITextFieldDelegate 
     }
     
     public override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        
+        super.viewWillAppear(animated)   
         groupName.becomeFirstResponder()
     }
-    
 
     public func textFieldShouldReturn(textField: UITextField) -> Bool {
         doNext()
@@ -157,6 +155,8 @@ public class AAGroupCreateViewController: AAViewController, UITextFieldDelegate 
             shakeView(groupName, originalX: groupName.frame.origin.x)
             return
         }
+        
+        groupName.resignFirstResponder()
         
         if isChannel {
             executePromise(Actor.createChannelWithTitle(title, withAvatar: nil)).then({ (gid: JavaLangInteger!) in
