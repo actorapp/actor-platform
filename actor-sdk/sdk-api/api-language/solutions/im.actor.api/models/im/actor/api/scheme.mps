@@ -5878,6 +5878,27 @@
           <ref role="NX6Kv" node="6gbxTdnedQw" resolve="peer" />
         </node>
       </node>
+      <node concept="NpBTk" id="5uOI4gqQgQU" role="2m5mJr">
+        <property role="TrG5h" value="ChatDropCache" />
+        <node concept="2m7Kf5" id="5uOI4gqQjIC" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="5uOI4gqQjIG" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6fx" resolve="Peer" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="5uOI4gqQgQV" role="NuuwV">
+          <property role="Nu42W" value="A82" />
+        </node>
+        <node concept="NXeRC" id="5uOI4gqQjIJ" role="NXp_2">
+          <property role="NXePf" value="Update about cache drop" />
+        </node>
+        <node concept="NX1gA" id="5uOI4gqQl3l" role="NXp_2">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Destination peer" />
+          <ref role="NX6Kv" node="5uOI4gqQjIC" resolve="peer" />
+        </node>
+      </node>
       <node concept="NpBTk" id="5TxE3W70bTg" role="2m5mJr">
         <property role="TrG5h" value="ChatGroupsChanged" />
         <node concept="2m7Kf5" id="5TxE3W70qfx" role="2m0hLx">
@@ -6939,6 +6960,14 @@
           <property role="TrG5h" value="DELETE" />
           <property role="2m7y0m" value="4" />
         </node>
+        <node concept="2m7y0F" id="5uOI4gqQfjy" role="2m7ymf">
+          <property role="TrG5h" value="JOIN" />
+          <property role="2m7y0m" value="5" />
+        </node>
+        <node concept="2m7y0F" id="5uOI4gqQfjC" role="2m7ymf">
+          <property role="TrG5h" value="VIEW_INFO" />
+          <property role="2m7y0m" value="6" />
+        </node>
       </node>
       <node concept="2m488m" id="5uOI4gqPPuj" role="2m5mJr">
         <property role="TrG5h" value="GroupFullPermissions" />
@@ -7035,6 +7064,12 @@
         </node>
         <node concept="NXeRC" id="5uOI4gqPw3Q" role="NXodf">
           <property role="NXePf" value="3 - canDelete. Default is FALSE." />
+        </node>
+        <node concept="NXeRC" id="5uOI4gqQdXu" role="NXodf">
+          <property role="NXePf" value="4 - canJoin. Default is FALSE." />
+        </node>
+        <node concept="NXeRC" id="5uOI4gqQdY$" role="NXodf">
+          <property role="NXePf" value="5 - canViewInfo. Default is FALSE." />
         </node>
         <node concept="NXeRC" id="5uOI4gqPw1k" role="NXodf">
           <property role="NXePf" value=" " />
