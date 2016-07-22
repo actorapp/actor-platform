@@ -8,5 +8,5 @@ public protocol AADialogsListContentControllerDelegate {
     
     func recentsDidTap(controller: AADialogsListContentController, dialog: ACDialog) -> Bool
     
-    func searchDidTap(controller: AADialogsListContentController, entity: ACSearchEntity)
+    func searchDidTap(controller: AADialogsListContentController, entity: ACSearchResult)
 }

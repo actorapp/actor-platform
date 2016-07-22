@@ -28,6 +28,7 @@ import im.actor.core.entity.MessageSearchEntity;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerSearchEntity;
 import im.actor.core.entity.PeerSearchType;
+import im.actor.core.entity.SearchResult;
 import im.actor.core.entity.Sex;
 import im.actor.core.entity.User;
 import im.actor.core.entity.WebActionDescriptor;
@@ -70,6 +71,7 @@ import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.mvvm.MVVMCollection;
+import im.actor.runtime.mvvm.SearchValueModel;
 import im.actor.runtime.mvvm.ValueModel;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.storage.PreferencesStorage;
@@ -1194,6 +1196,16 @@ public class Messenger {
         return callback -> modules.getSearchModule().findAllPhotos(peer)
                 .then(v -> callback.onResult(v))
                 .failure(e -> callback.onError(e));
+    }
+
+    /**
+     * Building global search model
+     *
+     * @return search model
+     */
+    @ObjectiveCName("buildGlobalSearchModel")
+    public SearchValueModel<SearchResult> buildGlobalSearchModel() {
+        return modules.getSearchModule().buildSearchModel();
     }
 
     //////////////////////////////////////

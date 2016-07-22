@@ -405,23 +405,26 @@ private class AMBaseTableDelegate: NSObject, UITableViewDelegate, UITableViewDat
 
 public class AAManagedSearchConfig<BindCell where BindCell: AABindedSearchCell, BindCell: UITableViewCell> {
     
-    public var searchList: ARBindedDisplayList!
+    public var searchList: ARBindedDisplayList?
+    public var searchModel: ARSearchValueModel?
     public var selectAction: ((BindCell.BindData) -> ())?
     public var isSearchAutoHide: Bool = true
     public var didBind: ((c: BindCell, d: BindCell.BindData) -> ())?
 }
 
-private class AAManagedSearchController<BindCell where BindCell: AABindedSearchCell, BindCell: UITableViewCell>: NSObject, UISearchBarDelegate, UISearchDisplayDelegate, UITableViewDataSource, UITableViewDelegate, ARDisplayList_Listener {
+private class AAManagedSearchController<BindCell where BindCell: AABindedSearchCell, BindCell: UITableViewCell>: NSObject, UISearchBarDelegate, UISearchDisplayDelegate, UITableViewDataSource, UITableViewDelegate, ARDisplayList_Listener, ARValueChangedListener {
     
     let config: AAManagedSearchConfig<BindCell>
-    let displayList: ARBindedDisplayList
+    let searchList: ARBindedDisplayList?
+    let searchModel: ARSearchValueModel?
     let searchDisplay: UISearchDisplayController
     
     init(config: AAManagedSearchConfig<BindCell>, controller: UIViewController, tableView: UITableView) {
         
         self.config = config
         
-        self.displayList = config.searchList
+        self.searchList = config.searchList
+        self.searchModel = config.searchModel
         
         let style = ActorSDK.sharedActor().style
         let searchBar = UISearchBar()
@@ -481,24 +484,48 @@ private class AAManagedSearchController<BindCell where BindCell: AABindedSearchC
         
         // Start receiving events
         
-        self.displayList.addListener(self)
+        if let ds = searchList {
+            ds.addListener(self)
+        } else if let sm = searchModel {
+            sm.getResults().subscribeWithListener(self)
+        } else {
+            fatalError("No search model or search list is set!")
+        }
     }
     
     // Model
     
     
     func objectAtIndexPath(indexPath: NSIndexPath) -> BindCell.BindData {
-        return displayList.itemWithIndex(jint(indexPath.row)) as! BindCell.BindData
+        if let ds = searchList {
+            return ds.itemWithIndex(jint(indexPath.row)) as! BindCell.BindData
+        } else if let sm = searchModel {
+            let list = sm.getResults().get() as! JavaUtilList
+            return list.getWithInt(jint(indexPath.row)) as! BindCell.BindData
+        } else {
+            fatalError("No search model or search list is set!")
+        }
     }
     
     @objc func onCollectionChanged() {
         searchDisplay.searchResultsTableView.reloadData()
     }
     
+    @objc func onChanged(val: AnyObject!, withModel valueModel: ARValue!) {
+        searchDisplay.searchResultsTableView.reloadData()
+    }
+    
     // Table view data
     
     @objc func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return Int(displayList.size());
+        if let ds = searchList {
+            return Int(ds.size())
+        } else if let sm = searchModel {
+            let list = sm.getResults().get() as! JavaUtilList
+            return Int(list.size())
+        } else {
+            fatalError("No search model or search list is set!")
+        }
     }
     
     @objc func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
@@ -521,11 +548,17 @@ private class AAManagedSearchController<BindCell where BindCell: AABindedSearchC
     // Search updating
     
     @objc func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
-        let normalized = searchText.trim().lowercaseString
-        if (normalized.length > 0) {
-            displayList.initSearchWithQuery(normalized, withRefresh: false)
+        if let ds = searchList {
+            let normalized = searchText.trim().lowercaseString
+            if (normalized.length > 0) {
+                ds.initSearchWithQuery(normalized, withRefresh: false)
+            } else {
+                ds.initEmpty()
+            }
+        } else if let sm = searchModel {
+            sm.queryChangedWithNSString(searchText)
         } else {
-            displayList.initEmpty()
+            fatalError("No search model or search list is set!")
         }
     }
     

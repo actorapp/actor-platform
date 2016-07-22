@@ -23,13 +23,16 @@ import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerSearchEntity;
 import im.actor.core.entity.PeerSearchType;
 import im.actor.core.entity.SearchEntity;
+import im.actor.core.entity.SearchResult;
 import im.actor.core.entity.content.AbsContent;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.api.ApiSupportConfiguration;
 import im.actor.core.modules.Modules;
+import im.actor.core.modules.search.sources.GlobalSearchSource;
 import im.actor.runtime.Storage;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.collections.ManagedList;
+import im.actor.runtime.mvvm.SearchValueModel;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.storage.ListEngine;
 
@@ -134,6 +137,9 @@ public class SearchModule extends AbsModule {
                                 .map(r -> new PeerSearchEntity(convert(r.getPeer()), r.getOptMatchString())));
     }
 
+    public SearchValueModel<SearchResult> buildSearchModel() {
+        return new SearchValueModel<>(new GlobalSearchSource(context()));
+    }
 
     //
     // Local Search

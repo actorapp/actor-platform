@@ -9,12 +9,9 @@ public abstract class AsyncVM {
     private boolean isDetached;
 
     protected final void post(final Object obj) {
-        im.actor.runtime.Runtime.postToMainThread(new Runnable() {
-            @Override
-            public void run() {
-                if (!isDetached) {
-                    onObjectReceived(obj);
-                }
+        im.actor.runtime.Runtime.postToMainThread(() -> {
+            if (!isDetached) {
+                onObjectReceived(obj);
             }
         });
     }

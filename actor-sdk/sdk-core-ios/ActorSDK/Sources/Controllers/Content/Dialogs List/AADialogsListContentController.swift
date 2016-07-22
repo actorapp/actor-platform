@@ -32,7 +32,7 @@ public class AADialogsListContentController: AAContentTableController, UISearchB
         if enableSearch {
             search(AADialogSearchCell.self) { (s) -> () in
             
-                s.searchList = Actor.buildSearchDisplayList()
+                s.searchModel = Actor.buildGlobalSearchModel()
             
                 s.selectAction = { (itm) -> () in
                     self.delegate?.searchDidTap(self, entity: itm)
