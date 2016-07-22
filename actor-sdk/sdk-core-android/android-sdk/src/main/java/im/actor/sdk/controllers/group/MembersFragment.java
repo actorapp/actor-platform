@@ -69,12 +69,9 @@ public class MembersFragment extends BaseFragment {
                 addMmemberTV.setGravity(Gravity.CENTER_VERTICAL);
                 addMmemberTV.setText(R.string.group_add_member);
                 addMmemberTV.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
-                addMmemberTV.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        startActivity(new Intent(getActivity(), AddMemberActivity.class)
-                                .putExtra(Intents.EXTRA_GROUP_ID, groupId));
-                    }
+                addMmemberTV.setOnClickListener(view -> {
+                    startActivity(new Intent(getActivity(), AddMemberActivity.class)
+                            .putExtra(Intents.EXTRA_GROUP_ID, groupId));
                 });
 
                 header.addView(addMmemberTV, ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(58));
@@ -92,12 +89,7 @@ public class MembersFragment extends BaseFragment {
                 shareLinkTV.setGravity(Gravity.CENTER_VERTICAL);
                 shareLinkTV.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
                 shareLinkTV.setText(R.string.invite_link_action_share);
-                shareLinkTV.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intents.inviteLink(groupId, getActivity());
-                    }
-                });
+                shareLinkTV.setOnClickListener(view -> Intents.inviteLink(groupId, getActivity()));
 
                 header.addView(shareLinkTV, ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(58));
             }

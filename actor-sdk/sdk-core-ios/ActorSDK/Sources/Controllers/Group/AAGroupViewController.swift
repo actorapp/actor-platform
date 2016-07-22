@@ -281,41 +281,18 @@ public class AAGroupViewController: AAContentTableController {
                                     })
                                 }
                             })
-
-                            // Detect if we are admin
-                            let members: [ACGroupMember] = self.group.members.get().toArray().toSwiftArray()
-                            var isAdmin = self.group.ownerId.get()?.intValue() == Actor.myUid()
-                            if !isAdmin {
-                                for m in members {
-                                    if m.uid == Actor.myUid() {
-                                        isAdmin = m.isAdministrator
-                                    }
-                                }
-                            }
-                            
-                            //
-                            //                        // Can mark as admin
-                            //                        let canMarkAdmin = isAdmin && !d.isAdministrator
-                            //
-                            //                        if canMarkAdmin {
-                            //                            a.action("GroupMemberMakeAdmin") { () -> () in
-                            //
-                            //                                self.confirmDestructive(AALocalized("GroupMemberMakeMessage").replace("{name}", dest: name), action: AALocalized("GroupMemberMakeAction")) {
-                            //
-                            //                                    self.executeSafe(Actor.makeAdminCommandWithGid(jint(self.gid), withUid: jint(user.getId()))!)
-                            //                                }
-                            //                            }
-                            //                        }
                             
                             // Can kick user
-                            let canKick = isAdmin || d.inviterUid == Actor.myUid()
-                            let name = Actor.getUserWithUid(d.uid).getNameModel().get()
+                            let canKick: Bool =
+                                (self.group.isCanKickAnyone.get().booleanValue() ||
+                                (self.group.isCanKickInvited.get().booleanValue() && d.inviterUid == Actor.myUid()))
+                            
                             if canKick {
+                                let name = Actor.getUserWithUid(d.uid).getNameModel().get()
                                 a.destructive("GroupMemberKick") { () -> () in
                                     self.confirmDestructive(AALocalized("GroupMemberKickMessage")
                                         .replace("{name}", dest: name), action: AALocalized("GroupMemberKickAction")) {
-                                            
-//                                            self.executeSafe(Actor.kickMemberCommandWithGid(jint(self.gid), withUid: user.getId())!)
+                                        self.executeSafe(Actor.kickMemberCommandWithGid(jint(self.gid), withUid: user.getId()))
                                     }
                                 }
                             }

@@ -6,6 +6,7 @@ package im.actor.core.modules.groups;
 
 import im.actor.core.api.updates.UpdateGroupAboutChanged;
 import im.actor.core.api.updates.UpdateGroupAvatarChanged;
+import im.actor.core.api.updates.UpdateGroupDeleted;
 import im.actor.core.api.updates.UpdateGroupExtChanged;
 import im.actor.core.api.updates.UpdateGroupFullExtChanged;
 import im.actor.core.api.updates.UpdateGroupFullPermissionsChanged;
@@ -40,6 +41,7 @@ public class GroupsProcessor extends AbsModule implements SequenceProcessor {
                 update instanceof UpdateGroupMemberChanged ||
                 update instanceof UpdateGroupAvatarChanged ||
                 update instanceof UpdateGroupPermissionsChanged ||
+                update instanceof UpdateGroupDeleted ||
                 update instanceof UpdateGroupExtChanged ||
 
                 update instanceof UpdateGroupMembersUpdated ||

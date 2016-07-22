@@ -26,6 +26,17 @@ public extension UIViewController {
         self.presentViewController(controller, animated: true, completion: nil)
     }
     
+    public func confirmAlertUserDanger(message: String, action: String, tapYes: ()->(), tapNo: (()->())? = nil) {
+        let controller = UIAlertController(title: nil, message: AALocalized(message), preferredStyle: UIAlertControllerStyle.Alert)
+        controller.addAction(UIAlertAction(title: AALocalized(action), style: UIAlertActionStyle.Destructive, handler: { (alertView) -> () in
+            tapYes()
+        }))
+        controller.addAction(UIAlertAction(title: AALocalized("AlertCancel"), style: UIAlertActionStyle.Cancel, handler: { (alertView) -> () in
+            tapNo?()
+        }))
+        self.presentViewController(controller, animated: true, completion: nil)
+    }
+    
     public func confirmDangerSheetUser(action: String, tapYes: ()->(), tapNo: (()->())?) {
         showActionSheet(nil, buttons: [], cancelButton: "AlertCancel", destructButton: action, sourceView: UIView(), sourceRect: CGRectZero) { (index) -> () in
             if index == -2 {

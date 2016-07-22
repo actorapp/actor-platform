@@ -105,6 +105,9 @@ public class GroupVM extends BaseValueModel<Group> {
     @NotNull
     @Property("nonatomic, readonly")
     private BooleanValueModel isCanDeleteForeign;
+    @NotNull
+    @Property("nonatomic, readonly")
+    private BooleanValueModel isDeleted;
 
     @NotNull
     @Property("nonatomic, readonly")
@@ -155,6 +158,7 @@ public class GroupVM extends BaseValueModel<Group> {
         this.isCanKickAnyone = new BooleanValueModel("group." + groupId + ".isCanKickAnyone", rawObj.isCanKickAnyone());
         this.isCanEditForeign = new BooleanValueModel("group." + groupId + ".isCanEditForeign", rawObj.isCanEditForeign());
         this.isCanDeleteForeign = new BooleanValueModel("group." + groupId + ".isCanDeleteForeign", rawObj.isCanDeleteForeign());
+        this.isDeleted = new BooleanValueModel("group." + groupId + ".isDeleted", rawObj.isDeleted());
 
         this.ownerId = new IntValueModel("group." + groupId + ".membersCount", rawObj.getOwnerId());
         this.members = new ValueModel<>("group." + groupId + ".members", new HashSet<>(rawObj.getMembers()));
@@ -429,6 +433,17 @@ public class GroupVM extends BaseValueModel<Group> {
     }
 
     /**
+     * Is group deleted
+     *
+     * @return is this group deleted model
+     */
+    @NotNull
+    @ObjectiveCName("getIsDeletedModel")
+    public BooleanValueModel getIsDeleted() {
+        return isDeleted;
+    }
+
+    /**
      * Get Group owner user id model
      *
      * @return creator owner id model
@@ -537,6 +552,7 @@ public class GroupVM extends BaseValueModel<Group> {
         isChanged |= isCanKickAnyone.change(rawObj.isCanKickAnyone());
         isChanged |= isCanEditForeign.change(rawObj.isCanEditForeign());
         isChanged |= isCanDeleteForeign.change(rawObj.isCanDeleteForeign());
+        isChanged |= isDeleted.change(rawObj.isDeleted());
 
         if (isChanged) {
             notifyIfNeeded();

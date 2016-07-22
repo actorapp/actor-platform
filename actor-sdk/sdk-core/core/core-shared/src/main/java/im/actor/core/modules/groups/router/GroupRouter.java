@@ -14,6 +14,7 @@ import im.actor.core.api.ApiMember;
 import im.actor.core.api.rpc.RequestLoadFullGroups;
 import im.actor.core.api.updates.UpdateGroupAboutChanged;
 import im.actor.core.api.updates.UpdateGroupAvatarChanged;
+import im.actor.core.api.updates.UpdateGroupDeleted;
 import im.actor.core.api.updates.UpdateGroupExtChanged;
 import im.actor.core.api.updates.UpdateGroupFullExtChanged;
 import im.actor.core.api.updates.UpdateGroupFullPermissionsChanged;
@@ -79,6 +80,11 @@ public class GroupRouter extends ModuleActor {
     @Verified
     public Promise<Void> onPermissionsChanged(int groupId, long permissions) {
         return editGroup(groupId, group -> group.editPermissions(permissions));
+    }
+
+    @Verified
+    public Promise<Void> onGroupDeleted(int groupId) {
+        return editGroup(groupId, group -> group.editIsDeleted(true));
     }
 
     @Verified
@@ -298,6 +304,9 @@ public class GroupRouter extends ModuleActor {
         } else if (update instanceof UpdateGroupPermissionsChanged) {
             UpdateGroupPermissionsChanged permissionsChanged = (UpdateGroupPermissionsChanged) update;
             return onPermissionsChanged(permissionsChanged.getGroupId(), permissionsChanged.getPermissions());
+        } else if (update instanceof UpdateGroupDeleted) {
+            UpdateGroupDeleted groupDeleted = (UpdateGroupDeleted) update;
+            return onGroupDeleted(groupDeleted.getGroupId());
         } else if (update instanceof UpdateGroupExtChanged) {
             UpdateGroupExtChanged extChanged = (UpdateGroupExtChanged) update;
             return onExtChanged(extChanged.getGroupId(), extChanged.getExt());

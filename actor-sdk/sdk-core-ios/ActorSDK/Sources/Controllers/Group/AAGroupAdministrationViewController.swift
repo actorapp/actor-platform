@@ -24,7 +24,11 @@ public class AAGroupAdministrationViewController: AAContentTableController {
     public override func tableDidLoad() {
         
         section { (s) in
-            s.footerText = "Control what is possible in this group"
+            if isChannel {
+                s.footerText = AALocalized("GroupPermissionsHintChannel")
+            } else {
+                s.footerText = AALocalized("GroupPermissionsHint")
+            }
             self.shortNameRow = s.common({ (r) in
                 
                 if (self.isChannel) {
@@ -35,9 +39,17 @@ public class AAGroupAdministrationViewController: AAContentTableController {
                 
                 r.bindAction = { (r) in
                     if self.group.shortName.get() != nil {
-                        r.hint = "Public"
+                        if self.isChannel {
+                            r.hint = AALocalized("ChannelTypePublic")
+                        } else {
+                            r.hint = AALocalized("GroupTypePublic")
+                        }
                     } else {
-                        r.hint = "Private"
+                        if self.isChannel {
+                            r.hint = AALocalized("ChannelTypePrivate")
+                        } else {
+                            r.hint = AALocalized("GroupTypePrivate")
+                        }
                     }
                 }
                 
@@ -53,30 +65,45 @@ public class AAGroupAdministrationViewController: AAContentTableController {
         
         if group.isCanEditAdministration.get().booleanValue() && !isChannel {
             section { (s) in
-                s.footerText = "All members will see all messages"
+                s.footerText = AALocalized("GroupShareHint")
                 self.shareHistoryRow = s.common({ (r) in
-                    r.content = "Share History"
+                    r.content = AALocalized("GroupShareTitle")
                     r.bindAction = { (r) in
                         if self.group.isHistoryShared.get().booleanValue() {
-                            r.hint = "Shared"
+                            r.hint = AALocalized("GroupShareEnabled")
+                            r.selectAction = nil
                         } else {
                             r.hint = nil
+                            r.selectAction = { () -> Bool in
+                                self.confirmAlertUser("GroupShareMessage", action: "GroupShareAction", tapYes: { 
+                                    self.executePromise(Actor.shareHistoryWithGid(jint(self.gid)))  
+                                })
+                                return true
+                            }
                         }
                     }
-                    
                 })
             }
         }
         
         if group.isCanDelete.get().booleanValue() {
             section { (s) in
-                s.footerText = "You will lose all messages in this group"
-                s.danger("Delete Group", closure: { (r) in
+                let action: String
+                if isChannel {
+                    s.footerText = AALocalized("GroupDeleteHintChannel")
+                    action = AALocalized("GroupDeleteTitleChannel")
+                } else {
+                    s.footerText = AALocalized("GroupDeleteHint")
+                    action = AALocalized("GroupDeleteTitle")
+                }
+                s.danger(action, closure: { (r) in
                     r.selectAction = { () -> Bool in
-                        self.executePromise(Actor.deleteGroupWithGid(jint(self.gid))).after {
-                            let first = self.navigationController!.viewControllers.first!
-                            self.navigationController!.setViewControllers([first], animated: true)
-                        }
+                        self.confirmAlertUserDanger(self.isChannel ? "GroupDeleteMessageChannel" : "GroupDeleteMessage", action: "GroupDeleteAction", tapYes: { 
+                            self.executePromise(Actor.deleteGroupWithGid(jint(self.gid))).after {
+                                let first = self.navigationController!.viewControllers.first!
+                                self.navigationController!.setViewControllers([first], animated: true)
+                            }
+                        })
                         return true
                     }
                 })

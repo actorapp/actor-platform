@@ -62,6 +62,8 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
     private boolean isCanLeave;
     @Property("readonly, nonatomic")
     private boolean isCanDelete;
+    @Property("readonly, nonatomic")
+    private boolean isDeleted;
     @NotNull
     @Property("readonly, nonatomic")
     @SuppressWarnings("NullableProblems")
@@ -166,6 +168,10 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
 
     public boolean isMember() {
         return isMember;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
     }
 
     public boolean isCanSendMessage() {
@@ -728,6 +734,7 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
         this.isHidden = wrapped.isHidden() != null ? wrapped.isHidden() : false;
         this.membersCount = wrapped.getMembersCount() != null ? wrapped.getMembersCount() : 0;
         this.isMember = wrapped.isMember() != null ? wrapped.isMember() : true;
+        this.isDeleted = wrapped.isDeleted() != null ? wrapped.isDeleted() : false;
 
         if (wrapped.getGroupType() == null) {
             this.groupType = GroupType.GROUP;

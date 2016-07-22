@@ -83,6 +83,9 @@ import DZNWebViewController
     
     /// Invitation URL for apps
     public var invitePrefix: String? = "https://actor.im/join/"
+    
+    /// Invitation URL for apps
+    public var invitePrefixShort: String? = "actor.im/join/"
 
     /// Privacy Policy URL
     public var privacyPolicyUrl: String? = nil

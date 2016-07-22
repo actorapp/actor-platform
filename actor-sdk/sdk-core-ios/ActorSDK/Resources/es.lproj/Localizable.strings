@@ -293,9 +293,73 @@
 
 "GroupAdministration" = "Administration";
 
+
+
 "GroupTypeTitle" = "Group Type";
 
 "GroupTypeTitleChannel" = "Channel Type";
+
+"GroupTypePublic" = "Public";
+
+"GroupTypePrivate" = "Private";
+
+"ChannelTypePublic" = "Public";
+
+"ChannelTypePrivate" = "Private";
+
+"GroupTypePublicFull" = "Public Group";
+
+"GroupTypePrivateFull" = "Private Group";
+
+"ChannelTypePublicFull" = "Public Channel";
+
+"ChannelTypePrivateFull" = "Private Channel";
+
+"GroupPermissionsHint" = "Control what is possible in this group";
+
+"GroupPermissionsHintChannel" = "Control what is possible in this channel";
+
+"GroupTypeHintPublic" = "Public groups can be found in search and anyone can join";
+
+"GroupTypeHintPrivate" = "Private groups can be joined only via personal invitation";
+
+"GroupTypeHintPublicChannel" = "Public channels can be found in search and anyone can join";
+
+"GroupTypeHintPrivateChannel" = "Private channels can be joined only via personal invitation";
+
+"GroupTypeLinkHint" = "People can share this link with others and find your group using search";
+
+"GroupTypeLinkHintChannel" = "People can share this link with others and find your channel using search";
+
+
+
+"GroupShareTitle" = "Shared History";
+
+"GroupShareEnabled" = "Shared";
+
+"GroupShareHint" = "All members will see all messages";
+
+"GroupShareMessage" = "Are you sure want to share all messages to all members? This action is irreversible.";
+
+"GroupShareAction" = "Share";
+
+
+
+"GroupDeleteTitle" = "Delete Group";
+
+"GroupDeleteTitleChannel" = "Delete Channel";
+
+"GroupDeleteHint" = "You will lose all messages in this group";
+
+"GroupDeleteHintChannel" = "You will lose all messages in this channel";
+
+"GroupDeleteMessage" = "Are you sure want to DELETE group and ALL messages in it? This action irreversible.";
+
+"GroupDeleteMessageChannel" = "Are you sure want to DELETE channel and ALL messages in it? This action irreversible.";
+
+"GroupDeleteAction" = "Delete ALL";
+
+
 
 "GroupMemberAdmin" = "admin";
 

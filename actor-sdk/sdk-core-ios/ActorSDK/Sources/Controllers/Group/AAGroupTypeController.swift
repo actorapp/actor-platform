@@ -41,20 +41,38 @@ public class AAGroupTypeViewController: AAContentTableController {
 
         section { (s) in
 
-            s.headerText = "Group Type".uppercaseString
-            if self.isPublic {
-                s.footerText = "Public groups can be found in search and anyone can joing"
+            if isChannel {
+                s.headerText = AALocalized("GroupTypeTitleChannel").uppercaseString
+                if self.isPublic {
+                    s.footerText = AALocalized("GroupTypeHintPublicChannel")
+                } else {
+                    s.footerText = AALocalized("GroupTypeHintPrivateChannel")
+                }
             } else {
-                s.footerText = "Private groups can be joined only via personal invitation"
+                s.headerText = AALocalized("GroupTypeTitle").uppercaseString
+                if self.isPublic {
+                    s.footerText = AALocalized("GroupTypeHintPublic")
+                } else {
+                    s.footerText = AALocalized("GroupTypeHintPrivate")
+                }
             }
             self.publicRow = s.common({ (r) in
-                r.content = "Public Group"
+                if isChannel {
+                    r.content = AALocalized("ChannelTypePublicFull")
+                } else {
+                    r.content = AALocalized("GroupTypePublicFull")
+                }
+                
                 r.selectAction = { () -> Bool in
                     if !self.isPublic {
                         self.isPublic = true
                         self.publicRow.rebind()
                         self.privateRow.rebind()
-                        s.footerText = "Public groups can be found in search and anyone can joing"
+                        if self.isChannel {
+                            s.footerText = AALocalized("GroupTypeHintPublicChannel")
+                        } else {
+                            s.footerText = AALocalized("GroupTypeHintPublic")
+                        }
                         self.tableView.reloadSection(0, withRowAnimation: .Automatic)
                         self.managedTable.sections.append(self.linkSection)
                         self.tableView.insertSection(1, withRowAnimation: .Fade)
@@ -71,13 +89,22 @@ public class AAGroupTypeViewController: AAContentTableController {
             })
             
             self.privateRow = s.common({ (r) in
-                r.content = "Private Group"
+                if isChannel {
+                    r.content = AALocalized("ChannelTypePrivateFull")
+                } else {
+                    r.content = AALocalized("GroupTypePrivateFull")
+                }
+                
                 r.selectAction = { () -> Bool in
                     if self.isPublic {
                         self.isPublic = false
                         self.publicRow.rebind()
                         self.privateRow.rebind()
-                        s.footerText = "Private groups can be joined only via personal invitation"
+                        if self.isChannel {
+                            s.footerText = AALocalized("GroupTypeHintPrivateChannel")
+                        } else {
+                            s.footerText = AALocalized("GroupTypeHintPrivate")
+                        }
                         self.tableView.reloadSection(0, withRowAnimation: .Automatic)
                         self.managedTable.sections.removeAtIndex(1)
                         self.tableView.deleteSection(1, withRowAnimation: .Fade)
@@ -95,10 +122,15 @@ public class AAGroupTypeViewController: AAContentTableController {
         }
         
         self.linkSection = section { (s) in
-            s.footerText = "People can share this link with others and find your channel using search."
+            if self.isChannel {
+                s.footerText = AALocalized("GroupTypeLinkHintChannel")
+            } else {
+                s.footerText = AALocalized("GroupTypeLinkHint")
+            }
+            
             self.shortNameRow = s.edit({ (r) in
                 r.autocapitalizationType = .None
-                r.prefix = "actor.im/join/"
+                r.prefix = ActorSDK.sharedActor().invitePrefixShort
                 r.text = self.group.shortName.get()
             })
         }
@@ -110,8 +142,12 @@ public class AAGroupTypeViewController: AAContentTableController {
     public func saveDidTap() {
         let nShortName: String?
         if self.isPublic {
-            if self.shortNameRow.text!.trim().length > 0 {
-                nShortName = self.shortNameRow.text!.trim()
+            if let shortNameVal = self.shortNameRow.text?.trim() {
+                if shortNameVal.length > 0 {
+                    nShortName = shortNameVal
+                } else {
+                    nShortName = nil
+                }
             } else {
                 nShortName = nil
             }

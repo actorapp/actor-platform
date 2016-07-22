@@ -280,6 +280,7 @@
 
 "GroupEditConfirm" = "Вы уверены, что хотите изменить тему группы?";
 
+
 "GroupEditConfirmAction" = "Изменить тему";
 
 "GroupNotifications" = "Оповещения";
@@ -297,6 +298,66 @@
 "GroupTypeTitle" = "Тип группы";
 
 "GroupTypeTitleChannel" = "Тип канала";
+
+"GroupTypePublic" = "Публичная";
+
+"GroupTypePrivate" = "Приватная";
+
+"ChannelTypePublic" = "Публичный";
+
+"ChannelTypePrivate" = "Приватный";
+
+"GroupTypePublicFull" = "Публичная группа";
+
+"GroupTypePrivateFull" = "Приватная группа";
+
+"ChannelTypePublicFull" = "Публичный канал";
+
+"ChannelTypePrivateFull" = "Приватный канал";
+
+"GroupPermissionsHint" = "Управление тем что возможно делать в этой группе";
+
+"GroupPermissionsHintChannel" = "Управление тем что возможно делать в этом канале";
+
+"GroupTypeHintPublic" = "Публичные гурппы могут быть найдены в поиске и кто угодно может войти в нее";
+
+"GroupTypeHintPrivate" = "Вступить в приватную группу можно только по личному приглашению";
+
+"GroupTypeHintPublicChannel" = "Публичные каналы могут быть найдены в поиске и кто угодно может подписаться на него";
+
+"GroupTypeHintPrivateChannel" = "Вступить в приватный канал можно только по личному приглашению";
+
+"GroupTypeLinkHint" = "Ваши друзья могут делиться этой ссылкой или находить группу в поиске";
+
+"GroupTypeLinkHintChannel" = "Ваши друзья могут делиться этой ссылкой или находить канал в поиске";
+
+
+"GroupShareTitle" = "Общая история";
+
+"GroupShareEnabled" = "Включено";
+
+"GroupShareHint" = "Все участники увидят все сообщения группы";
+
+"GroupShareMessage" = "Вы уверены что хотите сделать все сообщениям общими? Это действие необратимо.";
+
+"GroupShareAction" = "Сделать Общими";
+
+
+"GroupDeleteTitle" = "Удалить группу";
+
+"GroupDeleteTitleChannel" = "Удалить канал";
+
+"GroupDeleteHint" = "Вы потеряете все сообщения в этой группе";
+
+"GroupDeleteHintChannel" = "Вы потеряете все сообщения в этом канале";
+
+"GroupDeleteMessage" = "Вы уверены что хотите УДАЛИТЬ группу и ВСЕ сообщения в ней? Это действие необратимо.";
+
+"GroupDeleteMessageChannel" = "Вы уверены что хотите УДАЛИТЬ канал и ВСЕ сообщения в нем? Это действие необратимо.";
+
+"GroupDeleteAction" = "Удалить ВСЕ";
+
+
 
 "GroupViewMembers" = "Участники";
 
