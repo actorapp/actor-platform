@@ -6,7 +6,7 @@ import akka.actor.Status
 import akka.pattern.pipe
 import im.actor.api.rpc.Update
 import im.actor.api.rpc.groups._
-import im.actor.api.rpc.messaging.{ ApiServiceMessage, UpdateMessage }
+import im.actor.api.rpc.messaging.{ ApiServiceMessage, UpdateChatDropCache, UpdateMessage }
 import im.actor.concurrent.FutureExt
 import im.actor.server.acl.ACLUtils
 import im.actor.server.group.GroupCommands.{ Invite, Join, Kick, Leave }
@@ -39,8 +39,12 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
         val memberIds = newState.memberIds
         val apiMembers = newState.members.values.map(_.asStruct).toVector
 
-        // if user ever been in this group - we should push these updates,
-        val inviteeUpdatesNew: Vector[Update] = refreshGroupUpdates(newState, cmd.inviteeUserId)
+        // if user ever been in this group - we should push these updates
+        // TODO: unify isHistoryShared usage
+        val inviteeUpdatesNew: Vector[Update] = {
+          val optDrop = if(newState.isHistoryShared) Some(UpdateChatDropCache(apiGroupPeer)) else None
+          optDrop ++: refreshGroupUpdates(newState, cmd.inviteeUserId)
+        }
 
         val membersUpdateNew: Update =
           if (newState.groupType.isChannel) // if channel, or group is big enough
@@ -219,9 +223,12 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
         // that means we need to push all group-info related updates
         //
         // If user was invited to group by other member - we don't need to push group updates,
-        // cause they we pushed already on invite step
-        val joiningUserUpdatesNew: Vector[Update] =
-          if (wasInvited) Vector.empty[Update] else refreshGroupUpdates(newState, cmd.joiningUserId)
+        // cause they were pushed already on invite step
+        // TODO: unify isHistoryShared usage
+        val joiningUserUpdatesNew: Vector[Update] = {
+          val optDrop = if(newState.isHistoryShared) Some(UpdateChatDropCache(apiGroupPeer)) else None
+          optDrop ++: (if (wasInvited) Vector.empty[Update] else refreshGroupUpdates(newState, cmd.joiningUserId))
+        }
 
         val membersUpdateNew: Update =
           if (newState.groupType.isChannel) // if channel, or group is big enough
@@ -594,6 +601,7 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
   // Updates that will be sent to user, when he enters group.
   // Helps clients that have this group to refresh it's data.
   private def refreshGroupUpdates(newState: GroupState, userId: Int): Vector[Update] = Vector(
+    UpdateChatDropCache(apiGroupPeer),
     UpdateGroupMemberChanged(groupId, isMember = true),
     UpdateGroupAboutChanged(groupId, newState.about),
     UpdateGroupAvatarChanged(groupId, newState.avatar),
