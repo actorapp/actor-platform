@@ -7519,9 +7519,18 @@
           <property role="Nu42W" value="AE2" />
         </node>
         <node concept="2m1R6W" id="1kct6f0uMCY" role="2m6efq">
+          <node concept="2m7Kf5" id="5uOI4gqQ6Sd" role="2m0hLx">
+            <property role="2m7DUN" value="3" />
+            <property role="TrG5h" value="members" />
+            <node concept="2m5nlk" id="5uOI4gqQ6Sn" role="2m7DVh">
+              <node concept="2m5mGg" id="5uOI4gqQ6St" role="3GJlyp">
+                <ref role="2m5mJy" node="7d$A0Kt1Y2M" resolve="Member" />
+              </node>
+            </node>
+          </node>
           <node concept="2m7Kf5" id="1kct6f0uMD3" role="2m0hLx">
             <property role="2m7DUN" value="1" />
-            <property role="TrG5h" value="members" />
+            <property role="TrG5h" value="users" />
             <node concept="2m5nlk" id="1kct6f0uMDc" role="2m7DVh">
               <node concept="2m5mGg" id="1kct6f0uMDi" role="3GJlyp">
                 <ref role="2m5mJy" node="GBscvBB6ia" resolve="UserOutPeer" />
@@ -7541,7 +7550,7 @@
           <node concept="NX1gA" id="1kct6f0uMDX" role="1y2DgH">
             <property role="NX6R2" value="Group members" />
             <property role="1GSvIU" value="full" />
-            <ref role="NX6Kv" node="1kct6f0uMD3" resolve="members" />
+            <ref role="NX6Kv" node="1kct6f0uMD3" resolve="users" />
           </node>
           <node concept="NX1gA" id="1kct6f0uMEp" role="1y2DgH">
             <property role="NX6R2" value="Load more reference" />
@@ -8821,6 +8830,30 @@
           <property role="1GSvIU" value="full" />
           <property role="NX6R2" value="Enabled Optimizations" />
           <ref role="NX6Kv" node="1kct6f0wt3n" resolve="optimizations" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="5uOI4gqQ8rO" role="2m5mJr">
+        <property role="TrG5h" value="LeaveAndDelete" />
+        <node concept="2m7Kf5" id="5uOI4gqQ8F0" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupPeer" />
+          <node concept="2m5mGg" id="5uOI4gqQ8F4" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6j2" resolve="GroupOutPeer" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="5uOI4gqQ8rP" role="NuuwV">
+          <property role="Nu42W" value="AA1" />
+        </node>
+        <node concept="2m1Rp1" id="5uOI4gqQ8EX" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_W" resolve="Seq" />
+        </node>
+        <node concept="NXeRC" id="5uOI4gqQ9Z_" role="1GBnQ6">
+          <property role="NXePf" value="Leave group and Delete Chat" />
+        </node>
+        <node concept="NX1gA" id="5uOI4gqQ9ZE" role="1GBnQ6">
+          <property role="NX6R2" value="Group peer" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="5uOI4gqQ8F0" resolve="groupPeer" />
         </node>
       </node>
       <node concept="2m6fVq" id="GBscvBBu78" role="2m5mJr">
