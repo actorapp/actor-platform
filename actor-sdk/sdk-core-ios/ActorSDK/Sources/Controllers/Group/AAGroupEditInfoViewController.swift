@@ -78,7 +78,7 @@ public class AAGroupEditInfoController: AAViewController, UITextViewDelegate {
             navigationItem.title = AALocalized("GroupEditTitle")
         }
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationSave"), style: .Done, target: self, action: #selector(saveDidPressed))
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: .Done, target: self, action: #selector(dismiss))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: .Done, target: self, action: #selector(cancelEdit))
     }
     
     public override func viewWillLayoutSubviews() {
@@ -130,21 +130,27 @@ public class AAGroupEditInfoController: AAViewController, UITextViewDelegate {
             executePromise(Actor.editGroupTitleWithGid(jint(gid), withTitle: text).then({ (v: ARVoid!) in
                 if about != self.group.about.get() {
                     self.executePromise(Actor.editGroupAboutWithGid(jint(self.gid), withAbout: about).then({ (v: ARVoid!) in
-                        self.dismiss()
+                        self.cancelEdit()
                     }))
                 } else {
-                    self.dismiss()
+                    self.cancelEdit()
                 }
             }))
         } else {
             if about != self.group.about.get() {
                 self.executePromise(Actor.editGroupAboutWithGid(jint(self.gid), withAbout: about).then({ (v: ARVoid!) in
-                    self.dismiss()
+                    self.cancelEdit()
                 }))
             } else {
-                self.dismiss()
+                self.cancelEdit()
             }
         }
+    }
+    
+    func cancelEdit() {
+        nameInput.resignFirstResponder()
+        descriptionView.resignFirstResponder()
+        dismiss()
     }
     
     public func textViewDidChange(textView: UITextView) {
