@@ -106,6 +106,14 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
     private boolean isCanViewAdmins;
     @Property("readonly, nonatomic")
     private boolean isCanEditAdmins;
+    @Property("readonly, nonatomic")
+    private boolean isCanKickInvited;
+    @Property("readonly, nonatomic")
+    private boolean isCanKickAnyone;
+    @Property("readonly, nonatomic")
+    private boolean isCanEditForeign;
+    @Property("readonly, nonatomic")
+    private boolean isCanDeleteForeign;
 
     @Property("readonly, nonatomic")
     private boolean haveExtension;
@@ -252,6 +260,22 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
 
     public boolean isCanInviteViaLink() {
         return isCanInviteViaLink;
+    }
+
+    public boolean isCanKickInvited() {
+        return isCanKickInvited;
+    }
+
+    public boolean isCanKickAnyone() {
+        return isCanKickAnyone;
+    }
+
+    public boolean isCanEditForeign() {
+        return isCanEditForeign;
+    }
+
+    public boolean isCanDeleteForeign() {
+        return isCanDeleteForeign;
     }
 
     public Group updateExt(@Nullable ApiGroupFull ext) {
@@ -759,6 +783,10 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
              # 5 - canEditAdminSettings. Default is FALSE.
              # 6 - canViewAdmins. Default is FALSE.
              # 7 - canEditAdmins. Default is FALSE.
+             # 8 - canKickInvited. Default is FALSE.
+             # 9 - canKickAnyone. Default is FALSE.
+             # 10 - canEditForeign. Default is FALSE.
+             # 11 - canDeleteForeign. Default is FALSE.
              */
             long fullPermissions = 0;
             if (ext.getPermissions() != null) {
@@ -772,6 +800,10 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
             this.isCanEditAdministration = BitMaskUtil.getBitValue(fullPermissions, ApiGroupFullPermissions.EDIT_ADMIN_SETTINGS);
             this.isCanViewAdmins = BitMaskUtil.getBitValue(fullPermissions, ApiGroupFullPermissions.VIEW_ADMINS);
             this.isCanEditAdmins = BitMaskUtil.getBitValue(fullPermissions, ApiGroupFullPermissions.EDIT_ADMINS);
+            this.isCanKickInvited = BitMaskUtil.getBitValue(fullPermissions, ApiGroupFullPermissions.KICK_INVITED);
+            this.isCanKickAnyone = BitMaskUtil.getBitValue(fullPermissions, ApiGroupFullPermissions.KICK_ANYONE);
+            this.isCanEditForeign = BitMaskUtil.getBitValue(fullPermissions, ApiGroupFullPermissions.EDIT_FOREIGN);
+            this.isCanDeleteForeign = BitMaskUtil.getBitValue(fullPermissions, ApiGroupFullPermissions.DELETE_FOREIGN);
 
             this.members = new ArrayList<>();
             for (ApiMember m : ext.getMembers()) {
@@ -794,6 +826,10 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
             this.isCanViewAdmins = false;
             this.isCanEditAdmins = false;
             this.isCanInviteViaLink = false;
+            this.isCanKickInvited = false;
+            this.isCanKickAnyone = false;
+            this.isCanEditForeign = false;
+            this.isCanDeleteForeign = false;
         }
     }
 

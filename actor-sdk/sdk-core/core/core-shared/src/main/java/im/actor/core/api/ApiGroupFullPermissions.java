@@ -15,6 +15,10 @@ public enum ApiGroupFullPermissions {
     EDIT_ADMIN_SETTINGS(6),
     VIEW_ADMINS(7),
     EDIT_ADMINS(8),
+    KICK_INVITED(9),
+    KICK_ANYONE(10),
+    EDIT_FOREIGN(11),
+    DELETE_FOREIGN(12),
     UNSUPPORTED_VALUE(-1);
 
     private int value;
@@ -37,6 +41,10 @@ public enum ApiGroupFullPermissions {
             case 6: return ApiGroupFullPermissions.EDIT_ADMIN_SETTINGS;
             case 7: return ApiGroupFullPermissions.VIEW_ADMINS;
             case 8: return ApiGroupFullPermissions.EDIT_ADMINS;
+            case 9: return ApiGroupFullPermissions.KICK_INVITED;
+            case 10: return ApiGroupFullPermissions.KICK_ANYONE;
+            case 11: return ApiGroupFullPermissions.EDIT_FOREIGN;
+            case 12: return ApiGroupFullPermissions.DELETE_FOREIGN;
             default: return ApiGroupFullPermissions.UNSUPPORTED_VALUE;
         }
     }

@@ -93,6 +93,18 @@ public class GroupVM extends BaseValueModel<Group> {
     @NotNull
     @Property("nonatomic, readonly")
     private BooleanValueModel isCanInviteViaLink;
+    @NotNull
+    @Property("nonatomic, readonly")
+    private BooleanValueModel isCanKickInvited;
+    @NotNull
+    @Property("nonatomic, readonly")
+    private BooleanValueModel isCanKickAnyone;
+    @NotNull
+    @Property("nonatomic, readonly")
+    private BooleanValueModel isCanEditForeign;
+    @NotNull
+    @Property("nonatomic, readonly")
+    private BooleanValueModel isCanDeleteForeign;
 
     @NotNull
     @Property("nonatomic, readonly")
@@ -139,6 +151,10 @@ public class GroupVM extends BaseValueModel<Group> {
         this.isCanLeave = new BooleanValueModel("group." + groupId + ".isCanLeave", rawObj.isCanLeave());
         this.isCanDelete = new BooleanValueModel("group." + groupId + ".isCanDelete", rawObj.isCanDelete());
         this.isCanInviteViaLink = new BooleanValueModel("group." + groupId + ".isCanInviteViaLink", rawObj.isCanInviteViaLink());
+        this.isCanKickInvited = new BooleanValueModel("group." + groupId + ".isCanKickInvited", rawObj.isCanKickInvited());
+        this.isCanKickAnyone = new BooleanValueModel("group." + groupId + ".isCanKickAnyone", rawObj.isCanKickAnyone());
+        this.isCanEditForeign = new BooleanValueModel("group." + groupId + ".isCanEditForeign", rawObj.isCanEditForeign());
+        this.isCanDeleteForeign = new BooleanValueModel("group." + groupId + ".isCanDeleteForeign", rawObj.isCanDeleteForeign());
 
         this.ownerId = new IntValueModel("group." + groupId + ".membersCount", rawObj.getOwnerId());
         this.members = new ValueModel<>("group." + groupId + ".members", new HashSet<>(rawObj.getMembers()));
@@ -369,6 +385,50 @@ public class GroupVM extends BaseValueModel<Group> {
     }
 
     /**
+     * Is current user can kick invited members
+     *
+     * @return is current user can kick invited model
+     */
+    @NotNull
+    @ObjectiveCName("getIsCanKickInvitedModel")
+    public BooleanValueModel getIsCanKickInvited() {
+        return isCanKickInvited;
+    }
+
+    /**
+     * Is current user can kick anyone
+     *
+     * @return is current user can kick anyone model
+     */
+    @NotNull
+    @ObjectiveCName("getIsCanKickAnyoneModel")
+    public BooleanValueModel getIsCanKickAnyone() {
+        return isCanKickAnyone;
+    }
+
+    /**
+     * Is current user can edit foreign messages
+     *
+     * @return is current user can edit foreign messages model
+     */
+    @NotNull
+    @ObjectiveCName("getIsCanEditForeignModel")
+    public BooleanValueModel getIsCanEditForeign() {
+        return isCanEditForeign;
+    }
+
+    /**
+     * Is current user can delete foreign messages
+     *
+     * @return is current user can delete foreign messages model
+     */
+    @NotNull
+    @ObjectiveCName("getIsCanDeleteForeignModel")
+    public BooleanValueModel getIsCanDeleteForeign() {
+        return isCanDeleteForeign;
+    }
+
+    /**
      * Get Group owner user id model
      *
      * @return creator owner id model
@@ -473,6 +533,10 @@ public class GroupVM extends BaseValueModel<Group> {
         isChanged |= isCanLeave.change(rawObj.isCanLeave());
         isChanged |= isCanDelete.change(rawObj.isCanDelete());
         isChanged |= isCanInviteViaLink.change(rawObj.isCanInviteViaLink());
+        isChanged |= isCanKickInvited.change(rawObj.isCanKickInvited());
+        isChanged |= isCanKickAnyone.change(rawObj.isCanKickAnyone());
+        isChanged |= isCanEditForeign.change(rawObj.isCanEditForeign());
+        isChanged |= isCanDeleteForeign.change(rawObj.isCanDeleteForeign());
 
         if (isChanged) {
             notifyIfNeeded();
