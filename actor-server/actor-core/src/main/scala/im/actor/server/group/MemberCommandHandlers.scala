@@ -459,7 +459,13 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
   }
 
   protected def kick(cmd: Kick): Unit = {
-    if (!state.permissions.canKickMember(cmd.kickerUserId)) {
+    val canKick =
+      state.permissions.canKickAnyone(cmd.kickerUserId) ||
+        (
+          state.permissions.canKickInvited(cmd.kickerUserId) &&
+          state.members.get(cmd.kickedUserId).exists(_.inviterUserId == cmd.kickerUserId) // user we kick invited by kicker
+        )
+    if (!canKick) {
       sender() ! noPermission
     } else if (state.nonMember(cmd.kickedUserId)) {
       sender() ! notMember
