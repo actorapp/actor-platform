@@ -6604,6 +6604,32 @@
         {
           "type": "update",
           "content": {
+            "name": "ChatDropCache",
+            "header": 2690,
+            "doc": [
+              "Update about cache drop",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "  Destination peer"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "Peer"
+                },
+                "id": 1,
+                "name": "peer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
             "name": "ChatGroupsChanged",
             "header": 1,
             "doc": [
@@ -7896,6 +7922,14 @@
               {
                 "name": "DELETE",
                 "id": 4
+              },
+              {
+                "name": "JOIN",
+                "id": 5
+              },
+              {
+                "name": "VIEW_INFO",
+                "id": 6
               }
             ]
           }
@@ -7975,6 +8009,8 @@
               "1 - canClear. Default is FALSE.",
               "2 - canLeave. Default is FALSE.",
               "3 - canDelete. Default is FALSE.",
+              "4 - canJoin. Default is FALSE.",
+              "5 - canViewInfo. Default is FALSE.",
               "",
               {
                 "type": "reference",
