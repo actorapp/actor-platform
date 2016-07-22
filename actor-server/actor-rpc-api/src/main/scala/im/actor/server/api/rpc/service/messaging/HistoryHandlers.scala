@@ -52,24 +52,25 @@ trait HistoryHandlers {
         case ApiPeerType.Private | ApiPeerType.EncryptedPrivate ⇒
           FastFuture.successful(true)
         case ApiPeerType.Group ⇒
-          groupExt.isHistoryShared(peer.id) map (!_)
+          groupExt.isHistoryShared(peer.id) map (isShared ⇒ !isShared)
       }
 
-      for {
-        canDelete ← canClearChat
-        SeqState(seq, state) ← if (canDelete) {
+      canClearChat flatMap { canClear ⇒
+        if (canClear) {
           for {
             _ ← db.run(HistoryMessageRepo.deleteAll(client.userId, peer.asModel))
-            seqState ← seqUpdExt.deliverClientUpdate(
+            SeqState(seq, state) ← seqUpdExt.deliverClientUpdate(
               client.userId,
               client.authId,
               update = UpdateChatClear(peer.asPeer)
             )
-          } yield seqState
+          } yield Ok(ResponseSeq(seq, state.toByteArray))
         } else {
-          FastFuture.successful(Error(CommonRpcErrors.forbidden("Can't clear chat with shared history")))
+          FastFuture.successful[HandlerResult[ResponseSeq]](
+            Error(CommonRpcErrors.forbidden("Can't clear chat with shared history"))
+          )
         }
-      } yield Ok(ResponseSeq(seq, state.toByteArray))
+      }
     }
 
   override def doHandleDeleteChat(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
