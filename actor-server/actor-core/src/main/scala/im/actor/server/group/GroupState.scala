@@ -359,16 +359,30 @@ private[group] final case class GroupState(
      * 5 - canEditAdminSettings. Default is FALSE.
      * 6 - canViewAdmins. Default is FALSE.
      * 7 - canEditAdmins. Default is FALSE.
+     *
+     * NOT DOCUMENTED YET:
+     * 8 - canKickInvited. Default is FALSE.
+     * 9 - canKickAnyone. Default is FALSE.
+     * 10 - canEditForeign. Default is FALSE.
+     * 11 - canDeleteForeign. Default is FALSE.
      */
     def fullFor(userId: Int): Long = {
-      ((toInt(canEditInfo(userId)) << 0) +
+      (
+        (toInt(canEditInfo(userId)) << 0) +
         (toInt(canViewMembers(userId)) << 1) +
         (toInt(canInviteMembers(userId)) << 2) +
         (toInt(canInviteViaLink(userId)) << 3) +
         (toInt(canCall(userId)) << 4) +
         (toInt(canEditAdminSettings(userId)) << 5) +
         (toInt(canViewAdmins(userId)) << 6) +
-        (toInt(canEditAdmins(userId)) << 7)).toLong
+        (toInt(canEditAdmins(userId)) << 7) +
+
+        // NOT DOCUMENTED YET:
+        (toInt(canKickInvited(userId)) << 8) +
+        (toInt(canKickAnyone(userId)) << 9) +
+        (toInt(canEditForeign(userId)) << 10) +
+        (toInt(canDeleteForeign(userId)) << 11)
+      ).toLong
     }
 
     /**
@@ -424,15 +438,37 @@ private[group] final case class GroupState(
     def canEditAdmins(clientUserId: Int): Boolean =
       isOwner(clientUserId) || isAdmin(clientUserId)
 
+    /**
+     * In General group members can kick people they invited
+     * In Channel only owner and admins can kick invited people
+     */
+    def canKickInvited(userId: Int): Boolean =
+      groupType match {
+        case General ⇒ isMember(userId)
+        case Channel ⇒ isAdmin(userId) || isOwner(userId)
+      }
+
+    /**
+     * Only owner and admins can kick anyone
+     */
+    def canKickAnyone(userId: Int): Boolean =
+      isOwner(userId) || isAdmin(userId)
+
+    /**
+     * Only owner and admins can edit foreign messages
+     */
+    private def canEditForeign(userId: Int): Boolean =
+      isOwner(userId) || isAdmin(userId)
+
+    /**
+     * Only owner and admins can delete foreign messages
+     */
+    private def canDeleteForeign(userId: Int): Boolean =
+      isOwner(userId) || isAdmin(userId)
+
     ////////////////////////////
     //  Internal permissions  //
     ////////////////////////////
-
-    /**
-     * owner and admins can kick members
-     */
-    def canKickMember(clientUserId: Int) =
-      isOwner(clientUserId) || isAdmin(clientUserId)
 
     // only owner can change short name
     def canEditShortName(clientUserId: Int): Boolean = isOwner(clientUserId)
