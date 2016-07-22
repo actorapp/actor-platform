@@ -45,23 +45,29 @@ trait GroupQueryHandlers {
       )
     }
 
-  //TODO: rewrite to sort by online + name. Won't work like this
-  // we can subscribe group object to group onlines! When online comes, we reorder key-set. Use that key set as source.
   protected def loadMembers(clientUserId: Int, limit: Int, offsetBs: Option[ByteString]): Future[LoadMembersResponse] = {
     def load = {
       implicit val mat = ActorMaterializer()
       val offset = offsetBs map (_.toByteArray) map (Int32Value.parseFrom(_).value) getOrElse 0
 
       for {
-        (userIds, nextOffset) ← Source(state.members.keySet)
-          .mapAsync(1)(userId ⇒ userExt.getName(userId, clientUserId) map (userId → _))
-          .runFold(Vector.empty[(Int, String)])(_ :+ _) map { users ⇒
+        (members, nextOffset) ← Source(state.members)
+          .mapAsync(1)(member ⇒ userExt.getName(member._1, clientUserId) map (member._2 → _))
+          .runFold(Vector.empty[(Member, String)])(_ :+ _) map { users ⇒
             val tail = users.sortBy(_._2).map(_._1).drop(offset)
             val nextOffset = if (tail.length > limit) Some(Int32Value(offset + limit).toByteArray) else None
             (tail.take(limit), nextOffset)
           }
       } yield LoadMembersResponse(
-        userIds = userIds,
+        members = members map {
+        case Member(userId, inviterUserId, invitedAt, isAdmin) ⇒
+          GroupMember(
+            userId,
+            inviterUserId,
+            invitedAt.toEpochMilli,
+            isAdmin
+          )
+      },
         offset = nextOffset map ByteString.copyFrom
       )
     }

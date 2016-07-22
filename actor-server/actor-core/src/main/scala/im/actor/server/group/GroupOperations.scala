@@ -208,7 +208,14 @@ private[group] sealed trait Queries {
   def loadMembers(groupId: Int, clientUserId: Int, limit: Int, offset: Option[Array[Byte]]) =
     (viewRegion.ref ?
       GroupEnvelope(groupId)
-      .withLoadMembers(LoadMembers(clientUserId, limit, offset map ByteString.copyFrom))).mapTo[LoadMembersResponse] map (r ⇒ r.userIds → r.offset.map(_.toByteArray))
+      .withLoadMembers(LoadMembers(clientUserId, limit, offset map ByteString.copyFrom))).mapTo[LoadMembersResponse] map { resp ⇒
+        (
+          resp.members map { m ⇒
+            ApiMember(m.userId, m.inviterUserId, m.invitedAt, isAdmin = Some(m.isAdmin))
+          },
+          resp.offset.map(_.toByteArray)
+        )
+      }
 
   def loadAdminSettings(groupId: Int, clientUserId: Int): Future[ApiAdminSettings] = {
     (viewRegion.ref ?
