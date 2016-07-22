@@ -296,8 +296,6 @@ private[group] final case class GroupState(
   def withSnapshot(metadata: SnapshotMetadata, snapshot: Any): GroupState = this
 
   object permissions {
-    val GroupEmpty = 0L
-    val FullGroupEmpty = 0L
 
     ///////////////////////////
     //  General permissions  //

@@ -90,6 +90,7 @@ final class GlobalNamesStorageKeyValueStorage(implicit system: ActorSystem) {
    * `oldGlobalName` = None,            `newGlobalName` = Some("name") - insert new name
    * `oldGlobalName` = Some("oldName"), `newGlobalName` = Some("name") - update existing name
    * `oldGlobalName` = Some("oldName"), `newGlobalName` = None         - delete existing name
+   * `oldGlobalName` = None,            `newGlobalName` = None         - does nothing
    */
   def updateOrRemove(oldGlobalName: Option[String], newGlobalName: Option[String], owner: GlobalNameOwner): Future[Unit] = {
     val deleteFu = (oldGlobalName map delete) getOrElse FastFuture.successful(())
