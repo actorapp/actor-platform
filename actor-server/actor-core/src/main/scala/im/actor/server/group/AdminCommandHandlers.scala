@@ -351,13 +351,11 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
           // Groups V1 API updates //
           ///////////////////////////
 
-          // push all members updates about other members left group
-          _ ← FutureExt.ftraverse(exMemberIds.toSeq) { userId ⇒
-            seqUpdExt.broadcastPeopleUpdate(
-              userIds = exMemberIds - userId,
-              update = UpdateGroupUserLeaveObsolete(groupId, userId, dateMillis, randomId)
-            )
-          }
+          // push all members updates about group members became empty
+          _ ← seqUpdExt.broadcastPeopleUpdate(
+            userIds = exMemberIds,
+            update = UpdateGroupMembersUpdateObsolete(groupId, members = Vector.empty)
+          )
 
           ///////////////////////////
           // Groups V2 API updates //
