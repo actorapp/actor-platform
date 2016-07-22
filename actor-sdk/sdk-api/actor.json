@@ -7936,6 +7936,22 @@
               {
                 "name": "EDIT_ADMINS",
                 "id": 8
+              },
+              {
+                "name": "KICK_INVITED",
+                "id": 9
+              },
+              {
+                "name": "KICK_ANYONE",
+                "id": 10
+              },
+              {
+                "name": "EDIT_FOREIGN",
+                "id": 11
+              },
+              {
+                "name": "DELETE_FOREIGN",
+                "id": 12
               }
             ]
           }
@@ -8237,6 +8253,10 @@
               "5 - canEditAdminSettings. Default is FALSE.",
               "6 - canViewAdmins. Default is FALSE.",
               "7 - canEditAdmins. Default is FALSE.",
+              "8 - canKickInvited. Default is FALSE.",
+              "9 - canKickAnyone. Default is FALSE.",
+              "10 - canEditForeign. Default is FALSE.",
+              "11 - canDeleteForeign. Default is FALSE.",
               "",
               {
                 "type": "reference",

@@ -6974,6 +6974,22 @@
           <property role="TrG5h" value="EDIT_ADMINS" />
           <property role="2m7y0m" value="8" />
         </node>
+        <node concept="2m7y0F" id="5uOI4gqQ2UP" role="2m7ymf">
+          <property role="TrG5h" value="KICK_INVITED" />
+          <property role="2m7y0m" value="9" />
+        </node>
+        <node concept="2m7y0F" id="5uOI4gqQ2UZ" role="2m7ymf">
+          <property role="TrG5h" value="KICK_ANYONE" />
+          <property role="2m7y0m" value="10" />
+        </node>
+        <node concept="2m7y0F" id="5uOI4gqQ2Va" role="2m7ymf">
+          <property role="TrG5h" value="EDIT_FOREIGN" />
+          <property role="2m7y0m" value="11" />
+        </node>
+        <node concept="2m7y0F" id="5uOI4gqQ2Vm" role="2m7ymf">
+          <property role="TrG5h" value="DELETE_FOREIGN" />
+          <property role="2m7y0m" value="12" />
+        </node>
       </node>
       <node concept="2m5naR" id="GBscvBB6pR" role="2m5mJr">
         <property role="TrG5h" value="Group" />
@@ -7369,6 +7385,18 @@
         </node>
         <node concept="NXeRC" id="5uOI4gqPuDl" role="NXodf">
           <property role="NXePf" value="7 - canEditAdmins. Default is FALSE." />
+        </node>
+        <node concept="NXeRC" id="5uOI4gqPWiF" role="NXodf">
+          <property role="NXePf" value="8 - canKickInvited. Default is FALSE." />
+        </node>
+        <node concept="NXeRC" id="5uOI4gqPWjB" role="NXodf">
+          <property role="NXePf" value="9 - canKickAnyone. Default is FALSE." />
+        </node>
+        <node concept="NXeRC" id="5uOI4gqPXCH" role="NXodf">
+          <property role="NXePf" value="10 - canEditForeign. Default is FALSE." />
+        </node>
+        <node concept="NXeRC" id="5uOI4gqQ0i0" role="NXodf">
+          <property role="NXePf" value="11 - canDeleteForeign. Default is FALSE." />
         </node>
         <node concept="NXeRC" id="5uOI4gqPmKo" role="NXodf">
           <property role="NXePf" value=" " />
