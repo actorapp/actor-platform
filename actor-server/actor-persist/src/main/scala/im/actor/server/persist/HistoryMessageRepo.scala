@@ -214,7 +214,6 @@ object HistoryMessageRepo {
       .result
 
   def deleteAll(userId: Int, peer: Peer): FixedSqlAction[Int, NoStream, Write] = {
-    require(userId != SharedUserId, "Can't delete messages for shared user")
     notDeletedMessages
       .filter(m ⇒ m.userId === userId && m.peerType === peer.typ.value && m.peerId === peer.id)
       .map(_.deletedAt)

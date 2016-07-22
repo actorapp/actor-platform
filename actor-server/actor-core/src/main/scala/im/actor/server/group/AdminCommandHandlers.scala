@@ -11,6 +11,7 @@ import im.actor.api.rpc.messaging.UpdateChatClear
 import im.actor.concurrent.FutureExt
 import im.actor.server.CommonErrors
 import im.actor.server.acl.ACLUtils
+import im.actor.server.dialog.HistoryUtils
 import im.actor.server.group.GroupCommands.{ DeleteGroup, DismissUserAdmin, MakeHistoryShared, MakeUserAdmin, RevokeIntegrationToken, RevokeIntegrationTokenAck, TransferOwnership, UpdateAdminSettings, UpdateAdminSettingsAck }
 import im.actor.server.group.GroupErrors.{ NotAMember, NotAdmin, UserAlreadyAdmin, UserAlreadyNotAdmin }
 import im.actor.server.group.GroupEvents.{ AdminSettingsUpdated, AdminStatusChanged, GroupDeleted, HistoryBecameShared, IntegrationTokenRevoked, OwnerChanged }
@@ -312,6 +313,8 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
       val exMemberIds = state.memberIds
       val exGlobalName = state.shortName
       val exGroupType = state.groupType
+      val exHistoryShared = state.isHistoryShared
+      val peer = apiGroupPeer.asModel
 
       persist(GroupDeleted(Instant.now, cmd.clientUserId)) { evt ⇒
         commit(evt)
@@ -346,6 +349,17 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
         val result: Future[SeqState] = for {
           // release global name of group
           _ ← globalNamesStorage.updateOrRemove(exGlobalName, newGlobalName = None, GlobalNameOwner(OwnerType.Group, groupId))
+
+          // explicitly delete group history.
+          // TODO: move to utility method
+          _ ← if (exHistoryShared) {
+            db.run(HistoryMessageRepo.deleteAll(HistoryUtils.SharedUserId, peer))
+          } else {
+            // for client user we delete history separately
+            FutureExt.ftraverse((exMemberIds - cmd.clientUserId).toSeq) { userId ⇒
+              db.run(HistoryMessageRepo.deleteAll(userId, peer))
+            }
+          }
 
           ///////////////////////////
           // Groups V1 API updates //

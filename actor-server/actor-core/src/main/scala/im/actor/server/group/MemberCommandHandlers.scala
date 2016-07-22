@@ -42,7 +42,7 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
         // if user ever been in this group - we should push these updates
         // TODO: unify isHistoryShared usage
         val inviteeUpdatesNew: Vector[Update] = {
-          val optDrop = if(newState.isHistoryShared) Some(UpdateChatDropCache(apiGroupPeer)) else None
+          val optDrop = if (newState.isHistoryShared) Some(UpdateChatDropCache(apiGroupPeer)) else None
           optDrop ++: refreshGroupUpdates(newState, cmd.inviteeUserId)
         }
 
@@ -226,7 +226,7 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
         // cause they were pushed already on invite step
         // TODO: unify isHistoryShared usage
         val joiningUserUpdatesNew: Vector[Update] = {
-          val optDrop = if(newState.isHistoryShared) Some(UpdateChatDropCache(apiGroupPeer)) else None
+          val optDrop = if (newState.isHistoryShared) Some(UpdateChatDropCache(apiGroupPeer)) else None
           optDrop ++: (if (wasInvited) Vector.empty[Update] else refreshGroupUpdates(newState, cmd.joiningUserId))
         }
 
