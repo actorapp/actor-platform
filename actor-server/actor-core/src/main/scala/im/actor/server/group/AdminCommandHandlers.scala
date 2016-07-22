@@ -328,12 +328,12 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
         val deleteGroupMembersUpdates: Vector[Update] = emptyPermissions ++
           Vector(
             UpdateGroupMemberChanged(groupId, isMember = false),
+            UpdateGroupDeleted(groupId),
             // if channel, or group is big enough
             if (exGroupType.isChannel)
               UpdateGroupMembersCountChanged(groupId, membersCount = 0)
             else
-              UpdateGroupMembersUpdated(groupId, members = Vector.empty),
-            UpdateGroupDeleted(groupId)
+              UpdateGroupMembersUpdated(groupId, members = Vector.empty)
           )
 
         //TODO: remove deprecated. GroupInviteTokenRepo don't have replacement yet.

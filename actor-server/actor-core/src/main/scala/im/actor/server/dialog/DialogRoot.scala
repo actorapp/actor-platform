@@ -270,7 +270,6 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
   }
 
   private def sendChatGroupsChanged(authId: Long): Future[SeqState] = {
-    val pushRules = if (authId == 0L) PushRules() else PushRules().withExcludeAuthIds(Seq(authId))
     for {
       groups ← DialogExtension(system).fetchApiGroupedDialogs(userId)
       update = UpdateChatGroupsChanged(groups)
@@ -278,7 +277,6 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
         userId,
         authId,
         update,
-        pushRules,
         reduceKey = Some(s"dialogschanged_${userId}")
       )
     } yield seqState
