@@ -341,6 +341,19 @@
 "GroupDeleteAction" = "Delete ALL";
 
 
+
+"GroupEditTitle" = "Edit Group";
+
+"GroupEditTitleChannel" = "Edit Channel";
+
+"GroupEditName" = "Group Name";
+
+"GroupEditNameChannel" = "Channel Name";
+
+"GroupEditDescription" = "Description";
+
+
+
 "GroupMemberMakeAdmin" = "设为群组管理员";
 
 "GroupMemberMakeMessage" = "确定将 {name} 设为群组管理员吗?";

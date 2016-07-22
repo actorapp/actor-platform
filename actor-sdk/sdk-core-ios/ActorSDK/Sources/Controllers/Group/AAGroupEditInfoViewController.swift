@@ -7,6 +7,7 @@ import SZTextView
 
 public class AAGroupEditInfoController: AAViewController, UITextViewDelegate {
     
+    private var isChannel = false
     private let scrollView = UIScrollView()
     private let bgContainer = UIView()
     private let topSeparator = UIView()
@@ -21,6 +22,7 @@ public class AAGroupEditInfoController: AAViewController, UITextViewDelegate {
     public init(gid: Int) {
         super.init()
         self.gid = gid
+        self.isChannel = group.groupType == ACGroupType.CHANNEL()
     }
     
     public required init(coder aDecoder: NSCoder) {
@@ -56,18 +58,27 @@ public class AAGroupEditInfoController: AAViewController, UITextViewDelegate {
             self.avatarDidTap()
         }
         
-        nameInput.font = UIFont.systemFontOfSize(16)
-        nameInput.placeholder = "Name"
+        nameInput.font = UIFont.systemFontOfSize(19)
+        if isChannel {
+            nameInput.placeholder = AALocalized("GroupEditNameChannel")
+        } else {
+            nameInput.placeholder = AALocalized("GroupEditName")
+        }
         nameInput.text = group.name.get()
         
         descriptionView.delegate = self
-        descriptionView.font = UIFont.systemFontOfSize(16)
-        descriptionView.placeholder = "Description"
+        descriptionView.font = UIFont.systemFontOfSize(17)
+        descriptionView.placeholder = AALocalized("GroupEditDescription")
         descriptionView.text = group.about.get()
         descriptionView.scrollEnabled = false
         
-        navigationItem.title = "Edit Group"
+        if isChannel {
+            navigationItem.title = AALocalized("GroupEditTitleChannel")
+        } else {
+            navigationItem.title = AALocalized("GroupEditTitle")
+        }
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationSave"), style: .Done, target: self, action: #selector(saveDidPressed))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: .Done, target: self, action: #selector(dismiss))
     }
     
     public override func viewWillLayoutSubviews() {
@@ -113,24 +124,25 @@ public class AAGroupEditInfoController: AAViewController, UITextViewDelegate {
     public func saveDidPressed() {
         let text = nameInput.text!.trim()
         let about = self.descriptionView.text!.trim()
-        
+        nameInput.resignFirstResponder()
+        descriptionView.resignFirstResponder()
         if text != group.name.get() {
             executePromise(Actor.editGroupTitleWithGid(jint(gid), withTitle: text).then({ (v: ARVoid!) in
                 if about != self.group.about.get() {
                     self.executePromise(Actor.editGroupAboutWithGid(jint(self.gid), withAbout: about).then({ (v: ARVoid!) in
-                        self.navigateBack()
+                        self.dismiss()
                     }))
                 } else {
-                    self.navigateBack()
+                    self.dismiss()
                 }
             }))
         } else {
             if about != self.group.about.get() {
                 self.executePromise(Actor.editGroupAboutWithGid(jint(self.gid), withAbout: about).then({ (v: ARVoid!) in
-                    self.navigateBack()
+                    self.dismiss()
                 }))
             } else {
-                self.navigateBack()
+                self.dismiss()
             }
         }
     }
@@ -141,7 +153,7 @@ public class AAGroupEditInfoController: AAViewController, UITextViewDelegate {
     
     private func layoutContainer() {
         let newSize = descriptionView.sizeThatFits(CGSize(width: view.width - 20, height: CGFloat.max))
-        descriptionView.frame = CGRectMake(10, 100, view.width - 20, max(newSize.height, 33))
+        descriptionView.frame = CGRectMake(10, 102, view.width - 20, max(newSize.height, 33))
         bgContainer.frame = CGRectMake(0, 0, view.width, 100 + descriptionView.height + 8)
         bottomSeparator.frame = CGRectMake(0, bgContainer.height - 0.5, bgContainer.width, 0.5)
     }

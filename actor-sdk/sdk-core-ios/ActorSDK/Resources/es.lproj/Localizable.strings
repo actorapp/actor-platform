@@ -361,6 +361,18 @@
 
 
 
+"GroupEditTitle" = "Edit Group";
+
+"GroupEditTitleChannel" = "Edit Channel";
+
+"GroupEditName" = "Group Name";
+
+"GroupEditNameChannel" = "Channel Name";
+
+"GroupEditDescription" = "Description";
+
+
+
 "GroupMemberAdmin" = "admin";
 
 "GroupMemberInfo" = "Perfil";

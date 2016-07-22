@@ -319,6 +319,7 @@
 "GroupTypeLinkHintChannel" = "People can share this link with others and find your channel using search";
 
 
+
 "GroupShareTitle" = "Shared History";
 
 "GroupShareEnabled" = "Shared";
@@ -328,6 +329,7 @@
 "GroupShareMessage" = "Are you sure want to share all messages to all members? This action is irreversible.";
 
 "GroupShareAction" = "Share";
+
 
 
 "GroupDeleteTitle" = "Delete Group";
@@ -343,6 +345,19 @@
 "GroupDeleteMessageChannel" = "Are you sure want to DELETE channel and ALL messages in it? This action irreversible.";
 
 "GroupDeleteAction" = "Delete ALL";
+
+
+
+"GroupEditTitle" = "Edit Group";
+
+"GroupEditTitleChannel" = "Edit Channel";
+
+"GroupEditName" = "Group Name";
+
+"GroupEditNameChannel" = "Channel Name";
+
+"GroupEditDescription" = "Description";
+
 
 
 "GroupViewMembers" = "Membros";

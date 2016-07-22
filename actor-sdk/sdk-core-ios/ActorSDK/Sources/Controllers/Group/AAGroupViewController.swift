@@ -377,6 +377,6 @@ public class AAGroupViewController: AAContentTableController {
     }
     
     public func editDidPressed() {
-        self.navigateNext(AAGroupEditInfoController(gid: gid))
+        self.presentInNavigation(AAGroupEditInfoController(gid: gid))
     }
 }

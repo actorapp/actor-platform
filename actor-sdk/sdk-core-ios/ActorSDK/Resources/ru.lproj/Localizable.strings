@@ -359,6 +359,18 @@
 
 
 
+"GroupEditTitle" = "Редактирование";
+
+"GroupEditTitleChannel" = "Редактирование";
+
+"GroupEditName" = "Название группы";
+
+"GroupEditNameChannel" = "Название канала";
+
+"GroupEditDescription" = "Описание";
+
+
+
 "GroupViewMembers" = "Участники";
 
 "GroupMemberAdmin" = "админ.";

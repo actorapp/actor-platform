@@ -47,12 +47,12 @@ public class AATextCell: AATableViewCell {
         super.layoutSubviews()
         
         if titleLabel.hidden {
-            contentLabel.frame = CGRect(x: 15, y: 7, width: contentView.bounds.width - 30, height: 10000)
+            contentLabel.frame = CGRect(x: 15, y: 8, width: contentView.bounds.width - 30, height: contentView.height - 16)
         } else {
             titleLabel.frame = CGRect(x: 15, y: 7, width: contentView.bounds.width - 30, height: titleLabel.bounds.height)
             contentLabel.frame = CGRect(x: 15, y: 27, width: contentView.bounds.width - 30, height: 10000)
+            contentLabel.sizeToFit()
         }
-        contentLabel.sizeToFit()
     }
     
     public class func measure(title: String?, text: String, width: CGFloat, enableNavigation: Bool) -> CGFloat {
@@ -61,7 +61,7 @@ public class AATextCell: AATableViewCell {
         if title != nil {
             return CGFloat(size.height + 36)
         } else {
-            return CGFloat(size.height + 15)
+            return CGFloat(max(size.height + 16, 44))
         }
     }
 }
