@@ -90,9 +90,10 @@ public class AARootTabViewController : UITabBarController, MFMessageComposeViewC
             }
             messageComposeController.body = AALocalized("InviteText")
                 .replace("{link}", dest: ActorSDK.sharedActor().inviteUrl)
+                .replace("{appname}", dest: ActorSDK.sharedActor().appName)
             messageComposeController.navigationBar.tintColor = ActorSDK.sharedActor().style.navigationTitleColor
             presentViewController(messageComposeController, animated: true, completion: { () -> Void in
-//                ActorSDK.sharedActor().style.appl
+
             })
         } else {
             UIAlertView(title: "Error", message: "Cannot send SMS", delegate: nil, cancelButtonTitle: "OK").show()
