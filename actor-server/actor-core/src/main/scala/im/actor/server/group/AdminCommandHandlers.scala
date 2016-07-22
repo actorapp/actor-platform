@@ -14,6 +14,7 @@ import im.actor.server.acl.ACLUtils
 import im.actor.server.group.GroupCommands.{ DeleteGroup, DismissUserAdmin, MakeHistoryShared, MakeUserAdmin, RevokeIntegrationToken, RevokeIntegrationTokenAck, TransferOwnership, UpdateAdminSettings, UpdateAdminSettingsAck }
 import im.actor.server.group.GroupErrors.{ NotAMember, NotAdmin, UserAlreadyAdmin, UserAlreadyNotAdmin }
 import im.actor.server.group.GroupEvents.{ AdminSettingsUpdated, AdminStatusChanged, GroupDeleted, HistoryBecameShared, IntegrationTokenRevoked, OwnerChanged }
+import im.actor.server.names.{ GlobalNameOwner, OwnerType }
 import im.actor.server.persist.{ GroupBotRepo, GroupInviteTokenRepo, GroupUserRepo, HistoryMessageRepo }
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 
@@ -308,22 +309,27 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
     if (!state.permissions.canDelete(cmd.clientUserId)) {
       sender() ! noPermission
     } else {
+      val exMemberIds = state.memberIds
+      val exGlobalName = state.shortName
+      val exGroupType = state.groupType
+
       persist(GroupDeleted(Instant.now, cmd.clientUserId)) { evt ⇒
-        val newState = commit(evt)
+        commit(evt)
 
         val dateMillis = evt.ts.toEpochMilli
         val randomId = ACLUtils.randomLong()
+        val ZeroPermissions = 0L
 
         val emptyPermissions = Vector(
-          UpdateGroupPermissionsChanged(groupId, newState.permissions.GroupEmpty),
-          UpdateGroupFullPermissionsChanged(groupId, newState.permissions.FullGroupEmpty)
+          UpdateGroupPermissionsChanged(groupId, ZeroPermissions),
+          UpdateGroupFullPermissionsChanged(groupId, ZeroPermissions)
         )
 
         val deleteGroupMembersUpdates: Vector[Update] = emptyPermissions ++
           Vector(
             UpdateGroupMemberChanged(groupId, isMember = false),
             // if channel, or group is big enough
-            if (newState.groupType.isChannel)
+            if (exGroupType.isChannel)
               UpdateGroupMembersCountChanged(groupId, membersCount = 0)
             else
               UpdateGroupMembersUpdated(groupId, members = Vector.empty),
@@ -331,7 +337,7 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
           )
 
         //TODO: remove deprecated. GroupInviteTokenRepo don't have replacement yet.
-        newState.memberIds foreach { userId ⇒
+        exMemberIds foreach { userId ⇒
           db.run(
             for {
               _ ← GroupUserRepo.delete(groupId, userId)
@@ -341,16 +347,17 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
         }
 
         val result: Future[SeqState] = for {
-          _ ← db.run(HistoryMessageRepo.deleteAll(cmd.clientUserId, apiGroupPeer.asModel))
+          // release global name of group
+          _ ← globalNamesStorage.updateOrRemove(exGlobalName, newGlobalName = None, GlobalNameOwner(OwnerType.Group, groupId))
 
           ///////////////////////////
           // Groups V1 API updates //
           ///////////////////////////
 
           // push all members updates about other members left group
-          _ ← FutureExt.ftraverse(newState.memberIds.toSeq) { userId ⇒
+          _ ← FutureExt.ftraverse(exMemberIds.toSeq) { userId ⇒
             seqUpdExt.broadcastPeopleUpdate(
-              userIds = newState.memberIds - userId,
+              userIds = exMemberIds - userId,
               update = UpdateGroupUserLeaveObsolete(groupId, userId, dateMillis, randomId)
             )
           }
@@ -358,15 +365,21 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
           ///////////////////////////
           // Groups V2 API updates //
           ///////////////////////////
+
+          // send all members update about group became empty(no members)
           _ ← Future.traverse(deleteGroupMembersUpdates) { update ⇒
-            seqUpdExt.broadcastPeopleUpdate(newState.memberIds, update)
+            seqUpdExt.broadcastPeopleUpdate(exMemberIds, update)
           }
-          seqState ← seqUpdExt.broadcastClientUpdate(
-            cmd.clientUserId,
-            cmd.clientAuthId,
-            bcastUserIds = state.memberIds - cmd.clientUserId,
+
+          // send all members except clientUserId `UpdateChatClear`
+          _ ← seqUpdExt.broadcastPeopleUpdate(
+            userIds = exMemberIds - cmd.clientUserId,
             update = UpdateChatClear(apiGroupPeer)
           )
+
+          // delete dialog from client user's dialog list
+          // history deletion happens inside
+          seqState ← dialogExt.delete(cmd.clientUserId, cmd.clientAuthId, apiGroupPeer.asModel)
         } yield seqState
 
         result pipeTo sender()
