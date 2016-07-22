@@ -7877,6 +7877,86 @@
           }
         },
         {
+          "type": "enum",
+          "content": {
+            "name": "GroupPermissions",
+            "values": [
+              {
+                "name": "SEND_MESSAGE",
+                "id": 1
+              },
+              {
+                "name": "CLEAR",
+                "id": 2
+              },
+              {
+                "name": "LEAVE",
+                "id": 3
+              },
+              {
+                "name": "DELETE",
+                "id": 4
+              }
+            ]
+          }
+        },
+        {
+          "type": "enum",
+          "content": {
+            "name": "GroupFullPermissions",
+            "values": [
+              {
+                "name": "EDIT_INFO",
+                "id": 1
+              },
+              {
+                "name": "VIEW_MEMBERS",
+                "id": 2
+              },
+              {
+                "name": "INVITE_MEMBERS",
+                "id": 3
+              },
+              {
+                "name": "INVITE_VIA_LINK",
+                "id": 4
+              },
+              {
+                "name": "CALL",
+                "id": 5
+              },
+              {
+                "name": "EDIT_ADMIN_SETTINGS",
+                "id": 6
+              },
+              {
+                "name": "VIEW_ADMINS",
+                "id": 7
+              },
+              {
+                "name": "EDIT_ADMINS",
+                "id": 8
+              },
+              {
+                "name": "KICK_INVITED",
+                "id": 9
+              },
+              {
+                "name": "KICK_ANYONE",
+                "id": 10
+              },
+              {
+                "name": "EDIT_FOREIGN",
+                "id": 11
+              },
+              {
+                "name": "DELETE_FOREIGN",
+                "id": 12
+              }
+            ]
+          }
+        },
+        {
           "type": "struct",
           "content": {
             "name": "Group",
@@ -8098,7 +8178,8 @@
                   "childType": "bool"
                 },
                 "id": 16,
-                "name": "isAdmin"
+                "name": "isAdmin",
+                "deprecated": "true"
               },
               {
                 "type": {
@@ -8106,7 +8187,8 @@
                   "childType": "userId"
                 },
                 "id": 8,
-                "name": "creatorUid"
+                "name": "creatorUid",
+                "deprecated": "true"
               },
               {
                 "type": {
@@ -8117,7 +8199,8 @@
                   }
                 },
                 "id": 9,
-                "name": "members"
+                "name": "members",
+                "deprecated": "true"
               },
               {
                 "type": {
@@ -8125,7 +8208,8 @@
                   "childType": "date"
                 },
                 "id": 10,
-                "name": "createDate"
+                "name": "createDate",
+                "deprecated": "true"
               },
               {
                 "type": {
@@ -8133,7 +8217,8 @@
                   "childType": "string"
                 },
                 "id": 17,
-                "name": "theme"
+                "name": "theme",
+                "deprecated": "true"
               },
               {
                 "type": {
@@ -8141,7 +8226,8 @@
                   "childType": "string"
                 },
                 "id": 18,
-                "name": "about"
+                "name": "about",
+                "deprecated": "true"
               }
             ]
           }
@@ -8167,6 +8253,10 @@
               "5 - canEditAdminSettings. Default is FALSE.",
               "6 - canViewAdmins. Default is FALSE.",
               "7 - canEditAdmins. Default is FALSE.",
+              "8 - canKickInvited. Default is FALSE.",
+              "9 - canKickAnyone. Default is FALSE.",
+              "10 - canEditForeign. Default is FALSE.",
+              "11 - canDeleteForeign. Default is FALSE.",
               "",
               {
                 "type": "reference",
@@ -8396,7 +8486,7 @@
               "doc": [
                 {
                   "type": "reference",
-                  "argument": "members",
+                  "argument": "users",
                   "category": "full",
                   "description": "  Group members"
                 },
@@ -8413,11 +8503,22 @@
                     "type": "list",
                     "childType": {
                       "type": "struct",
+                      "childType": "Member"
+                    }
+                  },
+                  "id": 3,
+                  "name": "members"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
                       "childType": "UserOutPeer"
                     }
                   },
                   "id": 1,
-                  "name": "members"
+                  "name": "users"
                 },
                 {
                   "type": {
@@ -9974,6 +10075,36 @@
                 },
                 "id": 3,
                 "name": "optimizations"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "LeaveAndDelete",
+            "header": 2721,
+            "response": {
+              "type": "reference",
+              "name": "Seq"
+            },
+            "doc": [
+              "Leave group and Delete Chat",
+              {
+                "type": "reference",
+                "argument": "groupPeer",
+                "category": "full",
+                "description": "Group peer"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
+                },
+                "id": 1,
+                "name": "groupPeer"
               }
             ]
           }
