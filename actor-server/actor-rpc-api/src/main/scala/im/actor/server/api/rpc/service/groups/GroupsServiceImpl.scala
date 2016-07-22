@@ -16,6 +16,7 @@ import im.actor.api.rpc.users.ApiUser
 import im.actor.concurrent.FutureExt
 import im.actor.server.acl.ACLUtils
 import im.actor.server.db.DbExtension
+import im.actor.server.dialog.DialogExtension
 import im.actor.server.file.{ FileErrors, ImageUtils }
 import im.actor.server.group._
 import im.actor.server.model.GroupInviteToken
@@ -47,6 +48,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
   private val userExt = UserExtension(actorSystem)
   private val groupPresenceExt = GroupPresenceExtension(actorSystem)
   private val globalNamesStorage = new GlobalNamesStorageKeyValueStorage
+  private val dialogExt = DialogExtension(actorSystem)
 
   /**
    * Loading Full Groups
@@ -128,9 +130,12 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
     authorized(clientData) { implicit client ⇒
       withGroupOutPeer(groupPeer) {
         for {
-          (userIds, nextOffset) ← groupExt.loadMembers(groupPeer.groupId, client.userId, limit, next)
-          members ← FutureExt.ftraverse(userIds)(userExt.getApiStruct(_, client.userId, client.authId))
-        } yield Ok(ResponseLoadMembers(members.toVector map (u ⇒ ApiUserOutPeer(u.id, u.accessHash)), nextOffset))
+          (members, nextOffset) ← groupExt.loadMembers(groupPeer.groupId, client.userId, limit, next)
+          membersAndPeers ← FutureExt.ftraverse(members) { member ⇒
+            userExt.getAccessHash(member.userId, client.authId) map (hash ⇒ member → ApiUserOutPeer(member.userId, hash))
+          }
+          (members, peers) = membersAndPeers.unzip
+        } yield Ok(ResponseLoadMembers(peers.toVector, nextOffset, members.toVector))
       }
     }
   }
@@ -244,6 +249,19 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
         } yield {
           groupPresenceExt.notifyGroupUserRemoved(groupPeer.groupId, client.userId)
           Ok(ResponseSeqDate(seq, state.toByteArray, date))
+        }
+      }
+    }
+
+  override def doHandleLeaveAndDelete(groupPeer: ApiGroupOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
+    authorized(clientData) { implicit client ⇒
+      withGroupOutPeer(groupPeer) {
+        for {
+          _ ← groupExt.leaveGroup(groupPeer.groupId, ACLUtils.randomLong())
+          SeqState(seq, state) ← dialogExt.delete(client.userId, client.authId, groupPeer.asModel)
+        } yield {
+          groupPresenceExt.notifyGroupUserRemoved(groupPeer.groupId, client.userId)
+          Ok(ResponseSeq(seq, state.toByteArray))
         }
       }
     }

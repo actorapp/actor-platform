@@ -310,6 +310,7 @@ private[group] final case class GroupState(
      * 2 - canLeave. Default is FALSE.
      * 3 - canDelete. Default is FALSE.
      */
+    // TODO: add ApiGroupFullPermissions
     def groupFor(userId: Int): Long = {
       ((toInt(canSendMessage(userId)) << 0) +
         (toInt(canClear(userId)) << 1) +
@@ -359,13 +360,12 @@ private[group] final case class GroupState(
      * 5 - canEditAdminSettings. Default is FALSE.
      * 6 - canViewAdmins. Default is FALSE.
      * 7 - canEditAdmins. Default is FALSE.
-     *
-     * NOT DOCUMENTED YET:
      * 8 - canKickInvited. Default is FALSE.
      * 9 - canKickAnyone. Default is FALSE.
      * 10 - canEditForeign. Default is FALSE.
      * 11 - canDeleteForeign. Default is FALSE.
      */
+    // TODO: add ApiGroupFullPermissions
     def fullFor(userId: Int): Long = {
       (
         (toInt(canEditInfo(userId)) << 0) +
@@ -376,8 +376,6 @@ private[group] final case class GroupState(
         (toInt(canEditAdminSettings(userId)) << 5) +
         (toInt(canViewAdmins(userId)) << 6) +
         (toInt(canEditAdmins(userId)) << 7) +
-
-        // NOT DOCUMENTED YET:
         (toInt(canKickInvited(userId)) << 8) +
         (toInt(canKickAnyone(userId)) << 9) +
         (toInt(canEditForeign(userId)) << 10) +

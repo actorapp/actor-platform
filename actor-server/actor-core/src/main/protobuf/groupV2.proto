@@ -18,6 +18,13 @@ import "file.proto";
 import "sequence.proto";
 import "dialog.proto";
 
+message GroupMember {
+    int32 user_id = 1;
+    int32 inviter_user_id = 2;
+    int64 invited_at = 3;
+    bool is_admin = 4;
+}
+
 message GroupEnvelope {
     int32 group_id = 1;
     oneof command {
@@ -306,7 +313,7 @@ message GroupQueries {
     }
 
     message LoadMembersResponse {
-        repeated int32 user_ids = 1;
+        repeated GroupMember members = 1;
         google.protobuf.BytesValue offset = 2;// should it be Option[Array[Byte]]
     }
 
