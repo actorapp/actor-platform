@@ -54,6 +54,7 @@ public class AACommonCell: AATableViewCell {
             hintLabel.text = hint
             hintLabel.hidden = false
         }
+        setNeedsLayout()
     }
     
     // Setting switcher content
