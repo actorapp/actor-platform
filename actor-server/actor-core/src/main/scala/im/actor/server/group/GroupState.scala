@@ -309,13 +309,17 @@ private[group] final case class GroupState(
      * 1 - canClear. Default is FALSE.
      * 2 - canLeave. Default is FALSE.
      * 3 - canDelete. Default is FALSE.
+     * 4 - canJoin. Default is FALSE.
+     * 5 - canViewInfo. Default is FALSE.
      */
     // TODO: add ApiGroupFullPermissions
     def groupFor(userId: Int): Long = {
       ((toInt(canSendMessage(userId)) << 0) +
         (toInt(canClear(userId)) << 1) +
         (toInt(canLeave(userId)) << 2) +
-        (toInt(canDelete(userId)) << 3)).toLong
+        (toInt(canDelete(userId)) << 3) +
+        (toInt(canJoin(userId)) << 4) +
+        (toInt(canViewInfo(userId)) << 5)).toLong
     }
 
     /**
@@ -343,6 +347,13 @@ private[group] final case class GroupState(
 
     // only owner can delete group
     def canDelete(clientUserId: Int): Boolean = isOwner(clientUserId)
+
+    // anyone can join in group with shared history
+    def canJoin(clientUserId: Int): Boolean = isHistoryShared
+
+    // if history shared - anyone can view info
+    // only members can view info in private groups
+    def canViewInfo(clientUserId: Int): Boolean = isHistoryShared || isMember(clientUserId)
 
     ////////////////////////////
     // Full group permissions //
