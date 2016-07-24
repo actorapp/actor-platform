@@ -10221,6 +10221,36 @@
           }
         },
         {
+          "type": "rpc",
+          "content": {
+            "name": "JoinGroupByPeer",
+            "header": 2722,
+            "response": {
+              "type": "reference",
+              "name": "Seq"
+            },
+            "doc": [
+              "Join group by peer",
+              {
+                "type": "reference",
+                "argument": "groupPeer",
+                "category": "full",
+                "description": "Group's peer"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
+                },
+                "id": 1,
+                "name": "groupPeer"
+              }
+            ]
+          }
+        },
+        {
           "type": "comment",
           "content": "Administration"
         },

@@ -8953,6 +8953,30 @@
           <ref role="NX6Kv" node="1kct6f0wv$x" resolve="optimizations" />
         </node>
       </node>
+      <node concept="2m6fVq" id="3iWZ2kgyrFf" role="2m5mJr">
+        <property role="TrG5h" value="JoinGroupByPeer" />
+        <node concept="2m7Kf5" id="3iWZ2kgyrUz" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupPeer" />
+          <node concept="2m5mGg" id="3iWZ2kgyrUB" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6j2" resolve="GroupOutPeer" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="3iWZ2kgyrFg" role="NuuwV">
+          <property role="Nu42W" value="AA2" />
+        </node>
+        <node concept="2m1Rp1" id="3iWZ2kgyrUI" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_W" resolve="Seq" />
+        </node>
+        <node concept="NXeRC" id="3iWZ2kgyrUL" role="1GBnQ6">
+          <property role="NXePf" value="Join group by peer" />
+        </node>
+        <node concept="NX1gA" id="3iWZ2kgyrUQ" role="1GBnQ6">
+          <property role="NX6R2" value="Group's peer" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="3iWZ2kgyrUz" resolve="groupPeer" />
+        </node>
+      </node>
       <node concept="NvWBy" id="3c_gimmPEMd" role="2m5mJr">
         <property role="NvWrd" value="Administration" />
       </node>
