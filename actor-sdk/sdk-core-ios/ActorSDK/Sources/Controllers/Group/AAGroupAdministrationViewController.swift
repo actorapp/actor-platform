@@ -90,15 +90,15 @@ public class AAGroupAdministrationViewController: AAContentTableController {
             section { (s) in
                 let action: String
                 if isChannel {
+                    action = AALocalized("ActionDeleteChannel")
                     s.footerText = AALocalized("GroupDeleteHintChannel")
-                    action = AALocalized("GroupDeleteTitleChannel")
                 } else {
+                    action = AALocalized("ActionDeleteGroup")
                     s.footerText = AALocalized("GroupDeleteHint")
-                    action = AALocalized("GroupDeleteTitle")
                 }
                 s.danger(action, closure: { (r) in
                     r.selectAction = { () -> Bool in
-                        self.confirmAlertUserDanger(self.isChannel ? "GroupDeleteMessageChannel" : "GroupDeleteMessage", action: "GroupDeleteAction", tapYes: { 
+                        self.confirmAlertUserDanger(self.isChannel ? "ActionDeleteChannelMessage" : "ActionDeleteGroupMessage", action: "ActionDelete", tapYes: {
                             self.executePromise(Actor.deleteGroupWithGid(jint(self.gid))).after {
                                 let first = self.navigationController!.viewControllers.first!
                                 self.navigationController!.setViewControllers([first], animated: true)

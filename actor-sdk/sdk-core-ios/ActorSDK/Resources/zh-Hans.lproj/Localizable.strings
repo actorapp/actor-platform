@@ -280,6 +280,8 @@
 
 "GroupDescription" = "Description";
 
+
+
 "GroupAdministration" = "Administration";
 
 "GroupTypeTitle" = "Group Type";
@@ -313,6 +315,12 @@
 "GroupTypeLinkHint" = "People can share this link with others and find your group using search";
 
 "GroupTypeLinkHintChannel" = "People can share this link with others and find your channel using search";
+
+"GroupDeleteHint" = "You will lose all messages in this group";
+
+"GroupDeleteHintChannel" = "You will lose all messages in this channel";
+
+
 
 
 "GroupShareTitle" = "Shared History";
@@ -363,13 +371,7 @@
 
 "GroupAddParticipantUrl" = "通过URL链接邀请加入群组";
 
-"GroupLeave" = "退出群组";
 
-"GroupLeaveChannel" = "Leave channel";
-
-"GroupLeaveConfirm" = "你确定要退出群组吗？";
-
-"GroupLeaveConfirmAction" = "退出";
 
 "GroupInviteLinkPageTitle" = "邀请链接";
 
@@ -381,23 +383,11 @@
 
 "GroupInviteLinkRevokeAction" = "重置";
 
-"GroupIntegrationPageTitle" = "集成API";
 
-"GroupIntegrationLinkTitle" = "链接";
-
-"GroupIntegrationLinkHint" = "任何外部系统都可以利用这个链接向群组发送消息。";
-
-"GroupIntegrationDoc" = "打开文档";
-
-"GroupIntegrationLinkRevokeMessage" = "确定要重置这个链接，重置后其他系统将无法使用这个链接发送消息。";
-
-"GroupIntegrationLinkRevokeAction" = "重置";
 
 "GroupJoinMessage" = "确定要加入群组吗?";
 
 "GroupJoinAction" = "加入";
-
-"GroupMembers" = "群组成员";
 
 /*
  * Compose
@@ -455,6 +445,8 @@
 "ChatSlideUpToCancel" = "上滑取消";
 
 "Chat.MicrophoneAccessDisabled"  = "我们需要访问麦克风来发送语音信息. 请打开 设置 — 隐私 — 麦克风，然后打开开关";
+
+"ChatDeleted" = "This chat was deleted by owner.";
 
 /*
  * Chat attachment menu
@@ -681,7 +673,12 @@
 
 "ActionUnmute" = "Unmute";
 
+
+
 "ActionDelete" = "Delete";
+
+"ActionDeleteMessage" = "Are you sure want to delete chat?";
+
 
 "ActionDeleteChannel" = "Delete Channel";
 
@@ -691,9 +688,29 @@
 
 "ActionDeleteGroupMessage" = "Wait! Deleting this group will remove all members and all messages will be lost. Delete the group anyway?";
 
+
+"ActionLeaveChannel" = "Leave Channel";
+
+"ActionLeaveChannelMessage" = "Are you sure want to leave channel?";
+
+"ActionLeaveChannelAction" = "Leave";
+
+
+
 "ActionDeleteAndExit" = "Delete and Exit";
 
+"ActionDeleteAndExitMessage" = "Are you sure want to exit group and delete all messages?";
+
+"ActionDeleteAndExitAction" = "Exit";
+
+
+
 "ActionClearHistory" = "Clear History";
+
+"ActionClearHistoryMessage" = "Are you sure want to clear history?";
+
+"ActionClearHistoryAction" = "Clear";
+
 
 /*
  *  Network

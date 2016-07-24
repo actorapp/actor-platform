@@ -399,6 +399,14 @@ public class ConversationViewController:
                     self.inputOverlay.hidden = false
                 }
             }
+            
+            binder.bind(group.isDeleted) { (isDeleted: JavaLangBoolean!) in
+                if isDeleted.booleanValue() {
+                    self.alertUser("ChatDeleted") {
+                        self.navigateBack()
+                    }
+                }
+            }
         }
         
         Actor.onConversationOpenWithPeer(peer)

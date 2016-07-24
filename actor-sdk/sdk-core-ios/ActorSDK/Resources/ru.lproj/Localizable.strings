@@ -293,6 +293,8 @@
 
 "GroupDescription" = "Описание";
 
+
+
 "GroupAdministration" = "Администрирование";
 
 "GroupTypeTitle" = "Тип группы";
@@ -330,6 +332,12 @@
 "GroupTypeLinkHint" = "Ваши друзья могут делиться этой ссылкой или находить группу в поиске";
 
 "GroupTypeLinkHintChannel" = "Ваши друзья могут делиться этой ссылкой или находить канал в поиске";
+
+"GroupDeleteHint" = "Вы потеряете всех сообщения в этой группе";
+
+"GroupDeleteHintChannel" = "Вы потеряете все сообщения в этом канале";
+
+
 
 
 "GroupShareTitle" = "Общая история";
@@ -404,23 +412,11 @@
 
 "GroupInviteLinkRevokeAction" = "Сбросить";
 
-"GroupIntegrationPageTitle" = "API Интеграции";
 
-"GroupIntegrationLinkTitle" = "ССЫЛКА";
-
-"GroupIntegrationLinkHint" = "Вы можете использовать эту ссылку для отправки сообщений из любых внешних сервисов.";
-
-"GroupIntegrationDoc" = "Открыть документацию";
-
-"GroupIntegrationLinkRevokeMessage" = "Вы уверены, что хотите сбросить ссылку? Как только вы это сделаете, вы больше не сможете по ней отправлять сообщения в группу.";
-
-"GroupIntegrationLinkRevokeAction" = "Сбросить";
 
 "GroupJoinMessage" = "Вы уверены, что хотите вступить в группу?";
 
 "GroupJoinAction" = "Вступить";
-
-"GroupMembers" = "УЧАСТНИКИ";
 
 /*
  * Compose
@@ -467,6 +463,8 @@
 "ChatSend" = "Отпр.";
 
 "ChatNoGroupAccess" = "Вы не состоите в группе";
+
+"ChatDeleted" = "Этот чат был удален владельцем.";
 
 /*
  * Chat attachment menu
@@ -705,6 +703,41 @@
 
 "ActionClearHistory" = "Очистить историю";
 
+
+
+"ActionDelete" = "Удалить";
+
+"ActionDeleteMessage" = "Вы уверены что хотите удалить чат?";
+
+
+"ActionDeleteChannel" = "Удалть канал";
+
+"ActionDeleteChannelMessage" = "Стой! Удаление этого канала исключит всех подписчиков и все сообщения будут потеряны. Продолжить все равно?";
+
+"ActionDeleteGroup" = "Удалить группу";
+
+"ActionDeleteGroupMessage" = "Стой! Удаление этой группы исключит всех участников и все сообщения будут потеряны. Продолжить все равно?";
+
+
+"ActionLeaveChannel" = "Покинуть канал";
+
+"ActionLeaveChannelMessage" = "Вы уверены, что хотите выйти из канала?";
+
+"ActionLeaveChannelAction" = "Выйти";
+
+
+"ActionDeleteAndExit" = "Удалить и выйти";
+
+"ActionDeleteAndExitMessage" = "Вы уверены, что хотите хотите выйти из группы и удалить все сообщения?";
+
+"ActionDeleteAndExitAction" = "Выйти";
+
+
+"ActionClearHistory" = "Очистить историю";
+
+"ActionClearHistoryMessage" = "Вы уверены что хотите очистить историю?";
+
+"ActionClearHistoryAction" = "Очистить";
 
 /*
  * Network

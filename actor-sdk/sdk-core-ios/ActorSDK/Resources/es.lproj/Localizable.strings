@@ -291,9 +291,9 @@
 
 "GroupDescription" = "Description";
 
+
+
 "GroupAdministration" = "Administration";
-
-
 
 "GroupTypeTitle" = "Group Type";
 
@@ -330,6 +330,10 @@
 "GroupTypeLinkHint" = "People can share this link with others and find your group using search";
 
 "GroupTypeLinkHintChannel" = "People can share this link with others and find your channel using search";
+
+"GroupDeleteHint" = "You will lose all messages in this group";
+
+"GroupDeleteHintChannel" = "You will lose all messages in this channel";
 
 
 
@@ -384,15 +388,7 @@
 
 "GroupAddParticipantUrl" = "Invitar al grupo a través de Enlace";
 
-"GroupLeave" = "Salir de grupo";
 
-"GroupLeaveChannel" = "Leave channel";
-
-"GroupLeaveConfirm" = "¿Seguro que quieres dejar de grupo?";
-
-"GroupLeaveConfirmChannel" = "Are you sure you want to leave channel?";
-
-"GroupLeaveConfirmAction" = "Salir";
 
 "GroupInviteLinkPageTitle" = "invitar por Enlace";
 
@@ -404,17 +400,7 @@
 
 "GroupInviteLinkRevokeAction" = "Revocar";
 
-"GroupIntegrationPageTitle" = "Integración de API";
 
-"GroupIntegrationLinkTitle" = "LINK";
-
-"GroupIntegrationLinkHint" = "Puedes usar este enlace para enviar mensajes desde cualquier sistema externo.";
-
-"GroupIntegrationDoc" = "Abrir Documentación";
-
-"GroupIntegrationLinkRevokeMessage" = "¿Seguro que quieres revocar este enlace? Una vez hecho, nadie va a ser capaz de enviar mensajes al grupo de usarlo.";
-
-"GroupIntegrationLinkRevokeAction" = "Revocar";
 
 "GroupJoinMessage" = "¿Seguro quieres unirte al grupo?";
 
@@ -476,6 +462,7 @@
 
 "ChatSlideUpToCancel" = "Deslizar para cancelar";
 
+"ChatDeleted" = "This chat was deleted by owner.";
 
 /*
  * Chat attachment menu
@@ -699,7 +686,11 @@
 
 "ActionUnmute" = "Unmute";
 
+
 "ActionDelete" = "Delete";
+
+"ActionDeleteMessage" = "Are you sure want to delete chat?";
+
 
 "ActionDeleteChannel" = "Delete Channel";
 
@@ -709,9 +700,28 @@
 
 "ActionDeleteGroupMessage" = "Wait! Deleting this group will remove all members and all messages will be lost. Delete the group anyway?";
 
+
+"ActionLeaveChannel" = "Leave Channel";
+
+"ActionLeaveChannelMessage" = "Are you sure want to leave channel?";
+
+"ActionLeaveChannelAction" = "Leave";
+
+
+
 "ActionDeleteAndExit" = "Delete and Exit";
 
+"ActionDeleteAndExitMessage" = "Are you sure want to exit group and delete all messages?";
+
+"ActionDeleteAndExitAction" = "Exit";
+
+
+
 "ActionClearHistory" = "Clear History";
+
+"ActionClearHistoryMessage" = "Are you sure want to clear history?";
+
+"ActionClearHistoryAction" = "Clear";
 
 /*
  * Network

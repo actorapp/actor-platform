@@ -310,7 +310,7 @@ public class AAGroupViewController: AAContentTableController {
                 s.common({ (r) -> () in
                     
                     if self.group.groupType == ACGroupType.CHANNEL() {
-                        r.content = AALocalized("ChannelLeave")
+                        r.content = AALocalized("ActionLeaveChannel")
                     } else {
                         r.content = AALocalized("ActionDeleteAndExit")
                     }
@@ -319,12 +319,15 @@ public class AAGroupViewController: AAContentTableController {
                     r.selectAction = { () -> Bool in
                         
                         let title: String
+                        let action: String
                         if self.group.groupType == ACGroupType.CHANNEL() {
-                            title = AALocalized("GroupLeaveConfirmChannel")
+                            title = AALocalized("ActionLeaveChannelMessage")
+                            action = AALocalized("ActionLeaveChannelAction")
                         } else {
-                            title = AALocalized("GroupLeaveConfirm")
+                            title = AALocalized("ActionDeleteAndExitMessage")
+                            action = AALocalized("ActionDeleteAndExitMessageAction")
                         }
-                        self.confirmDestructive(title, action: AALocalized("GroupLeaveConfirmAction"), yes: { () -> () in
+                        self.confirmDestructive(title, action: action, yes: { () -> () in
                             self.executePromise(Actor.leaveAndDeleteGroupWithGid(jint(self.gid)))
                         })
                         

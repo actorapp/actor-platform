@@ -72,25 +72,45 @@ public class AADialogsListContentController: AAContentTableController, UISearchB
                         let isChannel = g.groupType == ACGroupType.CHANNEL()
                         self.alertSheet({ (a) in
                             
+                            // Clear History
                             if g.isCanClear.get().booleanValue() {
                                 a.action(AALocalized("ActionClearHistory"), closure: {
-                                    self.executeSafe(Actor.clearChatCommandWithPeer(dialog.peer))
+                                    self.confirmAlertUserDanger("ActionClearHistoryMessage", action: "ActionClearHistoryAction", tapYes: {
+                                        self.executeSafe(Actor.clearChatCommandWithPeer(dialog.peer))
+                                    })
                                 })
                             }
                             
-                            if g.isCanLeave.get().booleanValue() && g.isMember.get().booleanValue(){
-                                a.destructive(AALocalized("ActionDeleteAndExit"), closure: {
-                                    self.executePromise(Actor.leaveAndDeleteGroupWithGid(dialog.peer.peerId))
-                                })
+                            // Delete
+                            if g.isCanLeave.get().booleanValue() && g.isMember.get().booleanValue() {
+                                if isChannel {
+                                    a.destructive(AALocalized("ActionLeaveChannel"), closure: {
+                                        self.confirmAlertUserDanger("ActionLeaveChannelMessage", action: "ActionLeaveChannelAction", tapYes: {
+                                            self.executePromise(Actor.leaveAndDeleteGroupWithGid(dialog.peer.peerId))
+                                        })
+                                    })
+                                } else {
+                                    a.destructive(AALocalized("ActionDeleteAndExit"), closure: {
+                                        self.confirmAlertUserDanger("ActionDeleteAndExitMessage", action: "ActionDeleteAndExitAction", tapYes: {
+                                            self.executePromise(Actor.leaveAndDeleteGroupWithGid(dialog.peer.peerId))
+                                        })
+                                    })
+                                }
                             } else if g.isCanDelete.get().booleanValue()  && g.isMember.get().booleanValue(){
                                 a.destructive(AALocalized(isChannel ? "ActionDeleteChannel" : "ActionDeleteGroup"), closure: {
-                                    self.executePromise(Actor.deleteGroupWithGid(dialog.peer.peerId))
+                                    self.confirmAlertUserDanger(isChannel ? "ActionDeleteChannelMessage" : "ActionDeleteGroupMessage", action: "ActionDelete", tapYes: {
+                                        self.executePromise(Actor.deleteGroupWithGid(g.groupId))
+                                    })
                                 })
                             } else {
                                 a.destructive(AALocalized("ActionDelete"), closure: {
-                                    self.executeSafe(Actor.deleteChatCommandWithPeer(dialog.peer))
+                                    self.confirmAlertUserDanger("ActionDeleteMessage", action: "ActionDelete", tapYes: {
+                                        self.executeSafe(Actor.deleteChatCommandWithPeer(dialog.peer))
+                                    })
                                 })
                             }
+                            
+                            // Cancel
                             a.cancel = AALocalized("ActionCancel")
                         })
                         

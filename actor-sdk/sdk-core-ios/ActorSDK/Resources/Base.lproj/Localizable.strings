@@ -294,6 +294,8 @@
 
 "GroupDescription" = "Description";
 
+
+
 "GroupAdministration" = "Administration";
 
 "GroupTypeTitle" = "Group Type";
@@ -331,6 +333,10 @@
 "ChannelTypePublicFull" = "Public Channel";
 
 "ChannelTypePrivateFull" = "Private Channel";
+
+"GroupDeleteHint" = "You will lose all messages in this group";
+
+"GroupDeleteHintChannel" = "You will lose all messages in this channel";
 
 
 
@@ -385,15 +391,6 @@
 
 "GroupAddParticipantUrl" = "Invite to Group via Link";
 
-"GroupLeave" = "Leave group";
-
-"GroupLeaveChannel" = "Leave channel";
-
-"GroupLeaveConfirm" = "Are you sure you want to leave group?";
-
-"GroupLeaveConfirmChannel" = "Are you sure you want to leave channel?";
-
-"GroupLeaveConfirmAction" = "Leave";
 
 "GroupInviteLinkPageTitle" = "Invite Link";
 
@@ -405,23 +402,11 @@
 
 "GroupInviteLinkRevokeAction" = "Revoke";
 
-"GroupIntegrationPageTitle" = "Integration API";
 
-"GroupIntegrationLinkTitle" = "LINK";
-
-"GroupIntegrationLinkHint" = "You can use this link to send a message from any external system.";
-
-"GroupIntegrationDoc" = "Open Documentation";
-
-"GroupIntegrationLinkRevokeMessage" = "Are you sure you want to revoke this link? Once you do, no one will be able to send messages to the group using it.";
-
-"GroupIntegrationLinkRevokeAction" = "Revoke";
 
 "GroupJoinMessage" = "Are you sure you want to join this group?";
 
 "GroupJoinAction" = "Join";
-
-"GroupMembers" = "MEMBERS";
 
 /*
  * Compose
@@ -479,6 +464,8 @@
 "ChatSlideUpToCancel" = "Slide up to cancel";
 
 "Chat.MicrophoneAccessDisabled" = "We need access to your microphone for voice messages. Please go to Settings — Privacy — Microphone turn them ОN";
+
+"ChatDeleted" = "This chat was deleted by owner.";
 
 /*
  * Chat attachment menu
@@ -707,7 +694,11 @@
 
 "ActionUnmute" = "Unmute";
 
+
 "ActionDelete" = "Delete";
+
+"ActionDeleteMessage" = "Are you sure want to delete chat?";
+
 
 "ActionDeleteChannel" = "Delete Channel";
 
@@ -717,9 +708,28 @@
 
 "ActionDeleteGroupMessage" = "Wait! Deleting this group will remove all members and all messages will be lost. Delete the group anyway?";
 
+
+"ActionLeaveChannel" = "Leave Channel";
+
+"ActionLeaveChannelMessage" = "Are you sure want to leave channel?";
+
+"ActionLeaveChannelAction" = "Leave";
+
+
+
 "ActionDeleteAndExit" = "Delete and Exit";
 
+"ActionDeleteAndExitMessage" = "Are you sure want to exit group and delete all messages?";
+
+"ActionDeleteAndExitAction" = "Exit";
+
+
+
 "ActionClearHistory" = "Clear History";
+
+"ActionClearHistoryMessage" = "Are you sure want to clear history?";
+
+"ActionClearHistoryAction" = "Clear";
 
 /*
  *  Network

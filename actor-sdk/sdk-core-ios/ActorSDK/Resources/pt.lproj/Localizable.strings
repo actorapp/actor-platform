@@ -280,6 +280,8 @@
 
 "GroupDescription" = "Description";
 
+
+
 "GroupAdministration" = "Administration";
 
 "GroupTypeTitle" = "Group Type";
@@ -318,6 +320,9 @@
 
 "GroupTypeLinkHintChannel" = "People can share this link with others and find your channel using search";
 
+"GroupDeleteHint" = "You will lose all messages in this group";
+
+"GroupDeleteHintChannel" = "You will lose all messages in this channel";
 
 
 "GroupShareTitle" = "Shared History";
@@ -373,15 +378,7 @@
 
 "GroupAddParticipantUrl" = "COnvidar para o grupo via Link";
 
-"GroupLeave" = "Sair do grupo";
 
-"GroupLeaveChannel" = "Leave channel";
-
-"GroupLeaveConfirm" = "Você tem certeza que quer sair do grupo?";
-
-"GroupLeaveConfirmChannel" = "Are you sure you want to leave channel?";
-
-"GroupLeaveConfirmAction" = "Sair";
 
 "GroupInviteLinkPageTitle" = "Link de Convite";
 
@@ -392,20 +389,6 @@
 "GroupInviteLinkRevokeMessage" = "Você tem certeza que quer remover este link? Uma vez removido, mais ninguém sera capaz de entrar no grupo usando este link.";
 
 "GroupInviteLinkRevokeAction" = "Remover";
-
-"GroupIntegrationPageTitle" = "Integração API";
-
-"GroupIntegrationLinkTitle" = "LINK";
-
-"GroupIntegrationLinkHint" = "Você pode usar este link para enviar mesnagens para qualquer sistema exteno.";
-
-"GroupIntegrationDoc" = "Abrir Documentação";
-
-"GroupIntegrationLinkRevokeMessage" = "Você tem certeza que quer remover este link? Uma vez removido, mais ninguém sera capaz de enviar mensagens para o grupo usando este link.";
-
-"GroupIntegrationLinkRevokeAction" = "Remover";
-
-"GroupMembers" = "MEMBERS";
 
 /*
  * Compose
@@ -436,6 +419,8 @@
 "CreateGroupMembersTitle" = "Invite members";
 
 "CreateGroupMembersPlaceholders" = "Enter Names";
+
+"ChatDeleted" = "This chat was deleted by owner.";
 
 /*
  * Location
@@ -681,7 +666,11 @@
 
 "ActionUnmute" = "Unmute";
 
+
 "ActionDelete" = "Delete";
+
+"ActionDeleteMessage" = "Are you sure want to delete chat?";
+
 
 "ActionDeleteChannel" = "Delete Channel";
 
@@ -691,9 +680,28 @@
 
 "ActionDeleteGroupMessage" = "Wait! Deleting this group will remove all members and all messages will be lost. Delete the group anyway?";
 
+
+"ActionLeaveChannel" = "Leave Channel";
+
+"ActionLeaveChannelMessage" = "Are you sure want to leave channel?";
+
+"ActionLeaveChannelAction" = "Leave";
+
+
+
 "ActionDeleteAndExit" = "Delete and Exit";
 
+"ActionDeleteAndExitMessage" = "Are you sure want to exit group and delete all messages?";
+
+"ActionDeleteAndExitAction" = "Exit";
+
+
+
 "ActionClearHistory" = "Clear History";
+
+"ActionClearHistoryMessage" = "Are you sure want to clear history?";
+
+"ActionClearHistoryAction" = "Clear";
 
 /*
  * Network

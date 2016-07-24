@@ -15,6 +15,14 @@ public extension UIViewController {
         self.presentViewController(controller, animated: true, completion: nil)
     }
     
+    public func alertUser(message: String, tapYes: ()->()) {
+        let controller = UIAlertController(title: nil, message: message, preferredStyle: UIAlertControllerStyle.Alert)
+        controller.addAction(UIAlertAction(title: AALocalized("AlertOk"), style: UIAlertActionStyle.Cancel, handler: { (alertView) -> () in
+            tapYes()
+        }))
+        self.presentViewController(controller, animated: true, completion: nil)
+    }
+    
     public func confirmAlertUser(message: String, action: String, tapYes: ()->(), tapNo: (()->())? = nil) {
         let controller = UIAlertController(title: nil, message: AALocalized(message), preferredStyle: UIAlertControllerStyle.Alert)
         controller.addAction(UIAlertAction(title: AALocalized(action), style: UIAlertActionStyle.Default, handler: { (alertView) -> () in
