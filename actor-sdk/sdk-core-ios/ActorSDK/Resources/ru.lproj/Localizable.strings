@@ -466,6 +466,8 @@
 
 "ChatDeleted" = "Этот чат был удален владельцем.";
 
+"ChatJoin" = "Присоединиться";
+
 /*
  * Chat attachment menu
  */

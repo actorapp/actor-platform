@@ -448,6 +448,10 @@
 
 "ChatNoGroupAccess" = "Você não é membro";
 
+"ChatDeleted" = "This chat was deleted by owner.";
+
+"ChatJoin" = "Join";
+
 /*
  * Find
  */

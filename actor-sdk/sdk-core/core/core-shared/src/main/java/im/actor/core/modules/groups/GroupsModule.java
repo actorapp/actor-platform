@@ -343,7 +343,6 @@ public class GroupsModule extends AbsModule implements BusSubscriber {
                 .map(responseJoinGroup -> responseJoinGroup.getGroup().getId());
     }
 
-
     //
     // Integration Token
     //

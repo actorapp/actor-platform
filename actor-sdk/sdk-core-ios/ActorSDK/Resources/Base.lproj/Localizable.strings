@@ -467,6 +467,8 @@
 
 "ChatDeleted" = "This chat was deleted by owner.";
 
+"ChatJoin" = "Join";
+
 /*
  * Chat attachment menu
  */

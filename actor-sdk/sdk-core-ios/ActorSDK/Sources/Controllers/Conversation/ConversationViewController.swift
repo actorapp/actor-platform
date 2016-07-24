@@ -379,15 +379,18 @@ public class ConversationViewController:
                 }
             })
             
-//            binder.bind(group.isMember, valueModel2: group.isCanWriteMessage, valueModel3: group.isCanJ, closure: <#T##(value1: T1!, value2: T2!, value3: T3!) -> ()#>)
-            
-            binder.bind(group.isMember, valueModel2: group.isCanWriteMessage) { (isMember: JavaLangBoolean!, canWriteMessage: JavaLangBoolean!) in
+            binder.bind(group.isMember, valueModel2: group.isCanWriteMessage, valueModel3: group.isCanJoin, closure: { (isMember: JavaLangBoolean!, canWriteMessage: JavaLangBoolean!, canJoin: JavaLangBoolean!) in
+                
                 if canWriteMessage.booleanValue() {
                     self.stickersButton.hidden = false
                     self.inputOverlay.hidden = true
                 } else {
                     if !isMember.booleanValue() {
-                        self.inputOverlayLabel.text = AALocalized("ChatNoGroupAccess")
+                        if canJoin.booleanValue() {
+                            self.inputOverlayLabel.text = AALocalized("ChatJoin")
+                        } else {
+                            self.inputOverlayLabel.text = AALocalized("ChatNoGroupAccess")
+                        }
                     } else {
                         if Actor.isNotificationsEnabledWithPeer(self.peer) {
                             self.inputOverlayLabel.text = AALocalized("ActionMute")
@@ -400,7 +403,8 @@ public class ConversationViewController:
                     self.textInputbar.textView.text = ""
                     self.inputOverlay.hidden = false
                 }
-            }
+            })
+            
             
             binder.bind(group.isDeleted) { (isDeleted: JavaLangBoolean!) in
                 if isDeleted.booleanValue() {
@@ -429,7 +433,11 @@ public class ConversationViewController:
         if peer.isGroup {
             let group = Actor.getGroupWithGid(peer.peerId)
             if !group.isMember.get().booleanValue() {
-                // DO NOTHING
+                if group.isCanJoin.get().booleanValue() {
+                    // T
+                } else {
+                    // DO NOTHING
+                }
             } else if !group.isCanWriteMessage.get().booleanValue() {
                 if Actor.isNotificationsEnabledWithPeer(peer) {
                     Actor.changeNotificationsEnabledWithPeer(peer, withValue: false)
