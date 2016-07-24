@@ -413,6 +413,28 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
       action.value
     }
 
+  override def doHandleJoinGroupByPeer(groupPeer: ApiGroupOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
+    authorized(clientData) { implicit client ⇒
+      withGroupOutPeer(groupPeer) {
+        val action = for {
+          apiGroup ← fromFuture(groupExt.getApiStruct(groupPeer.groupId, client.userId))
+          _ ← fromBoolean(GroupRpcErrors.CantJoinGroup)(canJoin(apiGroup.permissions))
+          joinResp ← fromFuture(groupExt.joinGroup(
+            groupId = groupPeer.groupId,
+            joiningUserId = client.userId,
+            joiningUserAuthId = client.authId,
+            invitingUserId = None
+          ))
+          SeqStateDate(seq, state, _) = joinResp._1
+        } yield ResponseSeq(seq, state.toByteArray)
+
+        action.value
+      }
+    }
+
+  private def canJoin(permissions: Option[Long]) =
+    permissions exists (p ⇒ (p & (1 << 4)) != 0) // TODO: make wrapper around permissions
+
   override def doHandleRevokeInviteUrl(groupPeer: ApiGroupOutPeer, clientData: ClientData): Future[HandlerResult[ResponseInviteUrl]] =
     authorized(clientData) { implicit client ⇒
       withGroupOutPeer(groupPeer) {
