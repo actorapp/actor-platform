@@ -59,6 +59,12 @@ public class GroupVM extends BaseValueModel<Group> {
     @NotNull
     @Property("nonatomic, readonly")
     private BooleanValueModel isCanClear;
+    @NotNull
+    @Property("nonatomic, readonly")
+    private BooleanValueModel isCanJoin;
+    @NotNull
+    @Property("nonatomic, readonly")
+    private BooleanValueModel isCanViewInfo;
 
     @NotNull
     @Property("nonatomic, readonly")
@@ -163,6 +169,8 @@ public class GroupVM extends BaseValueModel<Group> {
         this.isCanDeleteForeign = new BooleanValueModel("group." + groupId + ".isCanDeleteForeign", rawObj.isCanDeleteForeign());
         this.isDeleted = new BooleanValueModel("group." + groupId + ".isDeleted", rawObj.isDeleted());
         this.isCanClear = new BooleanValueModel("group." + groupId + ".isCanClear", rawObj.isCanClear());
+        this.isCanJoin = new BooleanValueModel("group." + groupId + ".isCanJoin", rawObj.isCanJoin());
+        this.isCanViewInfo = new BooleanValueModel("group." + groupId + ".isCanViewInfo", rawObj.isCanViewInfo());
 
         this.ownerId = new IntValueModel("group." + groupId + ".membersCount", rawObj.getOwnerId());
         this.members = new ValueModel<>("group." + groupId + ".members", new HashSet<>(rawObj.getMembers()));
@@ -448,6 +456,27 @@ public class GroupVM extends BaseValueModel<Group> {
     }
 
     /**
+     * Is current user can view info
+     *
+     * @return is current user can view info model
+     */
+    @NotNull
+    @ObjectiveCName("getIsCanViewInfoModel")
+    public BooleanValueModel getIsCanViewInfo() {
+        return isCanViewInfo;
+    }
+
+    /**
+     * Is current user can join
+     *
+     * @return is current user can join model
+     */
+    @NotNull
+    public BooleanValueModel getIsCanJoin() {
+        return isCanJoin;
+    }
+
+    /**
      * Is group deleted
      *
      * @return is this group deleted model
@@ -569,6 +598,8 @@ public class GroupVM extends BaseValueModel<Group> {
         isChanged |= isCanDeleteForeign.change(rawObj.isCanDeleteForeign());
         isChanged |= isDeleted.change(rawObj.isDeleted());
         isChanged |= isCanClear.change(rawObj.isCanClear());
+        isChanged |= isCanViewInfo.change(rawObj.isCanViewInfo());
+        isChanged |= isCanJoin.change(rawObj.isCanJoin());
 
         if (isChanged) {
             notifyIfNeeded();

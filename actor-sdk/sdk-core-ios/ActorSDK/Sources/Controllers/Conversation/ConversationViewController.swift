@@ -379,6 +379,8 @@ public class ConversationViewController:
                 }
             })
             
+//            binder.bind(group.isMember, valueModel2: group.isCanWriteMessage, valueModel3: group.isCanJ, closure: <#T##(value1: T1!, value2: T2!, value3: T3!) -> ()#>)
+            
             binder.bind(group.isMember, valueModel2: group.isCanWriteMessage) { (isMember: JavaLangBoolean!, canWriteMessage: JavaLangBoolean!) in
                 if canWriteMessage.booleanValue() {
                     self.stickersButton.hidden = false

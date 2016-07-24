@@ -16,7 +16,7 @@ public class AAGroupViewMembersController: AAContentTableController {
         super.init(style: .Plain)
         self.gid = gid
         
-        navigationItem.title = AALocalized("GroupMembers")
+        navigationItem.title = AALocalized("GroupViewMembers")
         
         if group.isCanInviteMembers.get().booleanValue() {
             navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Add, target: self, action: #selector(didAddPressed))

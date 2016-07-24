@@ -64,6 +64,10 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
     private boolean isCanDelete;
     @Property("readonly, nonatomic")
     private boolean isDeleted;
+    @Property("readonly, nonatomic")
+    private boolean isCanJoin;
+    @Property("readonly, nonatomic")
+    private boolean isCanViewInfo;
     @NotNull
     @Property("readonly, nonatomic")
     @SuppressWarnings("NullableProblems")
@@ -192,6 +196,14 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
 
     public boolean isCanCall() {
         return isCanCall;
+    }
+
+    public boolean isCanJoin() {
+        return isCanJoin;
+    }
+
+    public boolean isCanViewInfo() {
+        return isCanViewInfo;
     }
 
     @NotNull
@@ -767,6 +779,8 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
         this.isCanClear = BitMaskUtil.getBitValue(permissions, ApiGroupPermissions.CLEAR);
         this.isCanLeave = BitMaskUtil.getBitValue(permissions, ApiGroupPermissions.LEAVE);
         this.isCanDelete = BitMaskUtil.getBitValue(permissions, ApiGroupPermissions.DELETE);
+        this.isCanJoin = BitMaskUtil.getBitValue(permissions, ApiGroupPermissions.JOIN);
+        this.isCanViewInfo = BitMaskUtil.getBitValue(permissions, ApiGroupPermissions.VIEW_INFO);
 
         //
         // Ext
