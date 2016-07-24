@@ -402,8 +402,10 @@ public class ConversationViewController:
             
             binder.bind(group.isDeleted) { (isDeleted: JavaLangBoolean!) in
                 if isDeleted.booleanValue() {
-                    self.alertUser("ChatDeleted") {
-                        self.navigateBack()
+                    self.alertUser(AALocalized("ChatDeleted")) {
+                        self.execute(Actor.deleteChatCommandWithPeer(self.peer), successBlock: { (r) in
+                            self.navigateBack()
+                        })
                     }
                 }
             }

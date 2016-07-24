@@ -160,7 +160,7 @@ public class AAGroupViewController: AAContentTableController {
                     r.content = AALocalized("GroupViewMembers")
                     r.style = .Normal
                     r.selectAction = { () -> Bool in
-                        // TODO: Implement
+                        self.navigateNext(AAGroupViewMembersController(gid: self.gid))
                         return false
                     }
                 })

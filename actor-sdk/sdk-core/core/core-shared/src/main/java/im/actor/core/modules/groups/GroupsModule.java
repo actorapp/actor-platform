@@ -11,6 +11,7 @@ import java.util.List;
 import im.actor.core.api.ApiAdminSettings;
 import im.actor.core.api.ApiGroupOutPeer;
 import im.actor.core.api.ApiGroupType;
+import im.actor.core.api.ApiMember;
 import im.actor.core.api.ApiOutPeer;
 import im.actor.core.api.ApiPeerType;
 import im.actor.core.api.ApiUserOutPeer;
@@ -39,6 +40,7 @@ import im.actor.core.api.rpc.ResponseIntegrationToken;
 import im.actor.core.api.rpc.ResponseInviteUrl;
 import im.actor.core.api.rpc.ResponseVoid;
 import im.actor.core.entity.Group;
+import im.actor.core.entity.GroupMember;
 import im.actor.core.entity.GroupMembersSlice;
 import im.actor.core.entity.GroupPermissions;
 import im.actor.core.entity.Peer;
@@ -295,9 +297,11 @@ public class GroupsModule extends AbsModule implements BusSubscriber {
                                 limit, next)))
                 .chain(r -> updates().loadRequiredPeers(r.getUsers(), new ArrayList<>()))
                 .map(r -> {
-                    ArrayList<Integer> members = new ArrayList<>();
-                    for (ApiUserOutPeer p : r.getUsers()) {
-                        members.add(p.getUid());
+                    ArrayList<GroupMember> members = new ArrayList<>();
+                    for (ApiMember p : r.getMembers()) {
+                        boolean isAdmin = p.isAdmin() != null ? p.isAdmin() : false;
+                        members.add(new GroupMember(p.getUid(),
+                                p.getInviterUid(), p.getInviterUid(), isAdmin));
                     }
                     return new GroupMembersSlice(members, r.getNext());
                 });

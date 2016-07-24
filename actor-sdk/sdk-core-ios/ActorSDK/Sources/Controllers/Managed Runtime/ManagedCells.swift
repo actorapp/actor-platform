@@ -650,6 +650,8 @@ public class AAManagedArrayRows<T, R where R: UITableViewCell>: AAManagedRange {
     
     public var bindData: ((cell: R, item: T) -> ())?
     
+    public var itemShown: ((index: Int, item: T) -> ())?
+    
     public var data = [T]()
     
     public func initTable(table: AAManagedTable) {
@@ -670,7 +672,13 @@ public class AAManagedArrayRows<T, R where R: UITableViewCell>: AAManagedRange {
     
     public func rangeCellForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> UITableViewCell {
         let res: R = table.dequeueCell(indexPath.indexPath)
-        rangeBindData(table, indexPath: indexPath, cell: res, item: data[indexPath.item])
+        let item = data[indexPath.item]
+        rangeBindData(table, indexPath: indexPath, cell: res, item: item)
+        
+        if let shown = itemShown {
+            shown(index: indexPath.item, item: item)
+        }
+        
         return res
     }
     

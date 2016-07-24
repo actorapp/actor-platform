@@ -224,6 +224,7 @@
 		066A53371BC537CA000E606E /* ConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53361BC537CA000E606E /* ConversationViewController.swift */; };
 		066A53391BC5456B000E606E /* ActorStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53381BC5456B000E606E /* ActorStyle.swift */; };
 		066CBCDC1C8D419F004507E2 /* AAAuthEmailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066CBCDB1C8D419F004507E2 /* AAAuthEmailViewController.swift */; };
+		067B67541D45341D00B9A238 /* AAGroupViewMembersController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 067B67531D45341D00B9A238 /* AAGroupViewMembersController.swift */; };
 		068AFC391C94A0050055F503 /* AADialogListProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 068AFC381C94A0050055F503 /* AADialogListProcessor.swift */; };
 		069CF4CC1BCB909A00C66E12 /* CLBackspaceDetectingTextField.h in Headers */ = {isa = PBXBuildFile; fileRef = 069CF4C41BCB909A00C66E12 /* CLBackspaceDetectingTextField.h */; };
 		069CF4CD1BCB909A00C66E12 /* CLBackspaceDetectingTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 069CF4C51BCB909A00C66E12 /* CLBackspaceDetectingTextField.m */; };
@@ -601,6 +602,7 @@
 		066A53361BC537CA000E606E /* ConversationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationViewController.swift; sourceTree = "<group>"; };
 		066A53381BC5456B000E606E /* ActorStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActorStyle.swift; sourceTree = "<group>"; };
 		066CBCDB1C8D419F004507E2 /* AAAuthEmailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthEmailViewController.swift; sourceTree = "<group>"; };
+		067B67531D45341D00B9A238 /* AAGroupViewMembersController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAGroupViewMembersController.swift; sourceTree = "<group>"; };
 		068AFC381C94A0050055F503 /* AADialogListProcessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AADialogListProcessor.swift; sourceTree = "<group>"; };
 		069CF4C41BCB909A00C66E12 /* CLBackspaceDetectingTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLBackspaceDetectingTextField.h; sourceTree = "<group>"; };
 		069CF4C51BCB909A00C66E12 /* CLBackspaceDetectingTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLBackspaceDetectingTextField.m; sourceTree = "<group>"; };
@@ -1240,6 +1242,7 @@
 				066A52E81BC52A25000E606E /* Cells */,
 				066A52E21BC52A20000E606E /* AAGroupViewController.swift */,
 				06ABFE371D3FCCE30031A0D6 /* AAGroupEditInfoViewController.swift */,
+				067B67531D45341D00B9A238 /* AAGroupViewMembersController.swift */,
 				06ABFE3C1D41283A0031A0D6 /* AAGroupAdministrationViewController.swift */,
 				06ABFE391D410D2D0031A0D6 /* AAGroupTypeController.swift */,
 				066A52E31BC52A20000E606E /* AAAddParticipantViewController.swift */,
@@ -2289,6 +2292,7 @@
 				066A51901BC4C383000E606E /* CocoaNetworkRuntime.swift in Sources */,
 				06ABFE381D3FCCE30031A0D6 /* AAGroupEditInfoViewController.swift in Sources */,
 				06E7B24A1C0F92140090660C /* AABubbleLocationCell.swift in Sources */,
+				067B67541D45341D00B9A238 /* AAGroupViewMembersController.swift in Sources */,
 				066A52581BC4EF61000E606E /* Alerts.swift in Sources */,
 				066A51691BC4C366000E606E /* AATools.swift in Sources */,
 				066A53201BC533F5000E606E /* AABubbleBackgroundProcessor.swift in Sources */,
