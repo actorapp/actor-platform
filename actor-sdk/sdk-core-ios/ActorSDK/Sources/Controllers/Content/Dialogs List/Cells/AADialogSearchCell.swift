@@ -6,7 +6,7 @@ import UIKit
 
 public class AADialogSearchCell: AATableViewCell, AABindedSearchCell {
     
-    public typealias BindData = ACSearchEntity
+    public typealias BindData = ACSearchResult
     
     public static func bindedCellHeight(item: BindData) -> CGFloat {
         
@@ -31,7 +31,7 @@ public class AADialogSearchCell: AATableViewCell, AABindedSearchCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public func bind(item: ACSearchEntity, search: String?) {
+    public func bind(item: ACSearchResult, search: String?) {
         avatarView.bind(item.title, id: Int(item.peer.peerId), avatar: item.avatar)
         titleView.text = item.title
     }

@@ -22,6 +22,8 @@ public class DialogBuilder {
     private int relatedUid = 0;
     private Long knownReadDate;
     private Long knownReceiveDate;
+    private boolean isBot;
+    private boolean isChannel;
 
     public DialogBuilder() {
 
@@ -41,6 +43,8 @@ public class DialogBuilder {
         relatedUid = dialog.getRelatedUid();
         knownReadDate = dialog.getKnownReadDate();
         knownReceiveDate = dialog.getKnownReceiveDate();
+        isBot = dialog.isBot();
+        isChannel = dialog.isChannel();
     }
 
     public DialogBuilder setPeer(Peer peer) {
@@ -98,6 +102,16 @@ public class DialogBuilder {
         return this;
     }
 
+    public DialogBuilder setIsBot(boolean isBot) {
+        this.isBot = isBot;
+        return this;
+    }
+
+    public DialogBuilder setIsChannel(boolean isChannel) {
+        this.isChannel = isChannel;
+        return this;
+    }
+
     public DialogBuilder updateKnownReadDate(Long knownReadDate) {
         if (knownReadDate != null && (this.knownReadDate == null || this.knownReadDate < knownReadDate)) {
             this.knownReadDate = knownReadDate;
@@ -113,7 +127,7 @@ public class DialogBuilder {
     }
 
     public Dialog createDialog() {
-        return new Dialog(peer, sortKey, dialogTitle, dialogAvatar, unreadCount, rid, messageType,
-                text, senderId, time, relatedUid, knownReadDate, knownReceiveDate);
+        return new Dialog(peer, sortKey, dialogTitle, dialogAvatar, isBot, isChannel, unreadCount,
+                rid, messageType, text, senderId, time, relatedUid, knownReadDate, knownReceiveDate);
     }
 }

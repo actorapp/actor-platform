@@ -125,18 +125,6 @@ public class EditNameFragment extends BaseFragment {
                             Toast.makeText(getActivity(), R.string.toast_unable_change, Toast.LENGTH_SHORT).show();
                         }
                     });
-                } else if (type == EditNameActivity.TYPE_GROUP) {
-                    execute(messenger().editGroupTitle(id, name), R.string.edit_name_process, new CommandCallback<Void>() {
-                        @Override
-                        public void onResult(Void res) {
-                            getActivity().finish();
-                        }
-
-                        @Override
-                        public void onError(Exception e) {
-                            Toast.makeText(getActivity(), R.string.toast_unable_change, Toast.LENGTH_SHORT).show();
-                        }
-                    });
                 } else if (type == EditNameActivity.TYPE_GROUP_THEME) {
                     execute(messenger().editGroupTheme(id, name), R.string.edit_theme_process, new CommandCallback<Void>() {
                         @Override

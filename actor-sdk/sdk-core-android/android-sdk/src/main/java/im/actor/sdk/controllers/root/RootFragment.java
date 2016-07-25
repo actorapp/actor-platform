@@ -9,6 +9,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
@@ -28,13 +29,51 @@ public class RootFragment extends BaseFragment {
         setTitle(ActorSDK.sharedActor().getAppName());
     }
 
+    private boolean isInited = false;
+
+    @Override
+    public void onCreate(Bundle saveInstance) {
+        super.onCreate(saveInstance);
+        if (saveInstance != null) {
+            isInited = saveInstance.getBoolean("is_inited");
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View res = inflater.inflate(R.layout.activity_root_content, container, false);
+        FrameLayout res = new FrameLayout(getContext());
 
-        if (savedInstanceState == null) {
+        FrameLayout content = new FrameLayout(getContext());
+        content.setId(R.id.content);
+        res.addView(content, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+
+        FrameLayout fab = new FrameLayout(getContext());
+        fab.setId(R.id.fab);
+        res.addView(fab, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+
+        FrameLayout search = new FrameLayout(getContext());
+        search.setId(R.id.search);
+        res.addView(search, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+
+        FrameLayout placeholder = new FrameLayout(getContext());
+        placeholder.setId(R.id.placeholder);
+        res.addView(placeholder, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+
+        return res;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        if (!isInited) {
+            isInited = true;
             getChildFragmentManager().beginTransaction()
                     .add(R.id.content, new DialogsDefaultFragment())
                     .add(R.id.fab, new ComposeFabFragment())
@@ -42,8 +81,6 @@ public class RootFragment extends BaseFragment {
                     .add(R.id.placeholder, new GlobalPlaceholderFragment())
                     .commit();
         }
-
-        return res;
     }
 
     @Override
@@ -67,5 +104,11 @@ public class RootFragment extends BaseFragment {
         } else {
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("is_inited", isInited);
     }
 }

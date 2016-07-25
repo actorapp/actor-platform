@@ -6,7 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Optional;
 
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
@@ -18,36 +21,105 @@ import im.actor.sdk.view.adapters.ViewHolder;
 import im.actor.core.entity.GroupMember;
 import im.actor.core.viewmodel.UserVM;
 
+import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 import static im.actor.sdk.util.ActorSDKMessenger.users;
 
 public class MembersAdapter extends HolderAdapter<GroupMember> {
-    private GroupMember[] members;
+
+    public static final int LOAD_GAP = 10;
+    private static final int LIMIT = 20;
+    private ArrayList<GroupMember> members = new ArrayList<GroupMember>();
     private ActorBinder BINDER = new ActorBinder();
+    private boolean loadInProgress = false;
+    private boolean loaddedToEnd = false;
+    private LoadedCallback callback;
 
-
-    public MembersAdapter(Collection<GroupMember> members, Context context) {
+    public MembersAdapter(Context context, int groupId) {
         super(context);
-        this.members = members.toArray(new GroupMember[0]);
+        this.groupId = groupId;
     }
 
-    public void updateUid(Collection<GroupMember> members) {
-        this.members = members.toArray(new GroupMember[0]);
+    public void setMembers(Collection<GroupMember> members) {
+        setMembers(members, true);
+    }
+
+    public void setMembers(Collection<GroupMember> members, boolean sort) {
+        if (sort) {
+            GroupMember[] membersArray = members.toArray(new GroupMember[members.size()]);
+            Arrays.sort(membersArray, (a, b) -> {
+                if (a.isAdministrator() && !b.isAdministrator()) {
+                    return -1;
+                }
+                if (b.isAdministrator() && !a.isAdministrator()) {
+                    return 1;
+                }
+                String an = users().get(a.getInviterUid()).getName().get();
+                String bn = users().get(b.getInviterUid()).getName().get();
+                return an.compareTo(bn);
+            });
+            this.members.addAll(Arrays.asList(membersArray));
+        } else {
+            this.members.addAll(members);
+        }
         notifyDataSetChanged();
     }
 
     @Override
+    protected void onBindViewHolder(ViewHolder<GroupMember> holder, GroupMember obj, int position, Context context) {
+        super.onBindViewHolder(holder, obj, position, context);
+        if (position >= getCount() - LOAD_GAP) {
+            loadMore();
+        }
+
+    }
+
+    private int groupId;
+    private boolean isInitiallyLoaded;
+    private byte[] nextMembers;
+    private ArrayList<Integer> rawMembers = new ArrayList<>();
+
+    public void initLoad(LoadedCallback callback) {
+        this.callback = callback;
+        if (!isInitiallyLoaded) {
+            loadMore();
+        }
+    }
+
+    public interface LoadedCallback {
+        void onLoaded();
+    }
+
+    private void loadMore() {
+        if (!loadInProgress && !loaddedToEnd) {
+            loadInProgress = true;
+            messenger().loadMembers(groupId, LIMIT, nextMembers).then(groupMembersSlice -> {
+                if (!isInitiallyLoaded) {
+                    isInitiallyLoaded = true;
+                    if (callback != null) {
+                        callback.onLoaded();
+                    }
+                }
+                nextMembers = groupMembersSlice.getNext();
+                loaddedToEnd = nextMembers == null;
+                loadInProgress = false;
+                setMembers(groupMembersSlice.getMembers(), false);
+            });
+        }
+    }
+
+    @Override
     public int getCount() {
-        return members.length;
+        return members.size();
     }
 
     @Override
     public GroupMember getItem(int position) {
-        return members[position];
+        return members.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return members[position].getUid();
+        return members.get(position).getUid();
     }
 
     @Override
@@ -74,7 +146,7 @@ public class MembersAdapter extends HolderAdapter<GroupMember> {
             online = (TextView) res.findViewById(R.id.online);
             ((TextView) admin).setTextColor(ActorSDK.sharedActor().style.getGroupAdminColor());
             ((TextView) res.findViewById(R.id.name)).setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
-            res.findViewById(R.id.divider).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
+            // res.findViewById(R.id.divider).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
             return res;
         }
 
@@ -87,7 +159,6 @@ public class MembersAdapter extends HolderAdapter<GroupMember> {
             avatarView.bind(user);
 
             userName.setText(user.getName().get());
-
 
             if (data.isAdministrator()) {
                 admin.setVisibility(View.VISIBLE);

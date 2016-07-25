@@ -53,6 +53,7 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
 
     private static boolean isStylesLoaded = false;
     private static TextPaint titlePaint;
+    private static TextPaint titleSecurePaint;
     private static TextPaint datePaint;
     private static TextPaint textPaint;
     private static TextPaint textActivePaint;
@@ -60,6 +61,9 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
     private static Paint counterBgPaint;
     private static int senderTextColor;
     private static Drawable groupIcon;
+    private static Drawable secretIcon;
+    private static Drawable channelIcon;
+    private static Drawable botIcon;
     private static int[] placeholderColors;
     private static Paint avatarBorder;
     private static Paint fillPaint;
@@ -144,7 +148,10 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
             //
 
             if (layout.getTitleIcon() != null) {
-                layout.getTitleIcon().setBounds(Screen.sp(72), Screen.sp(16 + 3), Screen.dp(72 + 16), Screen.dp(16 + 3 + 10));
+                int left = Screen.dp(72) + (Screen.dp(16) - layout.getTitleIcon().getIntrinsicWidth()) / 2;
+                int bottom = layout.getTitleIconTop();
+                layout.getTitleIcon().setBounds(left, bottom - layout.getTitleIcon().getIntrinsicHeight(),
+                        left + layout.getTitleIcon().getIntrinsicWidth(), bottom);
                 layout.getTitleIcon().draw(canvas);
             }
 
@@ -248,12 +255,19 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
             ActorStyle style = ActorSDK.sharedActor().style;
             Context context = getContext();
             titlePaint = createTextPaint(Fonts.medium(), 16, style.getDialogsTitleColor());
+            titleSecurePaint = createTextPaint(Fonts.medium(), 16, style.getDialogsTitleSecureColor());
             datePaint = createTextPaint(Fonts.regular(), 14, style.getDialogsTimeColor());
             textPaint = createTextPaint(Fonts.regular(), 16, style.getDialogsTimeColor());
             textActivePaint = createTextPaint(Fonts.regular(), 16, style.getDialogsActiveTextColor());
             senderTextColor = style.getDialogsActiveTextColor();
-            groupIcon = new TintDrawable(context.getResources().getDrawable(R.drawable.dialogs_group),
+            groupIcon = new TintDrawable(context.getResources().getDrawable(R.drawable.ic_group_black_18dp),
                     style.getDialogsTitleColor());
+            channelIcon = new TintDrawable(context.getResources().getDrawable(R.drawable.ic_megaphone_18dp_black),
+                    style.getDialogsTitleColor());
+            botIcon = new TintDrawable(context.getResources().getDrawable(R.drawable.ic_robot_black_18dp),
+                    style.getDialogsTitleColor());
+            secretIcon = new TintDrawable(context.getResources().getDrawable(R.drawable.ic_lock_black_18dp),
+                    style.getDialogsTitleSecureColor());
             counterTextPaint = createTextPaint(Fonts.medium(), 14, style.getDialogsCounterTextColor());
             counterTextPaint.setTextAlign(Paint.Align.CENTER);
             counterBgPaint = createFilledPaint(style.getDialogsCounterBackgroundColor());
@@ -328,8 +342,24 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
         }
 
         if (arg.getPeer().getPeerType() == PeerType.GROUP) {
-            res.setTitleIcon(groupIcon);
+            if (arg.isChannel()) {
+                res.setTitleIcon(channelIcon);
+                res.setTitleIconTop(Screen.dp(33));
+            } else {
+                res.setTitleIcon(groupIcon);
+                res.setTitleIconTop(Screen.dp(33));
+            }
             maxTitleWidth -= Screen.dp(16/*icon width*/ + 4/*padding*/);
+        } else if (arg.getPeer().getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
+            res.setTitleIcon(secretIcon);
+            res.setTitleIconTop(Screen.dp(31));
+            maxTitleWidth -= Screen.dp(16/*icon width*/ + 4/*padding*/);
+        } else if (arg.getPeer().getPeerType() == PeerType.PRIVATE) {
+            if (arg.isBot()) {
+                res.setTitleIcon(botIcon);
+                res.setTitleIconTop(Screen.dp(33));
+                maxTitleWidth -= Screen.dp(16/*icon width*/ + 4/*padding*/);
+            }
         }
 
         if (arg.getSenderId() == messenger().myUid()) {
@@ -343,7 +373,11 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
             maxTitleWidth -= Screen.dp(20);
         }
 
-        res.setTitleLayout(singleLineText(arg.getDialogTitle(), titlePaint, maxTitleWidth));
+        res.setTitleLayout(singleLineText(arg.getDialogTitle(),
+                arg.getPeer().getPeerType() == PeerType.PRIVATE_ENCRYPTED
+                        ? titleSecurePaint
+                        : titlePaint,
+                maxTitleWidth));
 
         // Second Row
         int maxWidth = width - Screen.dp(72) - Screen.dp(8);
@@ -357,8 +391,10 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
         }
 
         if (arg.getSenderId() > 0) {
+
             String contentText = messenger().getFormatter().formatContentText(arg.getSenderId(),
-                    arg.getMessageType(), arg.getText().replace("\n", " "), arg.getRelatedUid());
+                    arg.getMessageType(), arg.getText().replace("\n", " "), arg.getRelatedUid(),
+                    arg.isChannel());
 
             if (arg.getPeer().getPeerType() == PeerType.GROUP) {
                 if (messenger().getFormatter().isLargeDialogMessage(arg.getMessageType())) {
@@ -508,12 +544,21 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
         private CharSequence shortName;
         private Layout titleLayout;
         private Drawable titleIcon;
+        private int titleIconTop;
         private String date;
         private int dateWidth;
         private Layout textLayout;
         private String counter;
         private int counterWidth;
         private Drawable state;
+
+        public int getTitleIconTop() {
+            return titleIconTop;
+        }
+
+        public void setTitleIconTop(int titleIconTop) {
+            this.titleIconTop = titleIconTop;
+        }
 
         public Drawable getState() {
             return state;

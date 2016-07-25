@@ -10,7 +10,7 @@
     <item
         android:id="@+id/editAvatar"
         android:icon="@drawable/ic_edit_white_24dp"
-        android:title="@string/avatar_menu_edit"
+        android:title="@string/actor_menu_edit"
         app:showAsAction="always" />
 
 </menu>

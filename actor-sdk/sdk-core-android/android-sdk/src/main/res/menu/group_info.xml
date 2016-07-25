@@ -4,24 +4,11 @@
   ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
   -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/addMember"
-        android:icon="@drawable/ic_person_add_white_48dp"
-        android:title="@string/group_menu_add"
-        app:showAsAction="always" />
+        android:id="@+id/edit"
+        android:icon="@drawable/ic_edit_white_36dp"
+        android:title="@string/actor_menu_edit" />
 
-    <item
-        android:id="@+id/editTitle"
-        android:title="@string/group_menu_change_theme" />
-
-    <item
-        android:id="@+id/changePhoto"
-        android:title="@string/group_menu_change_photo" />
-
-    <item
-        android:id="@+id/leaveGroup"
-        android:title="@string/group_menu_leave" />
 </menu>

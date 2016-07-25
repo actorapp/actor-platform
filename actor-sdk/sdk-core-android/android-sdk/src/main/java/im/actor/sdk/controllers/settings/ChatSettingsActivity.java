@@ -24,7 +24,7 @@ public class ChatSettingsActivity extends BaseFragmentActivity {
         }
 
         if (savedInstanceState == null) {
-            showFragment(fragment, false, false);
+            showFragment(fragment, false);
         }
     }
 }

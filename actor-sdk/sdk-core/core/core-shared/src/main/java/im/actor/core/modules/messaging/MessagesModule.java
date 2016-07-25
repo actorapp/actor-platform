@@ -56,6 +56,7 @@ import im.actor.core.modules.messaging.history.ArchivedDialogsActor;
 import im.actor.core.modules.messaging.actions.CursorReaderActor;
 import im.actor.core.modules.messaging.actions.CursorReceiverActor;
 import im.actor.core.modules.messaging.dialogs.DialogsActor;
+import im.actor.core.modules.messaging.history.ConversationHistory;
 import im.actor.core.modules.messaging.history.ConversationHistoryActor;
 import im.actor.core.modules.messaging.history.DialogsHistoryActor;
 import im.actor.core.modules.messaging.actions.MessageDeleteActor;
@@ -105,7 +106,7 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
     private ActorRef sendMessageActor;
     private ActorRef deletionsActor;
     private RouterInt router;
-    private final HashMap<Peer, ActorRef> historyLoaderActors = new HashMap<>();
+    private final HashMap<Peer, ConversationHistory> historyLoaderActors = new HashMap<>();
 
     private MVVMCollection<ConversationState, ConversationVM> conversationStates;
 
@@ -159,12 +160,10 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
         return plainReceiverActor;
     }
 
-    public ActorRef getHistoryActor(final Peer peer) {
+    public ConversationHistory getHistoryActor(final Peer peer) {
         synchronized (historyLoaderActors) {
             if (!historyLoaderActors.containsKey(peer)) {
-                historyLoaderActors.put(peer, system().actorOf("history/" + peer, () -> {
-                    return new ConversationHistoryActor(peer, context());
-                }));
+                historyLoaderActors.put(peer, new ConversationHistory(peer, context()));
             }
             return historyLoaderActors.get(peer);
         }
@@ -448,7 +447,7 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
     }
 
     public void loadMoreHistory(final Peer peer) {
-        im.actor.runtime.Runtime.dispatch(() -> getHistoryActor(peer).send(new ConversationHistoryActor.LoadMore()));
+        im.actor.runtime.Runtime.dispatch(() -> getHistoryActor(peer).loadMore());
     }
 
     //

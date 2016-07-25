@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -19,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import im.actor.core.entity.GroupType;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.viewmodel.Command;
@@ -144,24 +146,18 @@ public class ChatToolbarFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
 
-
         // Performing all required Data Binding here
 
         if (peer.getPeerType() == PeerType.PRIVATE) {
 
             // Loading user
-            final UserVM user = users().get(peer.getPeerId());
-            if (user == null) {
-
-                return;
-            }
+            UserVM user = users().get(peer.getPeerId());
 
             // Binding User Avatar to Toolbar
             bind(barAvatar, user.getId(), user.getAvatar(), user.getName());
 
             // Binding User name to Toolbar
             bind(barTitle, user.getName());
-
             bind(user.getIsVerified(), (val, valueModel) -> {
                 barTitle.setCompoundDrawablesWithIntrinsicBounds(null, null,
                         val ? new TintDrawable(
@@ -185,16 +181,19 @@ public class ChatToolbarFragment extends BaseFragment {
 
             // Loading group
             GroupVM group = groups().get(peer.getPeerId());
-            if (group == null) {
-                // finish();
-                return;
-            }
 
             // Binding Group avatar to Toolbar
             bind(barAvatar, group.getId(), group.getAvatar(), group.getName());
 
             // Binding Group title to Toolbar
             bind(barTitle, group.getName());
+            if (group.getGroupType() == GroupType.CHANNEL) {
+                barTitle.setCompoundDrawablesWithIntrinsicBounds(new TintDrawable(
+                        getResources().getDrawable(R.drawable.ic_megaphone_18dp_black),
+                        Color.WHITE), null, null, null);
+            } else {
+                barTitle.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+            }
 
             // Subtitle is always visible for Groups
             barSubtitleContainer.setVisibility(View.VISIBLE);
@@ -203,14 +202,11 @@ public class ChatToolbarFragment extends BaseFragment {
             bind(barSubtitle, barSubtitleContainer, group);
 
             // Binding group typing
-            bindGroupTyping(barTyping, barTypingContainer, barSubtitle, messenger().getGroupTyping(group.getId()));
+            if (group.getGroupType() == GroupType.GROUP) {
+                bindGroupTyping(barTyping, barTypingContainer, barSubtitle, messenger().getGroupTyping(group.getId()));
+            }
         }
-
-        // Show/Hide Avatar
-        if (!style.isShowAvatarInTitle() || (peer.getPeerType() == PeerType.PRIVATE && !style.isShowAvatarPrivateInTitle())) {
-            barAvatar.setVisibility(View.GONE);
-        }
-
+        
         // Global Counter
         bind(messenger().getGlobalState().getGlobalCounter(), (val, valueModel) -> {
             if (val != null && val > 0) {
@@ -230,25 +226,31 @@ public class ChatToolbarFragment extends BaseFragment {
         inflater.inflate(R.menu.chat_menu, menu);
 
         // Show menu for opening chat contact
-        if (peer.getPeerType() == PeerType.PRIVATE) {
-            menu.findItem(R.id.contact).setVisible(true);
-        } else {
-            menu.findItem(R.id.contact).setVisible(false);
-        }
+//        if (peer.getPeerType() == PeerType.PRIVATE) {
+//            menu.findItem(R.id.contact).setVisible(true);
+//        } else {
+//            menu.findItem(R.id.contact).setVisible(false);
+//        }
 
         // Show menus for leave group and group info view
-        if (peer.getPeerType() == PeerType.GROUP) {
-            if (groups().get(peer.getPeerId()).isMember().get()) {
-                menu.findItem(R.id.leaveGroup).setVisible(true);
-                menu.findItem(R.id.groupInfo).setVisible(true);
-            } else {
-                menu.findItem(R.id.leaveGroup).setVisible(false);
-                menu.findItem(R.id.groupInfo).setVisible(false);
-            }
-        } else {
-            menu.findItem(R.id.groupInfo).setVisible(false);
-            menu.findItem(R.id.leaveGroup).setVisible(false);
-        }
+//        if (peer.getPeerType() == PeerType.GROUP) {
+//            GroupVM groupVM = groups().get(peer.getPeerId());
+//            if (groupVM.isMember().get()) {
+//                menu.findItem(R.id.leaveGroup).setVisible(true);
+//                menu.findItem(R.id.groupInfo).setVisible(true);
+//            } else {
+//                menu.findItem(R.id.leaveGroup).setVisible(false);
+//                menu.findItem(R.id.groupInfo).setVisible(false);
+//            }
+//            if (groupVM.getGroupType() == GroupType.GROUP) {
+//                menu.findItem(R.id.clear).setVisible(true);
+//            } else {
+//                menu.findItem(R.id.clear).setVisible(false);
+//            }
+//        } else {
+//            menu.findItem(R.id.groupInfo).setVisible(false);
+//            menu.findItem(R.id.leaveGroup).setVisible(false);
+//        }
 
         // Voice and Video calls
         boolean callsEnabled = ActorSDK.sharedActor().isCallsEnabled();
@@ -257,8 +259,15 @@ public class ChatToolbarFragment extends BaseFragment {
             if (peer.getPeerType() == PeerType.PRIVATE) {
                 callsEnabled = !users().get(peer.getPeerId()).isBot();
             } else if (peer.getPeerType() == PeerType.GROUP) {
-                callsEnabled = groups().get(peer.getPeerId()).getMembersCount() <= MAX_USERS_FOR_CALLS;
-                videoCallsEnabled = false;
+
+                GroupVM groupVM = groups().get(peer.getPeerId());
+                if (groupVM.getGroupType() == GroupType.GROUP) {
+                    callsEnabled = groupVM.getMembersCount().get() <= MAX_USERS_FOR_CALLS;
+                    videoCallsEnabled = false;
+                } else {
+                    callsEnabled = false;
+                    videoCallsEnabled = false;
+                }
             }
         }
         menu.findItem(R.id.call).setVisible(callsEnabled);
@@ -275,7 +284,7 @@ public class ChatToolbarFragment extends BaseFragment {
         int i = item.getItemId();
         if (i == android.R.id.home) {
             getActivity().finish();
-        } else if (i == R.id.clear) {
+        } /*else if (i == R.id.clear) {
             new AlertDialog.Builder(getActivity())
                     .setMessage(R.string.alert_delete_all_messages_text)
                     .setPositiveButton(R.string.alert_delete_all_messages_yes, (dialog, which) -> {
@@ -322,7 +331,7 @@ public class ChatToolbarFragment extends BaseFragment {
             ActorSDKLauncher.startProfileActivity(getActivity(), peer.getPeerId());
         } else if (i == R.id.groupInfo) {
             ActorSDK.sharedActor().startGroupInfoActivity(getActivity(), peer.getPeerId());
-        } else if (i == R.id.add_to_contacts) {
+        }*/ else if (i == R.id.add_to_contacts) {
             execute(messenger().addContact(peer.getPeerId()));
         }
 

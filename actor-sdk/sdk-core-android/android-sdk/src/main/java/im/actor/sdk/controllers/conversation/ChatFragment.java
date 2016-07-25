@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import im.actor.core.entity.GroupType;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.entity.Sticker;
@@ -20,6 +21,7 @@ import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.mvvm.Value;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.ValueDoubleChangedListener;
+import im.actor.runtime.mvvm.ValueListener;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorSDKLauncher;
 import im.actor.sdk.R;
@@ -167,15 +169,26 @@ public class ChatFragment extends BaseFragment implements InputBarCallback, Mess
             }
         } else if (peer.getPeerType() == PeerType.GROUP) {
             GroupVM groupVM = groups().get(peer.getPeerId());
-
-            bind(groupVM.isMember(), (val, valueModel) -> {
-                if (val) {
+            bind(groupVM.isMember(), groupVM.getIsCanWriteMessage(), (isMember, valueModel, canWriteMessage, valueModel2) -> {
+                if (canWriteMessage) {
                     goneView(inputOverlayContainer, false);
                     showView(inputContainer, false);
+                } else if (isMember) {
+                    if (messenger().isNotificationsEnabled(peer)) {
+                        inputOverlayText.setText(getString(R.string.chat_mute));
+                    } else {
+                        inputOverlayText.setText(getString(R.string.chat_unmute));
+                    }
+                    inputOverlayText.setTextColor(style.getListActionColor());
+                    inputOverlayText.setClickable(true);
+                    inputOverlayText.setEnabled(true);
+                    showView(inputOverlayContainer, false);
+                    goneView(inputContainer, false);
                 } else {
                     inputOverlayText.setText(R.string.chat_not_member);
                     inputOverlayText.setTextColor(style.getListActionColor());
                     inputOverlayText.setClickable(false);
+                    inputOverlayText.setEnabled(false);
                     showView(inputOverlayContainer, false);
                     goneView(inputContainer, false);
                 }
@@ -192,6 +205,19 @@ public class ChatFragment extends BaseFragment implements InputBarCallback, Mess
                 if (userVM.getIsBlocked().get()) {
                     execute(messenger().unblockUser(userVM.getId()));
                 }
+            }
+        } else if (peer.getPeerType() == PeerType.GROUP) {
+            GroupVM groupVM = groups().get(peer.getPeerId());
+            if (groupVM.isMember().get()) {
+                if (messenger().isNotificationsEnabled(peer)) {
+                    messenger().changeNotificationsEnabled(peer, false);
+                    inputOverlayText.setText(getString(R.string.chat_unmute));
+                } else {
+                    messenger().changeNotificationsEnabled(peer, true);
+                    inputOverlayText.setText(getString(R.string.chat_mute));
+                }
+            } else {
+                // TODO: Rejoin
             }
         }
     }

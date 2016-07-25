@@ -372,7 +372,7 @@ public class UserVM extends BaseValueModel<User> {
     @MainThread
     @ObjectiveCName("subscribeWithListener:")
     public void subscribe(@NotNull ModelChangedListener<UserVM> listener) {
-        Runtime.checkMainThread();
+        // Runtime.checkMainThread();
         if (listeners.contains(listener)) {
             return;
         }
@@ -388,7 +388,7 @@ public class UserVM extends BaseValueModel<User> {
     @MainThread
     @ObjectiveCName("subscribeWithListener:withNotify:")
     public void subscribe(@NotNull ModelChangedListener<UserVM> listener, boolean notify) {
-        Runtime.checkMainThread();
+        // Runtime.checkMainThread();
         if (listeners.contains(listener)) {
             return;
         }
@@ -406,17 +406,14 @@ public class UserVM extends BaseValueModel<User> {
     @MainThread
     @ObjectiveCName("unsubscribeWithListener:")
     public void unsubscribe(@NotNull ModelChangedListener<UserVM> listener) {
-        Runtime.checkMainThread();
+        // Runtime.checkMainThread();
         listeners.remove(listener);
     }
 
     private void notifyChange() {
-        Runtime.postToMainThread(new Runnable() {
-            @Override
-            public void run() {
-                for (ModelChangedListener<UserVM> l : listeners.toArray(new ModelChangedListener[listeners.size()])) {
-                    l.onChanged(UserVM.this);
-                }
+        Runtime.postToMainThread(() -> {
+            for (ModelChangedListener<UserVM> l : listeners) {
+                l.onChanged(UserVM.this);
             }
         });
     }

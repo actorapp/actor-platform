@@ -14,6 +14,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
 import java.util.TimeZone;
@@ -132,6 +133,11 @@ public class ActorSDK {
      * Invite url
      */
     private String inviteUrl = "https://actor.im/dl";
+    /**
+     * Invite url
+     */
+    @Nullable
+    private String groupInvitePrefix = "actor.im/join/";
     /**
      * Help phone
      */
@@ -520,6 +526,25 @@ public class ActorSDK {
     }
 
     /**
+     * Getting Group Invite Prefix
+     *
+     * @return group invite prefix
+     */
+    @Nullable
+    public String getGroupInvitePrefix() {
+        return groupInvitePrefix;
+    }
+
+    /**
+     * Setting Group Invite Prefix
+     *
+     * @param groupInvitePrefix group invite prefix
+     */
+    public void setGroupInvitePrefix(@Nullable String groupInvitePrefix) {
+        this.groupInvitePrefix = groupInvitePrefix;
+    }
+
+    /**
      * Getting Push Registration Id
      *
      * @return pushId
@@ -865,9 +890,7 @@ public class ActorSDK {
     public void startGroupInfoActivity(Context context, int gid) {
         Bundle b = new Bundle();
         b.putInt(Intents.EXTRA_GROUP_ID, gid);
-        if (!startDelegateActivity(context, delegate.getGroupInfoIntent(gid), b)) {
-            startActivity(context, b, GroupInfoActivity.class);
-        }
+        startActivity(context, b, GroupInfoActivity.class);
     }
 
     /**

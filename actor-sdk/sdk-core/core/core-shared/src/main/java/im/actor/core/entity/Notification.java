@@ -10,12 +10,15 @@ public class Notification {
     @Property("readonly, nonatomic")
     private Peer peer;
     @Property("readonly, nonatomic")
+    private boolean isChannel;
+    @Property("readonly, nonatomic")
     private int sender;
     @Property("readonly, nonatomic")
     private ContentDescription contentDescription;
 
-    public Notification(Peer peer, int sender, ContentDescription contentDescription) {
+    public Notification(Peer peer, boolean isChannel, int sender, ContentDescription contentDescription) {
         this.peer = peer;
+        this.isChannel = isChannel;
         this.sender = sender;
         this.contentDescription = contentDescription;
     }
@@ -26,6 +29,10 @@ public class Notification {
 
     public int getSender() {
         return sender;
+    }
+
+    public boolean isChannel() {
+        return isChannel;
     }
 
     public ContentDescription getContentDescription() {

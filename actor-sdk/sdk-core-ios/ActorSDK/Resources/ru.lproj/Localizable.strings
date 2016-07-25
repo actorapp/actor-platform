@@ -280,6 +280,7 @@
 
 "GroupEditConfirm" = "Вы уверены, что хотите изменить тему группы?";
 
+
 "GroupEditConfirmAction" = "Изменить тему";
 
 "GroupNotifications" = "Оповещения";
@@ -288,7 +289,80 @@
 
 "GroupIntegrations" = "Интеграции";
 
-"GroupMembers" = "{0} УЧАСТНИКИ";
+"GroupDescription" = "Описание";
+
+
+
+"GroupAdministration" = "Администрирование";
+
+"GroupTypeTitle" = "Тип группы";
+
+"GroupTypeTitleChannel" = "Тип канала";
+
+"GroupTypePublic" = "Публичная";
+
+"GroupTypePrivate" = "Приватная";
+
+"ChannelTypePublic" = "Публичный";
+
+"ChannelTypePrivate" = "Приватный";
+
+"GroupTypePublicFull" = "Публичная группа";
+
+"GroupTypePrivateFull" = "Приватная группа";
+
+"ChannelTypePublicFull" = "Публичный канал";
+
+"ChannelTypePrivateFull" = "Приватный канал";
+
+"GroupPermissionsHint" = "Управление тем что возможно делать в этой группе";
+
+"GroupPermissionsHintChannel" = "Управление тем что возможно делать в этом канале";
+
+"GroupTypeHintPublic" = "Публичные гурппы могут быть найдены в поиске и кто угодно может войти в нее";
+
+"GroupTypeHintPrivate" = "Вступить в приватную группу можно только по личному приглашению";
+
+"GroupTypeHintPublicChannel" = "Публичные каналы могут быть найдены в поиске и кто угодно может подписаться на него";
+
+"GroupTypeHintPrivateChannel" = "Вступить в приватный канал можно только по личному приглашению";
+
+"GroupTypeLinkHint" = "Ваши друзья могут делиться этой ссылкой или находить группу в поиске";
+
+"GroupTypeLinkHintChannel" = "Ваши друзья могут делиться этой ссылкой или находить канал в поиске";
+
+"GroupDeleteHint" = "Вы потеряете всех сообщения в этой группе";
+
+"GroupDeleteHintChannel" = "Вы потеряете все сообщения в этом канале";
+
+
+
+
+"GroupShareTitle" = "Общая история";
+
+"GroupShareEnabled" = "Включено";
+
+"GroupShareHint" = "Все участники увидят все сообщения группы";
+
+"GroupShareMessage" = "Вы уверены что хотите сделать все сообщениям общими? Это действие необратимо.";
+
+"GroupShareAction" = "Сделать Общими";
+
+
+
+"GroupEditTitle" = "Редактирование";
+
+"GroupEditTitleChannel" = "Редактирование";
+
+"GroupEditName" = "Название группы";
+
+"GroupEditNameChannel" = "Название канала";
+
+"GroupEditDescription" = "Описание";
+
+
+
+"GroupViewMembers" = "Участники";
 
 "GroupMemberAdmin" = "админ.";
 
@@ -320,6 +394,8 @@
 
 "GroupLeave" = "Покинуть группу";
 
+"GroupLeaveChannel" = "Leave channel";
+
 "GroupLeaveConfirm" = "Вы уверены, что хотите покинуть группу?";
 
 "GroupLeaveConfirmAction" = "Покинуть";
@@ -334,23 +410,11 @@
 
 "GroupInviteLinkRevokeAction" = "Сбросить";
 
-"GroupIntegrationPageTitle" = "API Интеграции";
 
-"GroupIntegrationLinkTitle" = "ССЫЛКА";
-
-"GroupIntegrationLinkHint" = "Вы можете использовать эту ссылку для отправки сообщений из любых внешних сервисов.";
-
-"GroupIntegrationDoc" = "Открыть документацию";
-
-"GroupIntegrationLinkRevokeMessage" = "Вы уверены, что хотите сбросить ссылку? Как только вы это сделаете, вы больше не сможете по ней отправлять сообщения в группу.";
-
-"GroupIntegrationLinkRevokeAction" = "Сбросить";
 
 "GroupJoinMessage" = "Вы уверены, что хотите вступить в группу?";
 
 "GroupJoinAction" = "Вступить";
-
-"GroupMembers" = "УЧАСТНИКИ";
 
 /*
  * Compose
@@ -360,11 +424,22 @@
 
 "CreateGroup" = "Новая группа";
 
+"CreateChannel" = "Новый канал";
+
+
 "CreateGroupTitle" = "Новая группа";
 
 "CreateGroupNamePlaceholder" = "Название группы";
 
 "CreateGroupHint" = "Укажите название группы и поставьте фотографию";
+
+
+"CreateChannelTitle" = "Новый канал";
+
+"CreateChannelHint" = "Укажите название канала и поставьте фотографию";
+
+"CreateChannelNamePlaceholder" = "Название канала";
+
 
 "CreateGroupMembersTitle" = "Пригласить участников";
 
@@ -386,6 +461,10 @@
 "ChatSend" = "Отпр.";
 
 "ChatNoGroupAccess" = "Вы не состоите в группе";
+
+"ChatDeleted" = "Этот чат был удален владельцем.";
+
+"ChatJoin" = "Присоединиться";
 
 /*
  * Chat attachment menu
@@ -605,6 +684,60 @@
 "ActionAddPhoto2" = "фото";
 
 "ActionOpenCode" = "Посмотреть код";
+
+"ActionMute" = "Заглушить";
+
+"ActionUnmute" = "Включить оповещения";
+
+"ActionDelete" = "Удалить";
+
+"ActionDeleteChannel" = "Удалить канал";
+
+"ActionDeleteChannelMessage" = "Стой! Удаление этого канала исключит всех подписчиков и все сообщения будут потеряны. Продолжить все равно?";
+
+"ActionDeleteGroup" = "Удалить группу";
+
+"ActionDeleteGroupMessage" = "Стой! Удаление этой группы исключит всех участников и все сообщения будут потеряны. Продолжить все равно?";
+
+"ActionDeleteAndExit" = "Удалить и выйти";
+
+"ActionClearHistory" = "Очистить историю";
+
+
+
+"ActionDelete" = "Удалить";
+
+"ActionDeleteMessage" = "Вы уверены что хотите удалить чат?";
+
+
+"ActionDeleteChannel" = "Удалть канал";
+
+"ActionDeleteChannelMessage" = "Стой! Удаление этого канала исключит всех подписчиков и все сообщения будут потеряны. Продолжить все равно?";
+
+"ActionDeleteGroup" = "Удалить группу";
+
+"ActionDeleteGroupMessage" = "Стой! Удаление этой группы исключит всех участников и все сообщения будут потеряны. Продолжить все равно?";
+
+
+"ActionLeaveChannel" = "Покинуть канал";
+
+"ActionLeaveChannelMessage" = "Вы уверены, что хотите выйти из канала?";
+
+"ActionLeaveChannelAction" = "Выйти";
+
+
+"ActionDeleteAndExit" = "Удалить и выйти";
+
+"ActionDeleteAndExitMessage" = "Вы уверены, что хотите хотите выйти из группы и удалить все сообщения?";
+
+"ActionDeleteAndExitAction" = "Выйти";
+
+
+"ActionClearHistory" = "Очистить историю";
+
+"ActionClearHistoryMessage" = "Вы уверены что хотите очистить историю?";
+
+"ActionClearHistoryAction" = "Очистить";
 
 /*
  * Network

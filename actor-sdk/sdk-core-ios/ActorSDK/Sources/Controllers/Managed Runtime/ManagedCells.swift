@@ -8,6 +8,7 @@ import Foundation
 
 public class AAEditRow: AAManagedRow, UITextFieldDelegate {
     
+    public var prefix: String?
     public var text: String?
     public var placeholder: String?
     public var returnKeyType = UIReturnKeyType.Default
@@ -36,6 +37,14 @@ public class AAEditRow: AAManagedRow, UITextFieldDelegate {
         res.textField.delegate = self
         res.textField.removeTarget(nil, action: nil, forControlEvents: .AllEvents)
         res.textField.addTarget(self, action: #selector(AAEditRow.textFieldDidChange(_:)), forControlEvents: .EditingChanged)
+        
+        if prefix != nil {
+            res.textPrefix.text = prefix
+            res.textPrefix.hidden = false
+        } else {
+            res.textPrefix.hidden = true
+        }
+        
         return res
     }
     
@@ -172,7 +181,7 @@ public class AATextRow: AAManagedRow {
     // Cell
     
     public override func rangeCellHeightForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> CGFloat {
-        return AATextCell.measure(content!, width: table.tableView.width, enableNavigation: navigate)
+        return AATextCell.measure(title, text: content!, width: table.tableView.width, enableNavigation: navigate)
     }
     
     public override func rangeCellForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> UITableViewCell {
@@ -222,7 +231,7 @@ public extension AAManagedSection {
         return r
     }
     
-    public func text(title: String, @noescape closure: (r: AATextRow) -> ()) -> AATextRow {
+    public func text(title: String?, @noescape closure: (r: AATextRow) -> ()) -> AATextRow {
         let r = text()
         r.title = AALocalized(title)
         closure(r: r)
@@ -231,9 +240,17 @@ public extension AAManagedSection {
         return r
     }
     
-    public func text(title: String, content: String) -> AATextRow {
+    public func text(title: String?, content: String) -> AATextRow {
         let r = text()
         r.title = AALocalized(title)
+        r.content = content
+        r.initTable(self.table)
+        return r
+    }
+    
+    public func text(content: String) -> AATextRow {
+        let r = text()
+        r.title = nil
         r.content = content
         r.initTable(self.table)
         return r
@@ -336,6 +353,10 @@ public class AACommonRow: AAManagedRow {
     
     // Binding
     
+    public func rangeBind(table: AAManagedTable, binder: AABinder) {
+        bindAction?(r: self)
+    }
+    
     public override func reload() {
         
         bindAction?(r: self)
@@ -345,6 +366,10 @@ public class AACommonRow: AAManagedRow {
                 bindCell(cell)
             }
         }
+    }
+    
+    public func rebind() {
+        bindAction?(r: self)
     }
 }
 
@@ -625,6 +650,8 @@ public class AAManagedArrayRows<T, R where R: UITableViewCell>: AAManagedRange {
     
     public var bindData: ((cell: R, item: T) -> ())?
     
+    public var itemShown: ((index: Int, item: T) -> ())?
+    
     public var data = [T]()
     
     public func initTable(table: AAManagedTable) {
@@ -645,7 +672,13 @@ public class AAManagedArrayRows<T, R where R: UITableViewCell>: AAManagedRange {
     
     public func rangeCellForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> UITableViewCell {
         let res: R = table.dequeueCell(indexPath.indexPath)
-        rangeBindData(table, indexPath: indexPath, cell: res, item: data[indexPath.item])
+        let item = data[indexPath.item]
+        rangeBindData(table, indexPath: indexPath, cell: res, item: item)
+        
+        if let shown = itemShown {
+            shown(index: indexPath.item, item: item)
+        }
+        
         return res
     }
     

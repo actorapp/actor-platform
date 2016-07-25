@@ -54,6 +54,7 @@ public class AACommonCell: AATableViewCell {
             hintLabel.text = hint
             hintLabel.hidden = false
         }
+        setNeedsLayout()
     }
     
     // Setting switcher content
@@ -155,8 +156,13 @@ public class AACommonCell: AATableViewCell {
             hintLabel.frame = CGRectMake(0, 0, 100, 44)
             hintLabel.sizeToFit()
             
-            hintLabel.frame = CGRectMake(contentView.bounds.width - hintLabel.width, 0, hintLabel.width, 44)
-            titleLabel.frame = CGRectMake(contentInset, 0, contentView.bounds.width - hintLabel.width - contentInset - 5, 44)
+            if accessoryType == UITableViewCellAccessoryType.None {
+                hintLabel.frame = CGRectMake(contentView.bounds.width - hintLabel.width - 15, 0, hintLabel.width, 44)
+                titleLabel.frame = CGRectMake(contentInset, 0, contentView.bounds.width - hintLabel.width - contentInset - 20, 44)
+            } else {
+                hintLabel.frame = CGRectMake(contentView.bounds.width - hintLabel.width, 0, hintLabel.width, 44)
+                titleLabel.frame = CGRectMake(contentInset, 0, contentView.bounds.width - hintLabel.width - contentInset - 5, 44)
+            }
         } else {
             titleLabel.frame = CGRectMake(contentInset, 0, contentView.bounds.width - contentInset - 5, 44)
         }

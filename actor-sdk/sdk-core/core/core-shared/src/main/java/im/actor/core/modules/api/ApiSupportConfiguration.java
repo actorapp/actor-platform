@@ -15,6 +15,7 @@ public class ApiSupportConfiguration {
         opts.add(ApiUpdateOptimization.STRIP_ENTITIES);
         opts.add(ApiUpdateOptimization.STRIP_COUNTERS);
         opts.add(ApiUpdateOptimization.COMPACT_USERS);
+        opts.add(ApiUpdateOptimization.GROUPS_V2);
         OPTIMIZATIONS = Collections.unmodifiableList(opts);
     }
 }

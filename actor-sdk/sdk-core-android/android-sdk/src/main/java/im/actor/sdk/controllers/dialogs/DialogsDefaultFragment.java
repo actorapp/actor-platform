@@ -88,18 +88,9 @@ public class DialogsDefaultFragment extends BaseDialogFragment {
                                         .setMessage(getString(R.string.alert_leave_group_message, dialog.getDialogTitle()))
                                         .setNegativeButton(R.string.dialog_cancel, null)
                                         .setPositiveButton(R.string.alert_leave_group_yes, (d1, which1) -> {
-                                            execute(messenger().leaveGroup(dialog.getPeer().getPeerId()), R.string.progress_common,
-                                                    new CommandCallback<Void>() {
-                                                        @Override
-                                                        public void onResult(Void res) {
-
-                                                        }
-
-                                                        @Override
-                                                        public void onError(Exception e) {
-                                                            Toast.makeText(getActivity(), R.string.toast_unable_leave, Toast.LENGTH_LONG).show();
-                                                        }
-                                                    });
+                                            execute(messenger().leaveGroup(dialog.getPeer().getPeerId()), R.string.progress_common).failure(e -> {
+                                                Toast.makeText(getActivity(), R.string.toast_unable_leave, Toast.LENGTH_LONG).show();
+                                            });
                                         })
                                         .show();
                             } else {

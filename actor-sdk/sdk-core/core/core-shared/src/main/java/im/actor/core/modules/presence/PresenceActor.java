@@ -15,6 +15,7 @@ import im.actor.core.api.rpc.RequestSubscribeToGroupOnline;
 import im.actor.core.api.rpc.RequestSubscribeToOnline;
 import im.actor.core.api.rpc.ResponseVoid;
 import im.actor.core.entity.Group;
+import im.actor.core.entity.GroupType;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.entity.User;
@@ -179,6 +180,7 @@ public class PresenceActor extends ModuleActor implements BusSubscriber {
         // Log.d(TAG, "subscribe:" + peer);
 
         if (peer.getPeerType() == PeerType.PRIVATE) {
+
             // Already subscribed
             if (uids.contains(peer.getPeerId())) {
                 return;
@@ -193,6 +195,7 @@ public class PresenceActor extends ModuleActor implements BusSubscriber {
             uids.add(user.getUid());
 
         } else if (peer.getPeerType() == PeerType.GROUP) {
+
             // Already subscribed
             if (gids.contains(peer.getPeerId())) {
                 return;
@@ -200,6 +203,11 @@ public class PresenceActor extends ModuleActor implements BusSubscriber {
 
             Group group = getGroup(peer.getPeerId());
             if (group == null) {
+                return;
+            }
+
+            // Ignore subscription to channels
+            if (group.getGroupType() == GroupType.CHANNEL) {
                 return;
             }
 

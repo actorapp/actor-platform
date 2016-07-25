@@ -223,31 +223,34 @@ public class Promise<T> {
     /**
      * Delivering result
      */
-    private void deliverResult() {
+    protected void deliverResult() {
         if (callbacks.size() > 0) {
             dispatcher.dispatch(() -> {
-                if (exception != null) {
-                    for (PromiseCallback<T> callback : callbacks) {
-                        try {
-                            callback.onError(exception);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                } else {
-                    for (PromiseCallback<T> callback : callbacks) {
-                        try {
-                            callback.onResult(result);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-                callbacks.clear();
+                invokeDeliver();
             });
         }
     }
-
+    
+    protected void invokeDeliver() {
+        if (exception != null) {
+            for (PromiseCallback<T> callback : callbacks) {
+                try {
+                    callback.onError(exception);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            for (PromiseCallback<T> callback : callbacks) {
+                try {
+                    callback.onResult(result);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        callbacks.clear();
+    }
 
     //
     // Conversions

@@ -99,6 +99,9 @@ public class AvatarView extends SimpleDraweeView {
         bind(group.getAvatar(), group.getTitle(), group.getId());
     }
 
+    public void updatePlaceholder(String title, int id) {
+        getHierarchy().setPlaceholderImage(new AvatarPlaceholderDrawable(title, id, placeholderTextSize, getContext()));
+    }
 
     public void bind(Avatar avatar, String title, int id) {
         // Same avatar

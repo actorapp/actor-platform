@@ -6,6 +6,7 @@ import Foundation
 
 public class AAEditCell: AATableViewCell {
     
+    public let textPrefix = UILabel()
     public let textField = UITextField()
     
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
@@ -16,6 +17,9 @@ public class AAEditCell: AATableViewCell {
         textField.textColor = appStyle.cellTextColor
         textField.keyboardAppearance = appStyle.isDarkApp ? .Dark : .Light
         
+        textPrefix.hidden = true
+        
+        contentView.addSubview(textPrefix)
         contentView.addSubview(textField)
     }
 
@@ -26,6 +30,13 @@ public class AAEditCell: AATableViewCell {
     public override func layoutSubviews() {
         super.layoutSubviews()
         
-        textField.frame = CGRectMake(15, 0, contentView.width - 30, 44)
+        if textPrefix.hidden {
+            textField.frame = CGRectMake(15, 0, contentView.width - 30, 44)
+        } else {
+            textPrefix.frame = CGRectMake(15, 0, contentView.width - 30, 44)
+            textPrefix.sizeToFit()
+            textPrefix.frame = CGRectMake(15, 0, textPrefix.width, 44)
+            textField.frame = CGRectMake(15 + textPrefix.width, 0, contentView.width - textPrefix.width - 30, 44)
+        }
     }
 }

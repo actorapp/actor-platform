@@ -72,11 +72,8 @@ public class GroupAvatarChangeActor extends ModuleActor {
                         updates().applyUpdate(
                                 responseEditGroupAvatar.getSeq(),
                                 responseEditGroupAvatar.getState(),
-                                new UpdateGroupAvatarChangedObsolete(
-                                        gid, rid, myUid(),
-                                        responseEditGroupAvatar.getAvatar(),
-                                        responseEditGroupAvatar.getDate())
-                        ))
+                                new UpdateGroupAvatarChanged(
+                                        gid, responseEditGroupAvatar.getAvatar())))
                 .then(v -> avatarChanged(gid, rid))
                 .failure(e -> {
                     if (!tasksMap.containsKey(rid)) {

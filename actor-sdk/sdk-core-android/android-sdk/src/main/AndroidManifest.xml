@@ -146,6 +146,36 @@
             android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
 
         <activity
+            android:name=".controllers.group.GroupEditActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:theme="@style/CommonActivityTheme"
+            android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
+
+        <activity
+            android:name=".controllers.group.GroupAdminActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:theme="@style/CommonActivityTheme"
+            android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
+
+        <activity
+            android:name=".controllers.group.GroupTypeActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:theme="@style/CommonActivityTheme"
+            android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
+
+        <activity
+            android:name=".controllers.group.GroupPermissionsActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:theme="@style/CommonActivityTheme"
+            android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
+
+        <activity
+            android:name=".controllers.group.MembersActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:theme="@style/CommonActivityTheme"
+            android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
+
+        <activity
             android:name=".controllers.settings.MyProfileActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/ProfileActivityTheme"

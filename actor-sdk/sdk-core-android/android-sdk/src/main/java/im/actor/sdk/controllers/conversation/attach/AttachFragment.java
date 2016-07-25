@@ -49,10 +49,13 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
 
     private static final int PERMISSION_REQ_MEDIA = 11;
 
+    private FrameLayout root;
     private View container;
     private FastAttachAdapter fastAttachAdapter;
     private ImageView menuIconToChange;
     private TextView menuTitleToChange;
+
+    private boolean isLoaded = false;
 
     public AttachFragment(Peer peer) {
         super(peer);
@@ -66,14 +69,29 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup fcontainer, @Nullable Bundle savedInstanceState) {
 
         if (savedInstanceState == null) {
-            // Adding Media Picker
             getChildFragmentManager().beginTransaction()
                     .add(new MediaPickerFragment(), "picker")
                     .commitNow();
         }
 
-        container = getLayoutInflater(null).inflate(R.layout.share_menu, fcontainer, false);
+        root = new FrameLayout(getContext());
+        root.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+
+        isLoaded = false;
+
+        return root;
+    }
+
+    private void prepareView() {
+        if (isLoaded) {
+            return;
+        }
+        isLoaded = true;
+
+        container = getLayoutInflater(null).inflate(R.layout.share_menu, root, false);
         container.setVisibility(View.INVISIBLE);
+
         container.findViewById(R.id.menu_bg).setBackgroundColor(style.getMainBackgroundColor());
         container.findViewById(R.id.cancelField).setOnClickListener(view -> hide());
 
@@ -195,11 +213,12 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
             }
         });
 
-        return container;
+        root.addView(container);
     }
 
     @Override
     public void show() {
+        prepareView();
         if (container.getVisibility() == View.INVISIBLE) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 Activity activity = getActivity();
@@ -231,7 +250,7 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
 
     @Override
     public void hide() {
-        if (container.getVisibility() == View.VISIBLE) {
+        if (container != null && container.getVisibility() == View.VISIBLE) {
             onHidden();
             fastAttachAdapter.clearSelected();
             messenger().getGalleryScannerActor().send(new GalleryScannerActor.Hide());
@@ -355,7 +374,7 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
 
     @Override
     public boolean onBackPressed() {
-        if (container.getVisibility() == View.VISIBLE) {
+        if (container != null && container.getVisibility() == View.VISIBLE) {
             hide();
             return true;
         }
@@ -385,5 +404,9 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
             fastAttachAdapter.release();
             fastAttachAdapter = null;
         }
+        container = null;
+        root = null;
+        menuIconToChange = null;
+        menuTitleToChange = null;
     }
 }

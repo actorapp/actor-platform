@@ -22,15 +22,11 @@ public class ResponseSendEncryptedPackage extends Response {
         return Bser.parse(new ResponseSendEncryptedPackage(), data);
     }
 
-    private Integer seq;
-    private byte[] state;
     private Long date;
     private List<ApiKeyGroupId> obsoleteKeyGroups;
-    private List<ApiKeyGroupId> missedKeyGroups;
+    private List<ApiKeyGroupHolder> missedKeyGroups;
 
-    public ResponseSendEncryptedPackage(@Nullable Integer seq, @Nullable byte[] state, @Nullable Long date, @NotNull List<ApiKeyGroupId> obsoleteKeyGroups, @NotNull List<ApiKeyGroupId> missedKeyGroups) {
-        this.seq = seq;
-        this.state = state;
+    public ResponseSendEncryptedPackage(@Nullable Long date, @NotNull List<ApiKeyGroupId> obsoleteKeyGroups, @NotNull List<ApiKeyGroupHolder> missedKeyGroups) {
         this.date = date;
         this.obsoleteKeyGroups = obsoleteKeyGroups;
         this.missedKeyGroups = missedKeyGroups;
@@ -38,16 +34,6 @@ public class ResponseSendEncryptedPackage extends Response {
 
     public ResponseSendEncryptedPackage() {
 
-    }
-
-    @Nullable
-    public Integer getSeq() {
-        return this.seq;
-    }
-
-    @Nullable
-    public byte[] getState() {
-        return this.state;
     }
 
     @Nullable
@@ -61,40 +47,32 @@ public class ResponseSendEncryptedPackage extends Response {
     }
 
     @NotNull
-    public List<ApiKeyGroupId> getMissedKeyGroups() {
+    public List<ApiKeyGroupHolder> getMissedKeyGroups() {
         return this.missedKeyGroups;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.seq = values.optInt(1);
-        this.state = values.optBytes(2);
-        this.date = values.optLong(3);
+        this.date = values.optLong(1);
         List<ApiKeyGroupId> _obsoleteKeyGroups = new ArrayList<ApiKeyGroupId>();
-        for (int i = 0; i < values.getRepeatedCount(4); i ++) {
+        for (int i = 0; i < values.getRepeatedCount(2); i ++) {
             _obsoleteKeyGroups.add(new ApiKeyGroupId());
         }
-        this.obsoleteKeyGroups = values.getRepeatedObj(4, _obsoleteKeyGroups);
-        List<ApiKeyGroupId> _missedKeyGroups = new ArrayList<ApiKeyGroupId>();
-        for (int i = 0; i < values.getRepeatedCount(5); i ++) {
-            _missedKeyGroups.add(new ApiKeyGroupId());
+        this.obsoleteKeyGroups = values.getRepeatedObj(2, _obsoleteKeyGroups);
+        List<ApiKeyGroupHolder> _missedKeyGroups = new ArrayList<ApiKeyGroupHolder>();
+        for (int i = 0; i < values.getRepeatedCount(3); i ++) {
+            _missedKeyGroups.add(new ApiKeyGroupHolder());
         }
-        this.missedKeyGroups = values.getRepeatedObj(5, _missedKeyGroups);
+        this.missedKeyGroups = values.getRepeatedObj(3, _missedKeyGroups);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        if (this.seq != null) {
-            writer.writeInt(1, this.seq);
-        }
-        if (this.state != null) {
-            writer.writeBytes(2, this.state);
-        }
         if (this.date != null) {
-            writer.writeLong(3, this.date);
+            writer.writeLong(1, this.date);
         }
-        writer.writeRepeatedObj(4, this.obsoleteKeyGroups);
-        writer.writeRepeatedObj(5, this.missedKeyGroups);
+        writer.writeRepeatedObj(2, this.obsoleteKeyGroups);
+        writer.writeRepeatedObj(3, this.missedKeyGroups);
     }
 
     @Override

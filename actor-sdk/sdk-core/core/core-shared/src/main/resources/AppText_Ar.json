@@ -94,6 +94,27 @@
 				"avatar_changed": "{name} غير صورة المجموعة",
 				"avatar_removed": "{name} حذف صورة المجموعة"
 			},
+			"channels": {
+				"created": " انشأ المجموعة",
+				"invited": "{name} دعى {name_added}",
+				"joined": "{name} انصم للمجموعة",
+				"kicked": "{name} ازال {name_kicked}",
+				"left": "{name} غادر",
+				"title_changed": {
+					"full":  "{name} غير الاسم الى \"{title}\"",
+					"compact": "{name} غير اسم المجموعة الى"
+				},
+				"topic_changed": {
+					"full":  "{name} changed the group topic to \"{topic}\"",
+					"compact": "{name} changed the group topic"
+				},
+				"about_changed": {
+					"full":  "{name} changed the group about to \"{about}\"",
+					"compact": "{name} changed the group about"
+				},
+				"avatar_changed": "{name} غير صورة المجموعة",
+				"avatar_removed": "{name} حذف صورة المجموعة"
+			},
 			"calls": {
 				"missed": "Missed call",
 				"ended": "Call ended"

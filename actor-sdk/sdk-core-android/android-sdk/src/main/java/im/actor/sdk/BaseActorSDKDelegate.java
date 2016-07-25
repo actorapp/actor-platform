@@ -49,6 +49,11 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
         return null;
     }
 
+    @Override
+    public Fragment fragmentForGroupInfo(int gid) {
+        return null;
+    }
+
     @Nullable
     @Override
     public AbsAttachFragment fragmentForAttachMenu(Peer peer) {
@@ -65,12 +70,7 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
     public ActorIntentFragmentActivity getSettingsIntent() {
         return null;
     }
-
-    @Override
-    public BaseGroupInfoActivity getGroupInfoIntent(int gid) {
-        return null;
-    }
-
+    
     @Override
     public ActorIntentFragmentActivity getChatSettingsIntent() {
         return null;

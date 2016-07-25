@@ -16,15 +16,10 @@ import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.contacts.BaseContactFragment;
 
-import static im.actor.sdk.util.ActorSDKMessenger.groups;
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 import static im.actor.sdk.util.ActorSDKMessenger.users;
 
 public class AddMemberFragment extends BaseContactFragment {
-
-    public AddMemberFragment() {
-        super(true, true, false);
-    }
 
     public static AddMemberFragment create(int gid) {
         AddMemberFragment res = new AddMemberFragment();
@@ -34,22 +29,39 @@ public class AddMemberFragment extends BaseContactFragment {
         return res;
     }
 
+    private GroupVM groupVM;
+
+    public AddMemberFragment() {
+        super(true, true, false);
+        setRootFragment(true);
+        setTitle(R.string.group_add_title);
+        setHomeAsUp(true);
+    }
+
+    @Override
+    public void onCreate(Bundle saveInstance) {
+        super.onCreate(saveInstance);
+
+        groupVM = messenger().getGroup(getArguments().getInt("GROUP_ID"));
+    }
+
     @Override
     protected void addFootersAndHeaders() {
-        addFooterOrHeaderAction(ActorSDK.sharedActor().style.getActionAddContactColor(), R.drawable.ic_person_add_white_24dp, R.string.contacts_invite_via_link, false, new Runnable() {
-            @Override
-            public void run() {
-                startActivity(Intents.inviteLink(getArguments().getInt("GROUP_ID", 0), getActivity()));
-            }
-        }, true);
+
+        if (groupVM.getIsCanInviteViaLink().get()) {
+            addFooterOrHeaderAction(ActorSDK.sharedActor().style.getActionAddContactColor(), R.drawable.ic_person_add_white_24dp, R.string.contacts_invite_via_link, false, new Runnable() {
+                @Override
+                public void run() {
+                    startActivity(Intents.inviteLink(getArguments().getInt("GROUP_ID", 0), getActivity()));
+                }
+            }, true);
+        }
     }
 
     @Override
     public void onItemClicked(Contact contact) {
-        final int gid = getArguments().getInt("GROUP_ID");
 
         final UserVM userModel = users().get(contact.getUid());
-        final GroupVM groupVM = groups().get(gid);
 
         for (GroupMember uid : groupVM.getMembers().get()) {
             if (uid.getUid() == userModel.getId()) {
@@ -63,7 +75,7 @@ public class AddMemberFragment extends BaseContactFragment {
                 .setPositiveButton(R.string.alert_group_add_yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog2, int which) {
-                        execute(messenger().inviteMember(gid, userModel.getId()),
+                        execute(messenger().inviteMember(groupVM.getId(), userModel.getId()),
                                 R.string.progress_common, new CommandCallback<Void>() {
                                     @Override
                                     public void onResult(Void res) {

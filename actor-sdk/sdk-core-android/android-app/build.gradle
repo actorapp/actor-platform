@@ -18,6 +18,7 @@ android {
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -43,4 +44,5 @@ dependencies {
     compile project(':actor-sdk:sdk-core-android:android-google-maps')
 
     compile 'com.roughike:bottom-bar:1.3.9'
+    compile 'com.android.support:multidex:1.0.1'
 }

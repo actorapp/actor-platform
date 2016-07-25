@@ -44,7 +44,7 @@ public class CallActivity extends BaseFragmentActivity {
 
         if (savedInstanceState == null) {
             callId = getIntent().getLongExtra("callId", -1);
-            showFragment(new CallFragment(callId), false, false);
+            showFragment(new CallFragment(callId), false);
         }
     }
 

@@ -33,7 +33,21 @@ public class AAComposeController: AAContactsListContentController, AAContactsLis
             }
             
             r.selectAction = { () -> Bool in
-                self.navigateNext(AAGroupCreateViewController(), removeCurrent: true)
+                self.navigateNext(AAGroupCreateViewController(isChannel: false), removeCurrent: true)
+                return false
+            }
+        }
+        
+        section.custom { (r:AACustomRow<AAContactActionCell>) -> () in
+            
+            r.height = 56
+            
+            r.closure = { (cell) -> () in
+                cell.bind("ic_create_channel", actionTitle: AALocalized("CreateChannel"))
+            }
+            
+            r.selectAction = { () -> Bool in
+                self.navigateNext(AAGroupCreateViewController(isChannel: true), removeCurrent: true)
                 return false
             }
         }

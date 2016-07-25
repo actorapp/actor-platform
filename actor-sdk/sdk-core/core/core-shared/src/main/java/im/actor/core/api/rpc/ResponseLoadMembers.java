@@ -22,11 +22,13 @@ public class ResponseLoadMembers extends Response {
         return Bser.parse(new ResponseLoadMembers(), data);
     }
 
-    private List<ApiUserOutPeer> members;
+    private List<ApiMember> members;
+    private List<ApiUserOutPeer> users;
     private byte[] next;
 
-    public ResponseLoadMembers(@NotNull List<ApiUserOutPeer> members, @Nullable byte[] next) {
+    public ResponseLoadMembers(@NotNull List<ApiMember> members, @NotNull List<ApiUserOutPeer> users, @Nullable byte[] next) {
         this.members = members;
+        this.users = users;
         this.next = next;
     }
 
@@ -35,8 +37,13 @@ public class ResponseLoadMembers extends Response {
     }
 
     @NotNull
-    public List<ApiUserOutPeer> getMembers() {
+    public List<ApiMember> getMembers() {
         return this.members;
+    }
+
+    @NotNull
+    public List<ApiUserOutPeer> getUsers() {
+        return this.users;
     }
 
     @Nullable
@@ -46,17 +53,23 @@ public class ResponseLoadMembers extends Response {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        List<ApiUserOutPeer> _members = new ArrayList<ApiUserOutPeer>();
-        for (int i = 0; i < values.getRepeatedCount(1); i ++) {
-            _members.add(new ApiUserOutPeer());
+        List<ApiMember> _members = new ArrayList<ApiMember>();
+        for (int i = 0; i < values.getRepeatedCount(3); i ++) {
+            _members.add(new ApiMember());
         }
-        this.members = values.getRepeatedObj(1, _members);
+        this.members = values.getRepeatedObj(3, _members);
+        List<ApiUserOutPeer> _users = new ArrayList<ApiUserOutPeer>();
+        for (int i = 0; i < values.getRepeatedCount(1); i ++) {
+            _users.add(new ApiUserOutPeer());
+        }
+        this.users = values.getRepeatedObj(1, _users);
         this.next = values.optBytes(2);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        writer.writeRepeatedObj(1, this.members);
+        writer.writeRepeatedObj(3, this.members);
+        writer.writeRepeatedObj(1, this.users);
         if (this.next != null) {
             writer.writeBytes(2, this.next);
         }

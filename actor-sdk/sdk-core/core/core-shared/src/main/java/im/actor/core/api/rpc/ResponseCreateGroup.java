@@ -24,13 +24,15 @@ public class ResponseCreateGroup extends Response {
 
     private int seq;
     private byte[] state;
+    private long date;
     private ApiGroup group;
     private List<ApiUser> users;
     private List<ApiUserOutPeer> userPeers;
 
-    public ResponseCreateGroup(int seq, @NotNull byte[] state, @NotNull ApiGroup group, @NotNull List<ApiUser> users, @NotNull List<ApiUserOutPeer> userPeers) {
+    public ResponseCreateGroup(int seq, @NotNull byte[] state, long date, @NotNull ApiGroup group, @NotNull List<ApiUser> users, @NotNull List<ApiUserOutPeer> userPeers) {
         this.seq = seq;
         this.state = state;
+        this.date = date;
         this.group = group;
         this.users = users;
         this.userPeers = userPeers;
@@ -47,6 +49,10 @@ public class ResponseCreateGroup extends Response {
     @NotNull
     public byte[] getState() {
         return this.state;
+    }
+
+    public long getDate() {
+        return this.date;
     }
 
     @NotNull
@@ -68,6 +74,7 @@ public class ResponseCreateGroup extends Response {
     public void parse(BserValues values) throws IOException {
         this.seq = values.getInt(1);
         this.state = values.getBytes(2);
+        this.date = values.getLong(6);
         this.group = values.getObj(3, new ApiGroup());
         List<ApiUser> _users = new ArrayList<ApiUser>();
         for (int i = 0; i < values.getRepeatedCount(4); i ++) {
@@ -88,6 +95,7 @@ public class ResponseCreateGroup extends Response {
             throw new IOException();
         }
         writer.writeBytes(2, this.state);
+        writer.writeLong(6, this.date);
         if (this.group == null) {
             throw new IOException();
         }

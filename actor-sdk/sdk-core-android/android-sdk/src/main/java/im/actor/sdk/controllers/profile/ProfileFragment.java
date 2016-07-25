@@ -211,7 +211,31 @@ public class ProfileFragment extends BaseFragment {
         //
 
         final LinearLayout contactsContainer = (LinearLayout) res.findViewById(R.id.contactsContainer);
+
         boolean isFirstContact = true;
+
+        //
+        // About
+        //
+
+        bind(user.getAbout(), new ValueChangedListener<String>() {
+            private View userAboutRecord;
+
+            @Override
+            public void onChanged(final String newUserAbout, Value<String> valueModel) {
+                if (newUserAbout != null && newUserAbout.length() > 0) {
+                    if (userAboutRecord == null) {
+                        userAboutRecord = buildRecordBig(newUserAbout,
+                                R.drawable.ic_info_outline_black_24dp,
+                                true,
+                                true,
+                                inflater, contactsContainer);
+                    } else {
+                        ((TextView) userAboutRecord.findViewById(R.id.value)).setText(newUserAbout);
+                    }
+                }
+            }
+        });
 
         //
         // Phones
@@ -305,7 +329,7 @@ public class ProfileFragment extends BaseFragment {
                     userEmail.getEmail(),
                     R.drawable.ic_import_contacts_black_24dp,
                     isFirstContact,
-                    userName == null && i == emails.size() - 1,
+                    i == emails.size() - 1,
                     inflater, contactsContainer);
 
             view.setOnClickListener(v -> {
@@ -369,29 +393,6 @@ public class ProfileFragment extends BaseFragment {
                                 .show();
                         return true;
                     });
-                }
-            }
-        });
-
-        //
-        // About
-        //
-
-        bind(user.getAbout(), new ValueChangedListener<String>() {
-            private View userAboutRecord;
-
-            @Override
-            public void onChanged(final String newUserAbout, Value<String> valueModel) {
-                if (newUserAbout != null && newUserAbout.length() > 0) {
-                    if (userAboutRecord == null) {
-                        userAboutRecord = buildRecordBig(newUserAbout,
-                                R.drawable.ic_info_outline_black_24dp,
-                                true,
-                                true,
-                                inflater, contactsContainer);
-                    } else {
-                        ((TextView) userAboutRecord.findViewById(R.id.value)).setText(newUserAbout);
-                    }
                 }
             }
         });

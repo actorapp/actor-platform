@@ -29,14 +29,16 @@ public class AAAddParticipantViewController: AAContactsListContentController, AA
     }
     
     public func willAddContacts(controller: AAContactsListContentController, section: AAManagedSection) {
-        section.custom { (r:AACustomRow<AAContactActionCell>) -> () in
-            r.height = 56
-            r.closure = { (cell) -> () in
-                cell.bind("ic_invite_user", actionTitle: AALocalized("GroupAddParticipantUrl"))
-            }
-            r.selectAction = { () -> Bool in
-                self.navigateNext(AAInviteLinkViewController(gid: self.gid), removeCurrent: false)
-                return false
+        if group.isCanInviteViaLink.get().booleanValue() {
+            section.custom { (r:AACustomRow<AAContactActionCell>) -> () in
+                r.height = 56
+                r.closure = { (cell) -> () in
+                    cell.bind("ic_invite_user", actionTitle: AALocalized("GroupAddParticipantUrl"))
+                }
+                r.selectAction = { () -> Bool in
+                    self.navigateNext(AAInviteLinkViewController(gid: self.gid), removeCurrent: false)
+                    return false
+                }
             }
         }
     }
@@ -48,7 +50,7 @@ public class AAAddParticipantViewController: AAContactsListContentController, AA
     public func contactDidTap(controller: AAContactsListContentController, contact: ACContact) -> Bool {
         
         if !isAlreadyMember(contact.uid) {
-            self.executeSafeOnlySuccess(Actor.inviteMemberCommandWithGid(jint(gid), withUid: jint(contact.uid))!) { (val) -> () in
+            self.executeSafeOnlySuccess(Actor.inviteMemberCommandWithGid(jint(gid), withUid: jint(contact.uid))) { (val) -> () in
                 self.dismiss()
             }
         }

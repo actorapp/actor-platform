@@ -34,7 +34,7 @@ public class EditNameActivity extends BaseFragmentActivity {
         }
 
         if (savedInstanceState == null) {
-            showFragment(EditNameFragment.editName(type, id), false, false);
+            showFragment(EditNameFragment.editName(type, id), false);
         }
     }
 }

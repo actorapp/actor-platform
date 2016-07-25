@@ -269,7 +269,7 @@
     <string name="avatar_title_person">头像</string>
     <string name="avatar_title_group">群组头像</string>
     <string name="avatar_no_photo">未设置头像</string>
-    <string name="avatar_menu_edit">编辑</string>
+    <string name="actor_menu_edit">编辑</string>
     <string name="avatar_menu_set_as">设置为…</string>
 
     <!-- Add Contact -->
