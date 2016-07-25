@@ -92,7 +92,7 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
             _ ← seqUpdExt.deliverUserUpdate(
               userId = cmd.inviteeUserId,
               update = inviteeUpdateNew,
-              pushRules = seqUpdExt.pushRules(isFat = !inviteeIsExUser, Some(PushTexts.Invited)),
+              pushRules = seqUpdExt.pushRules(isFat = !inviteeIsExUser, Some(PushTexts.invited(newState.groupType))),
               deliveryId = s"invite_${groupId}_${cmd.randomId}"
             )
 
@@ -127,7 +127,7 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
             _ ← seqUpdExt.deliverUserUpdate(
               userId = cmd.inviteeUserId,
               update = inviteeUpdateNew,
-              pushRules = seqUpdExt.pushRules(isFat = false, Some(PushTexts.Invited)),
+              pushRules = seqUpdExt.pushRules(isFat = false, Some(PushTexts.invited(newState.groupType))),
               deliveryId = s"invite_${groupId}_${cmd.randomId}"
             )
 
@@ -167,7 +167,7 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
           _ ← seqUpdExt.deliverUserUpdate(
             userId = cmd.inviteeUserId,
             inviteeUpdateObsolete,
-            pushRules = seqUpdExt.pushRules(isFat = true, Some(PushTexts.Invited)),
+            pushRules = seqUpdExt.pushRules(isFat = true, Some(PushTexts.invited(newState.groupType))),
             deliveryId = s"invite_obsolete_${groupId}_${cmd.randomId}"
           )
 
@@ -366,7 +366,7 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
             )
 
             // push join message only to joining user
-            _ <- seqUpdExt.deliverUserUpdate(
+            _ ← seqUpdExt.deliverUserUpdate(
               userId = cmd.joiningUserId,
               update = serviceMessageUpdate(
                 cmd.joiningUserId,
