@@ -385,7 +385,7 @@ private[group] final case class GroupState(
         (toInt(canViewMembers(userId)) << 1) +
         (toInt(canInviteMembers(userId)) << 2) +
         (toInt(canInviteViaLink(userId)) << 3) +
-        (toInt(canCall(userId)) << 4) +
+        (toInt(canCall) << 4) +
         (toInt(canEditAdminSettings(userId)) << 5) +
         (toInt(canViewAdmins(userId)) << 6) +
         (toInt(canEditAdmins(userId)) << 7) +
@@ -433,7 +433,7 @@ private[group] final case class GroupState(
     /**
      * All members can call, if group has less than 25 members, and is not a channel
      */
-    private def canCall(clientUserId: Int) = !groupType.isChannel && membersCount <= 25
+    def canCall = !groupType.isChannel && membersCount <= 25
 
     // only owner can change admin settings
     def canEditAdminSettings(clientUserId: Int): Boolean = isOwner(clientUserId)
