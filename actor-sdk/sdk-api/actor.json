@@ -10415,6 +10415,12 @@
                 "argument": "canAdminsEditGroupInfo",
                 "category": "full",
                 "description": "  Can admins edit group info"
+              },
+              {
+                "type": "reference",
+                "argument": "showJoinLeaveMessages",
+                "category": "full",
+                "description": "  Should join and leave messages be visible to members"
               }
             ],
             "expandable": "true",
@@ -10438,6 +10444,11 @@
                 "type": "bool",
                 "id": 4,
                 "name": "canAdminsEditGroupInfo"
+              },
+              {
+                "type": "bool",
+                "id": 5,
+                "name": "showJoinLeaveMessages"
               }
             ]
           }

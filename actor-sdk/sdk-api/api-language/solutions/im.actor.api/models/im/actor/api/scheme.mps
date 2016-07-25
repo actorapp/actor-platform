@@ -9131,6 +9131,11 @@
           <property role="TrG5h" value="canAdminsEditGroupInfo" />
           <node concept="2m5ndN" id="3c_gimmPKlq" role="2m7DVh" />
         </node>
+        <node concept="2m7Kf5" id="65MuurgAy0V" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="showJoinLeaveMessages" />
+          <node concept="2m5ndN" id="65MuurgAy2i" role="2m7DVh" />
+        </node>
         <node concept="NXeRC" id="3c_gimmPLDI" role="NXodf">
           <property role="NXePf" value="Admin Settings" />
         </node>
@@ -9153,6 +9158,11 @@
           <property role="NX6R2" value="Can admins edit group info" />
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="3c_gimmPKlg" resolve="canAdminsEditGroupInfo" />
+        </node>
+        <node concept="NX1gA" id="65MuurgAy2s" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Should join and leave messages be visible to members" />
+          <ref role="NX6Kv" node="65MuurgAy0V" resolve="showJoinLeaveMessages" />
         </node>
       </node>
       <node concept="2m6fVq" id="3c_gimmPFf9" role="2m5mJr">
