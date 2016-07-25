@@ -448,17 +448,9 @@ public class JsFacade implements Exportable {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
             public void execute() {
-                messenger.updateMessage(peer.convert(), newText, Long.parseLong(id)).start(new CommandCallback<Void>() {
-                    @Override
-                    public void onResult(Void res) {
-                        resolve();
-                    }
-
-                    @Override
-                    public void onError(Exception e) {
-                        reject(e.getMessage());
-                    }
-                });
+                messenger.updateMessage(peer.convert(), newText, Long.parseLong(id))
+                        .then(r -> resolve())
+                        .failure(e -> reject(e.getMessage()));
             }
         });
     }
@@ -1233,39 +1225,39 @@ public class JsFacade implements Exportable {
         return jsRes;
     }
 
-    @UsedByApp
-    public JsPromise findGroups() {
-        return JsPromise.create(new JsPromiseExecutor() {
-            @Override
-            public void execute() {
-                messenger.findPeers(PeerSearchType.GROUPS).start(new CommandCallback<List<PeerSearchEntity>>() {
-                    @Override
-                    public void onResult(List<PeerSearchEntity> res) {
-                        Log.d(TAG, "findGroups:result");
-                        JsArray<JsPeerSearchResult> jsRes = JsArray.createArray().cast();
-                        for (PeerSearchEntity s : res) {
-                            if (s.getPeer().getPeerType() == PeerType.GROUP) {
-                                jsRes.push(JsPeerSearchResult.create(messenger.buildPeerInfo(s.getPeer()),
-                                        s.getDescription(), s.getMembersCount(), (int) (s.getDate() / 1000L),
-                                        messenger.buildPeerInfo(Peer.user(s.getCreatorUid())), s.isPublic(),
-                                        s.isJoined()));
-                            } else if (s.getPeer().getPeerType() == PeerType.PRIVATE) {
-                                jsRes.push(JsPeerSearchResult.create(messenger.buildPeerInfo(s.getPeer())));
-                            }
-                            // jsRes.push();
-                        }
-                        resolve(jsRes);
-                    }
-
-                    @Override
-                    public void onError(Exception e) {
-                        Log.d(TAG, "findGroups:error");
-                        reject(e.getMessage());
-                    }
-                });
-            }
-        });
-    }
+//    @UsedByApp
+//    public JsPromise findGroups() {
+//        return JsPromise.create(new JsPromiseExecutor() {
+//            @Override
+//            public void execute() {
+//                messenger.findPeers(PeerSearchType.GROUPS).start(new CommandCallback<List<PeerSearchEntity>>() {
+//                    @Override
+//                    public void onResult(List<PeerSearchEntity> res) {
+//                        Log.d(TAG, "findGroups:result");
+//                        JsArray<JsPeerSearchResult> jsRes = JsArray.createArray().cast();
+//                        for (PeerSearchEntity s : res) {
+//                            if (s.getPeer().getPeerType() == PeerType.GROUP) {
+//                                jsRes.push(JsPeerSearchResult.create(messenger.buildPeerInfo(s.getPeer()),
+//                                        s.getDescription(), s.getMembersCount(), (int) (s.getDate() / 1000L),
+//                                        messenger.buildPeerInfo(Peer.user(s.getCreatorUid())), s.isPublic(),
+//                                        s.isJoined()));
+//                            } else if (s.getPeer().getPeerType() == PeerType.PRIVATE) {
+//                                jsRes.push(JsPeerSearchResult.create(messenger.buildPeerInfo(s.getPeer())));
+//                            }
+//                            // jsRes.push();
+//                        }
+//                        resolve(jsRes);
+//                    }
+//
+//                    @Override
+//                    public void onError(Exception e) {
+//                        Log.d(TAG, "findGroups:error");
+//                        reject(e.getMessage());
+//                    }
+//                });
+//            }
+//        });
+//    }
 
     @UsedByApp
     public void changeMyAvatar(final JsFile file) {
@@ -1329,43 +1321,19 @@ public class JsFacade implements Exportable {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
             public void execute() {
-                //noinspection ConstantConditions
-                messenger.editGroupTitle(gid, newTitle).start(new CommandCallback<Void>() {
-                    @Override
-                    public void onResult(Void res) {
-                        Log.d(TAG, "editGroupTitle:result");
-                        resolve();
-                    }
 
-                    @Override
-                    public void onError(Exception e) {
-                        Log.d(TAG, "editGroupTitle:error");
-                        reject(e.getMessage());
-                    }
-                });
+                messenger.editGroupTitle(gid, newTitle)
+                        .then(r -> resolve())
+                        .failure(e -> reject(e.getMessage()));
             }
+
         });
     }
 
+
     @UsedByApp
     public JsPromise editGroupAbout(final int gid, final String newAbout) {
-        return JsPromise.create(new JsPromiseExecutor() {
-            @Override
-            public void execute() {
-                messenger.editGroupAbout(gid, newAbout).start(new CommandCallback<Void>() {
-                    @Override
-                    public void onResult(Void res) {
-                        resolve();
-                    }
-
-                    @Override
-                    public void onError(Exception e) {
-                        Log.e(TAG, e);
-                        reject(e.getMessage());
-                    }
-                });
-            }
-        });
+        return JsPromise.from(messenger.editGroupAbout(gid, newAbout).map(r -> null));
     }
 
     @UsedByApp
@@ -1386,19 +1354,9 @@ public class JsFacade implements Exportable {
             public void execute() {
                 String avatarDescriptor = file != null ? provider.registerUploadFile(file) : null;
                 //noinspection ConstantConditions
-                messenger.createGroup(title, avatarDescriptor, uids).start(new CommandCallback<Integer>() {
-                    @Override
-                    public void onResult(Integer res) {
-                        Log.d(TAG, "createGroup:result");
-                        resolve(JsPeer.create(Peer.group(res)));
-                    }
-
-                    @Override
-                    public void onError(Exception e) {
-                        Log.d(TAG, "createGroup:error");
-                        reject(e.getMessage());
-                    }
-                });
+                messenger.createGroup(title, avatarDescriptor, uids)
+                        .then(r -> resolve(JsPeer.create(Peer.group(r))))
+                        .failure(e -> reject(e.getMessage()));
             }
         });
     }
@@ -1451,25 +1409,7 @@ public class JsFacade implements Exportable {
 
     @UsedByApp
     public JsPromise leaveGroup(final int gid) {
-        return JsPromise.create(new JsPromiseExecutor() {
-            @Override
-            public void execute() {
-                //noinspection ConstantConditions
-                messenger.leaveGroup(gid).start(new CommandCallback<Void>() {
-                    @Override
-                    public void onResult(Void res) {
-                        Log.d(TAG, "leaveGroup:result");
-                        resolve();
-                    }
-
-                    @Override
-                    public void onError(Exception e) {
-                        Log.d(TAG, "leaveGroup:error");
-                        reject(e.getMessage());
-                    }
-                });
-            }
-        });
+        return JsPromise.from(messenger.leaveGroup(gid).map(r -> null));
     }
 
     @UsedByApp

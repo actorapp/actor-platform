@@ -5,10 +5,8 @@ import im.actor.core.js.providers.electron.JsElectronApp;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleActor;
 import im.actor.core.modules.ModuleContext;
-import im.actor.runtime.actors.ActorCreator;
+import im.actor.runtime.actors.ActorCancellable;
 import im.actor.runtime.actors.ActorRef;
-import im.actor.runtime.actors.Cancellable;
-import im.actor.runtime.actors.Props;
 
 import static im.actor.runtime.actors.ActorSystem.system;
 
@@ -41,7 +39,7 @@ public class JsIdleModule extends AbsModule {
 
         private boolean isAppVisible = true;
         private JsMessenger messenger;
-        private Cancellable flushCancellable;
+        private ActorCancellable flushCancellable;
         private boolean isElectron = JsElectronApp.isElectron();
 
         public IdleActor(JsMessenger messenger, ModuleContext context) {
