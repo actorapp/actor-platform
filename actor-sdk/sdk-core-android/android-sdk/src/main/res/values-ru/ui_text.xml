@@ -323,8 +323,8 @@
 
     <string name="group_admin">админ.</string>
 
-    <string name="group_created_by">Создан {0}</string>
-    <string name="group_created_by_you">Создан Вами</string>
+    <string name="group_created_by">Владелец {0}</string>
+    <string name="group_created_by_you">Вы владелец</string>
 
     <string name="group_adding">Добавление в группу…</string>
     <string name="group_removing">Исключение из группы…</string>
@@ -334,8 +334,6 @@
     <string name="group_context_view">Инф. о {0}</string>
     <string name="group_context_remove">Исключить {0} из группы</string>
 
-    <string name="group_menu_add">Добавить пользователя</string>
-    <string name="group_menu_leave">Покинуть группу</string>
     <string name="group_menu_change_theme">Изменить название</string>
     <string name="group_menu_change_photo">Изменить фото</string>
     <string name="group_menu_integration_token">Токен интеграции</string>
@@ -344,6 +342,8 @@
     <string name="group_shared_files">Документы</string>
 
     <string name="group_add_member">Добавить в группу</string>
+    <string name="group_leave">Покинуть группу</string>
+    <string name="group_leave_channel">Покинуть канал</string>
 
     <string name="group_not_member">Вы не участник данной группы</string>
 
@@ -356,7 +356,7 @@
     <string name="avatar_title_person">Фото</string>
     <string name="avatar_title_group">Фото группы</string>
     <string name="avatar_no_photo">Нет фото</string>
-    <string name="avatar_menu_edit">Изменить</string>
+    <string name="actor_menu_edit">Изменить</string>
     <string name="avatar_menu_set_as">Установить как…</string>
 
     <!-- Add Contact -->

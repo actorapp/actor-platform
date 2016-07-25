@@ -150,17 +150,19 @@ public class SenderActor extends ModuleActor {
             if (peer.getPeerType() == PeerType.GROUP) {
                 Group group = getGroup(peer.getPeerId());
                 String lowText = text.toLowerCase();
-                for (GroupMember member : group.getMembers()) {
-                    User user = getUser(member.getUid());
-                    if (user.getNick() != null) {
-                        String nick = "@" + user.getNick().toLowerCase();
-                        // TODO: Better filtering
-                        if (lowText.contains(nick + ":")
-                                || lowText.contains(nick + " ")
-                                || lowText.contains(" " + nick)
-                                || lowText.endsWith(nick)
-                                || lowText.equals(nick)) {
-                            mentions.add(user.getUid());
+                if (group.getMembers() != null) {
+                    for (GroupMember member : group.getMembers()) {
+                        User user = getUser(member.getUid());
+                        if (user.getNick() != null) {
+                            String nick = "@" + user.getNick().toLowerCase();
+                            // TODO: Better filtering
+                            if (lowText.contains(nick + ":")
+                                    || lowText.contains(nick + " ")
+                                    || lowText.contains(" " + nick)
+                                    || lowText.endsWith(nick)
+                                    || lowText.equals(nick)) {
+                                mentions.add(user.getUid());
+                            }
                         }
                     }
                 }

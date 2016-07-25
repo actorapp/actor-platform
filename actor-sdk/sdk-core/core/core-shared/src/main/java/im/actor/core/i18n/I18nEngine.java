@@ -225,8 +225,9 @@ public class I18nEngine extends IntlEngine {
             return "";
         } else {
             String contentText = formatContentText(dialog.getSenderId(),
-                    dialog.getMessageType(), dialog.getText(), dialog.getRelatedUid());
-            if (dialog.getPeer().getPeerType() == PeerType.GROUP) {
+                    dialog.getMessageType(), dialog.getText(), dialog.getRelatedUid(),
+                    dialog.isChannel());
+            if (dialog.getPeer().getPeerType() == PeerType.GROUP && !dialog.isChannel()) {
                 if (!isLargeDialogMessage(dialog.getMessageType())) {
                     return formatPerformerName(dialog.getSenderId()) + ": " + contentText;
                 } else {
@@ -279,7 +280,8 @@ public class I18nEngine extends IntlEngine {
         return formatContentText(pendingNotification.getSender(),
                 pendingNotification.getContentDescription().getContentType(),
                 pendingNotification.getContentDescription().getText(),
-                pendingNotification.getContentDescription().getRelatedUser());
+                pendingNotification.getContentDescription().getRelatedUser(),
+                pendingNotification.isChannel());
     }
 
     /**
@@ -291,8 +293,12 @@ public class I18nEngine extends IntlEngine {
      * @param relatedUid  optional related uid
      * @return formatted content
      */
-    @ObjectiveCName("formatContentTextWithSenderId:withContentType:withText:withRelatedUid:")
-    public String formatContentText(int senderId, ContentType contentType, String text, int relatedUid) {
+    @ObjectiveCName("formatContentTextWithSenderId:withContentType:withText:withRelatedUid:withIsChannel:")
+    public String formatContentText(int senderId, ContentType contentType, String text, int relatedUid,
+                                    boolean isChannel) {
+
+        String groupKey = isChannel ? "channels" : "groups";
+
         switch (contentType) {
             case TEXT:
                 return text;
@@ -323,27 +329,27 @@ public class I18nEngine extends IntlEngine {
                 return getTemplateNamed(senderId, "content.service.registered.compact")
                         .replace("{app_name}", getAppName());
             case SERVICE_CREATED:
-                return getTemplateNamed(senderId, "content.service.groups.created");
+                return getTemplateNamed(senderId, "content.service." + groupKey + ".created");
             case SERVICE_ADD:
-                return getTemplateNamed(senderId, "content.service.groups.invited")
+                return getTemplateNamed(senderId, "content.service." + groupKey + ".invited")
                         .replace("{name_added}", getSubjectName(relatedUid));
             case SERVICE_LEAVE:
-                return getTemplateNamed(senderId, "content.service.groups.left");
+                return getTemplateNamed(senderId, "content.service." + groupKey + ".left");
             case SERVICE_KICK:
-                return getTemplateNamed(senderId, "content.service.groups.kicked")
+                return getTemplateNamed(senderId, "content.service." + groupKey + ".kicked")
                         .replace("{name_kicked}", getSubjectName(relatedUid));
             case SERVICE_AVATAR:
-                return getTemplateNamed(senderId, "content.service.groups.avatar_changed");
+                return getTemplateNamed(senderId, "content.service." + groupKey + ".avatar_changed");
             case SERVICE_AVATAR_REMOVED:
-                return getTemplateNamed(senderId, "content.service.groups.avatar_removed");
+                return getTemplateNamed(senderId, "content.service." + groupKey + ".avatar_removed");
             case SERVICE_TITLE:
-                return getTemplateNamed(senderId, "content.service.groups.title_changed.compact");
+                return getTemplateNamed(senderId, "content.service." + groupKey + ".title_changed.compact");
             case SERVICE_TOPIC:
-                return getTemplateNamed(senderId, "content.service.groups.topic_changed.compact");
+                return getTemplateNamed(senderId, "content.service." + groupKey + ".topic_changed.compact");
             case SERVICE_ABOUT:
-                return getTemplateNamed(senderId, "content.service.groups.about_changed.compact");
+                return getTemplateNamed(senderId, "content.service." + groupKey + ".about_changed.compact");
             case SERVICE_JOINED:
-                return getTemplateNamed(senderId, "content.service.groups.joined");
+                return getTemplateNamed(senderId, "content.service." + groupKey + ".joined");
             case SERVICE_CALL_ENDED:
                 return get("content.service.calls.ended");
             case SERVICE_CALL_MISSED:
@@ -363,43 +369,44 @@ public class I18nEngine extends IntlEngine {
      * @param content  content of a message
      * @return formatted message
      */
-    @ObjectiveCName("formatFullServiceMessageWithSenderId:withContent:")
-    public String formatFullServiceMessage(int senderId, ServiceContent content) {
+    @ObjectiveCName("formatFullServiceMessageWithSenderId:withContent:withIsChannel:")
+    public String formatFullServiceMessage(int senderId, ServiceContent content, boolean isChannel) {
+        String groupKey = isChannel ? "channels" : "groups";
         if (content instanceof ServiceUserRegistered) {
             return getTemplateNamed(senderId, "content.service.registered.full")
                     .replace("{app_name}", getAppName());
         } else if (content instanceof ServiceGroupCreated) {
-            return getTemplateNamed(senderId, "content.service.groups.created");
+            return getTemplateNamed(senderId, "content.service." + groupKey + ".created");
         } else if (content instanceof ServiceGroupUserInvited) {
-            return getTemplateNamed(senderId, "content.service.groups.invited")
+            return getTemplateNamed(senderId, "content.service." + groupKey + ".invited")
                     .replace("{name_added}",
                             getSubjectName(((ServiceGroupUserInvited) content).getAddedUid()));
         } else if (content instanceof ServiceGroupUserKicked) {
-            return getTemplateNamed(senderId, "content.service.groups.kicked")
+            return getTemplateNamed(senderId, "content.service." + groupKey + ".kicked")
                     .replace("{name_kicked}",
                             getSubjectName(((ServiceGroupUserKicked) content).getKickedUid()));
         } else if (content instanceof ServiceGroupUserLeave) {
-            return getTemplateNamed(senderId, "content.service.groups.left");
+            return getTemplateNamed(senderId, "content.service." + groupKey + ".left");
         } else if (content instanceof ServiceGroupTitleChanged) {
-            return getTemplateNamed(senderId, "content.service.groups.title_changed.full")
+            return getTemplateNamed(senderId, "content.service." + groupKey + ".title_changed.full")
                     .replace("{title}",
                             ((ServiceGroupTitleChanged) content).getNewTitle());
         } else if (content instanceof ServiceGroupTopicChanged) {
-            return getTemplateNamed(senderId, "content.service.groups.topic_changed.full")
+            return getTemplateNamed(senderId, "content.service." + groupKey + ".topic_changed.full")
                     .replace("{topic}",
                             ((ServiceGroupTopicChanged) content).getNewTopic());
         } else if (content instanceof ServiceGroupAboutChanged) {
-            return getTemplateNamed(senderId, "content.service.groups.about_changed.full")
+            return getTemplateNamed(senderId, "content.service." + groupKey + ".about_changed.full")
                     .replace("{about}",
                             ((ServiceGroupAboutChanged) content).getNewAbout());
         } else if (content instanceof ServiceGroupAvatarChanged) {
             if (((ServiceGroupAvatarChanged) content).getNewAvatar() != null) {
-                return getTemplateNamed(senderId, "content.service.groups.avatar_changed");
+                return getTemplateNamed(senderId, "content.service." + groupKey + ".avatar_changed");
             } else {
-                return getTemplateNamed(senderId, "content.service.groups.avatar_removed");
+                return getTemplateNamed(senderId, "content.service." + groupKey + ".avatar_removed");
             }
         } else if (content instanceof ServiceGroupUserJoined) {
-            return getTemplateNamed(senderId, "content.service.groups.joined");
+            return getTemplateNamed(senderId, "content.service." + groupKey + ".joined");
         } else if (content instanceof ServiceCallEnded) {
             return get("content.service.calls.ended");
         } else if (content instanceof ServiceCallMissed) {

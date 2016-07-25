@@ -14,7 +14,7 @@ public class BlockedListActivity extends BaseFragmentActivity {
 
 
         if (savedInstanceState == null) {
-            showFragment(new BlockedListFragment(), false, false);
+            showFragment(new BlockedListFragment(), false);
         }
     }
 }

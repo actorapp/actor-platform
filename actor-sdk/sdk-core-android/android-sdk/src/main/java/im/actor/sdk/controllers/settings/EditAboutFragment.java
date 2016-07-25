@@ -93,18 +93,6 @@ public class EditAboutFragment extends BaseFragment {
                         }
                     });
                     //TODO: set group about
-                } else if (type == EditAboutActivity.TYPE_GROUP) {
-                    execute(messenger().editGroupAbout(id, about), R.string.edit_about_process, new CommandCallback<Void>() {
-                        @Override
-                        public void onResult(Void res) {
-                            getActivity().finish();
-                        }
-
-                        @Override
-                        public void onError(Exception e) {
-                            Toast.makeText(getActivity(), R.string.toast_unable_change, Toast.LENGTH_SHORT).show();
-                        }
-                    });
                 }
             }
         });

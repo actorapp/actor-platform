@@ -30,10 +30,4 @@
             android:text="@string/group_not_member"
             android:textSize="21sp" />
     </FrameLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_gravity="top"
-        android:background="@drawable/profile_avatar_top_shadow" />
 </FrameLayout>

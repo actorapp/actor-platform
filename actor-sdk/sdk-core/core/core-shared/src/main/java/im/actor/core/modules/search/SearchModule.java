@@ -23,13 +23,16 @@ import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerSearchEntity;
 import im.actor.core.entity.PeerSearchType;
 import im.actor.core.entity.SearchEntity;
+import im.actor.core.entity.SearchResult;
 import im.actor.core.entity.content.AbsContent;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.api.ApiSupportConfiguration;
 import im.actor.core.modules.Modules;
+import im.actor.core.modules.search.sources.GlobalSearchSource;
 import im.actor.runtime.Storage;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.collections.ManagedList;
+import im.actor.runtime.mvvm.SearchValueModel;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.storage.ListEngine;
 
@@ -100,7 +103,7 @@ public class SearchModule extends AbsModule {
                                         AbsContent.fromMessage(itm.getResult().getContent()))));
     }
 
-    public Promise<List<PeerSearchEntity>> findPeers(final PeerSearchType type) {
+    public Promise<List<PeerSearchEntity>> findPeers(PeerSearchType type) {
         final ApiSearchPeerType apiType;
         if (type == PeerSearchType.GROUPS) {
             apiType = ApiSearchPeerType.GROUPS;
@@ -111,19 +114,32 @@ public class SearchModule extends AbsModule {
         }
         ArrayList<ApiSearchCondition> conditions = new ArrayList<>();
         conditions.add(new ApiSearchPeerTypeCondition(apiType));
+        return findPeers(conditions);
+    }
+
+    public Promise<List<PeerSearchEntity>> findPeers(String query) {
+        ArrayList<ApiSearchCondition> conditions = new ArrayList<>();
+        conditions.add(new ApiSearchPieceText(query));
+        return findPeers(conditions);
+    }
+
+    public Promise<List<PeerSearchEntity>> findPeers(ArrayList<ApiSearchCondition> conditions) {
 
         return api(new RequestPeerSearch(conditions, ApiSupportConfiguration.OPTIMIZATIONS))
                 .chain(responsePeerSearch ->
                         updates().applyRelatedData(
                                 responsePeerSearch.getUsers(),
                                 responsePeerSearch.getGroups()))
+                .chain(responsePeerSearch2 ->
+                        updates().loadRequiredPeers(responsePeerSearch2.getUserPeers(), responsePeerSearch2.getGroupPeers()))
                 .map(responsePeerSearch1 ->
                         ManagedList.of(responsePeerSearch1.getSearchResults())
-                                .map(r -> new PeerSearchEntity(convert(r.getPeer()), r.getTitle(),
-                                        r.getDescription(), r.getMembersCount(), r.getDateCreated(),
-                                        r.getCreator(), r.isPublic(), r.isJoined())));
+                                .map(r -> new PeerSearchEntity(convert(r.getPeer()), r.getOptMatchString())));
     }
 
+    public SearchValueModel<SearchResult> buildSearchModel() {
+        return new SearchValueModel<>(new GlobalSearchSource(context()));
+    }
 
     //
     // Local Search

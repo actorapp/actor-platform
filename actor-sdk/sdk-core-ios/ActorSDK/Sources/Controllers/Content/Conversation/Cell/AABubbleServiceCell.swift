@@ -83,7 +83,15 @@ public class AABubbleServiceCellLayouter: AABubbleLayouter {
     }
     
     public func buildLayout(peer: ACPeer, message: ACMessage) -> AACellLayout {
-        let serviceText = Actor.getFormatter().formatFullServiceMessageWithSenderId(message.senderId, withContent: message.content as! ACServiceContent)
+        
+        let isChannel: Bool
+        if peer.isGroup {
+            isChannel = Actor.getGroupWithGid(peer.peerId).groupType == ACGroupType.CHANNEL()
+        } else {
+            isChannel = false
+        }
+        
+        let serviceText = Actor.getFormatter().formatFullServiceMessageWithSenderId(message.senderId, withContent: message.content as! ACServiceContent, withIsChannel: isChannel)
         
         return ServiceCellLayout(text: serviceText, date: Int64(message.date), layouter: self)
     }

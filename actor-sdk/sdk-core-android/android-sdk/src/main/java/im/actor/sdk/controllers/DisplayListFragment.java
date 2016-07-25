@@ -2,6 +2,7 @@ package im.actor.sdk.controllers;
 
 import android.app.Activity;
 import android.support.v7.widget.CustomItemAnimator;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -56,7 +57,8 @@ public abstract class DisplayListFragment<T extends BserObject & ListEngineItem,
 
     public void setAnimationsEnabled(boolean isEnabled) {
         if (isEnabled) {
-            CustomItemAnimator itemAnimator = new CustomItemAnimator();
+            DefaultItemAnimator itemAnimator = new DefaultItemAnimator();
+            // CustomItemAnimator itemAnimator = new CustomItemAnimator();
             itemAnimator.setSupportsChangeAnimations(false);
             itemAnimator.setMoveDuration(200);
             itemAnimator.setAddDuration(150);
@@ -128,9 +130,9 @@ public abstract class DisplayListFragment<T extends BserObject & ListEngineItem,
     @Override
     public void onCollectionChanged() {
         if (displayList.getSize() == 0) {
-            hideView(collection);
+            hideView(collection, false);
         } else {
-            showView(collection);
+            showView(collection, false);
         }
     }
 

@@ -81,7 +81,6 @@ public class User extends WrapperExtEntity<ApiFullUser, ApiUser> implements KeyV
     private List<BotCommand> commands;
 
 
-    @NotNull
     @Property("readonly, nonatomic")
     private boolean haveExtension;
 

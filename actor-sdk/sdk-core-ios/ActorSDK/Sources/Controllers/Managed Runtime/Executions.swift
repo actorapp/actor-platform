@@ -177,8 +177,9 @@ public extension UIViewController {
         AAExecutions.execute(command)
     }
     
-    public func executePromise(promise: ARPromise) {
+    public func executePromise(promise: ARPromise) -> ARPromise {
         AAExecutions.execute(promise)
+        return promise
     }
     
     public func executePromise(promise: ARPromise, successBlock: ((val: Any?) -> Void)?, failureBlock: ((val: Any?) -> Void)?) {

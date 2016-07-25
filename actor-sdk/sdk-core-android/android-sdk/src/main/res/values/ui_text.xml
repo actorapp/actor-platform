@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
   -->
 
@@ -159,6 +158,7 @@
 
     <string name="main_fab_compose">Compose</string>
     <string name="main_fab_new_group">Create group</string>
+    <string name="main_fab_new_channel">Create channel</string>
     <string name="main_fab_join_public_group">Join public group</string>
     <string name="main_fab_add_contact">Add contact</string>
 
@@ -269,6 +269,10 @@
 
     <string name="chat_not_member">You are not a member of this group</string>
 
+    <string name="chat_join">Join</string>
+    <string name="chat_mute">Mute</string>
+    <string name="chat_unmute">Unmute</string>
+
     <string name="chat_empty_bot">START</string>
     <string name="chat_empty_bot_about">No description for this bot yet</string>
 
@@ -333,8 +337,8 @@
 
     <string name="group_admin">admin</string>
 
-    <string name="group_created_by">Created by {0}</string>
-    <string name="group_created_by_you">Created by You</string>
+    <string name="group_created_by">Owned by {0}</string>
+    <string name="group_created_by_you">Owned by You</string>
 
     <string name="group_adding">Adding to group…</string>
     <string name="group_removing">Removing from group…</string>
@@ -344,8 +348,7 @@
     <string name="group_context_view">View {0}</string>
     <string name="group_context_remove">Remove {0} from group</string>
 
-    <string name="group_menu_add">Add a member</string>
-    <string name="group_menu_leave">Leave group</string>
+    <string name="group_menu_edit">Edit</string>
     <string name="group_menu_change_theme">Change theme</string>
     <string name="group_menu_change_photo">Change photo</string>
     <string name="group_menu_integration_token">Integration token</string>
@@ -354,9 +357,40 @@
     <string name="group_shared_files">Documents</string>
 
     <string name="group_add_member">Add a member</string>
+    <string name="group_leave">Leave group</string>
+    <string name="group_leave_channel">Leave channel</string>
+    <string name="group_administration">Administration</string>
+
+    <string name="group_admin_title">Group Administration</string>
+    <string name="channel_admin_title">Channel Administration</string>
+
+    <string name="group_permissions">Permissions</string>
+    <string name="group_permissions_hint">Control what is possible in this group</string>
+    <string name="channel_permissions_hint">Control what is possible in this channel</string>
+
+    <string name="group_type">Group Type</string>
+    <string name="channel_type">Channel Type</string>
+    <string name="group_type_pubic">Public</string>
+    <string name="group_type_private">Private</string>
+    <string name="group_delete">Delete Group</string>
+    <string name="group_delete_hint">You will lose all messages in this group.</string>
+    <string name="channel_delete">Delete Channel</string>
+    <string name="channel_delete_hint">You will lose all messages in this channel.</string>
+
+    <string name="group_share_history">Share History</string>
+    <string name="group_share_history_enabled">Shared</string>
+    <string name="group_share_history_hint">All members will see all messages</string>
+
+    <string name="group_can_edit_info_members">All members can edit group info</string>
+    <string name="channel_can_edit_info_members">All members can edit group info</string>
+
+    <string name="group_public_group_title">Public Group</string>
+    <string name="group_public_group_text">Public groups can be found in search, anyone can join them.</string>
+    <string name="group_private_group_title">Private Group</string>
+    <string name="group_private_group_text">Private Group can only be joined via personal invitation.</string>
+
 
     <string name="group_not_member">You are not a member of this group</string>
-
     <string name="about_group">About the group</string>
     <string name="about_group_empty">Set group description</string>
     <string name="theme_group">Group theme</string>
@@ -369,7 +403,7 @@
     <string name="avatar_title_person">Photo</string>
     <string name="avatar_title_group">Group photo</string>
     <string name="avatar_no_photo">No photo</string>
-    <string name="avatar_menu_edit">Edit</string>
+    <string name="actor_menu_edit">Edit</string>
     <string name="avatar_menu_set_as">Set as…</string>
 
     <!-- Add Contact -->
@@ -387,6 +421,14 @@
     <string name="create_group_hint">Enter group theme and set optional group picture</string>
     <string name="create_group_search_hint">Search by name</string>
     <string name="create_group_done">Done</string>
+
+    <!-- Create Channel -->
+    <string name="create_channel_title">Create channel</string>
+    <string name="create_channel_name_hint">Name the channel</string>
+    <string name="create_channel_hint">Enter channel name and set optional channel picture</string>
+
+    <string name="group_name_hint">Name</string>
+    <string name="group_description_hint">Description</string>
 
     <!-- Group add -->
     <string name="group_add_title">Add member</string>

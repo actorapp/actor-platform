@@ -12,7 +12,7 @@ public class ContactsActivity extends BaseFragmentActivity {
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState == null) {
-            showFragment(new ContactsFragment(), false, false);
+            showFragment(new ContactsFragment(), false);
         }
     }
 }

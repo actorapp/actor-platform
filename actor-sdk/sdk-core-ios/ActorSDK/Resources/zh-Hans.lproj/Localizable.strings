@@ -270,11 +270,80 @@
 
 "GroupIntegrations" = "集成";
 
-"GroupMembers" = "{0}个成员";
+"GroupViewMembers" = "个成员";
 
 "GroupMemberAdmin" = "管理员";
 
 "GroupMemberInfo" = "成员信息";
+
+"GroupDescription" = "Description";
+
+
+
+"GroupAdministration" = "Administration";
+
+"GroupTypeTitle" = "Group Type";
+
+"GroupTypeTitleChannel" = "Channel Type";
+
+"ChannelTypePublic" = "Public";
+
+"ChannelTypePrivate" = "Private";
+
+"GroupTypePublicFull" = "Public Group";
+
+"GroupTypePrivateFull" = "Private Group";
+
+"ChannelTypePublicFull" = "Public Channel";
+
+"ChannelTypePrivateFull" = "Private Channel";
+
+"GroupPermissionsHint" = "Control what is possible in this group";
+
+"GroupPermissionsHintChannel" = "Control what is possible in this channel";
+
+"GroupTypeHintPublic" = "Public groups can be found in search and anyone can join";
+
+"GroupTypeHintPrivate" = "Private groups can be joined only via personal invitation";
+
+"GroupTypeHintPublicChannel" = "Public channels can be found in search and anyone can join";
+
+"GroupTypeHintPrivateChannel" = "Private channels can be joined only via personal invitation";
+
+"GroupTypeLinkHint" = "People can share this link with others and find your group using search";
+
+"GroupTypeLinkHintChannel" = "People can share this link with others and find your channel using search";
+
+"GroupDeleteHint" = "You will lose all messages in this group";
+
+"GroupDeleteHintChannel" = "You will lose all messages in this channel";
+
+
+
+
+"GroupShareTitle" = "Shared History";
+
+"GroupShareEnabled" = "Shared";
+
+"GroupShareHint" = "All members will see all messages";
+
+"GroupShareMessage" = "Are you sure want to share all messages to all members? This action is irreversible.";
+
+"GroupShareAction" = "Share";
+
+
+
+"GroupEditTitle" = "Edit Group";
+
+"GroupEditTitleChannel" = "Edit Channel";
+
+"GroupEditName" = "Group Name";
+
+"GroupEditNameChannel" = "Channel Name";
+
+"GroupEditDescription" = "Description";
+
+
 
 "GroupMemberMakeAdmin" = "设为群组管理员";
 
@@ -300,11 +369,7 @@
 
 "GroupAddParticipantUrl" = "通过URL链接邀请加入群组";
 
-"GroupLeave" = "退出群组";
 
-"GroupLeaveConfirm" = "你确定要退出群组吗？";
-
-"GroupLeaveConfirmAction" = "退出";
 
 "GroupInviteLinkPageTitle" = "邀请链接";
 
@@ -316,23 +381,11 @@
 
 "GroupInviteLinkRevokeAction" = "重置";
 
-"GroupIntegrationPageTitle" = "集成API";
 
-"GroupIntegrationLinkTitle" = "链接";
-
-"GroupIntegrationLinkHint" = "任何外部系统都可以利用这个链接向群组发送消息。";
-
-"GroupIntegrationDoc" = "打开文档";
-
-"GroupIntegrationLinkRevokeMessage" = "确定要重置这个链接，重置后其他系统将无法使用这个链接发送消息。";
-
-"GroupIntegrationLinkRevokeAction" = "重置";
 
 "GroupJoinMessage" = "确定要加入群组吗?";
 
 "GroupJoinAction" = "加入";
-
-"GroupMembers" = "群组成员";
 
 /*
  * Compose
@@ -340,13 +393,24 @@
 
 "ComposeTitle" = "新消息";
 
+
 "CreateGroup" = "创建群组";
+
+"CreateChannel" = "Create Channel";
+
 
 "CreateGroupTitle" = "创建群组";
 
 "CreateGroupHint" = "请填写群组名称和图标";
 
 "CreateGroupNamePlaceholder" = "输入群组名称";
+
+"CreateChannelTitle" = "Create Channel";
+
+"CreateChannelHint" = "Please provide the channel name and an optional channel icon";
+
+"CreateChannelNamePlaceholder" = "Channel Name";
+
 
 "CreateGroupMembersTitle" = "邀请成员";
 
@@ -379,6 +443,10 @@
 "ChatSlideUpToCancel" = "上滑取消";
 
 "Chat.MicrophoneAccessDisabled"  = "我们需要访问麦克风来发送语音信息. 请打开 设置 — 隐私 — 麦克风，然后打开开关";
+
+"ChatDeleted" = "This chat was deleted by owner.";
+
+"ChatJoin" = "Join";
 
 /*
  * Chat attachment menu
@@ -600,6 +668,49 @@
 "ActionAddPhoto2" = "头像";
 
 "ActionOpenCode" = "查看代码";
+
+"ActionMute" = "Mute";
+
+"ActionUnmute" = "Unmute";
+
+
+
+"ActionDelete" = "Delete";
+
+"ActionDeleteMessage" = "Are you sure want to delete chat?";
+
+
+"ActionDeleteChannel" = "Delete Channel";
+
+"ActionDeleteChannelMessage" = "Wait! Deleting this channel will remove all members and all messages will be lost. Delete the channel anyway?";
+
+"ActionDeleteGroup" = "Delete Group";
+
+"ActionDeleteGroupMessage" = "Wait! Deleting this group will remove all members and all messages will be lost. Delete the group anyway?";
+
+
+"ActionLeaveChannel" = "Leave Channel";
+
+"ActionLeaveChannelMessage" = "Are you sure want to leave channel?";
+
+"ActionLeaveChannelAction" = "Leave";
+
+
+
+"ActionDeleteAndExit" = "Delete and Exit";
+
+"ActionDeleteAndExitMessage" = "Are you sure want to exit group and delete all messages?";
+
+"ActionDeleteAndExitAction" = "Exit";
+
+
+
+"ActionClearHistory" = "Clear History";
+
+"ActionClearHistoryMessage" = "Are you sure want to clear history?";
+
+"ActionClearHistoryAction" = "Clear";
+
 
 /*
  *  Network

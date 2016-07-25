@@ -100,6 +100,27 @@
 				"avatar_changed": "{name} modificada la foto de grupo",
 				"avatar_removed": "{name} eliminada la foto de grupo"
 			},
+			"channels": {
+				"created": "Creado el canal",
+				"invited": "{name} invitó a {name_added}",
+				"joined": "{name} se unió al canal",
+				"kicked": "{name} expulsaste a {name_kicked}",
+				"left": "{name} elimino el canal",
+				"title_changed": {
+					"full":  "{name} cambio el nombre del canal a \"{title}\"",
+					"compact": "{name} a modificado el nombre del canal"
+				},
+				"topic_changed": {
+					"full":  "{name} changed the canal topic to \"{topic}\"",
+					"compact": "{name} changed the canal topic"
+				},
+				"about_changed": {
+					"full":  "{name} changed the canal about to \"{about}\"",
+					"compact": "{name} changed the canal about"
+				},
+				"avatar_changed": "{name} modificada la foto de canal",
+				"avatar_removed": "{name} eliminada la foto de canal"
+			},
 			"calls": {
 				"missed": "Llamada perdida",
 				"ended": "Llamada finalizada"

@@ -44,7 +44,7 @@ public class ProfileActivity extends BaseFragmentActivity {
             if (fragment == null) {
                 fragment = ProfileFragment.create(uid);
             }
-            showFragment(fragment, false, false);
+            showFragment(fragment, false);
         }
     }
 }

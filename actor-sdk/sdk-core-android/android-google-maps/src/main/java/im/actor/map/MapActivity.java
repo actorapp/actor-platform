@@ -18,7 +18,7 @@ public class MapActivity extends BaseFragmentActivity {
         double latitude = getIntent().getDoubleExtra("latitude", 0);
 
         if (savedInstanceState == null) {
-            showFragment(MapFragment.create(longitude, latitude), false, false);
+            showFragment(MapFragment.create(longitude, latitude), false);
         }
 
     }

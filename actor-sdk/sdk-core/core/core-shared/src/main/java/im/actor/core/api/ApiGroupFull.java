@@ -18,17 +18,17 @@ public class ApiGroupFull extends BserObject {
 
     private int id;
     private long createDate;
-    private int ownerUid;
+    private Integer ownerUid;
     private List<ApiMember> members;
     private String theme;
     private String about;
     private ApiMapValue ext;
     private Boolean isAsyncMembers;
-    private Boolean canViewMembers;
-    private Boolean canInvitePeople;
     private Boolean isSharedHistory;
+    private String shortName;
+    private Long permissions;
 
-    public ApiGroupFull(int id, long createDate, int ownerUid, @NotNull List<ApiMember> members, @Nullable String theme, @Nullable String about, @Nullable ApiMapValue ext, @Nullable Boolean isAsyncMembers, @Nullable Boolean canViewMembers, @Nullable Boolean canInvitePeople, @Nullable Boolean isSharedHistory) {
+    public ApiGroupFull(int id, long createDate, @Nullable Integer ownerUid, @NotNull List<ApiMember> members, @Nullable String theme, @Nullable String about, @Nullable ApiMapValue ext, @Nullable Boolean isAsyncMembers, @Nullable Boolean isSharedHistory, @Nullable String shortName, @Nullable Long permissions) {
         this.id = id;
         this.createDate = createDate;
         this.ownerUid = ownerUid;
@@ -37,9 +37,9 @@ public class ApiGroupFull extends BserObject {
         this.about = about;
         this.ext = ext;
         this.isAsyncMembers = isAsyncMembers;
-        this.canViewMembers = canViewMembers;
-        this.canInvitePeople = canInvitePeople;
         this.isSharedHistory = isSharedHistory;
+        this.shortName = shortName;
+        this.permissions = permissions;
     }
 
     public ApiGroupFull() {
@@ -54,7 +54,8 @@ public class ApiGroupFull extends BserObject {
         return this.createDate;
     }
 
-    public int getOwnerUid() {
+    @Nullable
+    public Integer getOwnerUid() {
         return this.ownerUid;
     }
 
@@ -84,25 +85,25 @@ public class ApiGroupFull extends BserObject {
     }
 
     @Nullable
-    public Boolean canViewMembers() {
-        return this.canViewMembers;
-    }
-
-    @Nullable
-    public Boolean canInvitePeople() {
-        return this.canInvitePeople;
-    }
-
-    @Nullable
     public Boolean isSharedHistory() {
         return this.isSharedHistory;
+    }
+
+    @Nullable
+    public String getShortName() {
+        return this.shortName;
+    }
+
+    @Nullable
+    public Long getPermissions() {
+        return this.permissions;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
         this.id = values.getInt(1);
         this.createDate = values.getLong(6);
-        this.ownerUid = values.getInt(5);
+        this.ownerUid = values.optInt(5);
         List<ApiMember> _members = new ArrayList<ApiMember>();
         for (int i = 0; i < values.getRepeatedCount(12); i ++) {
             _members.add(new ApiMember());
@@ -112,16 +113,21 @@ public class ApiGroupFull extends BserObject {
         this.about = values.optString(3);
         this.ext = values.optObj(7, new ApiMapValue());
         this.isAsyncMembers = values.optBool(11);
-        this.canViewMembers = values.optBool(8);
-        this.canInvitePeople = values.optBool(9);
         this.isSharedHistory = values.optBool(10);
+        this.shortName = values.optString(14);
+        this.permissions = values.optLong(27);
+        if (values.hasRemaining()) {
+            setUnmappedObjects(values.buildRemaining());
+        }
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeInt(1, this.id);
         writer.writeLong(6, this.createDate);
-        writer.writeInt(5, this.ownerUid);
+        if (this.ownerUid != null) {
+            writer.writeInt(5, this.ownerUid);
+        }
         writer.writeRepeatedObj(12, this.members);
         if (this.theme != null) {
             writer.writeString(2, this.theme);
@@ -135,14 +141,21 @@ public class ApiGroupFull extends BserObject {
         if (this.isAsyncMembers != null) {
             writer.writeBool(11, this.isAsyncMembers);
         }
-        if (this.canViewMembers != null) {
-            writer.writeBool(8, this.canViewMembers);
-        }
-        if (this.canInvitePeople != null) {
-            writer.writeBool(9, this.canInvitePeople);
-        }
         if (this.isSharedHistory != null) {
             writer.writeBool(10, this.isSharedHistory);
+        }
+        if (this.shortName != null) {
+            writer.writeString(14, this.shortName);
+        }
+        if (this.permissions != null) {
+            writer.writeLong(27, this.permissions);
+        }
+        if (this.getUnmappedObjects() != null) {
+            SparseArray<Object> unmapped = this.getUnmappedObjects();
+            for (int i = 0; i < unmapped.size(); i++) {
+                int key = unmapped.keyAt(i);
+                writer.writeUnmapped(key, unmapped.get(key));
+            }
         }
     }
 
@@ -156,9 +169,9 @@ public class ApiGroupFull extends BserObject {
         res += ", theme=" + this.theme;
         res += ", about=" + this.about;
         res += ", isAsyncMembers=" + this.isAsyncMembers;
-        res += ", canViewMembers=" + this.canViewMembers;
-        res += ", canInvitePeople=" + this.canInvitePeople;
         res += ", isSharedHistory=" + this.isSharedHistory;
+        res += ", shortName=" + this.shortName;
+        res += ", permissions=" + this.permissions;
         res += "}";
         return res;
     }

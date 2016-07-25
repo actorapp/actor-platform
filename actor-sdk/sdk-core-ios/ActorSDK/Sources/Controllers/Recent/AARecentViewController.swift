@@ -50,8 +50,7 @@ public class AARecentViewController: AADialogsListContentController, AADialogsLi
             self.navigationItem.leftBarButtonItem!.style = UIBarButtonItemStyle.Done
             
             navigationItem.rightBarButtonItem = nil
-        }
-        else {
+        } else {
             self.navigationItem.leftBarButtonItem!.title = AALocalized("NavigationEdit")
             self.navigationItem.leftBarButtonItem!.style = UIBarButtonItemStyle.Plain
             
@@ -125,7 +124,7 @@ public class AARecentViewController: AADialogsListContentController, AADialogsLi
         return false
     }
     
-    public func searchDidTap(controller: AADialogsListContentController, entity: ACSearchEntity) {
+    public func searchDidTap(controller: AADialogsListContentController, entity: ACSearchResult) {
         if let customController = ActorSDK.sharedActor().delegate.actorControllerForConversation(entity.peer) {
             self.navigateDetail(customController)
         } else {

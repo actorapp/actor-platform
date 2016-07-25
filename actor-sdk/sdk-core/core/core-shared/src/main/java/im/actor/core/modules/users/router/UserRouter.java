@@ -360,6 +360,7 @@ public class UserRouter extends ModuleActor {
 
         freeze();
         users().getValueAsync(uid)
+                // Do not reduce to lambda due j2objc bug
                 .flatMap((Function<User, Promise<Tuple2<ResponseLoadFullUsers, User>>>) u -> {
                     if (!u.isHaveExtension()) {
                         ArrayList<ApiUserOutPeer> users = new ArrayList<>();
@@ -386,8 +387,13 @@ public class UserRouter extends ModuleActor {
     private Promise<List<ApiUserOutPeer>> fetchMissingUsers(List<ApiUserOutPeer> users) {
         freeze();
         return PromisesArray.of(users)
-                .map((Function<ApiUserOutPeer, Promise<ApiUserOutPeer>>) u -> users().containsAsync(u.getUid())
-                        .map(v -> v ? null : u))
+                // Do not reduce due j2objc bug
+                .map(new Function<ApiUserOutPeer, Promise<ApiUserOutPeer>>() {
+                    @Override
+                    public Promise<ApiUserOutPeer> apply(ApiUserOutPeer u) {
+                        return users().containsAsync(u.getUid()).map(v -> v ? null : u);
+                    }
+                })
                 .filterNull()
                 .zip()
                 .after((r, e) -> unfreeze());
@@ -398,8 +404,13 @@ public class UserRouter extends ModuleActor {
     private Promise<Void> applyUsers(List<ApiUser> users) {
         freeze();
         return PromisesArray.of(users)
-                .map((Function<ApiUser, Promise<Tuple2<ApiUser, Boolean>>>) u -> users().containsAsync(u.getId())
-                        .map(v -> new Tuple2<>(u, v)))
+                // Do not reduce due j2objc bug
+                .map(new Function<ApiUser, Promise<Tuple2<ApiUser, Boolean>>>() {
+                    @Override
+                    public Promise<Tuple2<ApiUser, Boolean>> apply(ApiUser u) {
+                        return users().containsAsync(u.getId()).map(v -> new Tuple2<>(u, v));
+                    }
+                })
                 .filter(t -> !t.getT2())
                 .zip()
                 .then(x -> {

@@ -7,7 +7,9 @@ import android.view.ViewGroup;
 
 import java.util.HashMap;
 
+import im.actor.core.entity.GroupType;
 import im.actor.core.entity.Message;
+import im.actor.core.entity.PeerType;
 import im.actor.core.entity.content.AbsContent;
 import im.actor.core.entity.content.AnimationContent;
 import im.actor.core.entity.content.ContactContent;
@@ -42,6 +44,7 @@ import im.actor.sdk.controllers.conversation.messages.content.TextHolder;
 import im.actor.sdk.controllers.conversation.messages.content.UnsupportedHolder;
 import im.actor.sdk.controllers.ActorBinder;
 
+import static im.actor.sdk.util.ActorSDKMessenger.groups;
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
 public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
@@ -53,6 +56,7 @@ public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
     private long firstUnread = -1;
     private long readDate;
     private long receiveDate;
+    private boolean isChannel;
 
     private HashMap<Long, Message> selected = new HashMap<>();
 
@@ -63,6 +67,11 @@ public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
         this.messagesFragment = messagesFragment;
         this.context = context;
         ConversationVM conversationVM = messenger().getConversationVM(messagesFragment.getPeer());
+
+        isChannel = false;
+        if (messagesFragment.getPeer().getPeerType() == PeerType.GROUP) {
+            isChannel = groups().get(messagesFragment.getPeer().getPeerId()).getGroupType() == GroupType.CHANNEL;
+        }
 
         readDate = conversationVM.getReadDate().get();
         receiveDate = conversationVM.getReceiveDate().get();
@@ -204,7 +213,7 @@ public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
                 return ActorSDK.sharedActor().getDelegatedViewHolder(ServiceHolder.class, new ActorSDK.OnDelegateViewHolder<ServiceHolder>() {
                     @Override
                     public ServiceHolder onNotDelegated() {
-                        return new ServiceHolder(MessagesAdapter.this, inflate(R.layout.adapter_dialog_service, viewGroup));
+                        return new ServiceHolder(MessagesAdapter.this, isChannel, inflate(R.layout.adapter_dialog_service, viewGroup));
                     }
                 }, MessagesAdapter.this, inflate(R.layout.adapter_dialog_service, viewGroup));
             case 2:

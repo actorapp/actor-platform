@@ -197,7 +197,6 @@
             android:id="@+id/blockCont"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:layout_marginBottom="36dp"
             android:background="@drawable/selector"
             android:paddingRight="8dp">
 
@@ -219,7 +218,5 @@
                 android:text="@string/profile_settings_block"
                 android:textSize="16sp" />
         </LinearLayout>
-
     </LinearLayout>
-
 </ScrollView>

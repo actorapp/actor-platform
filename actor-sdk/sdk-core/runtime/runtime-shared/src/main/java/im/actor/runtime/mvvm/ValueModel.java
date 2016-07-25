@@ -3,6 +3,8 @@ package im.actor.runtime.mvvm;
 import com.google.j2objc.annotations.ObjectiveCName;
 import com.google.j2objc.annotations.Property;
 
+import org.jetbrains.annotations.Nullable;
+
 public class ValueModel<T> extends Value<T> {
 
     @Property("nonatomic, readonly")
@@ -26,7 +28,7 @@ public class ValueModel<T> extends Value<T> {
      * @return is value changed
      */
     @ObjectiveCName("changeWithValue:")
-    public boolean change(T value) {
+    public boolean change(@Nullable T value) {
         if (this.value != null && value != null && value.equals(this.value)) {
             return false;
         }
@@ -40,7 +42,7 @@ public class ValueModel<T> extends Value<T> {
     }
 
     @ObjectiveCName("changeNoNotificationWithValue:")
-    public boolean changeNoNotification(T value) {
+    public boolean changeNoNotification(@Nullable T value) {
         if (this.value != null && value != null && value.equals(this.value)) {
             return false;
         }
@@ -52,7 +54,7 @@ public class ValueModel<T> extends Value<T> {
     }
 
     @ObjectiveCName("changeInUIThreadWithValue:")
-    protected boolean changeInUIThread(T value) {
+    protected boolean changeInUIThread(@Nullable T value) {
         if (this.value != null && value != null && value.equals(this.value)) {
             return false;
         }
