@@ -38,7 +38,6 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
         val dateMillis = evt.ts.toEpochMilli
         val memberIds = newState.memberIds
 
-        // if user ever been in this group - we should push these updates
         // TODO: unify isHistoryShared usage
         val inviteeUpdatesNew: Vector[Update] = {
           val optDrop = if (newState.isHistoryShared) Some(UpdateChatDropCache(apiGroupPeer)) else None
@@ -240,8 +239,12 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
         // cause they were pushed already on invite step
         // TODO: unify isHistoryShared usage
         val joiningUserUpdatesNew: Vector[Update] = {
-          val optDrop = if (newState.isHistoryShared) Some(UpdateChatDropCache(apiGroupPeer)) else None
-          optDrop ++: (if (wasInvited) Vector.empty[Update] else refreshGroupUpdates(newState, cmd.joiningUserId))
+          if (wasInvited) {
+            Vector.empty[Update]
+          } else {
+            val optDrop = if (newState.isHistoryShared) Some(UpdateChatDropCache(apiGroupPeer)) else None
+            optDrop ++: refreshGroupUpdates(newState, cmd.joiningUserId)
+          }
         }
 
         // For groups with not async members we should push:
@@ -643,7 +646,6 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
   // Updates that will be sent to user, when he enters group.
   // Helps clients that have this group to refresh it's data.
   private def refreshGroupUpdates(newState: GroupState, userId: Int): Vector[Update] = Vector(
-    UpdateChatDropCache(apiGroupPeer),
     UpdateGroupMemberChanged(groupId, isMember = true),
     UpdateGroupAboutChanged(groupId, newState.about),
     UpdateGroupAvatarChanged(groupId, newState.avatar),
