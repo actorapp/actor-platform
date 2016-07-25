@@ -18,6 +18,8 @@ apply plugin: 'me.tatarka.retrolambda'
 group = 'im.actor'
 version = '0.0.1'
 
+def baseVersion = "2.0"
+
 android {
     compileSdkVersion 24
     buildToolsVersion "24.0.0"
@@ -110,7 +112,7 @@ if (project.rootProject.file('gradle.properties').exists()) {
     properties.load(project.rootProject.file('gradle.properties').newDataInputStream())
     ossrhUsername = properties.getProperty("ossrhUsername", "")
     ossrhPassword = properties.getProperty("ossrhPassword", "")
-    version = properties.getProperty("version", "")
+    version = baseVersion + properties.getProperty("build_index", "")
 
     nexusStaging {
         username ossrhUsername
