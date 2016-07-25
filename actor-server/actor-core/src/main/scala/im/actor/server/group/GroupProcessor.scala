@@ -189,11 +189,11 @@ private[group] final class GroupProcessor
     super.afterCommit(e)
     if (recoveryFinished) {
       // can't make calls in group with more than 25 members
-      if (state.membersCount > 25) {
+      if (state.membersCount == 26) {
         updateCanCall(state)
       }
       // from 50+ members we make group with async members
-      if (state.membersCount >= 50) {
+      if (state.membersCount >= 50 && !state.isAsyncMembers) {
         makeMembersAsync()
       }
     }
