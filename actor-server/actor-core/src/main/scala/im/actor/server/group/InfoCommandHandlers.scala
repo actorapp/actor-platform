@@ -94,7 +94,7 @@ private[group] trait InfoCommandHandlers {
           randomId = cmd.randomId
         )
         val serviceMessage = GroupServiceMessages.changedTitle(title)
-        val pushRules = seqUpdExt.pushRules(isFat = false, Some(PushTexts.TitleChanged))
+        val pushRules = seqUpdExt.pushRules(isFat = false, Some(PushTexts.titleChanged(newState.groupType)))
 
         //TODO: remove deprecated
         db.run(GroupRepo.updateTitle(groupId, title, cmd.clientUserId, cmd.randomId, date = evt.ts))
@@ -168,7 +168,7 @@ private[group] trait InfoCommandHandlers {
           date = dateMillis
         )
         val serviceMessage = GroupServiceMessages.changedTopic(topic)
-        val pushRules = seqUpdExt.pushRules(isFat = false, Some(PushTexts.TopicChanged))
+        val pushRules = seqUpdExt.pushRules(isFat = false, Some(PushTexts.topicChanged(newState.groupType)))
 
         //TODO: remove deprecated
         db.run(GroupRepo.updateTopic(groupId, topic))
@@ -232,7 +232,7 @@ private[group] trait InfoCommandHandlers {
         val updateNew = UpdateGroupAboutChanged(groupId, about)
         val updateObsolete = UpdateGroupAboutChangedObsolete(groupId, about)
         val serviceMessage = GroupServiceMessages.changedAbout(about)
-        val pushRules = seqUpdExt.pushRules(isFat = false, Some(PushTexts.TopicChanged))
+        val pushRules = seqUpdExt.pushRules(isFat = false, Some(PushTexts.topicChanged(newState.groupType)))
 
         //TODO: remove deprecated
         db.run(GroupRepo.updateAbout(groupId, about))
