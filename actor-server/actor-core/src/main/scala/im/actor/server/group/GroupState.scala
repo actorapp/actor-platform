@@ -27,26 +27,27 @@ object AdminSettings {
     showAdminsToMembers = true,
     canMembersInvite = true,
     canMembersEditGroupInfo = true,
-    canAdminsEditGroupInfo = true
+    canAdminsEditGroupInfo = true,
+    showJoinLeaveMessages = true
   )
 
   val ChannelsDefault = AdminSettings(
     showAdminsToMembers = false,
     canMembersInvite = false,
     canMembersEditGroupInfo = false,
-    canAdminsEditGroupInfo = true
+    canAdminsEditGroupInfo = true,
+    showJoinLeaveMessages = false // TODO: figure it out. We don't use it by default
   )
 
   // format: OFF
   def apiToBitMask(settings: ApiAdminSettings): Int = {
-    def toInt(b: Boolean) = if(b) 1 else 0
+    def toInt(b: Boolean) = if (b) 1 else 0
 
-    List(
-      toInt(settings.showAdminsToMembers)     << 0,
-      toInt(settings.canMembersInvite)        << 1,
-      toInt(settings.canMembersEditGroupInfo) << 2,
-      toInt(settings.canAdminsEditGroupInfo)  << 3
-    ).sum
+    (toInt(settings.showAdminsToMembers)     << 0) +
+    (toInt(settings.canMembersInvite)        << 1) +
+    (toInt(settings.canMembersEditGroupInfo) << 2) +
+    (toInt(settings.canAdminsEditGroupInfo)  << 3) +
+    (toInt(settings.showJoinLeaveMessages)   << 4)
   }
 
   def fromBitMask(mask: Int): AdminSettings = {
@@ -54,7 +55,8 @@ object AdminSettings {
       showAdminsToMembers     = (mask & (1 << 0)) != 0,
       canMembersInvite        = (mask & (1 << 1)) != 0,
       canMembersEditGroupInfo = (mask & (1 << 2)) != 0,
-      canAdminsEditGroupInfo  = (mask & (1 << 3)) != 0
+      canAdminsEditGroupInfo  = (mask & (1 << 3)) != 0,
+      showJoinLeaveMessages   = (mask & (1 << 4)) != 0
     )
   }
   // format: ON
@@ -64,7 +66,8 @@ private[group] final case class AdminSettings(
   showAdminsToMembers:     Boolean, // 1
   canMembersInvite:        Boolean, // 2
   canMembersEditGroupInfo: Boolean, // 4
-  canAdminsEditGroupInfo:  Boolean // 8
+  canAdminsEditGroupInfo:  Boolean, // 8
+  showJoinLeaveMessages:   Boolean // 16
 )
 
 private[group] object GroupState {

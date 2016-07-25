@@ -167,7 +167,8 @@ trait GroupQueryHandlers {
             showAdminsToMembers = state.adminSettings.showAdminsToMembers,
             canMembersInvite = state.adminSettings.canMembersInvite,
             canMembersEditGroupInfo = state.adminSettings.canMembersEditGroupInfo,
-            canAdminsEditGroupInfo = state.adminSettings.canAdminsEditGroupInfo
+            canAdminsEditGroupInfo = state.adminSettings.canAdminsEditGroupInfo,
+            showJoinLeaveMessages = state.adminSettings.showJoinLeaveMessages
           )
         )
       }
