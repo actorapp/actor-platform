@@ -3,6 +3,7 @@ package im.actor.server.group
 import java.time.{ Instant, LocalDateTime, ZoneOffset }
 
 import akka.actor.Status
+import akka.http.scaladsl.util.FastFuture
 import akka.pattern.pipe
 import im.actor.api.rpc.Update
 import im.actor.api.rpc.groups._
@@ -228,6 +229,7 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
 
         val date = evt.ts
         val dateMillis = date.toEpochMilli
+        val showJoinMessage = newState.adminSettings.showJoinLeaveMessages
         val memberIds = newState.memberIds
         val apiMembers = newState.members.values.map(_.asStruct).toVector
         val randomId = ACLUtils.randomLong()
@@ -318,13 +320,17 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
               deliveryId = s"userjoined_${groupId}_${randomId}"
             )
 
-            SeqStateDate(_, _, date) ← dialogExt.sendServerMessage(
-              apiGroupPeer,
-              senderUserId = cmd.joiningUserId,
-              senderAuthId = cmd.joiningUserAuthId,
-              randomId = randomId,
-              serviceMessage // no delivery tag. This updated handled this way in Groups V1
-            )
+            date ← if (showJoinMessage) {
+              dialogExt.sendServerMessage(
+                apiGroupPeer,
+                senderUserId = cmd.joiningUserId,
+                senderAuthId = cmd.joiningUserAuthId,
+                randomId = randomId,
+                serviceMessage // no delivery tag. This updated handled this way in Groups V1
+              ) map (_.date)
+            } else {
+              FastFuture.successful(dateMillis)
+            }
           } yield SeqStateDate(seq, state, date)
 
         def joinCHANNELUpdates: Future[SeqStateDate] =
@@ -393,6 +399,7 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
         // no commit here. it will be after service message sent
 
         val dateMillis = evt.ts.toEpochMilli
+        val showLeaveMessage = state.adminSettings.showJoinLeaveMessages
 
         val updateObsolete = UpdateGroupUserLeaveObsolete(groupId, cmd.userId, dateMillis, cmd.randomId)
 
@@ -432,14 +439,18 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
             )
 
             // send service message
-            SeqStateDate(_, _, date) ← dialogExt.sendServerMessage(
-              apiGroupPeer,
-              senderUserId = cmd.userId,
-              senderAuthId = cmd.authId,
-              randomId = cmd.randomId,
-              message = serviceMessage,
-              deliveryTag = Some(Optimization.GroupV2)
-            )
+            date ← if (showLeaveMessage) {
+              dialogExt.sendServerMessage(
+                apiGroupPeer,
+                senderUserId = cmd.userId,
+                senderAuthId = cmd.authId,
+                randomId = cmd.randomId,
+                message = serviceMessage,
+                deliveryTag = Some(Optimization.GroupV2)
+              ) map (_.date)
+            } else {
+              FastFuture.successful(dateMillis)
+            }
 
             // push left user that he is no longer a member
             SeqState(seq, state) ← seqUpdExt.deliverClientUpdate(
