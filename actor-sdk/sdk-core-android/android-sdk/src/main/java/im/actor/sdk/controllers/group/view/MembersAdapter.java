@@ -99,16 +99,10 @@ public class MembersAdapter extends HolderAdapter<GroupMember> {
                         callback.onLoaded();
                     }
                 }
-                rawMembers.clear();
-                rawMembers.addAll(groupMembersSlice.getUids());
                 nextMembers = groupMembersSlice.getNext();
                 loaddedToEnd = nextMembers == null;
-                ArrayList<GroupMember> nMembers = new ArrayList<>();
-                for (Integer uid : rawMembers) {
-                    nMembers.add(new GroupMember(uid, 0, 0, false));
-                }
                 loadInProgress = false;
-                setMembers(nMembers, false);
+                setMembers(groupMembersSlice.getMembers(), false);
             });
         }
     }
