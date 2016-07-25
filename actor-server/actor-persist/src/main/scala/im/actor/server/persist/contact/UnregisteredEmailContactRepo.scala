@@ -12,13 +12,10 @@ final class UnregisteredEmailContactTable(tag: Tag) extends UnregisteredContactB
 }
 
 object UnregisteredEmailContactRepo {
-  val emailContacts = TableQuery[UnregisteredEmailContactTable]
+  private val emailContacts = TableQuery[UnregisteredEmailContactTable]
 
-  def create(email: String, ownerUserId: Int, name: Option[String]) =
+  private def create(email: String, ownerUserId: Int, name: Option[String]) =
     emailContacts += UnregisteredEmailContact(email, ownerUserId, name)
-
-  def create(contacts: Seq[UnregisteredEmailContact]) =
-    emailContacts ++= contacts
 
   def createIfNotExists(email: String, ownerUserId: Int, name: Option[String]) = {
     create(email, ownerUserId, name).asTry
