@@ -83,6 +83,7 @@ private[group] object GroupState {
       groupType = GroupType.General,
       isHidden = false,
       isHistoryShared = false,
+      isAsyncMembers = false,
       members = Map.empty,
       invitedUserIds = Set.empty,
       accessHash = 0L,
@@ -112,6 +113,7 @@ private[group] final case class GroupState(
   groupType:       GroupType,
   isHidden:        Boolean,
   isHistoryShared: Boolean,
+  isAsyncMembers:  Boolean,
 
   // members info
   members:        Map[Int, Member],
@@ -152,13 +154,6 @@ private[group] final case class GroupState(
 
   val isDeleted = deletedAt.nonEmpty
 
-  //TODO: add on commit(not during recovery!) hook to make group with async members, when more than 100
-  def isAsyncMembers =
-    groupType match {
-      case General ⇒ members.size > 100
-      case Channel ⇒ true
-    }
-
   def getShowableOwner(clientUserId: Int): Option[Int] =
     groupType match {
       case General ⇒ Some(creatorUserId)
@@ -168,6 +163,7 @@ private[group] final case class GroupState(
   override def updated(e: Event): GroupState = e match {
     case evt: Created ⇒
       val typeOfGroup = evt.typ.getOrElse(GroupType.General)
+      val isMemberAsync = typeOfGroup.isChannel
       this.copy(
         id = evt.groupId,
         createdAt = Some(evt.ts),
@@ -181,6 +177,7 @@ private[group] final case class GroupState(
         groupType = typeOfGroup,
         isHidden = evt.isHidden getOrElse false,
         isHistoryShared = evt.isHistoryShared getOrElse false,
+        isAsyncMembers = isMemberAsync,
         members = (
           evt.userIds map { userId ⇒
             userId →
@@ -267,6 +264,8 @@ private[group] final case class GroupState(
       this.copy(adminSettings = AdminSettings.fromBitMask(bitMask))
     case HistoryBecameShared(_, _) ⇒
       this.copy(isHistoryShared = true)
+    case MembersBecameAsync(_) ⇒
+      this.copy(isAsyncMembers = true)
     case GroupDeleted(ts, _) ⇒
       // FIXME: don't implement snapshots, before figure out deleted groups behavior
       this.copy(

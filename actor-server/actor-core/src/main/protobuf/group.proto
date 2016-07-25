@@ -156,6 +156,12 @@ message GroupEvents {
         required int32 executor_user_id = 2;
     }
 
+    message MembersBecameAsync {
+        option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
+
+        required int64 ts = 1 [(scalapb.field).type = "java.time.Instant"];
+    }
+
     message GroupDeleted {
         option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
 

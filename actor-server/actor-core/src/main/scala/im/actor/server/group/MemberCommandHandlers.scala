@@ -37,7 +37,6 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
 
         val dateMillis = evt.ts.toEpochMilli
         val memberIds = newState.memberIds
-        val apiMembers = newState.members.values.map(_.asStruct).toVector
 
         // if user ever been in this group - we should push these updates
         // TODO: unify isHistoryShared usage
@@ -46,11 +45,26 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
           optDrop ++: refreshGroupUpdates(newState, cmd.inviteeUserId)
         }
 
-        val membersUpdateNew: Update =
-          if (newState.groupType.isChannel) // if channel, or group is big enough
-            UpdateGroupMembersCountChanged(groupId, newState.membersCount)
-          else
-            UpdateGroupMembersUpdated(groupId, apiMembers)
+        // For groups with not async members we should push Diff for members, and all Members for invitee
+        // For groups with async members we should push UpdateGroupMembersCountChanged for both invitee and members
+        val (inviteeUpdateNew, membersUpdateNew): (Update, Update) =
+          if (newState.isAsyncMembers) {
+            val u = UpdateGroupMembersCountChanged(groupId, newState.membersCount)
+            (u, u)
+          } else {
+            val apiMembers = newState.members.values.map(_.asStruct).toVector
+            val inviteeMember = apiMembers.find(_.userId == cmd.inviteeUserId)
+
+            (
+              UpdateGroupMembersUpdated(groupId, apiMembers),
+              UpdateGroupMemberDiff(
+                groupId,
+                addedMembers = inviteeMember.toVector,
+                membersCount = newState.membersCount,
+                removedUsers = Vector.empty
+              )
+            )
+          }
 
         val inviteeUpdateObsolete = UpdateGroupInviteObsolete(
           groupId,
@@ -73,11 +87,11 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
 
         def inviteGROUPUpdates: Future[SeqStateDate] =
           for {
-            // push updated members list to inviteeUserId,
+            // push updated members list/count to inviteeUserId,
             // make it `FatSeqUpdate` if this user invited to group for first time.
             _ ← seqUpdExt.deliverUserUpdate(
               userId = cmd.inviteeUserId,
-              membersUpdateNew,
+              update = inviteeUpdateNew,
               pushRules = seqUpdExt.pushRules(isFat = !inviteeIsExUser, Some(PushTexts.Invited)),
               deliveryId = s"invite_${groupId}_${cmd.randomId}"
             )
@@ -87,7 +101,7 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
               seqUpdExt.deliverUserUpdate(userId = cmd.inviteeUserId, update)
             }
 
-            // push updated members list to all group members except inviteeUserId
+            // push updated members difference to all group members except inviteeUserId
             SeqState(seq, state) ← seqUpdExt.broadcastClientUpdate(
               userId = cmd.inviterUserId,
               authId = cmd.inviterAuthId,
@@ -112,7 +126,7 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
             // push updated members count to inviteeUserId
             _ ← seqUpdExt.deliverUserUpdate(
               userId = cmd.inviteeUserId,
-              membersUpdateNew,
+              update = inviteeUpdateNew,
               pushRules = seqUpdExt.pushRules(isFat = false, Some(PushTexts.Invited)),
               deliveryId = s"invite_${groupId}_${cmd.randomId}"
             )
@@ -230,11 +244,35 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
           optDrop ++: (if (wasInvited) Vector.empty[Update] else refreshGroupUpdates(newState, cmd.joiningUserId))
         }
 
-        val membersUpdateNew: Update =
-          if (newState.groupType.isChannel) // if channel, or group is big enough
-            UpdateGroupMembersCountChanged(groupId, newState.membersCount)
-          else
-            UpdateGroupMembersUpdated(groupId, apiMembers) // will update date when member got into group
+        // For groups with not async members we should push:
+        // • Diff for members;
+        // • Diff for joining user if he was previously invited;
+        // • Members for joining user if he wasn't previously invited.
+        //
+        // For groups with async members we should push:
+        // • UpdateGroupMembersCountChanged for both joining user and members
+        val (joiningUpdateNew, membersUpdateNew): (Update, Update) =
+          if (newState.isAsyncMembers) {
+            val u = UpdateGroupMembersCountChanged(groupId, newState.membersCount)
+            (u, u)
+          } else {
+            val joiningMember = apiMembers.find(_.userId == cmd.joiningUserId)
+            val diff = UpdateGroupMemberDiff(
+              groupId,
+              addedMembers = joiningMember.toVector,
+              membersCount = newState.membersCount,
+              removedUsers = Vector.empty
+            )
+
+            if (wasInvited) {
+              (diff, diff)
+            } else {
+              (
+                UpdateGroupMembersUpdated(groupId, apiMembers),
+                diff
+              )
+            }
+          }
 
         // TODO: not sure how it should be in old API
         val membersUpdateObsolete = UpdateGroupMembersUpdateObsolete(groupId, apiMembers)
@@ -258,19 +296,19 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
               seqUpdExt.deliverUserUpdate(userId = cmd.joiningUserId, update)
             }
 
-            // push updated members list to joining user,
+            // push updated members list/count/difference to joining user,
             // make it `FatSeqUpdate` if this user invited to group for first time.
             // TODO???: isFat = !wasInvited - is it correct?
             SeqState(seq, state) ← seqUpdExt.deliverClientUpdate(
               userId = cmd.joiningUserId,
               authId = cmd.joiningUserAuthId,
-              update = membersUpdateNew,
+              update = joiningUpdateNew,
               pushRules = seqUpdExt.pushRules(isFat = !wasInvited, None), //!wasInvited means that user came for first time here
               deliveryId = s"join_${groupId}_${randomId}"
 
             )
 
-            // push updated members list to all group members except joiningUserId
+            // push updated members list/count to all group members except joiningUserId
             _ ← seqUpdExt.broadcastPeopleUpdate(
               memberIds - cmd.joiningUserId,
               membersUpdateNew,
@@ -297,7 +335,7 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
             SeqState(seq, state) ← seqUpdExt.deliverClientUpdate(
               userId = cmd.joiningUserId,
               authId = cmd.joiningUserAuthId,
-              update = membersUpdateNew,
+              update = joiningUpdateNew,
               deliveryId = s"join_${groupId}_${randomId}"
             )
 
@@ -358,15 +396,17 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
         val updatePermissions = permissionsUpdates(cmd.userId, currState = state.updated(leftEvent))
 
         val membersUpdateNew =
-          if (state.groupType.isChannel) { // if channel, or group is big enough
+          if (state.isAsyncMembers) {
             UpdateGroupMembersCountChanged(
               groupId,
               membersCount = state.membersCount - 1
             )
           } else {
-            UpdateGroupMembersUpdated(
+            UpdateGroupMemberDiff(
               groupId,
-              members = state.members.filterNot(_._1 == cmd.userId).values.map(_.asStruct).toVector
+              removedUsers = Vector(cmd.userId),
+              addedMembers = Vector.empty,
+              membersCount = state.membersCount - 1
             )
           }
 
@@ -487,15 +527,17 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
         val updatePermissions = permissionsUpdates(cmd.kickedUserId, newState)
 
         val membersUpdateNew: Update =
-          if (newState.groupType.isChannel) { // if channel, or group is big enough
+          if (newState.isAsyncMembers) {
             UpdateGroupMembersCountChanged(
               groupId,
               membersCount = newState.membersCount
             )
           } else {
-            UpdateGroupMembersUpdated(
+            UpdateGroupMemberDiff(
               groupId,
-              members = newState.members.values.map(_.asStruct).toVector
+              removedUsers = Vector(cmd.kickedUserId),
+              addedMembers = Vector.empty,
+              membersCount = newState.membersCount
             )
           }
 

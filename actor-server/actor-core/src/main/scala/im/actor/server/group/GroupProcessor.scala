@@ -93,7 +93,8 @@ object GroupProcessor {
       22019 → classOf[GroupEvents.AdminSettingsUpdated],
       22020 → classOf[GroupEvents.AdminStatusChanged],
       22021 → classOf[GroupEvents.HistoryBecameShared],
-      22022 → classOf[GroupEvents.GroupDeleted]
+      22022 → classOf[GroupEvents.GroupDeleted],
+      22023 → classOf[GroupEvents.MembersBecameAsync]
     )
 
   def persistenceIdFor(groupId: Int): String = s"Group-${groupId}"
@@ -187,18 +188,13 @@ private[group] final class GroupProcessor
   override def afterCommit(e: Event) = {
     super.afterCommit(e)
     if (recoveryFinished) {
+      // can't make calls in group with more than 25 members
       if (state.membersCount > 25) {
         updateCanCall(state)
       }
-      // TODO: add async members
-      // if(state.membersCount > 50) { updateMembersAsync(state) }
-    }
-  }
-
-  private def updateCanCall(state: GroupState): Unit = {
-    state.memberIds foreach { userId ⇒
-      permissionsUpdates(userId, state) foreach { update ⇒
-        seqUpdExt.deliverUserUpdate(userId, update)
+      // from 50+ members we make group with async members
+      if (state.membersCount >= 50) {
+        makeMembersAsync()
       }
     }
   }
