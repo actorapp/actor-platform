@@ -173,6 +173,7 @@ private[group] trait GroupCommandHandlers
   protected def isValidTitle(title: String) = title.nonEmpty && title.length < 255
 
   protected def updateCanCall(currState: GroupState): Unit = {
+    log.debug(s"Group {} can call updated", groupId)
     currState.memberIds foreach { userId ⇒
       permissionsUpdates(userId, currState) foreach { update ⇒
         seqUpdExt.deliverUserUpdate(userId, update)
@@ -183,6 +184,7 @@ private[group] trait GroupCommandHandlers
   protected def makeMembersAsync(): Unit = {
     persist(MembersBecameAsync(Instant.now)) { evt ⇒
       val newState = commit(evt)
+      log.debug(s"Group {} became async members", groupId)
 
       seqUpdExt.broadcastPeopleUpdate(
         userIds = newState.memberIds,
