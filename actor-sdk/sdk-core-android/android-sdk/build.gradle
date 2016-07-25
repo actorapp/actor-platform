@@ -161,6 +161,8 @@ if (project.rootProject.file('gradle.properties').exists()) {
     ossrhPassword = properties.getProperty("ossrhPassword", "")
     version = baseVersion + properties.getProperty("build_index", "")
 
+    print("##teamcity[buildNumber '$version']")
+
     nexusStaging {
         username ossrhUsername
         password ossrhPassword
