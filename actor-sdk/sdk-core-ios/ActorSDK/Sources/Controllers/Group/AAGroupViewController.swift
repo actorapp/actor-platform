@@ -194,7 +194,7 @@ public class AAGroupViewController: AAContentTableController {
                 s.headerHeight = 0
                 
                 // Members: Header
-                s.header(AALocalized("GroupMembers").uppercaseString)
+                s.header(AALocalized("GroupViewMembers").uppercaseString)
                 
                 // Members: Add
                 s.action("GroupAddParticipant") { (r) -> () in
