@@ -112,7 +112,7 @@ if (project.rootProject.file('gradle.properties').exists()) {
     properties.load(project.rootProject.file('gradle.properties').newDataInputStream())
     ossrhUsername = properties.getProperty("ossrhUsername", "")
     ossrhPassword = properties.getProperty("ossrhPassword", "")
-    version = baseVersion + properties.getProperty("build_index", "")
+    version = baseVersion + "." + properties.getProperty("build_index", "")
 
     nexusStaging {
         username ossrhUsername
