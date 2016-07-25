@@ -12,9 +12,9 @@ final class UnregisteredPhoneContactTable(tag: Tag) extends UnregisteredContactB
 }
 
 object UnregisteredPhoneContactRepo {
-  val phoneContacts = TableQuery[UnregisteredPhoneContactTable]
+  private val phoneContacts = TableQuery[UnregisteredPhoneContactTable]
 
-  def create(phoneNumber: Long, ownerUserId: Int, name: Option[String]) =
+  private def create(phoneNumber: Long, ownerUserId: Int, name: Option[String]) =
     phoneContacts += UnregisteredPhoneContact(phoneNumber, ownerUserId, name)
 
   def createIfNotExists(phoneNumber: Long, ownerUserId: Int, name: Option[String]) = {
