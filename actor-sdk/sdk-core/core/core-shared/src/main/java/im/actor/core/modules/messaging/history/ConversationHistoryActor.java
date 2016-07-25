@@ -21,6 +21,7 @@ import im.actor.core.entity.content.AbsContent;
 import im.actor.core.modules.api.ApiSupportConfiguration;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.ModuleActor;
+import im.actor.runtime.Log;
 import im.actor.runtime.actors.ask.AskMessage;
 import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.function.Consumer;
@@ -69,27 +70,38 @@ public class ConversationHistoryActor extends ModuleActor {
         api(new RequestLoadHistory(buidOutPeer(peer), historyMaxDate, null, LIMIT, ApiSupportConfiguration.OPTIMIZATIONS))
                 .chain(r -> updates().applyRelatedData(r.getUsers(), r.getGroups()))
                 .chain(r -> updates().loadRequiredPeers(r.getUserPeers(), r.getGroupPeers()))
-                .then(applyHistory(peer))
-                .then(responseLoadHistory -> {
+                .flatMap(r -> {
+                    Log.d("HistoryActor", "Apply " + historyMaxDate);
+                    return applyHistory(peer, r.getHistory());
+                })
+                .map(r -> {
+                    Log.d("HistoryActor", "Applied");
                     isFreezed = false;
                     unstashAll();
+                    return null;
                 });
     }
 
-    private void onReset() {
-        historyMaxDate = 0;
+    private Promise<Void> onReset() {
+
+        Log.d("HistoryActor", "Reset");
+
+        historyMaxDate = Long.MAX_VALUE;
         preferences().putLong(KEY_LOADED_DATE, Long.MAX_VALUE);
         historyLoaded = false;
         preferences().putBool(KEY_LOADED, false);
         preferences().putBool(KEY_LOADED_INIT, false);
-        self().send(new LoadMore());
+
+        isFreezed = true;
+        return context().getMessagesModule().getRouter().onChatReset(peer)
+                .then(r -> {
+                    isFreezed = false;
+                    unstashAll();
+                    onLoadMore();
+                });
     }
 
-    private Consumer<ResponseLoadHistory> applyHistory(final Peer peer) {
-        return responseLoadHistory -> applyHistory(peer, responseLoadHistory.getHistory());
-    }
-
-    private void applyHistory(Peer peer, List<ApiMessageContainer> history) {
+    private Promise<Void> applyHistory(Peer peer, List<ApiMessageContainer> history) {
 
         ArrayList<Message> messages = new ArrayList<>();
         long maxLoadedDate = Long.MAX_VALUE;
@@ -120,9 +132,9 @@ public class ConversationHistoryActor extends ModuleActor {
 
         // Sending updates to conversation actor
         final long finalMaxLoadedDate = maxLoadedDate;
-        context().getMessagesModule().getRouter()
+        return context().getMessagesModule().getRouter()
                 .onChatHistoryLoaded(peer, messages, maxReceiveDate, maxReadDate, isEnded)
-                .then(r -> {
+                .map(r -> {
                     // Saving Internal State
                     if (isEnded) {
                         historyLoaded = true;
@@ -133,6 +145,7 @@ public class ConversationHistoryActor extends ModuleActor {
                     preferences().putLong(KEY_LOADED_DATE, finalMaxLoadedDate);
                     preferences().putBool(KEY_LOADED, historyLoaded);
                     preferences().putBool(KEY_LOADED_INIT, true);
+                    return r;
                 });
     }
 

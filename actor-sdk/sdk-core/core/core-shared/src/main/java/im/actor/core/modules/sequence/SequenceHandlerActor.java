@@ -78,7 +78,10 @@ public class SequenceHandlerActor extends ModuleActor {
 
         // Update Application
         currentPromise = currentPromise
-                .chain(v -> processor.processUpdate(update));
+                .chain(v -> processor.processUpdate(update))
+                .then(v -> {
+                    Log.d(TAG, "Ended processing update: " + update);
+                });
 
         // Handling update end
         currentPromise.then(v -> endUpdates());

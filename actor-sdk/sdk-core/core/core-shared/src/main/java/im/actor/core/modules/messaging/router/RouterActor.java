@@ -61,11 +61,13 @@ import im.actor.core.modules.messaging.router.entity.RouterOutgoingError;
 import im.actor.core.modules.messaging.router.entity.RouterOutgoingMessage;
 import im.actor.core.modules.messaging.router.entity.RouterOutgoingSent;
 import im.actor.core.modules.messaging.router.entity.RouterPeersChanged;
+import im.actor.core.modules.messaging.router.entity.RouterResetChat;
 import im.actor.core.network.parser.Update;
 import im.actor.core.util.JavaUtil;
 import im.actor.core.viewmodel.DialogGroup;
 import im.actor.core.viewmodel.DialogSmall;
 import im.actor.core.viewmodel.generics.ArrayListDialogSmall;
+import im.actor.runtime.Log;
 import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.storage.KeyValueEngine;
@@ -402,6 +404,8 @@ public class RouterActor extends ModuleActor {
     private Promise<Void> onChatHistoryLoaded(Peer peer, List<Message> messages, Long maxReadDate,
                                               Long maxReceiveDate, boolean isEnded) {
 
+        Log.d(TAG, "History Loaded");
+
         long maxMessageDate = 0;
 
         // Processing all new messages
@@ -521,18 +525,22 @@ public class RouterActor extends ModuleActor {
     }
 
     private Promise<Void> onChatDropCache(Peer peer) {
-        return context().getMessagesModule().getHistoryActor(peer).reset()
-                .flatMap(r -> {
-                    conversation(peer).clear();
+        return context().getMessagesModule().getHistoryActor(peer).reset();
+    }
 
-                    ConversationState state = conversationStates.getValue(peer.getUnuqueId());
-                    state = state.changeIsLoaded(false);
-                    conversationStates.addOrUpdateItem(state);
+    private Promise<Void> onChatReset(Peer peer) {
 
-                    updateChatState(peer);
+        Log.d(TAG, "onChatReset");
 
-                    return getDialogsRouter().onChatClear(peer);
-                });
+        conversation(peer).clear();
+
+        ConversationState state = conversationStates.getValue(peer.getUnuqueId());
+        state = state.changeIsLoaded(false);
+        conversationStates.addOrUpdateItem(state);
+
+        updateChatState(peer);
+
+        return Promise.success(null);
     }
 
     private Promise<Void> onChatDelete(Peer peer) {
@@ -981,6 +989,9 @@ public class RouterActor extends ModuleActor {
             return onMessageDeleted(
                     routerDeletedMessages.getPeer(),
                     routerDeletedMessages.getRids());
+        } else if (message instanceof RouterResetChat) {
+            RouterResetChat resetChat = (RouterResetChat) message;
+            return onChatReset(resetChat.getPeer());
         } else {
             return super.onAsk(message);
         }

@@ -434,7 +434,7 @@ public class ConversationViewController:
             let group = Actor.getGroupWithGid(peer.peerId)
             if !group.isMember.get().booleanValue() {
                 if group.isCanJoin.get().booleanValue() {
-                    // T
+                    executePromise(Actor.joinGroupWithGid(peer.peerId))
                 } else {
                     // DO NOTHING
                 }

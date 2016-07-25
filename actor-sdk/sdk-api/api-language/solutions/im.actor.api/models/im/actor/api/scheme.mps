@@ -5917,7 +5917,7 @@
           <property role="NXePf" value="Update about chat groups changed. Called only when adding, removing and reordering of grouped dialog." />
         </node>
         <node concept="NX1gA" id="5TxE3W70c_I" role="NXp_2">
-          <property role="1GSvIU" value="full" />
+          <property role="1GSvIU" value="compact" />
           <property role="NX6R2" value="New dialgos list" />
           <ref role="NX6Kv" node="5TxE3W70qfx" resolve="dialogs" />
         </node>

@@ -28,6 +28,7 @@ import im.actor.core.modules.messaging.router.entity.RouterNewMessages;
 import im.actor.core.modules.messaging.router.entity.RouterOutgoingError;
 import im.actor.core.modules.messaging.router.entity.RouterOutgoingMessage;
 import im.actor.core.modules.messaging.router.entity.RouterPeersChanged;
+import im.actor.core.modules.messaging.router.entity.RouterResetChat;
 import im.actor.core.network.parser.Update;
 import im.actor.runtime.actors.ActorInterface;
 import im.actor.runtime.actors.messages.Void;
@@ -150,6 +151,10 @@ public class RouterInt extends ActorInterface implements BusSubscriber {
         return ask(new RouterPeersChanged(users, groups));
     }
 
+    // Resetting
+    public Promise<Void> onChatReset(Peer peer) {
+        return ask(new RouterResetChat(peer));
+    }
 
     @Override
     public void onBusEvent(Event event) {

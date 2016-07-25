@@ -6637,7 +6637,7 @@
               {
                 "type": "reference",
                 "argument": "dialogs",
-                "category": "full",
+                "category": "compact",
                 "description": "  New dialgos list"
               }
             ],

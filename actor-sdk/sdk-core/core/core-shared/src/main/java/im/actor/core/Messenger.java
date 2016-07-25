@@ -1702,6 +1702,18 @@ public class Messenger {
     }
 
     /**
+     * Join group
+     *
+     * @param gid group's id
+     * @return Promise of Void
+     */
+    @NotNull
+    @ObjectiveCName("joinGroupWithGid:")
+    public Promise<Void> joinGroup(int gid) {
+        return modules.getGroupsModule().joinGroup(gid);
+    }
+
+    /**
      * Request integration token for group
      *
      * @param gid group's id

@@ -179,8 +179,6 @@ public class AABubbleCell: UICollectionViewCell {
         
         contentView.transform = CGAffineTransformMake(1, 0, 0, -1, 0, 0)
         
-        ActorSDK.sharedActor().style.bubbleShadowEnabled ? contentView.addSubview(bubbleShadow) : print("go to light!")
-            
         contentView.addSubview(bubble)
         contentView.addSubview(bubbleBorder)
         contentView.addSubview(newMessage)
