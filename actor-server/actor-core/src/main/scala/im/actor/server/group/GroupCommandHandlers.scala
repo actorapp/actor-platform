@@ -172,4 +172,22 @@ private[group] trait GroupCommandHandlers
 
   protected def isValidTitle(title: String) = title.nonEmpty && title.length < 255
 
+  protected def updateCanCall(currState: GroupState): Unit = {
+    currState.memberIds foreach { userId ⇒
+      permissionsUpdates(userId, currState) foreach { update ⇒
+        seqUpdExt.deliverUserUpdate(userId, update)
+      }
+    }
+  }
+
+  protected def makeMembersAsync(): Unit = {
+    persist(MembersBecameAsync(Instant.now)) { evt ⇒
+      val newState = commit(evt)
+
+      seqUpdExt.broadcastPeopleUpdate(
+        userIds = newState.memberIds,
+        update = UpdateGroupMembersBecameAsync(groupId)
+      )
+    }
+  }
 }
