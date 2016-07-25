@@ -368,8 +368,8 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
     }
 
     @Override
-    public void onLocationPicked(double latitude, double longitude, String street, String place) {
-        messenger().sendLocation(getPeer(), longitude, longitude, street, place);
+    public void onLocationPicked(double longitude, double latitude, String street, String place) {
+        messenger().sendLocation(getPeer(), longitude, latitude, street, place);
     }
 
     @Override

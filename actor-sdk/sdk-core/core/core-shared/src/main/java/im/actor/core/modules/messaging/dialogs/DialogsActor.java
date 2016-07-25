@@ -302,7 +302,6 @@ public class DialogsActor extends ModuleActor {
         }
         addOrUpdateItems(updated);
         updateSearch(updated);
-        context().getAppStateModule().onDialogsLoaded();
         notifyState(true);
         return Promise.success(null);
     }

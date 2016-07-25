@@ -44,6 +44,8 @@ public class DialogsHistoryActor extends ModuleActor {
         historyLoaded = preferences().getBool(KEY_LOADED, false);
         if (!preferences().getBool(KEY_LOADED_INIT, false)) {
             self().send(new LoadMore());
+        } else {
+            context().getAppStateModule().onDialogsLoaded();
         }
     }
 
@@ -88,7 +90,6 @@ public class DialogsHistoryActor extends ModuleActor {
                 }
             });
         } else {
-            context().getAppStateModule().onDialogsLoaded();
             markAsLoaded();
         }
     }
@@ -98,6 +99,7 @@ public class DialogsHistoryActor extends ModuleActor {
         historyLoaded = true;
         preferences().putBool(KEY_LOADED, true);
         preferences().putBool(KEY_LOADED_INIT, true);
+        context().getAppStateModule().onDialogsLoaded();
     }
 
     private void markAsSliceLoaded(long date) {
@@ -107,6 +109,7 @@ public class DialogsHistoryActor extends ModuleActor {
         preferences().putBool(KEY_LOADED, false);
         preferences().putBool(KEY_LOADED_INIT, true);
         preferences().putLong(KEY_LOADED_DATE, date);
+        context().getAppStateModule().onDialogsLoaded();
     }
 
     //

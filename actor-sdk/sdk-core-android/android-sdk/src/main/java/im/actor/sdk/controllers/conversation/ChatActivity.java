@@ -28,6 +28,8 @@ import im.actor.sdk.view.ActorToolbar;
 public class ChatActivity extends BaseActivity {
 
     public static final String EXTRA_CHAT_PEER = "chat_peer";
+    private String quote;
+    private ChatFragment chatFragment;
 
     private Toolbar toolbar;
 
@@ -94,14 +96,11 @@ public class ChatActivity extends BaseActivity {
 
         if (saveInstance == null) {
             Peer peer = Peer.fromUniqueId(getIntent().getExtras().getLong(EXTRA_CHAT_PEER));
-            ChatFragment chatFragment = ChatFragment.create(peer);
+            chatFragment = ChatFragment.create(peer);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.chatFragment, chatFragment)
                     .commitNow();
-            String quote = getIntent().getStringExtra("forward_text_raw");
-            if (quote != null) {
-                chatFragment.onMessageQuote(quote);
-            }
+            quote = getIntent().getStringExtra("forward_text_raw");
         }
     }
 
@@ -125,6 +124,15 @@ public class ChatActivity extends BaseActivity {
             }
         } else {
             super.onBackPressed();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (quote != null) {
+            chatFragment.onMessageQuote(quote);
+            quote = null;
         }
     }
 
