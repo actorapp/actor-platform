@@ -329,7 +329,17 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
                 serviceMessage // no delivery tag. This updated handled this way in Groups V1
               ) map (_.date)
             } else {
-              FastFuture.successful(dateMillis)
+              // push join message only to joining user
+              seqUpdExt.deliverUserUpdate(
+                userId = cmd.joiningUserId,
+                update = serviceMessageUpdate(
+                  cmd.joiningUserId,
+                  dateMillis,
+                  randomId,
+                  serviceMessage
+                ),
+                deliveryTag = Some(Optimization.GroupV2)
+              ) map (_ ⇒ dateMillis)
             }
           } yield SeqStateDate(seq, state, date)
 
@@ -353,6 +363,18 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
               memberIds - cmd.joiningUserId,
               membersUpdateNew,
               deliveryId = s"userjoined_${groupId}_${randomId}"
+            )
+
+            // push join message only to joining user
+            _ <- seqUpdExt.deliverUserUpdate(
+              userId = cmd.joiningUserId,
+              update = serviceMessageUpdate(
+                cmd.joiningUserId,
+                dateMillis,
+                randomId,
+                serviceMessage
+              ),
+              deliveryTag = Some(Optimization.GroupV2)
             )
           } yield SeqStateDate(seq, state, dateMillis)
 
