@@ -1,4 +1,4 @@
-package im.actor.server.api.rpc.service
+package im.actor.server.api.rpc.service.groups.v1
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.counters.UpdateCountersChanged
