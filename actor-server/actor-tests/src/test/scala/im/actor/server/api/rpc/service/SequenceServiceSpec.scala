@@ -4,12 +4,15 @@ import com.typesafe.config.ConfigFactory
 import im.actor.api.rpc._
 import im.actor.api.rpc.contacts.UpdateContactsAdded
 import im.actor.api.rpc.counters.{ ApiAppCounters, UpdateCountersChanged }
-import im.actor.api.rpc.messaging.{ ApiTextMessage, UpdateMessageContentChanged }
+import im.actor.api.rpc.messaging.{ ApiTextMessage, UpdateChatGroupsChanged, UpdateMessageContentChanged }
 import im.actor.api.rpc.misc.ResponseSeq
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.api.rpc.sequence.{ ApiUpdateContainer, ApiUpdateOptimization, ResponseGetDifference, UpdateEmptyUpdate }
 import im.actor.server._
-import im.actor.server.api.rpc.service.sequence.SequenceServiceConfig
+import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
+import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
+import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
+import im.actor.server.dialog.{ DialogExtension, DialogGroupKeys }
 import im.actor.server.sequence.{ CommonState, CommonStateVersion, UserSequence }
 
 import scala.concurrent.Future
@@ -25,6 +28,7 @@ final class SequenceServiceSpec extends BaseAppSuite({
 }) with ImplicitSessionRegion
   with ImplicitAuthService
   with SeqUpdateMatchers
+  with GroupsServiceHelpers
   with ImplicitSequenceService {
 
   behavior of "Sequence service"
@@ -34,11 +38,13 @@ final class SequenceServiceSpec extends BaseAppSuite({
   it should "not produce empty difference if there is one update bigger than difference size limit" in bigUpdate
   it should "map updates correctly" in mapUpdates
   it should "exclude optimized updates from sequence" in optimizedUpdates
+  it should "return single UpdateChatGroupsChanged in difference as if it was applied after all message reads" in chatGroupChanged
 
   private val config = SequenceServiceConfig.load().get
 
-  implicit lazy val service = new sequence.SequenceServiceImpl(config)
-  implicit lazy val msgService = messaging.MessagingServiceImpl()
+  implicit lazy val service = new SequenceServiceImpl(config)
+  implicit lazy val msgService = MessagingServiceImpl()
+  implicit lazy val groupService = new GroupsServiceImpl(GroupInviteConfig(""))
 
   def getState() = {
     val (user, authId, authSid, _) = createUser()
@@ -271,4 +277,75 @@ final class SequenceServiceSpec extends BaseAppSuite({
       }
     }
   }
+
+  def chatGroupChanged(): Unit = {
+    val (alice, aliceAuthId, aliceAuthSid, _) = createUser()
+
+    val sessionId = createSessionId()
+    val aliceClientData = ClientData(aliceAuthId, sessionId, Some(AuthData(alice.id, aliceAuthSid, 42)))
+
+    val (bob, bobAuthId, bobAuthSid, _) = createUser()
+
+    val group = {
+      implicit val cd = aliceClientData
+      createGroup("Some group", Set(bob.id)).groupPeer
+    }
+
+    val groupReadDates = {
+      implicit val cd = ClientData(bobAuthId, sessionId, Some(AuthData(bob.id, bobAuthSid, 42)))
+      1 to 20 map { i ⇒
+        sendMessageToGroup(group.groupId, textMessage(s"Hello in group $i"))._2.date
+      }
+    }
+
+    val bobReadDates = {
+      implicit val cd = ClientData(bobAuthId, sessionId, Some(AuthData(bob.id, bobAuthSid, 42)))
+      1 to 20 map { i ⇒
+        sendMessageToUser(alice.id, s"Hello $i")._2.date
+      }
+    }
+
+    {
+      implicit val cd = aliceClientData
+      whenReady(msgService.handleFavouriteDialog(getOutPeer(bob.id, aliceAuthId)))(identity)
+
+      // read 5 messages, 15 left
+      whenReady(msgService.handleMessageRead(getOutPeer(bob.id, aliceAuthId), bobReadDates(4)))(identity)
+
+      whenReady(msgService.handleUnfavouriteDialog(getOutPeer(bob.id, aliceAuthId)))(identity)
+      // read 10 messages, 10 left
+      whenReady(msgService.handleMessageRead(getOutPeer(bob.id, aliceAuthId), bobReadDates(9)))(identity)
+
+      // read all messages in group
+      whenReady(msgService.handleMessageRead(group.asOutPeer, groupReadDates.last))(identity)
+    }
+
+    {
+      implicit val cd = aliceClientData
+
+      whenReady(service.handleGetDifference(0, Array.empty, Vector.empty)) { res ⇒
+        inside(res) {
+          case Ok(rsp: ResponseGetDifference) ⇒
+            val groupedChatsUpdates = rsp.updates.filter(_.updateHeader == UpdateChatGroupsChanged.header)
+            groupedChatsUpdates should have length 1
+        }
+      }
+
+      expectUpdate(classOf[UpdateChatGroupsChanged]) { upd ⇒
+        val optDirect = upd.dialogs.find(_.key == DialogGroupKeys.Direct)
+        optDirect shouldBe defined
+
+        val bobsDialog = optDirect.get.dialogs.find(_.peer.id == bob.id)
+        bobsDialog.get.counter shouldEqual 10
+
+        val optGroups = upd.dialogs.find(_.key == DialogGroupKeys.Groups)
+        optGroups shouldBe defined
+
+        val groupDialog = optGroups.get.dialogs.find(_.peer.id == group.groupId)
+        groupDialog.get.counter shouldEqual 0
+      }
+    }
+
+  }
+
 }
