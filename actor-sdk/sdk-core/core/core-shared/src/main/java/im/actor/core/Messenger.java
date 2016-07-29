@@ -28,6 +28,7 @@ import im.actor.core.entity.MessageSearchEntity;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerSearchEntity;
 import im.actor.core.entity.PeerSearchType;
+import im.actor.core.entity.PeerType;
 import im.actor.core.entity.SearchResult;
 import im.actor.core.entity.Sex;
 import im.actor.core.entity.User;
@@ -974,9 +975,15 @@ public class Messenger {
      */
     @ObjectiveCName("deleteChatCommandWithPeer:")
     public Command<Void> deleteChat(Peer peer) {
-        return callback -> modules.getMessagesModule().deleteChat(peer)
-                .then(v -> callback.onResult(v))
-                .failure(e -> callback.onError(e));
+        if (peer.getPeerType() == PeerType.GROUP) {
+            return callback -> modules.getGroupsModule().leaveAndDeleteGroup(peer.getPeerId())
+                    .then(v -> callback.onResult(v))
+                    .failure(e -> callback.onError(e));
+        } else {
+            return callback -> modules.getMessagesModule().deleteChat(peer)
+                    .then(v -> callback.onResult(v))
+                    .failure(e -> callback.onError(e));
+        }
     }
 
     /**
