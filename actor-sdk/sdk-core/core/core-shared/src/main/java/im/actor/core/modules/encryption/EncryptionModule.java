@@ -10,6 +10,7 @@ import im.actor.core.api.ApiEncryptedContent;
 import im.actor.core.api.ApiUserOutPeer;
 import im.actor.core.api.rpc.RequestSendEncryptedPackage;
 import im.actor.core.api.rpc.ResponseSendEncryptedPackage;
+import im.actor.core.entity.EncryptedConversationState;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.encryption.ratchet.EncryptedMsg;
@@ -19,9 +20,12 @@ import im.actor.core.modules.encryption.ratchet.KeyManager;
 import im.actor.core.modules.encryption.ratchet.SessionManager;
 import im.actor.core.modules.encryption.ratchet.entity.EncryptedMessage;
 import im.actor.core.util.RandomUtils;
+import im.actor.core.viewmodel.EncryptedConversationVM;
 import im.actor.runtime.Storage;
 import im.actor.runtime.actors.messages.Void;
+import im.actor.runtime.mvvm.MVVMCollection;
 import im.actor.runtime.promise.Promise;
+import im.actor.runtime.storage.KeyValueEngine;
 import im.actor.runtime.storage.KeyValueStorage;
 
 import static im.actor.runtime.actors.ActorSystem.system;
@@ -33,7 +37,7 @@ public class EncryptionModule extends AbsModule {
     private EncryptedRouter encryptedRouter;
     private EncryptedMsg encryption;
     private KeyValueStorage keyValueStorage;
-
+    private MVVMCollection<EncryptedConversationState, EncryptedConversationVM> conversationState;
     private final HashMap<Integer, EncryptedUser> users = new HashMap<>();
 
     public EncryptionModule(ModuleContext context) {
@@ -46,6 +50,8 @@ public class EncryptionModule extends AbsModule {
         encryption = new EncryptedMsg(context());
         encryptedRouter = new EncryptedRouter(context());
         keyValueStorage = Storage.createKeyValue("session_temp_storage");
+        conversationState = Storage.createKeyValue("encrypted_chat_state", EncryptedConversationVM.CREATOR,
+                EncryptedConversationState.CREATOR, EncryptedConversationState.DEFAULT_CREATOR);
     }
 
     public KeyManager getKeyManager() {
@@ -76,6 +82,10 @@ public class EncryptionModule extends AbsModule {
 
     public KeyValueStorage getKeyValueStorage() {
         return keyValueStorage;
+    }
+
+    public MVVMCollection<EncryptedConversationState, EncryptedConversationVM> getConversationState() {
+        return conversationState;
     }
 
     public Promise<Void> onUpdate(int senderId, long date, ApiEncryptedContent update) {

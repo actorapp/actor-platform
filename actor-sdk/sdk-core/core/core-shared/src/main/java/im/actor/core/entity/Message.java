@@ -24,12 +24,7 @@ public class Message extends BserObject implements ListEngineItem {
         return Bser.parse(new Message(), data);
     }
 
-    public static final BserCreator<Message> CREATOR = new BserCreator<Message>() {
-        @Override
-        public Message createInstance() {
-            return new Message();
-        }
-    };
+    public static final BserCreator<Message> CREATOR = Message::new;
 
     public static final String ENTITY_NAME = "Message";
 
@@ -49,13 +44,15 @@ public class Message extends BserObject implements ListEngineItem {
     private List<Reaction> reactions;
     @Property("readonly, nonatomic")
     private int contentIndex;
+    @Property("readonly, nonatomic")
+    private int timer;
 
     public Message(long rid, long sortDate, long date, int senderId, MessageState messageState, AbsContent content) {
-        this(rid, sortDate, date, senderId, messageState, content, new ArrayList<Reaction>(), 0);
+        this(rid, sortDate, date, senderId, messageState, content, new ArrayList<>(), 0, 0);
     }
 
     public Message(long rid, long sortDate, long date, int senderId, MessageState messageState, AbsContent content,
-                   List<Reaction> reactions, int contentIndex) {
+                   List<Reaction> reactions, int contentIndex, int timer) {
         this.rid = rid;
         this.sortDate = sortDate;
         this.date = date;
@@ -64,6 +61,7 @@ public class Message extends BserObject implements ListEngineItem {
         this.content = content;
         this.reactions = reactions;
         this.contentIndex = contentIndex;
+        this.timer = timer;
     }
 
     protected Message() {
@@ -114,24 +112,28 @@ public class Message extends BserObject implements ListEngineItem {
         return content;
     }
 
+    public int getTimer() {
+        return timer;
+    }
+
     public Message changeState(MessageState messageState) {
-        return new Message(rid, sortDate, date, senderId, messageState, content, reactions, contentIndex);
+        return new Message(rid, sortDate, date, senderId, messageState, content, reactions, contentIndex, timer);
     }
 
     public Message changeDate(long date) {
-        return new Message(rid, sortDate, date, senderId, messageState, content, reactions, contentIndex);
+        return new Message(rid, sortDate, date, senderId, messageState, content, reactions, contentIndex, timer);
     }
 
     public Message changeAllDate(long date) {
-        return new Message(rid, date, date, senderId, messageState, content, reactions, contentIndex);
+        return new Message(rid, date, date, senderId, messageState, content, reactions, contentIndex, timer);
     }
 
     public Message changeContent(AbsContent content) {
-        return new Message(rid, sortDate, date, senderId, messageState, content, reactions, contentIndex + 1);
+        return new Message(rid, sortDate, date, senderId, messageState, content, reactions, contentIndex + 1, timer);
     }
 
     public Message changeReactions(List<Reaction> reactions) {
-        return new Message(rid, sortDate, date, senderId, messageState, content, reactions, contentIndex);
+        return new Message(rid, sortDate, date, senderId, messageState, content, reactions, contentIndex, timer);
     }
 
     @Override
@@ -147,6 +149,7 @@ public class Message extends BserObject implements ListEngineItem {
             reactions.add(Reaction.fromBytes(react));
         }
         contentIndex = values.getInt(8, 0);
+        timer = values.getInt(9, 0);
     }
 
     @Override
@@ -159,6 +162,7 @@ public class Message extends BserObject implements ListEngineItem {
         writer.writeBytes(6, AbsContent.serialize(content));
         writer.writeRepeatedObj(7, reactions);
         writer.writeInt(8, contentIndex);
+        writer.writeInt(9, timer);
     }
 
     @Override

@@ -8,12 +8,7 @@ import im.actor.runtime.mvvm.ValueModelCreator;
 
 public class ConversationVM extends BaseValueModel<ConversationState> {
 
-    public static ValueModelCreator<ConversationState, ConversationVM> CREATOR = new ValueModelCreator<ConversationState, ConversationVM>() {
-        @Override
-        public ConversationVM create(ConversationState baseValue) {
-            return new ConversationVM(baseValue);
-        }
-    };
+    public static ValueModelCreator<ConversationState, ConversationVM> CREATOR = baseValue -> new ConversationVM(baseValue);
 
     private BooleanValueModel isLoaded;
     private BooleanValueModel isEmpty;

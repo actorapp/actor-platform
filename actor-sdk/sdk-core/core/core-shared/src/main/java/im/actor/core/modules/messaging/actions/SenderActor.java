@@ -4,6 +4,8 @@
 
 package im.actor.core.modules.messaging.actions;
 
+import android.location.Location;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -102,8 +104,12 @@ public class SenderActor extends ModuleActor {
         boolean isChanged = false;
         ArrayList<PendingMessage> messages = pendingMessages.getPendingMessages();
         for (PendingMessage pending : messages.toArray(new PendingMessage[messages.size()])) {
-            if (pending.getContent() instanceof TextContent) {
-                performSendContent(pending.getPeer(), pending.getRid(), pending.getContent());
+            if (pending.getContent() instanceof TextContent ||
+                    pending.getContent() instanceof JsonContent ||
+                    pending.getContent() instanceof StickerContent ||
+                    pending.getContent() instanceof LocationContent ||
+                    pending.getContent() instanceof ContactContent) {
+                performSendContent(pending.getPeer(), pending.getRid(), pending.getTimer(), pending.getContent());
             } else if (pending.getContent() instanceof DocumentContent) {
                 DocumentContent documentContent = (DocumentContent) pending.getContent();
                 if (documentContent.getSource() instanceof FileLocalSource) {
@@ -120,7 +126,7 @@ public class SenderActor extends ModuleActor {
                     }
                 } else {
                     performSendContent(pending.getPeer(), pending.getRid(),
-                            pending.getContent());
+                            pending.getTimer(), pending.getContent());
                 }
             }
         }
@@ -146,10 +152,6 @@ public class SenderActor extends ModuleActor {
                            boolean autoDetect) {
 
         text = text.trim();
-
-        long rid = RandomUtils.nextRid();
-        long date = createPendingDate();
-        long sortDate = date + 365 * 24 * 60 * 60 * 1000L;
 
         if (autoDetect) {
             mentions = new ArrayList<>();
@@ -177,187 +179,100 @@ public class SenderActor extends ModuleActor {
 
         TextContent content = TextContent.create(text, null, mentions);
 
-        Message message = new Message(rid, sortDate, date, myUid(), MessageState.PENDING, content);
-
-        context().getMessagesModule().getRouter().onOutgoingMessage(peer, message);
-
-        pendingMessages.getPendingMessages().add(new PendingMessage(peer, rid, content));
-        savePending();
-
-        performSendContent(peer, rid, content);
+        PendingMessage pending = prepareSend(peer, content);
+        performSendContent(peer, pending.getRid(), pending.getTimer(), content);
     }
 
     public void doSendJson(Peer peer, JsonContent content) {
-        long rid = RandomUtils.nextRid();
-        long date = createPendingDate();
-        long sortDate = date + 365 * 24 * 60 * 60 * 1000L;
-
-        Message message = new Message(rid, sortDate, date, myUid(), MessageState.PENDING, content);
-        context().getMessagesModule().getRouter().onOutgoingMessage(peer, message);
-
-        pendingMessages.getPendingMessages().add(new PendingMessage(peer, rid, content));
-        savePending();
-
-        performSendContent(peer, rid, content);
+        PendingMessage pending = prepareSend(peer, content);
+        performSendContent(peer, pending.getRid(), pending.getTimer(), content);
     }
 
     // Sending sticker
     public void doSendSticker(@NotNull Peer peer,
                               @NotNull Sticker sticker) {
-
-        long rid = RandomUtils.nextRid();
-        long date = createPendingDate();
-        long sortDate = date + 365 * 24 * 60 * 60 * 1000L;
-
         StickerContent content = StickerContent.create(sticker);
-
-        Message message = new Message(rid, sortDate, date, myUid(), MessageState.PENDING, content);
-        context().getMessagesModule().getRouter().onOutgoingMessage(peer, message);
-
-        pendingMessages.getPendingMessages().add(new PendingMessage(peer, rid, content));
-        savePending();
-
-        performSendContent(peer, rid, content);
+        PendingMessage pending = prepareSend(peer, content);
+        performSendContent(peer, pending.getRid(), pending.getTimer(), content);
     }
 
     public void doSendContact(@NotNull Peer peer,
                               @NotNull ArrayList<String> emails, @NotNull ArrayList<String> phones,
                               @Nullable String name,
                               @Nullable String base64photo) {
-
-        long rid = RandomUtils.nextRid();
-        long date = createPendingDate();
-        long sortDate = date + 365 * 24 * 60 * 60 * 1000L;
-
-
         ContactContent content = ContactContent.create(name, phones, emails, base64photo);
-
-        Message message = new Message(rid, sortDate, date, myUid(), MessageState.PENDING, content);
-        context().getMessagesModule().getRouter().onOutgoingMessage(peer, message);
-
-        pendingMessages.getPendingMessages().add(new PendingMessage(peer, rid, content));
-        savePending();
-
-        performSendContent(peer, rid, content);
+        PendingMessage pending = prepareSend(peer, content);
+        performSendContent(peer, pending.getRid(), pending.getTimer(), content);
     }
 
     public void doSendLocation(@NotNull Peer peer,
                                @NotNull Double longitude, @NotNull Double latitude,
                                @Nullable String street, @Nullable String place) {
-
-        long rid = RandomUtils.nextRid();
-        long date = createPendingDate();
-        long sortDate = date + 365 * 24 * 60 * 60 * 1000L;
-
-
         LocationContent content = LocationContent.create(longitude, latitude, street, place);
-
-        Message message = new Message(rid, sortDate, date, myUid(), MessageState.PENDING, content);
-        context().getMessagesModule().getRouter().onOutgoingMessage(peer, message);
-
-        pendingMessages.getPendingMessages().add(new PendingMessage(peer, rid, content));
-        savePending();
-
-        performSendContent(peer, rid, content);
+        PendingMessage pending = prepareSend(peer, content);
+        performSendContent(peer, pending.getRid(), pending.getTimer(), content);
     }
 
     public void doForwardContent(Peer peer, AbsContent content) {
-        long rid = RandomUtils.nextRid();
-        long date = createPendingDate();
-        long sortDate = date + 365 * 24 * 60 * 60 * 1000L;
-
-        Message message = new Message(rid, sortDate, date, myUid(), MessageState.PENDING, content);
-        context().getMessagesModule().getRouter().onOutgoingMessage(peer, message);
-
-        pendingMessages.getPendingMessages().add(new PendingMessage(peer, rid, content));
-        savePending();
-
-        performSendContent(peer, rid, content);
+        PendingMessage pending = prepareSend(peer, content);
+        performSendContent(peer, pending.getRid(), pending.getTimer(), content);
     }
 
     // Sending documents
 
     public void doSendDocument(Peer peer, String fileName, String mimeType, int fileSize,
                                FastThumb fastThumb, String descriptor) {
-        long rid = RandomUtils.nextRid();
-        long date = createPendingDate();
-        long sortDate = date + 365 * 24 * 60 * 60 * 1000L;
         DocumentContent documentContent = DocumentContent.createLocal(fileName, fileSize,
                 descriptor, mimeType, fastThumb);
-
-        Message message = new Message(rid, sortDate, date, myUid(), MessageState.PENDING, documentContent);
-        context().getMessagesModule().getRouter().onOutgoingMessage(peer, message);
-
-        pendingMessages.getPendingMessages().add(new PendingMessage(peer, rid, documentContent));
-        savePending();
-
-        performUploadFile(rid, descriptor, fileName);
+        PendingMessage pending = prepareSend(peer, documentContent);
+        performUploadFile(pending.getRid(), descriptor, fileName);
     }
 
     public void doSendPhoto(Peer peer, FastThumb fastThumb, String descriptor, String fileName,
                             int fileSize, int w, int h) {
-        long rid = RandomUtils.nextRid();
-        long date = createPendingDate();
-        long sortDate = date + 365 * 24 * 60 * 60 * 1000L;
         PhotoContent photoContent = PhotoContent.createLocalPhoto(descriptor, fileName, fileSize, w, h, fastThumb);
-
-        Message message = new Message(rid, sortDate, date, myUid(), MessageState.PENDING, photoContent);
-        context().getMessagesModule().getRouter().onOutgoingMessage(peer, message);
-
-        pendingMessages.getPendingMessages().add(new PendingMessage(peer, rid, photoContent));
-        savePending();
-
-        performUploadFile(rid, descriptor, fileName);
+        PendingMessage pending = prepareSend(peer, photoContent);
+        performUploadFile(pending.getRid(), descriptor, fileName);
     }
 
     public void doSendAudio(Peer peer, String descriptor, String fileName,
                             int fileSize, int duration) {
-        long rid = RandomUtils.nextRid();
-        long date = createPendingDate();
-        long sortDate = date + 365 * 24 * 60 * 60 * 1000L;
         VoiceContent audioContent = VoiceContent.createLocalAudio(descriptor, fileName, fileSize, duration);
-
-        Message message = new Message(rid, sortDate, date, myUid(), MessageState.PENDING, audioContent);
-        context().getMessagesModule().getRouter().onOutgoingMessage(peer, message);
-
-        pendingMessages.getPendingMessages().add(new PendingMessage(peer, rid, audioContent));
-        savePending();
-
-        performUploadFile(rid, descriptor, fileName);
+        PendingMessage pending = prepareSend(peer, audioContent);
+        performUploadFile(pending.getRid(), descriptor, fileName);
     }
 
     public void doSendVideo(Peer peer, String fileName, int w, int h, int duration,
                             FastThumb fastThumb, String descriptor, int fileSize) {
-        long rid = RandomUtils.nextRid();
-        long date = createPendingDate();
-        long sortDate = date + 365 * 24 * 60 * 60 * 1000L;
         VideoContent videoContent = VideoContent.createLocalVideo(descriptor,
                 fileName, fileSize, w, h, duration, fastThumb);
-
-        Message message = new Message(rid, sortDate, date, myUid(), MessageState.PENDING, videoContent);
-        context().getMessagesModule().getRouter().onOutgoingMessage(peer, message);
-
-        pendingMessages.getPendingMessages().add(new PendingMessage(peer, rid, videoContent));
-        savePending();
-
-        performUploadFile(rid, descriptor, fileName);
+        PendingMessage pending = prepareSend(peer, videoContent);
+        performUploadFile(pending.getRid(), descriptor, fileName);
     }
 
     public void doSendAnimation(Peer peer, String fileName, int w, int h,
                                 FastThumb fastThumb, String descriptor, int fileSize) {
+        AnimationContent animationContent = AnimationContent.createLocalAnimation(descriptor,
+                fileName, fileSize, w, h, fastThumb);
+        PendingMessage pending = prepareSend(peer, animationContent);
+        performUploadFile(pending.getRid(), descriptor, fileName);
+    }
+
+    private PendingMessage prepareSend(Peer peer, AbsContent content) {
         long rid = RandomUtils.nextRid();
         long date = createPendingDate();
         long sortDate = date + 365 * 24 * 60 * 60 * 1000L;
-        AnimationContent animationContent = AnimationContent.createLocalAnimation(descriptor,
-                fileName, fileSize, w, h, fastThumb);
+        int timer = 0;
+        if (peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
+            timer = context().getEncryption().getConversationState().get(peer.getPeerId()).getTimer().get();
+        }
 
-        Message message = new Message(rid, sortDate, date, myUid(), MessageState.PENDING, animationContent);
+        Message message = new Message(rid, sortDate, date, myUid(), MessageState.PENDING, content);
         context().getMessagesModule().getRouter().onOutgoingMessage(peer, message);
-
-        pendingMessages.getPendingMessages().add(new PendingMessage(peer, rid, animationContent));
+        PendingMessage pendingMessage = new PendingMessage(peer, rid, content, timer);
+        pendingMessages.getPendingMessages().add(pendingMessage);
         savePending();
-
-        performUploadFile(rid, descriptor, fileName);
+        return pendingMessage;
     }
 
     private void performUploadFile(long rid, String descriptor, String fileName) {
@@ -397,9 +312,9 @@ public class SenderActor extends ModuleActor {
             return;
         }
 
-        pendingMessages.getPendingMessages().add(new PendingMessage(msg.getPeer(), msg.getRid(), nContent));
+        pendingMessages.getPendingMessages().add(new PendingMessage(msg.getPeer(), msg.getRid(), nContent, msg.getTimer()));
         context().getMessagesModule().getRouter().onContentChanged(msg.getPeer(), msg.getRid(), nContent);
-        performSendContent(msg.getPeer(), rid, nContent);
+        performSendContent(msg.getPeer(), rid, msg.getTimer(), nContent);
         fileUplaodingWakeLocks.remove(rid).releaseLock();
     }
 
@@ -415,7 +330,7 @@ public class SenderActor extends ModuleActor {
 
     // Sending content
 
-    private void performSendContent(final Peer peer, final long rid, AbsContent content) {
+    private void performSendContent(final Peer peer, final long rid, int timer, AbsContent content) {
         WakeLock wakeLock = im.actor.runtime.Runtime.makeWakeLock();
 
         ApiMessage message;
@@ -470,10 +385,10 @@ public class SenderActor extends ModuleActor {
             return;
         }
 
-        performSendApiContent(peer, rid, message, wakeLock);
+        performSendApiContent(peer, rid, message, timer, wakeLock);
     }
 
-    private void performSendApiContent(final Peer peer, final long rid, ApiMessage message, final WakeLock wakeLock) {
+    private void performSendApiContent(final Peer peer, final long rid, ApiMessage message, int timer, final WakeLock wakeLock) {
         if (peer.getPeerType() == PeerType.PRIVATE || peer.getPeerType() == PeerType.GROUP) {
             final ApiOutPeer outPeer = buidOutPeer(peer);
             final ApiPeer apiPeer = buildApiPeer(peer);
@@ -497,8 +412,12 @@ public class SenderActor extends ModuleActor {
                     });
         } else if (peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
             Log.d("SenderActor", "Pending encrypted message: " + message);
+            Integer sTimer = null;
+            if (timer > 0) {
+                sTimer = timer;
+            }
             ApiEncryptedContent content = new ApiEncryptedMessageContent(peer.getPeerId(),
-                    rid, message, null);
+                    rid, message, sTimer);
 
             context().getEncryption().doSend(rid, content, peer.getPeerId())
                     .chain(r -> context().getMessagesModule().getRouter().onOutgoingSent(peer, rid, r))

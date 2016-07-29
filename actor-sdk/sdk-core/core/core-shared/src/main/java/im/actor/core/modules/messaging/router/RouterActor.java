@@ -923,8 +923,14 @@ public class RouterActor extends ModuleActor {
         if (update instanceof ApiEncryptedMessageContent) {
             ApiEncryptedMessageContent content = (ApiEncryptedMessageContent) update;
 
+            Integer timer = content.getTimerMs();
+            if (timer == null) {
+                timer = 0;
+            }
+
             Message msg = new Message(content.getRid(), date, date, senderId,
-                    MessageState.UNKNOWN, AbsContent.fromMessage(content.getMessage()));
+                    MessageState.UNKNOWN, AbsContent.fromMessage(content.getMessage()),
+                    new ArrayList<>(), 0, timer);
 
             int destId = senderId;
             if (senderId == myUid()) {

@@ -8,6 +8,7 @@ import im.actor.core.api.ApiEncryptedContent;
 import im.actor.core.api.ApiEncryptionKeyGroup;
 import im.actor.core.api.ApiServiceMessage;
 import im.actor.core.api.ApiServiceTimerChanged;
+import im.actor.core.entity.EncryptedConversationState;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.MessageState;
 import im.actor.core.entity.Peer;
@@ -20,12 +21,14 @@ import im.actor.core.modules.encryption.updates.EncryptedUpdates;
 import im.actor.runtime.actors.ask.AskMessage;
 import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.promise.Promise;
+import im.actor.runtime.storage.KeyValueEngine;
 
 public class EncryptedRouterActor extends ModuleActor {
 
     private KeyManager keyManager;
     private EncryptedMsg encryptedMsg;
     private EncryptedUpdates updates;
+    private KeyValueEngine<EncryptedConversationState> stateKeyValue;
 
     public EncryptedRouterActor(ModuleContext context) {
         super(context);
@@ -37,6 +40,7 @@ public class EncryptedRouterActor extends ModuleActor {
         updates = new EncryptedUpdates(context());
         keyManager = context().getEncryption().getKeyManager();
         encryptedMsg = context().getEncryption().getEncryption();
+        stateKeyValue = context().getEncryption().getConversationState().getEngine();
     }
 
     public Promise<Void> onKeyGroupAdded(int uid, ApiEncryptionKeyGroup group) {
@@ -47,7 +51,12 @@ public class EncryptedRouterActor extends ModuleActor {
         return keyManager.onKeyGroupRemoved(uid, keyGroupId);
     }
 
-    public Promise<Void> onTimerSet(long randomId, long date, int uid, Integer timerInMs) {
+    public Promise<Void> onTimerSet(long randomId, long date, int uid, int timerInMs) {
+        EncryptedConversationState state = stateKeyValue.getValue(uid);
+        if (state.getTimer() != timerInMs && state.getTimerDate() < date) {
+            stateKeyValue.addOrUpdateItem(state.editTimer(timerInMs, date));
+        }
+
         return context().getMessagesModule().getRouter()
                 .onNewMessage(Peer.secret(uid), new Message(randomId, date, date,
                         myUid(), MessageState.SENT, AbsContent.fromMessage(new ApiServiceMessage("Timer set",
@@ -57,16 +66,20 @@ public class EncryptedRouterActor extends ModuleActor {
     // Messages
 
     public Promise<Void> onEncryptedUpdate(int uid, long date, ApiEncryptedContent update) {
+        Promise<Void> res = Promise.success(null);
         if (update instanceof ApiEncryptedChatTimerSet) {
             ApiEncryptedChatTimerSet timerSet = (ApiEncryptedChatTimerSet) update;
             int peerId = uid;
             if (timerSet.getReceiverId() != myUid()) {
                 peerId = timerSet.getReceiverId();
             }
-            return onTimerSet(timerSet.getRid(), date, peerId, timerSet.getTimerMs());
-        } else {
-            return updates.onUpdate(uid, date, update);
+            int timer = 0;
+            if (timerSet.getTimerMs() != null) {
+                timer = timerSet.getTimerMs();
+            }
+            res = onTimerSet(timerSet.getRid(), date, peerId, timer);
         }
+        return res.chain(r -> updates.onUpdate(uid, date, update));
     }
 
     public Promise<Void> onEncryptedBox(long date, int senderId, @NotNull ApiEncryptedBox encryptedBox) {

@@ -123,7 +123,7 @@ public class ConversationHistoryActor extends ModuleActor {
             }
             messages.add(new Message(historyMessage.getRid(), historyMessage.getDate(),
                     historyMessage.getDate(), historyMessage.getSenderUid(),
-                    state, content, reactions, 0));
+                    state, content, reactions, 0, 0));
 
             maxLoadedDate = Math.min(historyMessage.getDate(), maxLoadedDate);
             if (historyMessage.getState() == ApiMessageState.RECEIVED) {
