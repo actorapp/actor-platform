@@ -4812,6 +4812,12 @@
                 "argument": "ext",
                 "category": "compact",
                 "description": "  Extension"
+              },
+              {
+                "type": "reference",
+                "argument": "encryptionInfo",
+                "category": "full",
+                "description": "  Optional information for encrypted documents"
               }
             ],
             "trait": {
@@ -4866,6 +4872,61 @@
                 },
                 "id": 8,
                 "name": "ext"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "DocumentEncryptionInfo"
+                  }
+                },
+                "id": 9,
+                "name": "encryptionInfo"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "DocumentEncryptionInfo",
+            "doc": [
+              "Document encryption key",
+              {
+                "type": "reference",
+                "argument": "realFileSize",
+                "category": "full",
+                "description": "  File Size"
+              },
+              {
+                "type": "reference",
+                "argument": "keyAlg",
+                "category": "full",
+                "description": "  Key Algorithm"
+              },
+              {
+                "type": "reference",
+                "argument": "key",
+                "category": "full",
+                "description": "  Key material"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "realFileSize"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "keyAlg"
+              },
+              {
+                "type": "bytes",
+                "id": 3,
+                "name": "key"
               }
             ]
           }

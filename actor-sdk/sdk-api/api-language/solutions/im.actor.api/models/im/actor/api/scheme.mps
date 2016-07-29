@@ -4406,6 +4406,11 @@
           <property role="1GSvIU" value="compact" />
           <ref role="NX6Kv" node="GBscvBBlqv" resolve="ext" />
         </node>
+        <node concept="NX1gA" id="65MuurgAJcz" role="NXodf">
+          <property role="NX6R2" value="Optional information for encrypted documents" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="65MuurgAJbW" resolve="encryptionInfo" />
+        </node>
         <node concept="2m7Kf5" id="GBscvBBloX" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="fileId" />
@@ -4449,8 +4454,53 @@
             </node>
           </node>
         </node>
+        <node concept="2m7Kf5" id="65MuurgAJbW" role="2m0hLx">
+          <property role="2m7DUN" value="9" />
+          <property role="TrG5h" value="encryptionInfo" />
+          <node concept="2m5nlT" id="65MuurgAJcg" role="2m7DVh">
+            <node concept="2m5mGg" id="65MuurgAJcm" role="3GH5xg">
+              <ref role="2m5mJy" node="65MuurgAIWF" resolve="DocumentEncryptionInfo" />
+            </node>
+          </node>
+        </node>
         <node concept="Nu42z" id="55bmeIQgpQg" role="3BtCOu">
           <property role="Nu42W" value="03" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="65MuurgAIWF" role="2m5mJr">
+        <property role="TrG5h" value="DocumentEncryptionInfo" />
+        <node concept="2m7Kf5" id="65MuurgAJbx" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="realFileSize" />
+          <node concept="2m5ndE" id="65MuurgAJb_" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="65MuurgAJbC" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="keyAlg" />
+          <node concept="2m5ndX" id="65MuurgAJbI" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="65MuurgAJbL" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="key" />
+          <node concept="2m61tm" id="65MuurgAJbT" role="2m7DVh" />
+        </node>
+        <node concept="NXeRC" id="65MuurgAJcI" role="NXodf">
+          <property role="NXePf" value="Document encryption key" />
+        </node>
+        <node concept="NX1gA" id="65MuurgAJcN" role="NXodf">
+          <property role="NX6R2" value="File Size" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="65MuurgAJbx" resolve="realFileSize" />
+        </node>
+        <node concept="NX1gA" id="65MuurgAJcV" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Key Algorithm" />
+          <ref role="NX6Kv" node="65MuurgAJbC" resolve="keyAlg" />
+        </node>
+        <node concept="NX1gA" id="65MuurgAJd5" role="NXodf">
+          <property role="NX6R2" value="Key material" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="65MuurgAJbL" resolve="key" />
         </node>
       </node>
       <node concept="w93zz" id="55bmeIQ9FSf" role="2m5mJr">
