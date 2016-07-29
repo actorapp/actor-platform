@@ -287,74 +287,74 @@
 
 "GroupViewMembers" = "Miembros";
 
-"GroupDescription" = "Description";
+"GroupDescription" = "Descripción”;
 
 
 
-"GroupAdministration" = "Administration";
+"GroupAdministration" = "Administrador”;
 
-"GroupTypeTitle" = "Group Type";
+"GroupTypeTitle" = "Tipo de Grupo";
 
-"GroupTypeTitleChannel" = "Channel Type";
+"GroupTypeTitleChannel" = "Tipo de Canal";
 
-"GroupTypePublic" = "Public";
+"GroupTypePublic" = "Público”;
 
-"GroupTypePrivate" = "Private";
+"GroupTypePrivate" = "Privado”;
 
-"ChannelTypePublic" = "Public";
+"ChannelTypePublic" = "Público”;
 
-"ChannelTypePrivate" = "Private";
+"ChannelTypePrivate" = "Privado”;
 
-"GroupTypePublicFull" = "Public Group";
+"GroupTypePublicFull" = "Grupo público“;
 
-"GroupTypePrivateFull" = "Private Group";
+"GroupTypePrivateFull" = "Grupo privado";
 
-"ChannelTypePublicFull" = "Public Channel";
+"ChannelTypePublicFull" = "Canal público";
 
-"ChannelTypePrivateFull" = "Private Channel";
+"ChannelTypePrivateFull" = "Canal privado";
 
-"GroupPermissionsHint" = "Control what is possible in this group";
+"GroupPermissionsHint" = "Controlar lo que es posible en este grupo";
 
-"GroupPermissionsHintChannel" = "Control what is possible in this channel";
+"GroupPermissionsHintChannel" = "Controlar lo que es posible en este canal";
 
-"GroupTypeHintPublic" = "Public groups can be found in search and anyone can join";
+"GroupTypeHintPublic" = "Los grupos públicos se pueden encontrar en la búsqueda y cualquiera puede unirse";
 
-"GroupTypeHintPrivate" = "Private groups can be joined only via personal invitation";
+"GroupTypeHintPrivate" = "Los grupos privados pueden unirse sólo a través de invitación personal";
 
-"GroupTypeHintPublicChannel" = "Public channels can be found in search and anyone can join";
+"GroupTypeHintPublicChannel" = "Los canales públicos se pueden encontrar en la búsqueda y cualquiera puede unirse";
 
-"GroupTypeHintPrivateChannel" = "Private channels can be joined only via personal invitation";
+"GroupTypeHintPrivateChannel" = "Los canales privados se pueden unir únicamente a través de invitación personal";
 
 "GroupTypeLinkHint" = "People can share this link with others and find your group using search";
 
-"GroupTypeLinkHintChannel" = "People can share this link with others and find your channel using search";
+"GroupTypeLinkHintChannel" = "Las personas pueden compartir este enlace con los demás y encontrar su grupo mediante la búsqueda";
 
-"GroupDeleteHint" = "You will lose all messages in this group";
+"GroupDeleteHint" = "Perderá todos los mensajes de este grupo";
 
-"GroupDeleteHintChannel" = "You will lose all messages in this channel";
-
-
-
-"GroupShareTitle" = "Shared History";
-
-"GroupShareEnabled" = "Shared";
-
-"GroupShareHint" = "All members will see all messages";
-
-"GroupShareMessage" = "Are you sure want to share all messages to all members? This action is irreversible.";
-
-"GroupShareAction" = "Share";
+"GroupDeleteHintChannel" = "Usted perderá todos los mensajes de este canal";
 
 
-"GroupEditTitle" = "Edit Group";
 
-"GroupEditTitleChannel" = "Edit Channel";
+"GroupShareTitle" = "Historial compartido”;
 
-"GroupEditName" = "Group Name";
+"GroupShareEnabled" = "Compartir";
 
-"GroupEditNameChannel" = "Channel Name";
+"GroupShareHint" = "Todos los miembros podrán ver todos los mensajes";
 
-"GroupEditDescription" = "Description";
+"GroupShareMessage" = "¿Seguro desea compartir todos los mensajes a todos los miembros? Esta acción es irreversible.";
+
+"GroupShareAction" = "Compartir";
+
+
+"GroupEditTitle" = "Editar Grupo“;
+
+"GroupEditTitleChannel" = "Editar Canal”;
+
+"GroupEditName" = "Nombre de Grupo";
+
+"GroupEditNameChannel" = "Nombre del Canal";
+
+"GroupEditDescription" = "Descripción”;
 
 
 
@@ -413,20 +413,20 @@
 
 "CreateGroup" = "Crear grupo";
 
-"CreateChannel" = "Create channel";
+"CreateChannel" = "Crear canal”;
 
 
 "CreateGroupTitle" = "Crear grupo";
 
 "CreateGroupHint" = "Por favor, introduce un nombre de grupo e inserta una imagen.";
 
-"CreateGroupNamePlaceholder" = "Grupo Asunto";
+"CreateGroupNamePlaceholder" = "Asunto del Grupo”;
 
-"CreateChannelTitle" = "Create Channel";
+"CreateChannelTitle" = "Crear Canal“;
 
-"CreateChannelHint" = "Please provide the channel name and an optional channel icon";
+"CreateChannelHint" = "Por favor, proporcione el nombre del canal y un icono de canal opcional";
 
-"CreateChannelNamePlaceholder" = "Channel Name";
+"CreateChannelNamePlaceholder" = "Nombre del canal";
 
 
 "CreateGroupMembersTitle" = "Invitar a los miembros";
@@ -680,48 +680,48 @@
 
 "ActionAddPhoto2" = "foto";
 
-"ActionOpenCode" = "View Code";
+"ActionOpenCode" = "Ver código”;
 
-"ActionMute" = "Mute";
+"ActionMute" = "Silenciar";
 
-"ActionUnmute" = "Unmute";
-
-
-"ActionDelete" = "Delete";
-
-"ActionDeleteMessage" = "Are you sure want to delete chat?";
+"ActionUnmute" = "No silenciado";
 
 
-"ActionDeleteChannel" = "Delete Channel";
+"ActionDelete" = "Eliminar";
+
+"ActionDeleteMessage" = "¿Seguro desea borrar el chat?";
+
+
+"ActionDeleteChannel" = "Eliminar canal";
 
 "ActionDeleteChannelMessage" = "Wait! Deleting this channel will remove all members and all messages will be lost. Delete the channel anyway?";
 
 "ActionDeleteGroup" = "Delete Group";
 
-"ActionDeleteGroupMessage" = "Wait! Deleting this group will remove all members and all messages will be lost. Delete the group anyway?";
+"ActionDeleteGroupMessage" = "¡Espere! La eliminación de este canal, eliminará todos los miembros y se perderán todos los mensajes. Eliminar el canal de todos modos?";
 
 
-"ActionLeaveChannel" = "Leave Channel";
+"ActionLeaveChannel" = "Abandonar Canal";
 
-"ActionLeaveChannelMessage" = "Are you sure want to leave channel?";
+"ActionLeaveChannelMessage" = "¿Seguro que quieres abandonar el canal?";
 
-"ActionLeaveChannelAction" = "Leave";
-
-
-
-"ActionDeleteAndExit" = "Delete and Exit";
-
-"ActionDeleteAndExitMessage" = "Are you sure want to exit group and delete all messages?";
-
-"ActionDeleteAndExitAction" = "Exit";
+"ActionLeaveChannelAction" = "Abandonar";
 
 
 
-"ActionClearHistory" = "Clear History";
+"ActionDeleteAndExit" = "Eliminar y Salir";
 
-"ActionClearHistoryMessage" = "Are you sure want to clear history?";
+"ActionDeleteAndExitMessage" = "¿Seguro desea salir del grupo y eliminar todos los mensajes?";
 
-"ActionClearHistoryAction" = "Clear";
+"ActionDeleteAndExitAction" = "Salir";
+
+
+
+"ActionClearHistory" = "Borrar historial";
+
+"ActionClearHistoryMessage" = "¿Seguro desea borrar el historial?”;
+
+"ActionClearHistoryAction" = "Borrar";
 
 /*
  * Network
@@ -741,4 +741,4 @@
 
 "ErrorAlreadyJoined" = "Ya eres miembro del grupo";
 
-"ErrorUnableToJoin" = "Unable to join to group";
+"ErrorUnableToJoin" = "No es posible unirse al grupo";
