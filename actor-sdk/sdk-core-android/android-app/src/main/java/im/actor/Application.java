@@ -46,7 +46,7 @@ public class Application extends ActorSDKApplication {
 
         ActorStyle style = ActorSDK.sharedActor().style;
         style.setDialogsActiveTextColor(0xff5882ac);
-        style.setShowAvatarPrivateInTitle(false);
+        // style.setShowAvatarPrivateInTitle(false);
 
         ActorSDK.sharedActor().setFastShareEnabled(true);
 

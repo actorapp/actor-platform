@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -103,10 +104,13 @@ public class ChatToolbarFragment extends BaseFragment {
         actionBar.setDisplayShowCustomEnabled(true);
 
         // Coloring Toolbar
-        if (peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
-            actionBar.setBackgroundDrawable(new ColorDrawable(ActorSDK.sharedActor().style.getAccentColor()));
+        if (peer.getPeerType() != PeerType.PRIVATE_ENCRYPTED) {
+            actionBar.setBackgroundDrawable(new ColorDrawable(style.getToolBarColor()));
         } else {
-            actionBar.setBackgroundDrawable(new ColorDrawable(ActorSDK.sharedActor().style.getToolBarColor()));
+            actionBar.setBackgroundDrawable(new ColorDrawable(style.getSecretChatToolbar()));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                getActivity().getWindow().setStatusBarColor(style.getSecretChatStatusbar());
+            }
         }
 
         // Loading Toolbar header views
@@ -225,7 +229,7 @@ public class ChatToolbarFragment extends BaseFragment {
                         && !style.isShowAvatarPrivateInTitle())) {
             barAvatar.setVisibility(View.GONE);
         }
-        
+
         // Global Counter
         bind(messenger().getGlobalState().getGlobalCounter(), (val, valueModel) -> {
             if (val != null && val > 0) {
@@ -243,33 +247,11 @@ public class ChatToolbarFragment extends BaseFragment {
 
         // Inflating menu
         inflater.inflate(R.menu.chat_menu, menu);
-
-        // Show menu for opening chat contact
-//        if (peer.getPeerType() == PeerType.PRIVATE) {
-//            menu.findItem(R.id.contact).setVisible(true);
-//        } else {
-//            menu.findItem(R.id.contact).setVisible(false);
-//        }
-
-        // Show menus for leave group and group info view
-//        if (peer.getPeerType() == PeerType.GROUP) {
-//            GroupVM groupVM = groups().get(peer.getPeerId());
-//            if (groupVM.isMember().get()) {
-//                menu.findItem(R.id.leaveGroup).setVisible(true);
-//                menu.findItem(R.id.groupInfo).setVisible(true);
-//            } else {
-//                menu.findItem(R.id.leaveGroup).setVisible(false);
-//                menu.findItem(R.id.groupInfo).setVisible(false);
-//            }
-//            if (groupVM.getGroupType() == GroupType.GROUP) {
-//                menu.findItem(R.id.clear).setVisible(true);
-//            } else {
-//                menu.findItem(R.id.clear).setVisible(false);
-//            }
-//        } else {
-//            menu.findItem(R.id.groupInfo).setVisible(false);
-//            menu.findItem(R.id.leaveGroup).setVisible(false);
-//        }
+        MenuItem addToContacts = menu.findItem(R.id.add_to_contacts);
+        MenuItem callMenu = menu.findItem(R.id.call);
+        MenuItem videoMenu = menu.findItem(R.id.video_call);
+        MenuItem keyMenu = menu.findItem(R.id.key);
+        MenuItem timerMenu = menu.findItem(R.id.timer);
 
         // Voice and Video calls
         boolean callsEnabled = ActorSDK.sharedActor().isCallsEnabled();
@@ -278,23 +260,29 @@ public class ChatToolbarFragment extends BaseFragment {
             if (peer.getPeerType() == PeerType.PRIVATE) {
                 callsEnabled = !users().get(peer.getPeerId()).isBot();
             } else if (peer.getPeerType() == PeerType.GROUP) {
-
                 GroupVM groupVM = groups().get(peer.getPeerId());
                 if (groupVM.getGroupType() == GroupType.GROUP) {
-                    callsEnabled = groupVM.getMembersCount().get() <= MAX_USERS_FOR_CALLS;
+                    callsEnabled = groupVM.getIsCanCall().get();
                     videoCallsEnabled = false;
                 } else {
                     callsEnabled = false;
                     videoCallsEnabled = false;
                 }
+            } else {
+                callsEnabled = false;
+                videoCallsEnabled = false;
             }
         }
-        menu.findItem(R.id.call).setVisible(callsEnabled);
-        menu.findItem(R.id.video_call).setVisible(callsEnabled && videoCallsEnabled);
+        callMenu.setVisible(callsEnabled);
+        videoMenu.setVisible(callsEnabled && videoCallsEnabled);
+
+        // Secret Chat
+        keyMenu.setVisible(peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED);
+        timerMenu.setVisible(peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED);
 
         // Add to contacts
         if (peer.getPeerType() == PeerType.PRIVATE) {
-            menu.findItem(R.id.add_to_contacts).setVisible(!users().get(peer.getPeerId()).isContact().get());
+            addToContacts.setVisible(!users().get(peer.getPeerId()).isContact().get());
         }
     }
 

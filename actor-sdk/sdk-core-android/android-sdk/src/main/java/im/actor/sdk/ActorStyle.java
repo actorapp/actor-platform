@@ -228,6 +228,25 @@ public class ActorStyle {
         this.verifiedColor = verifiedColor;
     }
 
+    private int secretChatToolbar = 0xff4CAF50;
+    private int secretChatStatusbar = 0xff388E3C;
+
+    public int getSecretChatToolbar() {
+        return secretChatToolbar;
+    }
+
+    public void setSecretChatToolbar(int secretChatToolbar) {
+        this.secretChatToolbar = secretChatToolbar;
+    }
+
+    public int getSecretChatStatusbar() {
+        return secretChatStatusbar;
+    }
+
+    public void setSecretChatStatusbar(int secretChatStatusbar) {
+        this.secretChatStatusbar = secretChatStatusbar;
+    }
+
     //
     // List Styles
     //
