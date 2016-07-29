@@ -1,6 +1,10 @@
 package im.actor.core.modules.encryption.ratchet;
 
+import java.util.List;
+
 import im.actor.core.api.ApiEncryptionKeyGroup;
+import im.actor.core.api.ApiKeyGroupHolder;
+import im.actor.core.api.ApiKeyGroupId;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.encryption.ratchet.entity.OwnIdentity;
 import im.actor.core.modules.encryption.ratchet.entity.PrivateKey;
@@ -131,5 +135,16 @@ public class KeyManager extends ActorInterface {
      */
     public Promise<Void> onKeyGroupRemoved(int uid, int gid) {
         return ask(new KeyManagerActor.PublicKeysGroupRemoved(uid, gid));
+    }
+
+    /**
+     * Call this when you will receive error during encrytped message sending
+     *
+     * @param missed   missed key groups
+     * @param obsolete obsolete key groups
+     * @return promise of void
+     */
+    public Promise<Void> onKeyGroupDiffReceived(List<ApiKeyGroupHolder> missed, List<ApiKeyGroupId> obsolete) {
+        return ask(new KeyManagerActor.KeyGroupsDiff(missed, obsolete));
     }
 }

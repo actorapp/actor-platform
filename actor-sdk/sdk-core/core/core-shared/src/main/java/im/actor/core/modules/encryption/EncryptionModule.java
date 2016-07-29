@@ -77,58 +77,39 @@ public class EncryptionModule extends AbsModule {
         return getEncryption().decrypt(uid, encryptedBox);
     }
 
-    public Promise<ResponseSendEncryptedPackage> doSend(ApiEncryptedContent content, int uid) {
-        return doSend(RandomUtils.nextRid(), content, uid, false);
+    public Promise<Long> doSend(ApiEncryptedContent content, int uid) {
+        return doSend(RandomUtils.nextRid(), content, uid);
     }
 
-    public Promise<ResponseSendEncryptedPackage> doSend(ApiEncryptedContent content, int uid, boolean autoPostUpdate) {
-        return doSend(RandomUtils.nextRid(), content, uid, autoPostUpdate);
-    }
-
-    public Promise<ResponseSendEncryptedPackage> doSend(ApiEncryptedContent content, List<Integer> uids) {
+    public Promise<Long> doSend(ApiEncryptedContent content, List<Integer> uids) {
         return doSend(RandomUtils.nextRid(), content, uids);
     }
 
-    public Promise<ResponseSendEncryptedPackage> doSend(long rid, ApiEncryptedContent content, int uid) {
-        return doSend(rid, content, uid, false);
-    }
-
-    public Promise<ResponseSendEncryptedPackage> doSend(long rid, ApiEncryptedContent content, int uid,
-                                                        boolean autoPostUpdate) {
+    public Promise<Long> doSend(long rid, ApiEncryptedContent content, int uid) {
         ArrayList<Integer> receiver = new ArrayList<>();
         receiver.add(uid);
         if (uid != myUid()) {
             receiver.add(myUid());
         }
-        return doSend(rid, content, receiver, autoPostUpdate);
+        return doSend(rid, content, receiver);
     }
 
-    public Promise<ResponseSendEncryptedPackage> doSend(long rid, ApiEncryptedContent content,
-                                                        List<Integer> uids) {
-        return doSend(rid, content, uids, false);
-    }
-
-    public Promise<ResponseSendEncryptedPackage> doSend(long rid, ApiEncryptedContent content,
-                                                        List<Integer> uids, boolean autoPostUpdate) {
+    public Promise<Long> doSend(long rid, ApiEncryptedContent content, List<Integer> uids) {
 
         ArrayList<ApiUserOutPeer> outPeers = new ArrayList<>();
         for (int i : uids) {
             outPeers.add(new ApiUserOutPeer(i, users().getValue(i).getAccessHash()));
         }
 
-        Promise<ResponseSendEncryptedPackage> res = encrypt(uids, content).flatMap(encryptedMessage -> {
-            RequestSendEncryptedPackage request = new RequestSendEncryptedPackage(rid, outPeers,
-                    encryptedMessage.getIgnoredGroups(), encryptedMessage.getEncryptedBox());
-            return api(request).flatMap(r -> {
-                if (r.getDate() != null) {
-                    return Promise.success(r);
-                }
-                return Promise.failure(new RuntimeException("Incorrect keys"));
-            });
-        });
-        if (autoPostUpdate) {
-            res.then(r -> context().getEncryption().onUpdate(myUid(), r.getDate(), content));
-        }
-        return res;
+        return encrypt(uids, content)
+                .flatMap(m -> api(new RequestSendEncryptedPackage(rid, outPeers, m.getIgnoredGroups(), m.getEncryptedBox())))
+                .flatMap(r -> {
+                    if (r.getDate() != null) {
+                        return Promise.success(r.getDate());
+                    } else {
+                        return getKeyManager().onKeyGroupDiffReceived(r.getMissedKeyGroups(), r.getObsoleteKeyGroups())
+                                .flatMap(r2 -> doSend(rid, content, uids));
+                    }
+                });
     }
 }

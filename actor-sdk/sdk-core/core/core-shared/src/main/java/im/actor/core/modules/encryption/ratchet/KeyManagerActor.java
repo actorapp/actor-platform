@@ -8,6 +8,7 @@ import java.util.List;
 import im.actor.core.api.ApiEncryptionKey;
 import im.actor.core.api.ApiEncryptionKeyGroup;
 import im.actor.core.api.ApiEncryptionKeySignature;
+import im.actor.core.api.ApiKeyGroupHolder;
 import im.actor.core.api.ApiKeyGroupId;
 import im.actor.core.api.ApiUserOutPeer;
 import im.actor.core.api.rpc.RequestCreateNewKeyGroup;
@@ -36,6 +37,8 @@ import im.actor.runtime.crypto.Curve25519KeyPair;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.crypto.Curve25519;
 import im.actor.runtime.crypto.ratchet.RatchetKeySignature;
+import im.actor.runtime.promise.PromiseTools;
+import im.actor.runtime.promise.Promises;
 import im.actor.runtime.promise.PromisesArray;
 import im.actor.runtime.function.Tuple2;
 import im.actor.runtime.storage.KeyValueStorage;
@@ -443,16 +446,26 @@ public class KeyManagerActor extends ModuleActor {
         return Promise.success(null);
     }
 
-    private Promise<Void> onUserKeysChanged(List<ApiKeyGroupId> missed, List<ApiKeyGroupId> obsolete) {
 
+    /**
+     * Handling response of incorrect keys
+     *
+     * @param missed   missed key groups
+     * @param obsolete obsolete key group id
+     * @return promise of void
+     */
+    private Promise<Void> onKeysDiffReceived(List<ApiKeyGroupHolder> missed, List<ApiKeyGroupId> obsolete) {
+        ArrayList<Promise<Void>> res = new ArrayList<>();
 
+        for (ApiKeyGroupHolder gh : missed) {
+            res.add(onPublicKeysGroupAdded(gh.getUid(), gh.getKeyGroup()));
+        }
+        for (ApiKeyGroupId gi : obsolete) {
+            res.add(onPublicKeysGroupRemoved(gi.getUid(), gi.getKeyGroupId()));
+        }
 
-//        UserKeys userKeys = getCachedUserKeys(uid);
-//        if (userKeys == null) {
-//            return Promise.success(null);
-//        }
-
-        return Promise.success(null);
+        return PromisesArray.ofPromises(res)
+                .zip(r -> null);
     }
 
     //
@@ -585,6 +598,9 @@ public class KeyManagerActor extends ModuleActor {
         } else if (message instanceof PublicKeysGroupRemoved) {
             PublicKeysGroupRemoved publicKeysGroupRemoved = (PublicKeysGroupRemoved) message;
             return onPublicKeysGroupRemoved(publicKeysGroupRemoved.getUid(), publicKeysGroupRemoved.getKeyGroupId());
+        } else if (message instanceof KeyGroupsDiff) {
+            KeyGroupsDiff diff = (KeyGroupsDiff) message;
+            return onKeysDiffReceived(diff.getMissed(), diff.getObsolete());
         } else {
             return super.onAsk(message);
         }
@@ -736,15 +752,15 @@ public class KeyManagerActor extends ModuleActor {
 
     public static class KeyGroupsDiff implements AskMessage<Void> {
 
-        private List<ApiKeyGroupId> missed;
+        private List<ApiKeyGroupHolder> missed;
         private List<ApiKeyGroupId> obsolete;
 
-        public KeyGroupsDiff(List<ApiKeyGroupId> missed, List<ApiKeyGroupId> obsolete) {
+        public KeyGroupsDiff(List<ApiKeyGroupHolder> missed, List<ApiKeyGroupId> obsolete) {
             this.missed = missed;
             this.obsolete = obsolete;
         }
 
-        public List<ApiKeyGroupId> getMissed() {
+        public List<ApiKeyGroupHolder> getMissed() {
             return missed;
         }
 

@@ -291,7 +291,7 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
                     peer.getPeerId(), rid, new ApiTextMessage(message, new ArrayList<>(), null));
 
             return context().getEncryption().doSend(RandomUtils.nextRid(), editContent, peer.getPeerId()).then(r -> {
-                context().getEncryption().onUpdate(myUid(), r.getDate(), editContent);
+                context().getEncryption().onUpdate(myUid(), r, editContent);
             }).flatMap(r -> null);
         } else {
             ArrayList<Integer> mentions = new ArrayList<>();
@@ -428,7 +428,7 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
         if (peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
             // FIXME: Not actually deletes chat from dialog list
             return context().getEncryption().doSend(new ApiEncryptedDeleteAll(peer.getPeerId()),
-                    peer.getPeerId(), false).map(v -> (Void) null);
+                    peer.getPeerId()).map(v -> (Void) null);
         } else {
             return buildOutPeer(peer)
                     .flatMap(apiOutPeer ->
@@ -445,7 +445,7 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
     public Promise<Void> clearChat(final Peer peer) {
         if (peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
             return context().getEncryption().doSend(new ApiEncryptedDeleteAll(peer.getPeerId()),
-                    peer.getPeerId(), false).map(v -> (Void) null);
+                    peer.getPeerId()).map(v -> (Void) null);
         } else {
             return buildOutPeer(peer)
                     .flatMap(apiOutPeer ->
