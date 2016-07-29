@@ -1,4 +1,4 @@
-package im.actor.core.modules.encryption;
+package im.actor.core.modules.encryption.updates;
 
 import im.actor.core.api.ApiEncryptedContent;
 import im.actor.core.modules.AbsModule;

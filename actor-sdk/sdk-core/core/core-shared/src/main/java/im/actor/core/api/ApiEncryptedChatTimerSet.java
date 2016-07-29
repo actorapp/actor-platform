@@ -14,26 +14,24 @@ import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 
-public class ApiEncryptedMessageContent extends ApiEncryptedContent {
+public class ApiEncryptedChatTimerSet extends ApiEncryptedContent {
 
     private int receiverId;
     private long rid;
-    private ApiMessage message;
     private Integer timerMs;
 
-    public ApiEncryptedMessageContent(int receiverId, long rid, @NotNull ApiMessage message, @Nullable Integer timerMs) {
+    public ApiEncryptedChatTimerSet(int receiverId, long rid, @Nullable Integer timerMs) {
         this.receiverId = receiverId;
         this.rid = rid;
-        this.message = message;
         this.timerMs = timerMs;
     }
 
-    public ApiEncryptedMessageContent() {
+    public ApiEncryptedChatTimerSet() {
 
     }
 
     public int getHeader() {
-        return 1;
+        return 8;
     }
 
     public int getReceiverId() {
@@ -44,11 +42,6 @@ public class ApiEncryptedMessageContent extends ApiEncryptedContent {
         return this.rid;
     }
 
-    @NotNull
-    public ApiMessage getMessage() {
-        return this.message;
-    }
-
     @Nullable
     public Integer getTimerMs() {
         return this.timerMs;
@@ -57,31 +50,23 @@ public class ApiEncryptedMessageContent extends ApiEncryptedContent {
     @Override
     public void parse(BserValues values) throws IOException {
         this.receiverId = values.getInt(1);
-        this.rid = values.getLong(2);
-        this.message = ApiMessage.fromBytes(values.getBytes(3));
-        this.timerMs = values.optInt(4);
+        this.rid = values.getLong(3);
+        this.timerMs = values.optInt(2);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeInt(1, this.receiverId);
-        writer.writeLong(2, this.rid);
-        if (this.message == null) {
-            throw new IOException();
-        }
-
-        writer.writeBytes(3, this.message.buildContainer());
+        writer.writeLong(3, this.rid);
         if (this.timerMs != null) {
-            writer.writeInt(4, this.timerMs);
+            writer.writeInt(2, this.timerMs);
         }
     }
 
     @Override
     public String toString() {
-        String res = "struct EncryptedMessageContent{";
+        String res = "struct EncryptedChatTimerSet{";
         res += "receiverId=" + this.receiverId;
-        res += ", rid=" + this.rid;
-        res += ", message=" + this.message;
         res += ", timerMs=" + this.timerMs;
         res += "}";
         return res;

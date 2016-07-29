@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import im.actor.core.api.ApiEncryptedBox;
+import im.actor.core.api.ApiEncryptedChatTimerSet;
 import im.actor.core.api.ApiEncryptedContent;
 import im.actor.core.api.ApiUserOutPeer;
 import im.actor.core.api.rpc.RequestSendEncryptedPackage;
@@ -27,8 +28,8 @@ public class EncryptionModule extends AbsModule {
 
     private KeyManager keyManager;
     private SessionManager sessionManager;
+    private EncryptedRouter encryptedRouter;
     private EncryptedMsg encryption;
-    private EncryptedUpdates encryptedUpdates;
 
     private final HashMap<Integer, EncryptedUser> users = new HashMap<>();
 
@@ -40,11 +41,15 @@ public class EncryptionModule extends AbsModule {
         keyManager = new KeyManager(context());
         sessionManager = new SessionManager(context());
         encryption = new EncryptedMsg(context());
-        encryptedUpdates = new EncryptedUpdates(context());
+        encryptedRouter = new EncryptedRouter(context());
     }
 
     public KeyManager getKeyManager() {
         return keyManager;
+    }
+
+    public EncryptedRouter getRouter() {
+        return encryptedRouter;
     }
 
     public SessionManager getSessionManager() {
@@ -66,15 +71,7 @@ public class EncryptionModule extends AbsModule {
     }
 
     public Promise<Void> onUpdate(int senderId, long date, ApiEncryptedContent update) {
-        return encryptedUpdates.onUpdate(senderId, date, update);
-    }
-
-    public Promise<EncryptedMessage> encrypt(List<Integer> uids, ApiEncryptedContent message) {
-        return getEncryption().encrypt(uids, message);
-    }
-
-    public Promise<ApiEncryptedContent> decrypt(int uid, ApiEncryptedBox encryptedBox) {
-        return getEncryption().decrypt(uid, encryptedBox);
+        return encryptedRouter.onEncryptedUpdate(senderId, date, update);
     }
 
     public Promise<Long> doSend(ApiEncryptedContent content, int uid) {
@@ -101,7 +98,7 @@ public class EncryptionModule extends AbsModule {
             outPeers.add(new ApiUserOutPeer(i, users().getValue(i).getAccessHash()));
         }
 
-        return encrypt(uids, content)
+        return getEncryption().encrypt(uids, content)
                 .flatMap(m -> api(new RequestSendEncryptedPackage(rid, outPeers, m.getIgnoredGroups(), m.getEncryptedBox())))
                 .flatMap(r -> {
                     if (r.getDate() != null) {
@@ -111,5 +108,13 @@ public class EncryptionModule extends AbsModule {
                                 .flatMap(r2 -> doSend(rid, content, uids));
                     }
                 });
+    }
+
+
+    public Promise<Void> setSecretChatTimer(int uid, Integer timeout) {
+        ApiEncryptedContent encryptedContent = new ApiEncryptedChatTimerSet(uid,
+                RandomUtils.nextRid(), timeout);
+        return doSend(encryptedContent, uid)
+                .flatMap(r -> getRouter().onEncryptedUpdate(myUid(), r, encryptedContent));
     }
 }

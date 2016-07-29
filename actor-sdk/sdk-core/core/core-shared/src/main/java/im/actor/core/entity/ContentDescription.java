@@ -26,6 +26,7 @@ import im.actor.core.entity.content.ServiceGroupUserInvited;
 import im.actor.core.entity.content.ServiceGroupUserJoined;
 import im.actor.core.entity.content.ServiceGroupUserKicked;
 import im.actor.core.entity.content.ServiceGroupUserLeave;
+import im.actor.core.entity.content.ServiceTimerChanged;
 import im.actor.core.entity.content.ServiceUserRegistered;
 import im.actor.core.entity.content.StickerContent;
 import im.actor.core.entity.content.TextContent;
@@ -96,6 +97,13 @@ public class ContentDescription extends BserObject {
         } else if (msg instanceof ServiceGroupUserJoined) {
             return new ContentDescription(ContentType.SERVICE_JOINED, "",
                     0, false);
+        } else if (msg instanceof ServiceTimerChanged) {
+            ServiceTimerChanged timerChanged = (ServiceTimerChanged) msg;
+            if (timerChanged.getTimer() > 0) {
+                return new ContentDescription(ContentType.SERVICE_TIMER_SET, "", 0, false);
+            } else {
+                return new ContentDescription(ContentType.SERVICE_TIMER_CLEAR, "", 0, false);
+            }
         } else if (msg instanceof ServiceContent) {
             return new ContentDescription(ContentType.SERVICE,
                     ((ServiceContent) msg).getCompatText(), 0, false);

@@ -498,7 +498,7 @@ public class SenderActor extends ModuleActor {
         } else if (peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
             Log.d("SenderActor", "Pending encrypted message: " + message);
             ApiEncryptedContent content = new ApiEncryptedMessageContent(peer.getPeerId(),
-                    rid, message);
+                    rid, message, null);
 
             context().getEncryption().doSend(rid, content, peer.getPeerId())
                     .chain(r -> context().getMessagesModule().getRouter().onOutgoingSent(peer, rid, r))

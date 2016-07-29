@@ -21,23 +21,19 @@ public class EncryptionProcessor extends AbsModule implements SequenceProcessor 
         if (update instanceof UpdatePublicKeyGroupAdded) {
             UpdatePublicKeyGroupAdded groupAdded = (UpdatePublicKeyGroupAdded) update;
             return context().getEncryption()
-                    .getKeyManager()
+                    .getRouter()
                     .onKeyGroupAdded(groupAdded.getUid(), groupAdded.getKeyGroup());
         } else if (update instanceof UpdatePublicKeyGroupRemoved) {
             UpdatePublicKeyGroupRemoved groupRemoved = (UpdatePublicKeyGroupRemoved) update;
             return context().getEncryption()
-                    .getKeyManager()
+                    .getRouter()
                     .onKeyGroupRemoved(groupRemoved.getUid(), groupRemoved.getKeyGroupId());
         } else if (update instanceof UpdateEncryptedPackage) {
             UpdateEncryptedPackage encryptedPackage = (UpdateEncryptedPackage) update;
             return context().getEncryption()
-                    .decrypt(encryptedPackage.getSenderId(), encryptedPackage.getEncryptedBox())
-                    .flatMap(message -> context().getEncryption()
-                            .onUpdate(
-                                    encryptedPackage.getSenderId(),
-                                    encryptedPackage.getDate(),
-                                    message))
-                    .fallback(e -> Promise.success(null));
+                    .getRouter()
+                    .onEncryptedBox(encryptedPackage.getDate(),
+                            encryptedPackage.getSenderId(), encryptedPackage.getEncryptedBox());
         }
         return null;
     }

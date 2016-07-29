@@ -9,7 +9,7 @@ import im.actor.core.api.ApiEncryptedRead;
 import im.actor.core.api.ApiEncryptedReceived;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
-import im.actor.core.modules.encryption.EncryptedSequenceProcessor;
+import im.actor.core.modules.encryption.updates.EncryptedSequenceProcessor;
 import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.promise.Promise;
 

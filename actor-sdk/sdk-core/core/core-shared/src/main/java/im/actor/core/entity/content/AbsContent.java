@@ -27,6 +27,7 @@ import im.actor.core.api.ApiServiceExUserJoined;
 import im.actor.core.api.ApiServiceExUserKicked;
 import im.actor.core.api.ApiServiceExUserLeft;
 import im.actor.core.api.ApiServiceMessage;
+import im.actor.core.api.ApiServiceTimerChanged;
 import im.actor.core.api.ApiStickerMessage;
 import im.actor.core.api.ApiTextMessage;
 import im.actor.core.entity.content.internal.AbsContentContainer;
@@ -144,6 +145,8 @@ public abstract class AbsContent {
                         return new ServiceCallEnded(remoteContainer);
                     } else if (ext instanceof ApiServiceExPhoneMissed) {
                         return new ServiceCallMissed(remoteContainer);
+                    } else if (ext instanceof ApiServiceTimerChanged) {
+                        return new ServiceTimerChanged(remoteContainer);
                     } else {
                         return new ServiceContent(remoteContainer);
                     }

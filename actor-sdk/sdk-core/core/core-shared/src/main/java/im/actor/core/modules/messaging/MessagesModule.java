@@ -289,7 +289,6 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
         if (peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
             ApiEncryptedEditContent editContent = new ApiEncryptedEditContent(
                     peer.getPeerId(), rid, new ApiTextMessage(message, new ArrayList<>(), null));
-
             return context().getEncryption().doSend(RandomUtils.nextRid(), editContent, peer.getPeerId()).then(r -> {
                 context().getEncryption().onUpdate(myUid(), r, editContent);
             }).flatMap(r -> null);

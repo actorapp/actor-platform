@@ -359,6 +359,11 @@ public class ChatToolbarFragment extends BaseFragment {
                 return true;
             }
         }
+
+        if (item.getItemId() == R.id.timer) {
+            execute(messenger().setSecretChatTimer(peer.getPeerId(), 5000));
+        }
+
         return super.onOptionsItemSelected(item);
     }
 

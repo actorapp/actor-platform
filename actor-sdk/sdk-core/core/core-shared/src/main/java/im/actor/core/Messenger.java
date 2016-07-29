@@ -1228,6 +1228,18 @@ public class Messenger {
         return modules.getSearchModule().buildSearchModel();
     }
 
+    /**
+     * Setting secret chat timer
+     *
+     * @param uid     user's id
+     * @param timeout user's timeout
+     * @return promice of void
+     */
+    @ObjectiveCName("setSecretChatTimerWithUid:withTimeout:")
+    public Promise<Void> setSecretChatTimer(int uid, Integer timeout) {
+        return modules.getEncryption().setSecretChatTimer(uid, timeout);
+    }
+
     //////////////////////////////////////
     //             Calls
     //////////////////////////////////////

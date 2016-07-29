@@ -30,6 +30,7 @@ import im.actor.core.entity.content.ServiceGroupUserInvited;
 import im.actor.core.entity.content.ServiceGroupUserJoined;
 import im.actor.core.entity.content.ServiceGroupUserKicked;
 import im.actor.core.entity.content.ServiceGroupUserLeave;
+import im.actor.core.entity.content.ServiceTimerChanged;
 import im.actor.core.entity.content.ServiceUserRegistered;
 import im.actor.core.entity.content.TextContent;
 import im.actor.core.modules.Modules;
@@ -125,6 +126,29 @@ public class I18nEngine extends IntlEngine {
                 .replace("{count}", "" + count);
     }
 
+    //
+    // Duration
+    //
+
+    @ObjectiveCName("formatDurationWithMsec:")
+    public String formatDuration(int msec) {
+        if (msec < 1000) {
+            return getPlural("language.format.time.seconds.full", 1)
+                    .replace("{seconds}", "1");
+        } else if (msec < 60000) {
+            int secs = (msec / 1000);
+            return getPlural("language.format.time.seconds.full", secs)
+                    .replace("{seconds}", "" + secs);
+        } else if (msec < 24 * (60 * 60000)) {
+            int minutes = msec / 60000;
+            return getPlural("language.format.time.minutes.full", minutes)
+                    .replace("{minutes}", "" + minutes);
+        } else {
+            int hours = msec / (60 * 60000);
+            return getPlural("language.format.time.hours.full", hours)
+                    .replace("{hours}", "" + hours);
+        }
+    }
 
     //
     // Presence
@@ -354,6 +378,10 @@ public class I18nEngine extends IntlEngine {
                 return get("content.service.calls.ended");
             case SERVICE_CALL_MISSED:
                 return get("content.service.calls.missed");
+            case SERVICE_TIMER_SET:
+                return getTemplateNamed(senderId, "content.service.encrypted.timer_changed.compact");
+            case SERVICE_TIMER_CLEAR:
+                return getTemplateNamed(senderId, "content.service.encrypted.timer_disabled.compact");
             case NONE:
                 return "";
             default:
@@ -411,6 +439,14 @@ public class I18nEngine extends IntlEngine {
             return get("content.service.calls.ended");
         } else if (content instanceof ServiceCallMissed) {
             return get("content.service.calls.missed");
+        } else if (content instanceof ServiceTimerChanged) {
+            int timer = ((ServiceTimerChanged) content).getTimer();
+            if (timer > 0) {
+                return getTemplateNamed(senderId, "content.service.encrypted.timer_changed.full")
+                        .replace("{timer}", formatDuration(timer));
+            } else {
+                return getTemplateNamed(senderId, "content.service.encrypted.timer_disabled");
+            }
         }
 
         return content.getCompatText();

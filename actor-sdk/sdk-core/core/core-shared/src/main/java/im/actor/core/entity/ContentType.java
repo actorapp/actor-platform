@@ -28,6 +28,8 @@ public enum ContentType {
     SERVICE_CALL_MISSED(23),
     SERVICE_TOPIC(24),
     SERVICE_ABOUT(25),
+    SERVICE_TIMER_SET(28),
+    SERVICE_TIMER_CLEAR(29),
     UNKNOWN_CONTENT(15);
 
     int value;
@@ -91,7 +93,10 @@ public enum ContentType {
                 return SERVICE_TOPIC;
             case 25:
                 return SERVICE_ABOUT;
-
+            case 28:
+                return SERVICE_TIMER_SET;
+            case 29:
+                return SERVICE_TIMER_CLEAR;
         }
     }
 }
