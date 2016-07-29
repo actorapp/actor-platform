@@ -13,6 +13,7 @@ import im.actor.runtime.promise.Promise;
 import im.actor.runtime.crypto.Curve25519;
 import im.actor.runtime.crypto.IntegrityException;
 import im.actor.runtime.crypto.primitives.util.ByteStrings;
+import im.actor.runtime.storage.KeyValueStorage;
 
 import static im.actor.runtime.promise.Promise.success;
 
@@ -47,10 +48,11 @@ class EncryptedSessionActor extends ModuleActor {
     private final PeerSession session;
 
     //
-    // Key Manager reference
+    // Convenience references
     //
 
     private KeyManager keyManager;
+    private KeyValueStorage sessionStorage;
 
     //
     // Temp encryption chains
@@ -75,6 +77,8 @@ class EncryptedSessionActor extends ModuleActor {
     public void preStart() {
         super.preStart();
         keyManager = context().getEncryption().getKeyManager();
+        sessionStorage = context().getEncryption().getKeyValueStorage();
+        latestTheirEphemeralKey = sessionStorage.loadItem(session.getSid());
     }
 
     private Promise<ApiEncyptedBoxKey> onEncrypt(final byte[] data) {
@@ -129,6 +133,7 @@ class EncryptedSessionActor extends ModuleActor {
 
         if (latestTheirEphemeralKey == null) {
             latestTheirEphemeralKey = ephemeralKey;
+            sessionStorage.addOrUpdateItem(session.getSid(), ephemeralKey);
         }
 
         if (encryptionChains.size() > 0) {

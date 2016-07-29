@@ -19,8 +19,10 @@ import im.actor.core.modules.encryption.ratchet.KeyManager;
 import im.actor.core.modules.encryption.ratchet.SessionManager;
 import im.actor.core.modules.encryption.ratchet.entity.EncryptedMessage;
 import im.actor.core.util.RandomUtils;
+import im.actor.runtime.Storage;
 import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.promise.Promise;
+import im.actor.runtime.storage.KeyValueStorage;
 
 import static im.actor.runtime.actors.ActorSystem.system;
 
@@ -30,6 +32,7 @@ public class EncryptionModule extends AbsModule {
     private SessionManager sessionManager;
     private EncryptedRouter encryptedRouter;
     private EncryptedMsg encryption;
+    private KeyValueStorage keyValueStorage;
 
     private final HashMap<Integer, EncryptedUser> users = new HashMap<>();
 
@@ -42,6 +45,7 @@ public class EncryptionModule extends AbsModule {
         sessionManager = new SessionManager(context());
         encryption = new EncryptedMsg(context());
         encryptedRouter = new EncryptedRouter(context());
+        keyValueStorage = Storage.createKeyValue("session_temp_storage");
     }
 
     public KeyManager getKeyManager() {
@@ -68,6 +72,10 @@ public class EncryptionModule extends AbsModule {
             }
             return users.get(uid);
         }
+    }
+
+    public KeyValueStorage getKeyValueStorage() {
+        return keyValueStorage;
     }
 
     public Promise<Void> onUpdate(int senderId, long date, ApiEncryptedContent update) {
