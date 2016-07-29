@@ -20,6 +20,7 @@ public class SettingsProcessor extends AbsModule implements SequenceProcessor {
 
     public void onSettingsChanged(String key, String value) {
         context().getSettingsModule().onUpdatedSetting(key, value);
+        context().getSettingsModule().onSettingsChanged();
     }
 
     @Override

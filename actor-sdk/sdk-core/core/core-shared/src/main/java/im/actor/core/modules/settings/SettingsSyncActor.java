@@ -56,6 +56,7 @@ public class SettingsSyncActor extends ModuleActor {
                     for (ApiParameter p : response.getParameters()) {
                         context().getSettingsModule().onUpdatedSetting(p.getKey(), p.getValue());
                     }
+                    context().getSettingsModule().onSettingsChanged();
                     preferences().putBool(SYNC_STATE_LOADED, true);
                 }
 
