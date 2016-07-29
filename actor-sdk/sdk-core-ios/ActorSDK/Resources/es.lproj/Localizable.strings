@@ -297,15 +297,15 @@
 
 "GroupTypeTitleChannel" = "Tipo de Canal";
 
-"GroupTypePublic" = "Público”;
+"GroupTypePublic" = "Público";
 
-"GroupTypePrivate" = "Privado”;
+"GroupTypePrivate" = "Privado";
 
-"ChannelTypePublic" = "Público”;
+"ChannelTypePublic" = "Público";
 
-"ChannelTypePrivate" = "Privado”;
+"ChannelTypePrivate" = "Privado";
 
-"GroupTypePublicFull" = "Grupo público“;
+"GroupTypePublicFull" = "Grupo público";
 
 "GroupTypePrivateFull" = "Grupo privado";
 
@@ -335,7 +335,7 @@
 
 
 
-"GroupShareTitle" = "Historial compartido”;
+"GroupShareTitle" = "Historial compartido";
 
 "GroupShareEnabled" = "Compartir";
 
