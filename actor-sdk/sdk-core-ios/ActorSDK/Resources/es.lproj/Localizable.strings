@@ -287,11 +287,11 @@
 
 "GroupViewMembers" = "Miembros";
 
-"GroupDescription" = "Descripción”;
+"GroupDescription" = "Descripción";
 
 
 
-"GroupAdministration" = "Administrador”;
+"GroupAdministration" = "Administrador";
 
 "GroupTypeTitle" = "Tipo de Grupo";
 
@@ -346,15 +346,15 @@
 "GroupShareAction" = "Compartir";
 
 
-"GroupEditTitle" = "Editar Grupo“;
+"GroupEditTitle" = "Editar Grupo";
 
-"GroupEditTitleChannel" = "Editar Canal”;
+"GroupEditTitleChannel" = "Editar Canal";
 
 "GroupEditName" = "Nombre de Grupo";
 
 "GroupEditNameChannel" = "Nombre del Canal";
 
-"GroupEditDescription" = "Descripción”;
+"GroupEditDescription" = "Descripción";
 
 
 
@@ -413,14 +413,14 @@
 
 "CreateGroup" = "Crear grupo";
 
-"CreateChannel" = "Crear canal”;
+"CreateChannel" = "Crear canal";
 
 
 "CreateGroupTitle" = "Crear grupo";
 
 "CreateGroupHint" = "Por favor, introduce un nombre de grupo e inserta una imagen.";
 
-"CreateGroupNamePlaceholder" = "Asunto del Grupo”;
+"CreateGroupNamePlaceholder" = "Asunto del Grupo";
 
 "CreateChannelTitle" = "Crear Canal“;
 
@@ -680,7 +680,7 @@
 
 "ActionAddPhoto2" = "foto";
 
-"ActionOpenCode" = "Ver código”;
+"ActionOpenCode" = "Ver código";
 
 "ActionMute" = "Silenciar";
 
@@ -719,7 +719,7 @@
 
 "ActionClearHistory" = "Borrar historial";
 
-"ActionClearHistoryMessage" = "¿Seguro desea borrar el historial?”;
+"ActionClearHistoryMessage" = "¿Seguro desea borrar el historial?";
 
 "ActionClearHistoryAction" = "Borrar";
 
