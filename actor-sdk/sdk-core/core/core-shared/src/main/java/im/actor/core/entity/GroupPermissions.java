@@ -25,7 +25,26 @@ public class GroupPermissions {
                 settings.showAdminsToMembers(),
                 settings.canMembersInvite(),
                 canEditInfo,
-                settings.canAdminsEditGroupInfo()
+                settings.canAdminsEditGroupInfo(),
+                settings.showJoinLeaveMessages()
+        );
+        settings.setUnmappedObjects(unmapped);
+    }
+
+    @ObjectiveCName("isShowJoinLeaveMessages")
+    public boolean isShowJoinLeaveMessages() {
+        return settings.showJoinLeaveMessages();
+    }
+
+    @ObjectiveCName("setShowJoinLeaveMessages:")
+    public void setShowJoinLeaveMessages(boolean showJoinLeaveMessages) {
+        SparseArray<Object> unmapped = settings.getUnmappedObjects();
+        settings = new ApiAdminSettings(
+                settings.showAdminsToMembers(),
+                settings.canMembersInvite(),
+                settings.canMembersEditGroupInfo(),
+                settings.canAdminsEditGroupInfo(),
+                showJoinLeaveMessages
         );
         settings.setUnmappedObjects(unmapped);
     }
