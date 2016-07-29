@@ -20015,7 +20015,10 @@
                 "name": "receiverId"
               },
               {
-                "type": "int64",
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
                 "id": 2,
                 "name": "rid"
               },
@@ -20077,7 +20080,10 @@
                 "name": "receiverId"
               },
               {
-                "type": "int64",
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
                 "id": 2,
                 "name": "rid"
               },
@@ -20127,7 +20133,10 @@
               {
                 "type": {
                   "type": "list",
-                  "childType": "int64"
+                  "childType": {
+                    "type": "alias",
+                    "childType": "randomId"
+                  }
                 },
                 "id": 2,
                 "name": "rid"
@@ -20275,6 +20284,14 @@
                 },
                 "id": 1,
                 "name": "receiverId"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 3,
+                "name": "rid"
               },
               {
                 "type": {
