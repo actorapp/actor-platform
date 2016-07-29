@@ -28,6 +28,7 @@ import im.actor.core.entity.MessageSearchEntity;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerSearchEntity;
 import im.actor.core.entity.PeerSearchType;
+import im.actor.core.entity.PeerType;
 import im.actor.core.entity.SearchResult;
 import im.actor.core.entity.Sex;
 import im.actor.core.entity.User;
