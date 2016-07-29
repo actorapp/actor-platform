@@ -19993,6 +19993,12 @@
                 "argument": "message",
                 "category": "full",
                 "description": "  Content of message"
+              },
+              {
+                "type": "reference",
+                "argument": "timerMs",
+                "category": "full",
+                "description": "  Optional self-destruct timer"
               }
             ],
             "trait": {
@@ -20020,6 +20026,14 @@
                 },
                 "id": 3,
                 "name": "message"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "int32"
+                },
+                "id": 4,
+                "name": "timerMs"
               }
             ]
           }

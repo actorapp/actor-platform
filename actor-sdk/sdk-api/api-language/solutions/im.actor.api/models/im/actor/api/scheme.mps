@@ -16986,6 +16986,13 @@
             <ref role="3BrLez" node="55bmeIQey3W" resolve="Message" />
           </node>
         </node>
+        <node concept="2m7Kf5" id="65MuurgASQ3" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="timerMs" />
+          <node concept="2m5nlT" id="65MuurgASQd" role="2m7DVh">
+            <node concept="2m5ndE" id="65MuurgASQj" role="3GH5xg" />
+          </node>
+        </node>
         <node concept="Nu42z" id="47c0HGpcdS" role="3BtCOu">
           <property role="Nu42W" value="01" />
         </node>
@@ -17006,6 +17013,11 @@
           <property role="1GSvIU" value="full" />
           <property role="NX6R2" value="Content of message" />
           <ref role="NX6Kv" node="47c0HGpdFS" resolve="message" />
+        </node>
+        <node concept="NX1gA" id="65MuurgASQs" role="NXodf">
+          <property role="NX6R2" value="Optional self-destruct timer" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="65MuurgASQ3" resolve="timerMs" />
         </node>
       </node>
       <node concept="2m5naR" id="47c0HGsEdb" role="2m5mJr">
