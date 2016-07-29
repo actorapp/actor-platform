@@ -275,21 +275,17 @@ public abstract class GlobalSearchBaseFragment extends BaseFragment {
             @Override
             public void onClicked(SearchEntity item) {
                 int peerId = item.getPeer().getPeerId();
-                execute(messenger().addContact(peerId), R.string.progress_common, new CommandCallback<Boolean>() {
-                    @Override
-                    public void onResult(Boolean res2) {
-                        startActivity(Intents.openPrivateDialog(peerId,
-                                true,
-                                getActivity()));
-                    }
+                switch (item.getPeer().getPeerType()) {
+                    case PRIVATE:
+                        messenger().addContact(peerId);
+                        startActivity(Intents.openPrivateDialog(peerId, true, getActivity()));
+                        break;
 
-                    @Override
-                    public void onError(Exception e) {
-                        startActivity(Intents.openPrivateDialog(peerId,
-                                true,
-                                getActivity()));
-                    }
-                });
+                    case GROUP:
+                        messenger().joinGroup(peerId);
+                        startActivity(Intents.openGroupDialog(peerId, false, getActivity()));
+                        break;
+                }
             }
 
             @Override
