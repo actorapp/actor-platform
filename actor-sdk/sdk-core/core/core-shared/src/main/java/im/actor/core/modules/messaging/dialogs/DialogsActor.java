@@ -349,7 +349,7 @@ public class DialogsActor extends ModuleActor {
                 return new PeerDesc(u.getName(), u.getAvatar(), u.isBot(), peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED);
             case GROUP:
                 Group g = getGroup(peer.getPeerId());
-                return new PeerDesc(g.getTitle(), g.getAvatar(), false, false);
+                return new PeerDesc(g.getTitle(), g.getAvatar(), false, g.getGroupType() == GroupType.CHANNEL);
             default:
                 return null;
         }
