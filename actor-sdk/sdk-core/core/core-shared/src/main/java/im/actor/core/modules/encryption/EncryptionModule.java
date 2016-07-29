@@ -120,7 +120,7 @@ public class EncryptionModule extends AbsModule {
             RequestSendEncryptedPackage request = new RequestSendEncryptedPackage(rid, outPeers,
                     encryptedMessage.getIgnoredGroups(), encryptedMessage.getEncryptedBox());
             return api(request).flatMap(r -> {
-                if (r.getSeq() != null && r.getSeq() != 0) {
+                if (r.getDate() != null) {
                     return Promise.success(r);
                 }
                 return Promise.failure(new RuntimeException("Incorrect keys"));

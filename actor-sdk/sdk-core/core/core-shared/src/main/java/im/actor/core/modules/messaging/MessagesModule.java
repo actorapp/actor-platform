@@ -479,7 +479,7 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
 
     public void loadMoreHistory(final Peer peer) {
         if (peer.getPeerType() != PeerType.PRIVATE_ENCRYPTED) {
-            im.actor.runtime.Runtime.dispatch(() -> getHistoryActor(peer).send(new ConversationHistoryActor.LoadMore()));
+            im.actor.runtime.Runtime.dispatch(() -> getHistoryActor(peer).loadMore());
         }
     }
 

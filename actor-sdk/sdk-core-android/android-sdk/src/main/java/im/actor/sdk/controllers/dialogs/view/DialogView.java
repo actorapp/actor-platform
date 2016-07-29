@@ -266,15 +266,7 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
             counterTextPaint.setTextAlign(Paint.Align.CENTER);
             counterBgPaint = createFilledPaint(style.getDialogsCounterBackgroundColor());
             fillPaint = createFilledPaint(Color.BLACK);
-            placeholderColors = new int[]{
-                    context.getResources().getColor(R.color.placeholder_0),
-                    context.getResources().getColor(R.color.placeholder_1),
-                    context.getResources().getColor(R.color.placeholder_2),
-                    context.getResources().getColor(R.color.placeholder_3),
-                    context.getResources().getColor(R.color.placeholder_4),
-                    context.getResources().getColor(R.color.placeholder_5),
-                    context.getResources().getColor(R.color.placeholder_6),
-            };
+            placeholderColors = ActorSDK.sharedActor().style.getDefaultAvatarPlaceholders();
             avatarBorder = new Paint();
             avatarBorder.setStyle(Paint.Style.STROKE);
             avatarBorder.setAntiAlias(true);
@@ -383,7 +375,7 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
 
         if (arg.getSenderId() > 0) {
             String contentText = messenger().getFormatter().formatContentText(arg.getSenderId(),
-                    arg.getMessageType(), arg.getText().replace("\n", " "), arg.getRelatedUid());
+                    arg.getMessageType(), arg.getText().replace("\n", " "), arg.getRelatedUid(), arg.isChannel());
 
             if (arg.getPeer().getPeerType() == PeerType.GROUP) {
                 if (messenger().getFormatter().isLargeDialogMessage(arg.getMessageType())) {
