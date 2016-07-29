@@ -499,18 +499,11 @@ public class SenderActor extends ModuleActor {
             ApiEncryptedContent content = new ApiEncryptedMessageContent(peer.getPeerId(),
                     rid, message);
 
-            context().getEncryption().doSend(rid, content, peer.getPeerId()).then(r -> {
-
-                self().send(new MessageSent(peer, rid));
-
-                // TODO: Replace
-                context().getMessagesModule().getRouter().onOutgoingSent(peer, rid, r.getDate());
-
-                wakeLock.releaseLock();
-            }).failure(e -> {
-                self().send(new MessageError(peer, rid));
-                wakeLock.releaseLock();
-            });
+            context().getEncryption().doSend(rid, content, peer.getPeerId())
+                    .chain(r -> context().getMessagesModule().getRouter().onOutgoingSent(peer, rid, r))
+                    .then(r -> self().send(new MessageSent(peer, rid)))
+                    .failure(e -> self().send(new MessageError(peer, rid)))
+                    .after((r, e) -> wakeLock.releaseLock());
         }
     }
 
