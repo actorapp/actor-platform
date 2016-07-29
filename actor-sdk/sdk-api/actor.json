@@ -20229,6 +20229,49 @@
               }
             ]
           }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "EncryptedChatTimerSet",
+            "doc": [
+              "Encrypted message about timer setting",
+              {
+                "type": "reference",
+                "argument": "receiverId",
+                "category": "full",
+                "description": "  Receiver User Id"
+              },
+              {
+                "type": "reference",
+                "argument": "timerMs",
+                "category": "full",
+                "description": "  Timer in MS"
+              }
+            ],
+            "trait": {
+              "name": "EncryptedContent",
+              "key": 8
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "receiverId"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "int32"
+                },
+                "id": 2,
+                "name": "timerMs"
+              }
+            ]
+          }
         }
       ]
     },

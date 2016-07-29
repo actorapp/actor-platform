@@ -17179,6 +17179,41 @@
           <ref role="NX6Kv" node="48IQiQViQzp" resolve="receiverId" />
         </node>
       </node>
+      <node concept="2m5naR" id="65MuurgANlR" role="2m5mJr">
+        <property role="TrG5h" value="EncryptedChatTimerSet" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="47c0HGpc8A" resolve="EncryptedContent" />
+        <node concept="2m7Kf5" id="65MuurgANs5" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="receiverId" />
+          <node concept="wb0Ql" id="65MuurgANs9" role="2m7DVh">
+            <ref role="wb18D" node="5qm50Y0e3uz" resolve="userId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="65MuurgANsc" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="timerMs" />
+          <node concept="2m5nlT" id="65MuurgAOMV" role="2m7DVh">
+            <node concept="2m5ndE" id="65MuurgAON1" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="65MuurgANs3" role="3BtCOu">
+          <property role="Nu42W" value="08" />
+        </node>
+        <node concept="NXeRC" id="65MuurgANsl" role="NXodf">
+          <property role="NXePf" value="Encrypted message about timer setting" />
+        </node>
+        <node concept="NX1gA" id="65MuurgANsq" role="NXodf">
+          <property role="NX6R2" value="Receiver User Id" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="65MuurgANs5" resolve="receiverId" />
+        </node>
+        <node concept="NX1gA" id="65MuurgANsy" role="NXodf">
+          <property role="NX6R2" value="Timer in MS" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="65MuurgANsc" resolve="timerMs" />
+        </node>
+      </node>
       <node concept="1Dx9M1" id="7ZzLuuoIXYH" role="1Dx9rD">
         <property role="1Dx9K7" value="Package that include encryption support" />
       </node>
