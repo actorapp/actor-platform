@@ -975,15 +975,9 @@ public class Messenger {
      */
     @ObjectiveCName("deleteChatCommandWithPeer:")
     public Command<Void> deleteChat(Peer peer) {
-        if (peer.getPeerType() == PeerType.GROUP) {
-            return callback -> modules.getGroupsModule().leaveAndDeleteGroup(peer.getPeerId())
-                    .then(v -> callback.onResult(v))
-                    .failure(e -> callback.onError(e));
-        } else {
-            return callback -> modules.getMessagesModule().deleteChat(peer)
-                    .then(v -> callback.onResult(v))
-                    .failure(e -> callback.onError(e));
-        }
+        return callback -> modules.getMessagesModule().deleteChat(peer)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
