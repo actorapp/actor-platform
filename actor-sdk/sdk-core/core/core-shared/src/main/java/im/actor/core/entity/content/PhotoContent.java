@@ -46,7 +46,8 @@ public class PhotoContent extends DocumentContent {
                                         fastThumb.getH(),
                                         fastThumb.getImage()) :
                                 null,
-                        new ApiDocumentExPhoto(w, h))));
+                        new ApiDocumentExPhoto(w, h),
+                        null)));
     }
 
     private int w;

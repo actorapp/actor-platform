@@ -23,8 +23,9 @@ public class ApiDocumentMessage extends ApiMessage {
     private String mimeType;
     private ApiFastThumb thumb;
     private ApiDocumentEx ext;
+    private ApiDocumentEncryptionInfo encryptionInfo;
 
-    public ApiDocumentMessage(long fileId, long accessHash, int fileSize, @NotNull String name, @NotNull String mimeType, @Nullable ApiFastThumb thumb, @Nullable ApiDocumentEx ext) {
+    public ApiDocumentMessage(long fileId, long accessHash, int fileSize, @NotNull String name, @NotNull String mimeType, @Nullable ApiFastThumb thumb, @Nullable ApiDocumentEx ext, @Nullable ApiDocumentEncryptionInfo encryptionInfo) {
         this.fileId = fileId;
         this.accessHash = accessHash;
         this.fileSize = fileSize;
@@ -32,6 +33,7 @@ public class ApiDocumentMessage extends ApiMessage {
         this.mimeType = mimeType;
         this.thumb = thumb;
         this.ext = ext;
+        this.encryptionInfo = encryptionInfo;
     }
 
     public ApiDocumentMessage() {
@@ -74,6 +76,11 @@ public class ApiDocumentMessage extends ApiMessage {
         return this.ext;
     }
 
+    @Nullable
+    public ApiDocumentEncryptionInfo getEncryptionInfo() {
+        return this.encryptionInfo;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.fileId = values.getLong(1);
@@ -85,6 +92,7 @@ public class ApiDocumentMessage extends ApiMessage {
         if (values.optBytes(8) != null) {
             this.ext = ApiDocumentEx.fromBytes(values.getBytes(8));
         }
+        this.encryptionInfo = values.optObj(9, new ApiDocumentEncryptionInfo());
         if (values.hasRemaining()) {
             setUnmappedObjects(values.buildRemaining());
         }
@@ -109,6 +117,9 @@ public class ApiDocumentMessage extends ApiMessage {
         if (this.ext != null) {
             writer.writeBytes(8, this.ext.buildContainer());
         }
+        if (this.encryptionInfo != null) {
+            writer.writeObject(9, this.encryptionInfo);
+        }
         if (this.getUnmappedObjects() != null) {
             SparseArray<Object> unmapped = this.getUnmappedObjects();
             for (int i = 0; i < unmapped.size(); i++) {
@@ -127,6 +138,7 @@ public class ApiDocumentMessage extends ApiMessage {
         res += ", mimeType=" + this.mimeType;
         res += ", thumb=" + (this.thumb != null ? "set":"empty");
         res += ", ext=" + (this.ext != null ? "set":"empty");
+        res += ", encryptionInfo=" + this.encryptionInfo;
         res += "}";
         return res;
     }

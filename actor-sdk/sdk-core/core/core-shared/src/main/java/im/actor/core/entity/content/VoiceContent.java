@@ -41,7 +41,8 @@ public class VoiceContent extends DocumentContent {
                         reference.getFileName(),
                         "audio/mp3",
                         null,
-                        new ApiDocumentExVoice(duration))));
+                        new ApiDocumentExVoice(duration),
+                        null)));
     }
 
     private int duration;

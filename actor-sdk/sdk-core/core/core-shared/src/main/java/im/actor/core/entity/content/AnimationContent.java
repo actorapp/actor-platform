@@ -38,7 +38,8 @@ public class AnimationContent extends DocumentContent {
                                         fastThumb.getH(),
                                         fastThumb.getImage()) :
                                 null,
-                        new ApiDocumentExAnimation(w, h))));
+                        new ApiDocumentExAnimation(w, h),
+                        null)));
     }
 
     private int w;

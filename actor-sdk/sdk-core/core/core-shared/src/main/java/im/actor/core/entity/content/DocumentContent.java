@@ -29,12 +29,8 @@ public class DocumentContent extends AbsContent {
                         reference.getFileSize(),
                         reference.getFileName(),
                         "image/jpeg",
-                        fastThumb != null ?
-                                new ApiFastThumb(
-                                        fastThumb.getW(),
-                                        fastThumb.getH(),
-                                        fastThumb.getImage()) :
-                                null,
+                        fastThumb != null ? new ApiFastThumb(fastThumb.getW(), fastThumb.getH(), fastThumb.getImage()) : null,
+                        null,
                         null)));
     }
 

@@ -41,7 +41,8 @@ public class VideoContent extends DocumentContent {
                                         fastThumb.getH(),
                                         fastThumb.getImage()) :
                                 null,
-                        new ApiDocumentExVideo(w, h, duration))));
+                        new ApiDocumentExVideo(w, h, duration),
+                        null)));
     }
 
     private int duration;

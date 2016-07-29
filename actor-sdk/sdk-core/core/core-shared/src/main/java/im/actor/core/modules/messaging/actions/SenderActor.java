@@ -456,7 +456,8 @@ public class SenderActor extends ModuleActor {
                     source.getFileReference().getFileSize(),
                     source.getFileReference().getFileName(),
                     documentContent.getMimeType(),
-                    fastThumb, documentEx);
+                    fastThumb, documentEx,
+                    null);
         } else if (content instanceof LocationContent) {
             message = new ApiJsonMessage(((LocationContent) content).getRawJson());
         } else if (content instanceof ContactContent) {
