@@ -16,6 +16,7 @@ import im.actor.core.entity.Group;
 import im.actor.core.entity.GroupType;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerType;
 import im.actor.core.entity.User;
 import im.actor.core.entity.content.AbsContent;
 import im.actor.core.modules.ModuleContext;
@@ -150,6 +151,8 @@ public class DialogsActor extends ModuleActor {
             Dialog updated = dialog.editPeerInfo(user.getName(), user.getAvatar());
             addOrUpdateItem(updated);
             updateSearch(updated);
+
+            // TODO: Update for secret chats
         }
 
         return Promise.success(null);
@@ -341,11 +344,12 @@ public class DialogsActor extends ModuleActor {
     private PeerDesc buildPeerDesc(Peer peer) {
         switch (peer.getPeerType()) {
             case PRIVATE:
+            case PRIVATE_ENCRYPTED:
                 User u = getUser(peer.getPeerId());
-                return new PeerDesc(u.getName(), u.getAvatar(), u.isBot(), false);
+                return new PeerDesc(u.getName(), u.getAvatar(), u.isBot(), peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED);
             case GROUP:
                 Group g = getGroup(peer.getPeerId());
-                return new PeerDesc(g.getTitle(), g.getAvatar(), false, g.getGroupType() == GroupType.CHANNEL);
+                return new PeerDesc(g.getTitle(), g.getAvatar(), false, false);
             default:
                 return null;
         }
