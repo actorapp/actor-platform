@@ -20,12 +20,14 @@ public class ApiAdminSettings extends BserObject {
     private boolean canMembersInvite;
     private boolean canMembersEditGroupInfo;
     private boolean canAdminsEditGroupInfo;
+    private boolean showJoinLeaveMessages;
 
-    public ApiAdminSettings(boolean showAdminsToMembers, boolean canMembersInvite, boolean canMembersEditGroupInfo, boolean canAdminsEditGroupInfo) {
+    public ApiAdminSettings(boolean showAdminsToMembers, boolean canMembersInvite, boolean canMembersEditGroupInfo, boolean canAdminsEditGroupInfo, boolean showJoinLeaveMessages) {
         this.showAdminsToMembers = showAdminsToMembers;
         this.canMembersInvite = canMembersInvite;
         this.canMembersEditGroupInfo = canMembersEditGroupInfo;
         this.canAdminsEditGroupInfo = canAdminsEditGroupInfo;
+        this.showJoinLeaveMessages = showJoinLeaveMessages;
     }
 
     public ApiAdminSettings() {
@@ -48,12 +50,17 @@ public class ApiAdminSettings extends BserObject {
         return this.canAdminsEditGroupInfo;
     }
 
+    public boolean showJoinLeaveMessages() {
+        return this.showJoinLeaveMessages;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.showAdminsToMembers = values.getBool(1);
         this.canMembersInvite = values.getBool(2);
         this.canMembersEditGroupInfo = values.getBool(3);
         this.canAdminsEditGroupInfo = values.getBool(4);
+        this.showJoinLeaveMessages = values.getBool(5);
         if (values.hasRemaining()) {
             setUnmappedObjects(values.buildRemaining());
         }
@@ -65,6 +72,7 @@ public class ApiAdminSettings extends BserObject {
         writer.writeBool(2, this.canMembersInvite);
         writer.writeBool(3, this.canMembersEditGroupInfo);
         writer.writeBool(4, this.canAdminsEditGroupInfo);
+        writer.writeBool(5, this.showJoinLeaveMessages);
         if (this.getUnmappedObjects() != null) {
             SparseArray<Object> unmapped = this.getUnmappedObjects();
             for (int i = 0; i < unmapped.size(); i++) {
@@ -81,6 +89,7 @@ public class ApiAdminSettings extends BserObject {
         res += ", canMembersInvite=" + this.canMembersInvite;
         res += ", canMembersEditGroupInfo=" + this.canMembersEditGroupInfo;
         res += ", canAdminsEditGroupInfo=" + this.canAdminsEditGroupInfo;
+        res += ", showJoinLeaveMessages=" + this.showJoinLeaveMessages;
         res += "}";
         return res;
     }
