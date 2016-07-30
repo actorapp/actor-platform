@@ -82,4 +82,20 @@ public class JavaUtil {
         return res;
     }
 
+    /**
+     * Compare Longs
+     *
+     * @param a first value
+     * @param b second value
+     * @return result
+     */
+    public static int compare(long a, long b) {
+        if (a == b) {
+            return 0;
+        } else if (a > b) {
+            return -1;
+        } else {
+            return 1;
+        }
+    }
 }

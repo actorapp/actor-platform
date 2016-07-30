@@ -585,6 +585,19 @@
 
     <string name="confirm_share">Share with</string>
 
+    <!-- Timer -->
+    <string name="timer_title">Self-Destruct Timer</string>
+    <string-array name="timer_values">
+        <item>Off</item>
+        <item>1 second</item>
+        <item>2 seconds</item>
+        <item>5 seconds</item>
+        <item>15 seconds</item>
+        <item>1 minute</item>
+        <item>1 hour</item>
+        <item>1 day</item>
+    </string-array>
+
     <!-- Errors -->
     <string name="error_connection">Unable to connect. Please make sure that you\'re connected to the Internet and try
         again.\n\nPlease reboot your phone if the connection problem persists.

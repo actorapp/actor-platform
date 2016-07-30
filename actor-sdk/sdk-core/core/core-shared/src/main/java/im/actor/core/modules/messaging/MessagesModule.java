@@ -54,6 +54,7 @@ import im.actor.core.events.PeerChatOpened;
 import im.actor.core.events.PeerChatPreload;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.messaging.actions.DestructorActor;
 import im.actor.core.modules.messaging.dialogs.DialogsInt;
 import im.actor.core.modules.messaging.history.ArchivedDialogsActor;
 import im.actor.core.modules.messaging.actions.CursorReaderActor;
@@ -103,13 +104,14 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
     private ListEngine<Dialog> dialogs;
 
     private DialogsInt dialogsInt;
+    private RouterInt router;
+
     private ActorRef dialogsHistoryActor;
     private ActorRef archivedDialogsActor;
     private ActorRef plainReadActor;
     private ActorRef plainReceiverActor;
     private ActorRef sendMessageActor;
     private ActorRef deletionsActor;
-    private RouterInt router;
     private final HashMap<Peer, ConversationHistory> historyLoaderActors = new HashMap<>();
 
     private MVVMCollection<ConversationState, ConversationVM> conversationStates;
@@ -133,9 +135,10 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
 
     public void run() {
 
+        this.dialogsInt = new DialogsInt(context());
+
         this.router = new RouterInt(context());
 
-        this.dialogsInt = new DialogsInt(context());
         this.dialogsHistoryActor = system().actorOf("actor/dialogs/history", () -> new DialogsHistoryActor(context()));
         this.archivedDialogsActor = system().actorOf("actor/dialogs/archived", () -> new ArchivedDialogsActor(context()));
 

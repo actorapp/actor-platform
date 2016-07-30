@@ -39,6 +39,7 @@ import im.actor.core.entity.PeerType;
 import im.actor.core.entity.Reaction;
 import im.actor.core.entity.User;
 import im.actor.core.entity.content.AbsContent;
+import im.actor.core.entity.content.DocumentContent;
 import im.actor.core.entity.content.TextContent;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleActor;
@@ -46,7 +47,9 @@ import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.api.ApiSupportConfiguration;
 import im.actor.core.modules.messaging.actions.CursorReaderActor;
 import im.actor.core.modules.messaging.actions.CursorReceiverActor;
+import im.actor.core.modules.messaging.actions.Destructor;
 import im.actor.core.modules.messaging.actions.SenderActor;
+import im.actor.core.modules.messaging.actions.entity.MessageDesc;
 import im.actor.core.modules.messaging.dialogs.DialogsInt;
 import im.actor.core.modules.messaging.history.entity.DialogHistory;
 import im.actor.core.modules.messaging.router.entity.ActiveDialogGroup;
@@ -64,6 +67,7 @@ import im.actor.core.modules.messaging.router.entity.RouterDifferenceStart;
 import im.actor.core.modules.messaging.router.entity.RouterEncryptedUpdate;
 import im.actor.core.modules.messaging.router.entity.RouterMessageOnlyActive;
 import im.actor.core.modules.messaging.router.entity.RouterMessageUpdate;
+import im.actor.core.modules.messaging.router.entity.RouterMessagesSelfDestructed;
 import im.actor.core.modules.messaging.router.entity.RouterNewMessages;
 import im.actor.core.modules.messaging.router.entity.RouterOutgoingError;
 import im.actor.core.modules.messaging.router.entity.RouterOutgoingMessage;
@@ -101,6 +105,9 @@ public class RouterActor extends ModuleActor {
     // Active Dialogs
     private ActiveDialogStorage activeDialogStorage;
 
+    // Self-Destructor
+    private Destructor destructor;
+
 
     public RouterActor(ModuleContext context) {
         super(context);
@@ -111,6 +118,11 @@ public class RouterActor extends ModuleActor {
         super.preStart();
 
         conversationStates = context().getMessagesModule().getConversationStates().getEngine();
+
+        //
+        // Self-Destructor
+        //
+        destructor = new Destructor(context());
 
         //
         // Loading Active Dialogs
@@ -297,6 +309,23 @@ public class RouterActor extends ModuleActor {
 
 
         //
+        // Update Self-Destructor
+        //
+        if (peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
+            ArrayList<MessageDesc> pendingDescs = new ArrayList<>();
+            for (Message m : messages) {
+                if (m.getTimer() > 0) {
+                    pendingDescs.add(new MessageDesc(m.getRid(), m.getSenderId() == myUid(),
+                            m.getSortDate(), m.getTimer(), m.getContent() instanceof DocumentContent));
+                }
+            }
+            if (pendingDescs.size() > 0) {
+                res = res.chain(r -> destructor.onMessages(peer, pendingDescs));
+            }
+        }
+
+
+        //
         // Playing notifications
         //
         if (!isConversationVisible) {
@@ -361,7 +390,18 @@ public class RouterActor extends ModuleActor {
             updateChatState(peer);
 
             // Notify dialogs
-            return getDialogsRouter().onMessage(peer, updatedMsg, -1);
+            Promise<Void> res = getDialogsRouter().onMessage(peer, updatedMsg, -1);
+
+            // Self-Destruct
+            if (peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED && updatedMsg.getTimer() > 0) {
+                MessageDesc desc = new MessageDesc(rid, true, date, updatedMsg.getTimer(),
+                        msg.getContent() instanceof DocumentContent);
+                ArrayList<MessageDesc> descs = new ArrayList<>();
+                descs.add(desc);
+                res = res.chain(r -> destructor.onMessages(peer, descs));
+            }
+
+            return res;
         } else {
             return Promise.success(null);
         }
@@ -517,6 +557,10 @@ public class RouterActor extends ModuleActor {
         return getDialogsRouter().onMessageDeleted(peer, head);
     }
 
+    private Promise<Void> onMessageDestructed(Peer peer, List<Long> rids) {
+        return onMessageDeleted(peer, rids);
+    }
+
     private Promise<Void> onChatClear(Peer peer) {
 
         conversation(peer).clear();
@@ -530,25 +574,6 @@ public class RouterActor extends ModuleActor {
         updateChatState(peer);
 
         return getDialogsRouter().onChatClear(peer);
-    }
-
-    private Promise<Void> onChatDropCache(Peer peer) {
-        return context().getMessagesModule().getHistoryActor(peer).reset();
-    }
-
-    private Promise<Void> onChatReset(Peer peer) {
-
-        Log.d(TAG, "onChatReset");
-
-        conversation(peer).clear();
-
-        ConversationState state = conversationStates.getValue(peer.getUnuqueId());
-        state = state.changeIsLoaded(false);
-        conversationStates.addOrUpdateItem(state);
-
-        updateChatState(peer);
-
-        return Promise.success(null);
     }
 
     private Promise<Void> onChatDelete(Peer peer) {
@@ -568,6 +593,28 @@ public class RouterActor extends ModuleActor {
 
 
     //
+    // Cache invalidation
+    //
+
+    private Promise<Void> onChatDropCache(Peer peer) {
+        return context().getMessagesModule().getHistoryActor(peer).reset();
+    }
+
+    private Promise<Void> onChatReset(Peer peer) {
+
+        conversation(peer).clear();
+
+        ConversationState state = conversationStates.getValue(peer.getUnuqueId());
+        state = state.changeIsLoaded(false);
+        conversationStates.addOrUpdateItem(state);
+
+        updateChatState(peer);
+
+        return Promise.success(null);
+    }
+
+
+    //
     // Read States
     //
 
@@ -578,6 +625,11 @@ public class RouterActor extends ModuleActor {
         if (date > state.getOutReadDate()) {
             state = state.changeOutReadDate(date);
             res = getDialogsRouter().onPeerReadChanged(peer, date);
+
+            if (peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
+                res = res.chain(r -> destructor.onMessageRead(peer, date));
+            }
+
             isChanged = true;
         } else {
             res = Promise.success(null);
@@ -619,6 +671,10 @@ public class RouterActor extends ModuleActor {
         conversationStates.addOrUpdateItem(state);
 
         Promise<Void> res = getDialogsRouter().onCounterChanged(peer, counter);
+
+        if (peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
+            res = res.chain(r -> destructor.onMessageReadByMe(peer, date));
+        }
 
         notifyActiveDialogsVM();
 
@@ -1067,6 +1123,9 @@ public class RouterActor extends ModuleActor {
         } else if (message instanceof RouterResetChat) {
             RouterResetChat resetChat = (RouterResetChat) message;
             return onChatReset(resetChat.getPeer());
+        } else if (message instanceof RouterMessagesSelfDestructed) {
+            RouterMessagesSelfDestructed selfDestructed = (RouterMessagesSelfDestructed) message;
+            return onMessageDestructed(selfDestructed.getPeer(), selfDestructed.getRids());
         } else {
             return super.onAsk(message);
         }

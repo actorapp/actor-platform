@@ -3,6 +3,7 @@ package im.actor.sdk.controllers.conversation.toolbar;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -361,7 +362,17 @@ public class ChatToolbarFragment extends BaseFragment {
         }
 
         if (item.getItemId() == R.id.timer) {
-            execute(messenger().setSecretChatTimer(peer.getPeerId(), 5000));
+            int[] timers = new int[]{
+                    0, 1000, 2000, 5000, 15000, 60000, 60 * 60000, 24 * 60 * 60000
+            };
+            new AlertDialog.Builder(getActivity())
+                    .setTitle(R.string.timer_title)
+                    .setItems(R.array.timer_values, (dialogInterface, i1) -> {
+                        execute(messenger().setSecretChatTimer(peer.getPeerId(), timers[i1]));
+                    })
+                    .show()
+                    .setCanceledOnTouchOutside(true);
+
         }
 
         return super.onOptionsItemSelected(item);

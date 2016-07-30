@@ -267,7 +267,8 @@ public class SenderActor extends ModuleActor {
             timer = context().getEncryption().getConversationState().get(peer.getPeerId()).getTimer().get();
         }
 
-        Message message = new Message(rid, sortDate, date, myUid(), MessageState.PENDING, content);
+        Message message = new Message(rid, sortDate, date, myUid(), MessageState.PENDING, content,
+                new ArrayList<>(), 0, timer);
         context().getMessagesModule().getRouter().onOutgoingMessage(peer, message);
         PendingMessage pendingMessage = new PendingMessage(peer, rid, content, timer);
         pendingMessages.getPendingMessages().add(pendingMessage);

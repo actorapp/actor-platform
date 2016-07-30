@@ -45,13 +45,15 @@ public class EncryptionModule extends AbsModule {
     }
 
     public void run() {
+
+        keyValueStorage = Storage.createKeyValue("session_temp_storage");
+        conversationState = Storage.createKeyValue("encrypted_chat_state", EncryptedConversationVM.CREATOR,
+                EncryptedConversationState.CREATOR, EncryptedConversationState.DEFAULT_CREATOR);
+
         keyManager = new KeyManager(context());
         sessionManager = new SessionManager(context());
         encryption = new EncryptedMsg(context());
         encryptedRouter = new EncryptedRouter(context());
-        keyValueStorage = Storage.createKeyValue("session_temp_storage");
-        conversationState = Storage.createKeyValue("encrypted_chat_state", EncryptedConversationVM.CREATOR,
-                EncryptedConversationState.CREATOR, EncryptedConversationState.DEFAULT_CREATOR);
     }
 
     public KeyManager getKeyManager() {

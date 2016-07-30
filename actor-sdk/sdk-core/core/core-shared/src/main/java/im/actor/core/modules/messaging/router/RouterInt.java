@@ -26,6 +26,7 @@ import im.actor.core.modules.messaging.router.entity.RouterDifferenceEnd;
 import im.actor.core.modules.messaging.router.entity.RouterDifferenceStart;
 import im.actor.core.modules.messaging.router.entity.RouterEncryptedUpdate;
 import im.actor.core.modules.messaging.router.entity.RouterMessageUpdate;
+import im.actor.core.modules.messaging.router.entity.RouterMessagesSelfDestructed;
 import im.actor.core.modules.messaging.router.entity.RouterNewMessages;
 import im.actor.core.modules.messaging.router.entity.RouterOutgoingError;
 import im.actor.core.modules.messaging.router.entity.RouterOutgoingMessage;
@@ -42,7 +43,7 @@ import im.actor.runtime.promise.Promise;
 import static im.actor.runtime.actors.ActorSystem.system;
 
 public class RouterInt extends ActorInterface implements BusSubscriber {
-    
+
     public RouterInt(final ModuleContext context) {
 
         setDest(system().actorOf("actor/router", () -> new RouterActor(context)));
@@ -116,6 +117,10 @@ public class RouterInt extends ActorInterface implements BusSubscriber {
 
     public Promise<Void> onMessagesDeleted(Peer peer, List<Long> rids) {
         return ask(new RouterDeletedMessages(peer, rids));
+    }
+
+    public Promise<Void> onMessagesDestructed(Peer peer, List<Long> rids) {
+        return ask(new RouterMessagesSelfDestructed(peer, rids));
     }
 
 
