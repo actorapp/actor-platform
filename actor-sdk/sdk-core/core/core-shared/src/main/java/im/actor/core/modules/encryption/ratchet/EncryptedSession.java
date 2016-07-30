@@ -24,7 +24,7 @@ public class EncryptedSession extends ActorInterface {
      */
     public EncryptedSession(PeerSession session, ModuleContext context) {
         super(system().actorOf("encryption/uid_" + session.getUid() + "/session_" +
-                RandomUtils.nextRid(), () -> new EncryptedSessionActor(context, session)));
+                RandomUtils.nextRid(), "encrypt", () -> new EncryptedSessionActor(context, session)));
         this.session = session;
     }
 

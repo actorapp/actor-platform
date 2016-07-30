@@ -2,6 +2,8 @@ package im.actor.runtime.crypto.primitives.util;
 
 import com.google.j2objc.annotations.AutoreleasePool;
 
+import im.actor.runtime.binary.BinaryOp;
+
 // Disabling Bounds checks for speeding up calculations
 
 /*-[
@@ -45,10 +47,7 @@ public abstract class Pack {
     }
 
     public static void intToBigEndian(int n, byte[] bs, int off) {
-        bs[off] = jsWrap((byte) (n >>> 24));
-        bs[++off] = jsWrap((byte) (n >>> 16));
-        bs[++off] = jsWrap((byte) (n >>> 8));
-        bs[++off] = jsWrap((byte) (n));
+        BinaryOp.intToBigEndian(n, bs, off);
     }
 
     public static byte[] intToBigEndian(int[] ns) {
@@ -137,10 +136,7 @@ public abstract class Pack {
     }
 
     public static void intToLittleEndian(int n, byte[] bs, int off) {
-        bs[off] = jsWrap((byte) (n));
-        bs[++off] = jsWrap((byte) (n >>> 8));
-        bs[++off] = jsWrap((byte) (n >>> 16));
-        bs[++off] = jsWrap((byte) (n >>> 24));
+        BinaryOp.intToLittleEndian(n, bs, off);
     }
 
     public static byte[] intToLittleEndian(int[] ns) {

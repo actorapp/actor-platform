@@ -139,15 +139,6 @@ public class ActorSystem {
                 .changeSupervisor(supervisor), path);
     }
 
-    public ActorRef actorOf(String path, String dispatcher, final Constructor<? extends Actor> constructor) {
-        return actorOf(Props.create(new ActorCreator() {
-            @Override
-            public Actor create() {
-                return constructor.create();
-            }
-        }).changeDispatcher(dispatcher), path);
-    }
-
     /**
      * Getting current trace interface for actor system
      *

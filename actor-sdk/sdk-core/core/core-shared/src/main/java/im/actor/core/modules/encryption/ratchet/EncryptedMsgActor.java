@@ -55,8 +55,8 @@ public class EncryptedMsgActor extends ModuleActor {
     private Promise<EncryptedMessage> doEncrypt(ApiEncryptedContent message, List<Integer> uids) throws IOException {
 
         // Generate Encryption Keys
-        byte[] encKey = Crypto.randomBytes(32);
-        byte[] encKeyExtended = KEY_PRF.calculate(encKey, "ActorPackage", 128);
+        // byte[] encKey = Crypto.randomBytes(32);
+        byte[] encKeyExtended = Crypto.randomBytes(128);//KEY_PRF.calculate(encKey, "ActorPackage", 128);
 
         // Encrypt Data
         byte[] encryptedData;

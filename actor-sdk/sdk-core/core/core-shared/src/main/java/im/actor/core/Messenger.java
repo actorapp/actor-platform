@@ -108,6 +108,7 @@ public class Messenger {
         ActorSystem.system().setTraceInterface(new ActorTrace());
         ActorSystem.system().addDispatcher("network_manager", 1);
         ActorSystem.system().addDispatcher("heavy", 2);
+        ActorSystem.system().addDispatcher("encrypt");
 
         // Configure dispatcher
         // timing.section("Dispatcher");
