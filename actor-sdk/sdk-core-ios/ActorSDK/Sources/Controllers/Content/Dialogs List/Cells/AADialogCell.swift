@@ -255,7 +255,12 @@ public class AADialogCell: AATableViewCell, AABindedCell {
         
         let title = NSMutableAttributedString(string: config.item.dialogTitle)
         title.yy_font = UIFont.mediumSystemFontOfSize(17)
-        title.yy_color = appStyle.dialogTitleColor
+        if config.item.peer.isPrivateSecret {
+            title.yy_color = appStyle.dialogTitleSecureColor
+        } else {
+            title.yy_color = appStyle.dialogTitleColor
+        }
+        
         let titleContainer = YYTextContainer(size: CGSize(width: config.titleWidth, height: 1000))
         titleContainer.maximumNumberOfRows = 1
         titleContainer.truncationType = .End

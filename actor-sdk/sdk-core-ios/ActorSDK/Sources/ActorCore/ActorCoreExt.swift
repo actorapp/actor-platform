@@ -173,6 +173,12 @@ public extension ACPeer {
             return self.peerType.ordinal() == ACPeerType.PRIVATE().ordinal()
         }
     }
+    
+    public var isPrivateSecret: Bool {
+        get {
+            return self.peerType.ordinal() == ACPeerType.PRIVATE_ENCRYPTED().ordinal()
+        }
+    }
 }
 
 public extension ACMessage {

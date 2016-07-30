@@ -321,6 +321,10 @@ public class RouterActor extends ModuleActor {
             }
             if (pendingDescs.size() > 0) {
                 res = res.chain(r -> destructor.onMessages(peer, pendingDescs));
+                if (isRead) {
+                    long readDate = state.getInReadDate();
+                    res = res.chain(r -> destructor.onMessageReadByMe(peer, readDate));
+                }
             }
         }
 
@@ -774,6 +778,10 @@ public class RouterActor extends ModuleActor {
                 notifyActiveDialogsVM();
 
                 getDialogsRouter().onCounterChanged(peer, 0);
+
+                if (peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
+                    destructor.onMessageReadByMe(peer, inMaxMessageDate);
+                }
 
                 context().getNotificationsModule().onOwnRead(peer, inMaxMessageDate);
             }

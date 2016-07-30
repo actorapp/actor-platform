@@ -539,6 +539,12 @@ public class ActorStyle {
         set(v) { _dialogTitleColor = v }
     }
     
+    private var _dialogTitleSecureColor: UIColor?
+    public var dialogTitleSecureColor: UIColor {
+        get { return _dialogTitleSecureColor != nil ? _dialogTitleSecureColor! : dialogTitleColor }
+        set(v) { _dialogTitleSecureColor = v }
+    }
+    
     private var _dialogTextColor: UIColor?
     public var dialogTextColor: UIColor {
         get { return _dialogTextColor != nil ? _dialogTextColor! : dialogTitleColor.alpha(0.64) }

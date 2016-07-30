@@ -300,11 +300,11 @@ public class ConversationViewController:
         super.viewWillAppear(animated)
         
         // Installing bindings
-        if (peer.peerType.ordinal() == ACPeerType.PRIVATE().ordinal()) {
+        if (peer.peerType == ACPeerType.PRIVATE() || peer.peerType == ACPeerType.PRIVATE_ENCRYPTED()) {
 
             let user = Actor.getUserWithUid(peer.peerId)
             let nameModel = user.getNameModel()
-            let blockStatus = user.isBlockedModel().get().booleanValue()
+            // let blockStatus = user.isBlockedModel().get().booleanValue()
             
             binder.bind(nameModel, closure: { (value: NSString?) -> () in
                 self.titleView.text = String(value!)
@@ -314,7 +314,14 @@ public class ConversationViewController:
                 self.avatarView.bind(user.getNameModel().get(), id: Int(user.getId()), avatar: value)
             })
             
-            binder.bind(Actor.getTypingWithUid(peer.peerId), valueModel2: user.getPresenceModel(), closure:{ (typing:JavaLangBoolean?, presence:ACUserPresence?) -> () in
+            
+            let typingModel: ARValueModel
+            if peer.peerType == ACPeerType.PRIVATE() {
+                typingModel = Actor.getTypingWithUid(peer.peerId)
+            } else {
+                typingModel = Actor.getSecretTypingWithUid(peer.peerId)
+            }
+            binder.bind(typingModel, valueModel2: user.getPresenceModel(), closure:{ (typing:JavaLangBoolean?, presence:ACUserPresence?) -> () in
                 
                 if (typing != nil && typing!.booleanValue()) {
                     self.subtitleView.text = Actor.getFormatter().formatTyping()

@@ -29,6 +29,7 @@ import ActorSDK
         ActorSDK.sharedActor().authStrategy = .PhoneEmail
         
         ActorSDK.sharedActor().style.dialogAvatarSize = 58
+        ActorSDK.sharedActor().style.dialogTitleSecureColor = UIColor.greenColor()
         
         // Creating Actor
         ActorSDK.sharedActor().createActor()
