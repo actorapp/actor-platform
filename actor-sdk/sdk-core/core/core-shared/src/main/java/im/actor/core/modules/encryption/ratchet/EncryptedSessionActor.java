@@ -1,12 +1,15 @@
 package im.actor.core.modules.encryption.ratchet;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import im.actor.core.api.ApiEncyptedBoxKey;
 import im.actor.core.entity.encryption.PeerSession;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.encryption.ratchet.entity.PrivateKey;
 import im.actor.core.modules.encryption.ratchet.entity.PublicKey;
 import im.actor.core.modules.ModuleActor;
+import im.actor.core.modules.encryption.ratchet.entity.SessionState;
 import im.actor.runtime.*;
 import im.actor.runtime.actors.ask.AskMessage;
 import im.actor.runtime.promise.Promise;
@@ -55,12 +58,13 @@ class EncryptedSessionActor extends ModuleActor {
     private KeyValueStorage sessionStorage;
 
     //
-    // Temp encryption chains
+    // Internal State
     //
 
-    private byte[] latestTheirEphemeralKey;
-    private ArrayList<EncryptedSessionChain> encryptionChains = new ArrayList<>();
+    private SessionState sessionState;
+    private EncryptedSessionChain encryptionChain = null;
     private ArrayList<EncryptedSessionChain> decryptionChains = new ArrayList<>();
+    private boolean isFreezed = false;
 
     //
     // Constructors and Methods
@@ -78,33 +82,92 @@ class EncryptedSessionActor extends ModuleActor {
         super.preStart();
         keyManager = context().getEncryption().getKeyManager();
         sessionStorage = context().getEncryption().getKeyValueStorage();
-        latestTheirEphemeralKey = sessionStorage.loadItem(session.getSid());
+
+        sessionState = new SessionState();
+        byte[] data = sessionStorage.loadItem(session.getSid());
+        if (data != null) {
+            try {
+                sessionState = SessionState.fromBytes(data);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
+
+    private void saveState() {
+        sessionStorage.addOrUpdateItem(session.getSid(), sessionState.toByteArray());
+    }
+
+    //
+    // Encryption
+    //
 
     private Promise<ApiEncyptedBoxKey> onEncrypt(final byte[] data) {
 
-        //
-        // Stage 1: Pick Their Ephemeral key. Use already received or pick random pre key.
         // Stage 2: Pick Encryption Chain
         // Stage 3: Decrypt
-        //
 
+        //
+        // Stage 1: Pick Their Ephemeral key
+        //          - After this stage we will have public their key and own private key
+        //            for encryption chain
+        //
         Promise<byte[]> ephemeralKey;
-        if (latestTheirEphemeralKey != null) {
-            ephemeralKey = success(latestTheirEphemeralKey);
-            Log.d(TAG, "Picked cached");
+        if (sessionState.getLatestTheirKey() != null) {
+            ephemeralKey = success(sessionState.getLatestTheirKey());
         } else {
-            ephemeralKey = keyManager.getUserRandomPreKey(uid, session.getTheirKeyGroupId())
-                    .map(PublicKey::getPublicKey);
-            Log.d(TAG, "Picked from server #" + uid + " " + session.getTheirKeyGroupId());
+            ephemeralKey = keyManager.getUserRandomPreKey(uid, session.getTheirKeyGroupId()).map(key -> {
+                // This can be called only for the first time of sending message in this session
+                // So we need to save ephemeral key and generate new initial private key
+                // for this session
+                sessionState = sessionState.updateKeys(key.getPublicKey());
+                saveState();
+                return key.getPublicKey();
+            });
         }
 
-        return ephemeralKey
-                .map(publicKey -> pickEncryptChain(publicKey))
+        return wrap(ephemeralKey
+                .map(publicKey -> pickEncryptChain())
                 .map(encryptedSessionChain -> encrypt(encryptedSessionChain, data))
                 .map(bytes -> new ApiEncyptedBoxKey(session.getUid(), session.getTheirKeyGroupId(),
-                        "curve25519", bytes));
+                        "curve25519", bytes)));
     }
+
+    private EncryptedSessionChain pickEncryptChain() {
+
+        // Dispose existing encryption chain if their public keys changes
+        // If not return latest one
+        if (encryptionChain != null) {
+            if (ByteStrings.isEquals(sessionState.getLatestTheirKey(), encryptionChain.getTheirPublicKey()) &&
+                    ByteStrings.isEquals(sessionState.getLatestOwnPublicKey(), encryptionChain.getOwnPublicKey())) {
+                return encryptionChain;
+            } else {
+                encryptionChain = null;
+            }
+        }
+
+        encryptionChain = new EncryptedSessionChain(session,
+                sessionState.getLatestOwnPrivateKey(),
+                sessionState.getLatestOwnPublicKey(),
+                sessionState.getLatestTheirKey());
+
+        return encryptionChain;
+    }
+
+    private byte[] encrypt(EncryptedSessionChain chain, byte[] data) {
+        byte[] encrypted;
+        try {
+            encrypted = chain.encrypt(data);
+        } catch (IntegrityException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        return encrypted;
+    }
+
+    //
+    // Decryption
+    //
 
     private Promise<byte[]> onDecrypt(ApiEncyptedBoxKey data) {
 
@@ -116,59 +179,26 @@ class EncryptedSessionActor extends ModuleActor {
         //
 
         byte[] material = data.getEncryptedKey();
+        byte[] senderEphemeralKey = ByteStrings.substring(material, 16, 32);
+        byte[] receiverEphemeralKey = ByteStrings.substring(material, 48, 32);
 
-        // final long ownEphemeralKey0Id = ByteStrings.bytesToLong(data, 0);
-        // final long theirEphemeralKey0Id = ByteStrings.bytesToLong(data, 8);
-        final byte[] senderEphemeralKey = ByteStrings.substring(material, 16, 32);
-        final byte[] receiverEphemeralKey = ByteStrings.substring(material, 48, 32);
-//        Log.d(TAG, "Sender Ephemeral " + Crypto.keyHash(senderEphemeralKey));
-//        Log.d(TAG, "Receiver Ephemeral " + Crypto.keyHash(receiverEphemeralKey));
-
-        return pickDecryptChain(senderEphemeralKey, receiverEphemeralKey)
-                .map(encryptedSessionChain -> decrypt(encryptedSessionChain, material));
-        //.then(decryptedPackage -> latestTheirEphemeralKey = senderEphemeralKey);
+        return wrap(pickDecryptChain(senderEphemeralKey, receiverEphemeralKey)
+                .map(encryptedSessionChain -> decrypt(encryptedSessionChain, material))
+                .then(r -> {
+                    // Update Session State keys
+                    if (sessionState.getLatestTheirKey() == null ||
+                            ByteStrings.isEquals(sessionState.getLatestTheirKey(), senderEphemeralKey)) {
+                        sessionState = sessionState.updateKeys(senderEphemeralKey);
+                        saveState();
+                    }
+                }));
     }
 
-    private EncryptedSessionChain pickEncryptChain(byte[] ephemeralKey) {
-
-        if (latestTheirEphemeralKey == null) {
-            latestTheirEphemeralKey = ephemeralKey;
-            sessionStorage.addOrUpdateItem(session.getSid(), ephemeralKey);
-        }
-
-        if (encryptionChains.size() > 0) {
-            return encryptionChains.get(0);
-        }
-
-        EncryptedSessionChain chain = new EncryptedSessionChain(session,
-                Curve25519.keyGenPrivate(Crypto.randomBytes(32)), ephemeralKey);
-
-        encryptionChains.add(0, chain);
-
-        return chain;
-    }
-
-    private byte[] encrypt(EncryptedSessionChain chain, byte[] data) {
-
-        byte[] encrypted;
-        try {
-            encrypted = chain.encrypt(data);
-        } catch (IntegrityException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-
-//        Log.d(TAG, "!Sender Ephemeral " + Crypto.keyHash(Curve25519.keyGenPublic(chain.getOwnPrivateKey())));
-//        Log.d(TAG, "!Receiver Ephemeral " + Crypto.keyHash(chain.getTheirPublicKey()));
-
-        return encrypted;
-    }
 
     private Promise<EncryptedSessionChain> pickDecryptChain(final byte[] theirEphemeralKey, final byte[] ephemeralKey) {
-
         EncryptedSessionChain pickedChain = null;
         for (EncryptedSessionChain c : decryptionChains) {
-            if (ByteStrings.isEquals(Curve25519.keyGenPublic(c.getOwnPrivateKey()), ephemeralKey)) {
+            if (ByteStrings.isEquals(c.getOwnPublicKey(), ephemeralKey)) {
                 pickedChain = c;
                 break;
             }
@@ -177,18 +207,27 @@ class EncryptedSessionActor extends ModuleActor {
             return Promise.success(pickedChain);
         }
 
+        return findOwnPreKey(ephemeralKey).map(privateKey -> {
+            EncryptedSessionChain chain = new EncryptedSessionChain(session, privateKey,
+                    ephemeralKey, theirEphemeralKey);
+            decryptionChains.add(0, chain);
+            if (decryptionChains.size() > MAX_DECRYPT_CHAINS) {
+                decryptionChains.remove(MAX_DECRYPT_CHAINS)
+                        .safeErase();
+            }
+            return chain;
+        });
+    }
 
+    private Promise<byte[]> findOwnPreKey(byte[] ephemeralKey) {
+        if (ByteStrings.isEquals(ephemeralKey, sessionState.getLatestOwnPublicKey())) {
+            return Promise.success(sessionState.getLatestOwnPrivateKey());
+        }
+        if (ByteStrings.isEquals(ephemeralKey, sessionState.getPrevOwnPublicKey())) {
+            return Promise.success(sessionState.getPrevOwnPrivateKey());
+        }
         return context().getEncryption().getKeyManager().getOwnPreKey(ephemeralKey)
-                .map(src1 -> {
-                    EncryptedSessionChain chain = new EncryptedSessionChain(session,
-                            src1.getKey(), theirEphemeralKey);
-                    decryptionChains.add(0, chain);
-                    if (decryptionChains.size() > MAX_DECRYPT_CHAINS) {
-                        decryptionChains.remove(MAX_DECRYPT_CHAINS)
-                                .safeErase();
-                    }
-                    return chain;
-                });
+                .map(PrivateKey::getKey);
     }
 
     private byte[] decrypt(EncryptedSessionChain chain, byte[] data) {
@@ -203,14 +242,34 @@ class EncryptedSessionActor extends ModuleActor {
     }
 
     //
+    // Tools
+    //
+
+    private <T> Promise<T> wrap(Promise<T> promise) {
+        isFreezed = true;
+        return promise.after((r, e) -> {
+            isFreezed = false;
+            unstashAll();
+        });
+    }
+
+    //
     // Actor Messages
     //
 
     @Override
     public Promise onAsk(Object message) throws Exception {
         if (message instanceof EncryptPackage) {
+            if (isFreezed) {
+                stash();
+                return null;
+            }
             return onEncrypt(((EncryptPackage) message).getData());
         } else if (message instanceof DecryptPackage) {
+            if (isFreezed) {
+                stash();
+                return null;
+            }
             DecryptPackage decryptPackage = (DecryptPackage) message;
             return onDecrypt(decryptPackage.getData());
         } else {

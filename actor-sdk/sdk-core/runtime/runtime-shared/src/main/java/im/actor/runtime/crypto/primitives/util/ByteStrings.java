@@ -104,6 +104,15 @@ public class ByteStrings {
     }
 
     public static boolean isEquals(byte[] a, byte[] b) {
+        if (a == null && b == null) {
+            return true;
+        }
+        if (a != null && b == null) {
+            return false;
+        }
+        if (a == null) {
+            return false;
+        }
         if (a.length != b.length) {
             return false;
         }

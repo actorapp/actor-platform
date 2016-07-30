@@ -22,10 +22,10 @@ public class EncryptedSessionChain {
     private int sentCounter;
     private byte[] rootChainKey;
 
-    public EncryptedSessionChain(PeerSession session, byte[] ownPrivateKey, byte[] theirPublicKey) {
+    public EncryptedSessionChain(PeerSession session, byte[] ownPrivateKey, byte[] ownPublicKey, byte[] theirPublicKey) {
         this.session = session;
         this.ownPrivateKey = ownPrivateKey;
-        this.ownPublicKey = Curve25519.keyGenPublic(ownPrivateKey);
+        this.ownPublicKey = ownPublicKey;
         this.theirPublicKey = theirPublicKey;
         this.sentCounter = 0;
         this.rootChainKey = RatchetRootChainKey.makeRootChainKey(
@@ -44,6 +44,10 @@ public class EncryptedSessionChain {
 
     public byte[] getTheirPublicKey() {
         return theirPublicKey;
+    }
+
+    public byte[] getOwnPublicKey() {
+        return ownPublicKey;
     }
 
     public byte[] decrypt(byte[] data) throws IntegrityException {
