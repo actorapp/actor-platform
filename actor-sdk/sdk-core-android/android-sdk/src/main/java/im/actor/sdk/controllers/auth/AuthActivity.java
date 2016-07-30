@@ -157,7 +157,8 @@ public class AuthActivity extends BaseFragmentActivity {
                 break;
             case LOGGED_IN:
                 finish();
-                startActivity(new Intent(this, RootActivity.class));
+                //startActivity(new Intent(this, RootActivity.class));
+                ActorSDK.sharedActor().startAfterLoginActivity(this);
                 break;
         }
     }
