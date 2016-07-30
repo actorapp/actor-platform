@@ -25,6 +25,9 @@ import im.actor.runtime.storage.KeyValueEngine;
 
 public class EncryptedRouterActor extends ModuleActor {
 
+    // j2objc workaround
+    private static final Void DUMB = null;
+
     private KeyManager keyManager;
     private EncryptedMsg encryptedMsg;
     private EncryptedUpdates updates;

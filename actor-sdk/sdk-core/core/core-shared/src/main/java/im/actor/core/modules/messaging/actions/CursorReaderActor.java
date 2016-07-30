@@ -7,12 +7,18 @@ package im.actor.core.modules.messaging.actions;
 import im.actor.core.api.ApiEncryptedRead;
 import im.actor.core.api.ApiOutPeer;
 import im.actor.core.api.rpc.RequestMessageRead;
+import im.actor.core.api.rpc.ResponseVoid;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.util.RandomUtils;
+import im.actor.runtime.actors.messages.Void;
 
 public class CursorReaderActor extends CursorActor {
+
+    // j2objc workaround
+    private static final ResponseVoid DUMB = null;
+    private static final Long DUMB2 = null;
 
     public CursorReaderActor(ModuleContext context) {
         super(CURSOR_READ, context);

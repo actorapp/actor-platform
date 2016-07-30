@@ -7,12 +7,17 @@ package im.actor.core.modules.messaging.actions;
 import im.actor.core.api.ApiEncryptedReceived;
 import im.actor.core.api.ApiOutPeer;
 import im.actor.core.api.rpc.RequestMessageReceived;
+import im.actor.core.api.rpc.ResponseVoid;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.util.RandomUtils;
 
 public class CursorReceiverActor extends CursorActor {
+
+    // j2objc workaround
+    private static final ResponseVoid DUMB = null;
+    private static final Long DUMB2 = null;
 
     public CursorReceiverActor(ModuleContext context) {
         super(CURSOR_RECEIVED, context);

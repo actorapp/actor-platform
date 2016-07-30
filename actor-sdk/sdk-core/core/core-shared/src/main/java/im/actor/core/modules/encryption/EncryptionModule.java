@@ -32,6 +32,9 @@ import static im.actor.runtime.actors.ActorSystem.system;
 
 public class EncryptionModule extends AbsModule {
 
+    // j2objc workaround
+    private static final Void DUMB = null;
+
     private KeyManager keyManager;
     private SessionManager sessionManager;
     private EncryptedRouter encryptedRouter;

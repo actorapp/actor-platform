@@ -16,6 +16,7 @@ import im.actor.core.api.rpc.RequestLoadPrePublicKeys;
 import im.actor.core.api.rpc.RequestLoadPublicKey;
 import im.actor.core.api.rpc.RequestLoadPublicKeyGroups;
 import im.actor.core.api.rpc.RequestUploadPreKey;
+import im.actor.core.api.rpc.ResponseVoid;
 import im.actor.core.entity.User;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.encryption.Configuration;
@@ -49,6 +50,10 @@ import im.actor.runtime.storage.KeyValueStorage;
  * 2) Downloads and manages updates about foreign keys
  */
 public class KeyManagerActor extends ModuleActor {
+
+    // j2objc workaround
+    private static final Void DUMB = null;
+    private static final ResponseVoid DUMB2 = null;
 
     private static final String TAG = "KeyManagerActor";
 
