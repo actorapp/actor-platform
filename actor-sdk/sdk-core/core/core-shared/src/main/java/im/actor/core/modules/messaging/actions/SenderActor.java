@@ -4,8 +4,6 @@
 
 package im.actor.core.modules.messaging.actions;
 
-import android.location.Location;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
