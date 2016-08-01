@@ -62,6 +62,22 @@ public class ConfigurationBuilder {
 
     private boolean isEnabledGroupedChatList = true;
 
+    private ArrayList<String> autoJoinGroups = new ArrayList<>();
+    private AutoJoinType autoJoinType = AutoJoinType.AFTER_INIT;
+
+    /**
+     * Setting Auto Join to group type: when to join to your groups
+     *
+     * @param autoJoinType auto join type
+     * @return this
+     */
+    @ObjectiveCName("setAutoJoinType:")
+    public ConfigurationBuilder setAutoJoinType(AutoJoinType autoJoinType) {
+        this.autoJoinType = autoJoinType;
+        return this;
+    }
+
+
     /**
      * Setting if grouped chat list support enabled
      *
@@ -134,6 +150,19 @@ public class ConfigurationBuilder {
     @ObjectiveCName("addTrustedKey:")
     public ConfigurationBuilder addTrustedKey(String trustedKey) {
         trustedKeys.add(new TrustedKey(trustedKey));
+        return this;
+    }
+
+    /**
+     * Adding group to auto join of users
+     *
+     * @param groupTokenOrShortName group's token or short name
+     * @return this
+     */
+    @NotNull
+    @ObjectiveCName("addAutoJoinGroupWithToken:")
+    public ConfigurationBuilder addAutoJoinGroup(String groupTokenOrShortName) {
+        autoJoinGroups.add(groupTokenOrShortName);
         return this;
     }
 
@@ -419,6 +448,8 @@ public class ConfigurationBuilder {
                 callsProvider,
                 voiceCallsEnabled,
                 videoCallsEnabled,
-                isEnabledGroupedChatList);
+                isEnabledGroupedChatList,
+                autoJoinGroups.toArray(new String[autoJoinGroups.size()]),
+                autoJoinType);
     }
 }

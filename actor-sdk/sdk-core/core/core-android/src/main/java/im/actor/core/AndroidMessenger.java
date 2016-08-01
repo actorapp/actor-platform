@@ -91,7 +91,7 @@ public class AndroidMessenger extends im.actor.core.Messenger {
                                 }));
 
         // Counters
-        modules.getAppStateModule()
+        modules.getConductor()
                 .getGlobalStateVM()
                 .getGlobalCounter()
                 .subscribe((val, valueModel) -> {

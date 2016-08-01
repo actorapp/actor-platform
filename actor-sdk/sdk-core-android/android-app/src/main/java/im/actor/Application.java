@@ -57,6 +57,10 @@ public class Application extends ActorSDKApplication {
 
         ActorSDK.sharedActor().setVideoCallsEnabled(true);
 
+        ActorSDK.sharedActor().setAutoJoinGroups(new String[]{
+                "actor_news"
+        });
+
 
 //        ActorSDK.sharedActor().setTwitter("");
 //        ActorSDK.sharedActor().setHomePage("http://www.foo.com");
