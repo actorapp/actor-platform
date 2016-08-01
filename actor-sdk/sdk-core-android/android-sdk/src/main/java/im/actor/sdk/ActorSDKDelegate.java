@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 import im.actor.core.entity.Peer;
 import im.actor.runtime.android.view.BindedViewHolder;
+import im.actor.sdk.controllers.conversation.ChatFragment;
 import im.actor.sdk.controllers.conversation.attach.AbsAttachFragment;
 import im.actor.sdk.controllers.conversation.messages.content.MessageHolder;
 import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
@@ -78,6 +79,15 @@ public interface ActorSDKDelegate {
      */
     @Nullable
     AbsAttachFragment fragmentForAttachMenu(Peer peer);
+
+    /**
+     * If Not null returned, overrides chat fragment
+     *
+     * @param peer peer
+     * @return Custom chat fragment
+     */
+    @Nullable
+    ChatFragment fragmentForChat(Peer peer);
 
     /**
      * If Not null returned, overrides default toolbar (no-ui) fragment
