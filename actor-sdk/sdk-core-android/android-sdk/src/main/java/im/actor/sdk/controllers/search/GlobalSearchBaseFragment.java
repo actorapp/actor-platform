@@ -274,6 +274,7 @@ public abstract class GlobalSearchBaseFragment extends BaseFragment {
         footerSearchHolder = new SearchHolder(getActivity(), new OnItemClickedListener<SearchEntity>() {
             @Override
             public void onClicked(SearchEntity item) {
+                searchMenu.collapseActionView();
                 int peerId = item.getPeer().getPeerId();
                 switch (item.getPeer().getPeerType()) {
                     case PRIVATE:
