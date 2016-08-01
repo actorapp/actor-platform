@@ -11,6 +11,7 @@ import im.actor.core.entity.Peer;
 import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.sdk.controllers.conversation.ChatFragment;
 import im.actor.sdk.controllers.conversation.attach.AbsAttachFragment;
+import im.actor.sdk.controllers.conversation.inputbar.InputBarFragment;
 import im.actor.sdk.controllers.conversation.messages.content.MessageHolder;
 import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
 import im.actor.sdk.controllers.settings.BaseGroupInfoActivity;
@@ -64,6 +65,12 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
     @Nullable
     @Override
     public ChatFragment fragmentForChat(Peer peer) {
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public InputBarFragment fragmentForChatInput() {
         return null;
     }
 

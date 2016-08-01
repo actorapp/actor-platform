@@ -10,6 +10,7 @@ import im.actor.core.entity.Peer;
 import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.sdk.controllers.conversation.ChatFragment;
 import im.actor.sdk.controllers.conversation.attach.AbsAttachFragment;
+import im.actor.sdk.controllers.conversation.inputbar.InputBarFragment;
 import im.actor.sdk.controllers.conversation.messages.content.MessageHolder;
 import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
 import im.actor.sdk.controllers.settings.BaseGroupInfoActivity;
@@ -88,6 +89,14 @@ public interface ActorSDKDelegate {
      */
     @Nullable
     ChatFragment fragmentForChat(Peer peer);
+
+    /**
+     * If Not null returned, overrides chat input fragment
+     *
+     * @return Custom chat input fragment
+     */
+    @Nullable
+    InputBarFragment fragmentForChatInput();
 
     /**
      * If Not null returned, overrides default toolbar (no-ui) fragment
