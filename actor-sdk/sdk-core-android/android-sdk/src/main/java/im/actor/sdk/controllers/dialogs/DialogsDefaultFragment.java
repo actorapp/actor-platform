@@ -70,19 +70,13 @@ public class DialogsDefaultFragment extends BaseDialogFragment {
         } else if (dialog.getPeer().getPeerType() == PeerType.GROUP) {
             GroupVM groupVM = groups().get(dialog.getPeer().getPeerId());
             CharSequence[] items;
-            if (groupVM.getIsCanLeave().get()) {
-                items = new CharSequence[]{
-                        getString(R.string.dialogs_menu_group_view),
-                        getString(R.string.dialogs_menu_group_rename),
-                        getString(R.string.dialogs_menu_group_leave),
-                };
-            } else {
-                items = new CharSequence[]{
-                        getString(R.string.dialogs_menu_group_view),
-                        getString(R.string.dialogs_menu_group_rename),
-                };
-            }
-
+            items = new CharSequence[]{
+                    getString(R.string.dialogs_menu_group_view),
+                    getString(R.string.dialogs_menu_group_rename),
+                    getString(groupVM.getIsCanLeave().get() ? R.string.dialogs_menu_group_leave :
+                            groupVM.getIsCanDelete().get() ? R.string.dialogs_menu_group_delete :
+                                    R.string.dialogs_menu_group_delete),
+            };
             new AlertDialog.Builder(getActivity())
                     .setItems(items, (d, which) -> {
                         if (which == 0) {
@@ -94,9 +88,27 @@ public class DialogsDefaultFragment extends BaseDialogFragment {
                                     .setMessage(getString(R.string.alert_leave_group_message, dialog.getDialogTitle()))
                                     .setNegativeButton(R.string.dialog_cancel, null)
                                     .setPositiveButton(R.string.alert_leave_group_yes, (d1, which1) -> {
-                                        execute(messenger().leaveAndDeleteGroup(dialog.getPeer().getPeerId()), R.string.progress_common).failure(e -> {
-                                            Toast.makeText(getActivity(), R.string.toast_unable_leave, Toast.LENGTH_LONG).show();
-                                        });
+                                        if (groupVM.getIsCanLeave().get()) {
+                                            execute(messenger().leaveAndDeleteGroup(dialog.getPeer().getPeerId()), R.string.progress_common).failure(e -> {
+                                                Toast.makeText(getActivity(), R.string.toast_unable_leave, Toast.LENGTH_LONG).show();
+                                            });
+                                        } else if (groupVM.getIsCanDelete().get()) {
+                                            execute(messenger().deleteGroup(dialog.getPeer().getPeerId()), R.string.progress_common).failure(e -> {
+                                                Toast.makeText(getActivity(), R.string.toast_unable_delete_chat, Toast.LENGTH_LONG).show();
+                                            });
+                                        } else {
+                                            execute(messenger().deleteChat(dialog.getPeer()), R.string.progress_common, new CommandCallback<Void>() {
+                                                @Override
+                                                public void onResult(Void res) {
+
+                                                }
+
+                                                @Override
+                                                public void onError(Exception e) {
+                                                    Toast.makeText(getActivity(), R.string.toast_unable_delete_chat, Toast.LENGTH_LONG).show();
+                                                }
+                                            });
+                                        }
                                     })
                                     .show();
                         }
