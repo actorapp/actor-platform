@@ -97,10 +97,14 @@ public class ChatFragment extends BaseFragment implements InputBarCallback, Mess
             if (toolbarFragment == null) {
                 toolbarFragment = new ChatToolbarFragment(peer);
             }
+            InputBarFragment inputBarFragment = ActorSDK.sharedActor().getDelegate().fragmentForChatInput();
+            if (inputBarFragment == null) {
+                inputBarFragment = new InputBarFragment();
+            }
             getChildFragmentManager().beginTransaction()
                     .add(toolbarFragment, "toolbar")
                     .add(R.id.messagesFragment, MessagesDefaultFragment.create(peer))
-                    .add(R.id.sendFragment, new InputBarFragment())
+                    .add(R.id.sendFragment, inputBarFragment)
                     .add(R.id.quoteFragment, new QuoteFragment())
                     .add(R.id.emptyPlaceholder, new EmptyChatPlaceholder())
                     .add(R.id.autocompleteContainer, new AutocompleteFragment(peer))
