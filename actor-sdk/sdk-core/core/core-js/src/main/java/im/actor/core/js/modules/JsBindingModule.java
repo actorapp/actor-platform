@@ -165,7 +165,7 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
     public JsBindedValue<String> getOnlineStatus() {
         if (onlineState == null) {
 
-            final GlobalStateVM vm = context().getAppStateModule().getGlobalStateVM();
+            final GlobalStateVM vm = context().getConductor().getGlobalStateVM();
             onlineState = new JsBindedValue<>("online");
 
             vm.getIsConnecting().subscribe(new ValueChangedListener<Boolean>() {
@@ -307,11 +307,11 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
                             value.changeValue(null);
                             return;
                         }
-                        String presence = messenger.getFormatter().formatGroupMembers(groupVM.getMembersCount());
+                        String presence = messenger.getFormatter().formatGroupMembers(groupVM.getMembersCount().get());
                         if (val > 0) {
                             presence += ", " + messenger.getFormatter().formatGroupOnline(val);
                         }
-                        value.changeValue(JsOnlineGroup.create(groupVM.getMembersCount(), val, presence, false));
+                        value.changeValue(JsOnlineGroup.create(groupVM.getMembersCount().get(), val, presence, false));
                     } else {
                         value.changeValue(JsOnlineGroup.create(0, 0, "Not member", false));
                     }
@@ -430,7 +430,7 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
 
     public JsBindedValue<JsCounter> getGlobalCounter() {
         if (globalCounter == null) {
-            ValueModel<Integer> counter = context().getAppStateModule().getGlobalStateVM().getGlobalCounter();
+            ValueModel<Integer> counter = context().getConductor().getGlobalStateVM().getGlobalCounter();
             globalCounter = new JsBindedValue<>(JsCounter.create(counter.get()));
             counter.subscribe(new ValueChangedListener<Integer>() {
                 @Override
@@ -444,7 +444,7 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
 
     public JsBindedValue<JsCounter> getTempGlobalCounter() {
         if (tempGlobalCounter == null) {
-            ValueModel<Integer> counter = context().getAppStateModule().getGlobalStateVM().getGlobalTempCounter();
+            ValueModel<Integer> counter = context().getConductor().getGlobalStateVM().getGlobalTempCounter();
             tempGlobalCounter = new JsBindedValue<>(JsCounter.create(counter.get()));
             counter.subscribe(new ValueChangedListener<Integer>() {
                 @Override

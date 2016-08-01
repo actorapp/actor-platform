@@ -197,17 +197,14 @@ public class Modules implements ModuleContext {
         calls.run();
         timing.section("Stickers");
         stickers.run();
+        timing.section("Conductor:end");
+        conductor.runAfter();
         timing.end();
 
         if (Runtime.isMainThread()) {
             messenger.onLoggedIn();
         } else {
-            Runtime.postToMainThread(new Runnable() {
-                @Override
-                public void run() {
-                    messenger.onLoggedIn();
-                }
-            });
+            Runtime.postToMainThread(() -> messenger.onLoggedIn());
         }
     }
 

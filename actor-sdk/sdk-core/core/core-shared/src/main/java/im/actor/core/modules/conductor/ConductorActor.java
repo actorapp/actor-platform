@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import im.actor.core.AutoJoinType;
 import im.actor.core.api.rpc.RequestNotifyAboutDeviceInfo;
+import im.actor.core.api.rpc.ResponseVoid;
 import im.actor.core.modules.ModuleActor;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.util.JavaUtil;
@@ -20,8 +21,11 @@ import im.actor.runtime.Log;
 public class ConductorActor extends ModuleActor {
 
     public static final String TAG = "Conductor";
+    private static final ResponseVoid DUMB = null;
+    private static final Integer DUMB2 = null;
 
     private AppStateVM appStateVM;
+    private boolean isStarted = false;
 
     public ConductorActor(ModuleContext context) {
         super(context);
@@ -34,7 +38,15 @@ public class ConductorActor extends ModuleActor {
         updateDeviceInfoIfNeeded();
 
         appStateVM = context().getConductor().getAppStateVM();
+    }
 
+    public void onFinishLaunching() {
+        if (isStarted) {
+            return;
+        }
+        isStarted = true;
+        unstashAll();
+        
         if (appStateVM.isDialogsLoaded() && appStateVM.isContactsLoaded() && appStateVM.isSettingsLoaded()) {
             onInitialDataDownloaded();
         }
@@ -202,17 +214,43 @@ public class ConductorActor extends ModuleActor {
     @Override
     public void onReceive(Object message) {
         if (message instanceof DialogsLoaded) {
+            if (!isStarted) {
+                stash();
+                return;
+            }
             onDialogsLoaded();
         } else if (message instanceof ContactsLoaded) {
+            if (!isStarted) {
+                stash();
+                return;
+            }
             onContactsLoaded();
         } else if (message instanceof SettingsLoaded) {
+            if (!isStarted) {
+                stash();
+                return;
+            }
             onSettingsLoaded();
         } else if (message instanceof BookImported) {
+            if (!isStarted) {
+                stash();
+                return;
+            }
             onBookImported();
         } else if (message instanceof ContactsChanged) {
+            if (!isStarted) {
+                stash();
+                return;
+            }
             onContactsChanged(((ContactsChanged) message).isEmpty());
         } else if (message instanceof DialogsChanged) {
+            if (!isStarted) {
+                stash();
+                return;
+            }
             onDialogsChanged(((DialogsChanged) message).isEmpty());
+        } else if (message instanceof FinishLaunching) {
+            onFinishLaunching();
         } else {
             super.onReceive(message);
         }
@@ -256,5 +294,9 @@ public class ConductorActor extends ModuleActor {
         public boolean isEmpty() {
             return isEmpty;
         }
+    }
+
+    public static class FinishLaunching {
+
     }
 }

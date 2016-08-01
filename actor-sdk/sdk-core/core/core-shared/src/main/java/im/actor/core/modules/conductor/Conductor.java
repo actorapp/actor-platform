@@ -11,6 +11,10 @@ public class Conductor extends ActorInterface {
         super(system().actorOf("conductor", () -> new ConductorActor(context)));
     }
 
+    public void finishLaunching() {
+        send(new ConductorActor.FinishLaunching());
+    }
+
     public void onContactsLoaded() {
         send(new ConductorActor.ContactsLoaded());
     }
