@@ -22,6 +22,10 @@ public class ConductorModule extends AbsModule {
         this.conductor = new Conductor(context());
     }
 
+    public void runAfter() {
+        this.conductor.finishLaunching();
+    }
+
     public Conductor getConductor() {
         return conductor;
     }

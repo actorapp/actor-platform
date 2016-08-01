@@ -30,6 +30,8 @@ import ActorSDK
         
         ActorSDK.sharedActor().style.dialogAvatarSize = 58
         
+        ActorSDK.sharedActor().autoJoinGroups = ["actor_news"]
+        
         // Creating Actor
         ActorSDK.sharedActor().createActor()
         
