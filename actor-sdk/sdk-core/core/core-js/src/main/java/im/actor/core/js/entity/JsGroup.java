@@ -6,6 +6,7 @@ package im.actor.core.js.entity;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
+
 import im.actor.core.entity.Avatar;
 import im.actor.core.entity.GroupMember;
 import im.actor.core.entity.Peer;
@@ -21,7 +22,7 @@ import java.util.HashSet;
 public class JsGroup extends JavaScriptObject {
     public static JsGroup fromGroupVM(GroupVM groupVM, JsMessenger messenger) {
         int online = groupVM.getPresence().get();
-        String presence = messenger.getFormatter().formatGroupMembers(groupVM.getMembersCount());
+        String presence = messenger.getFormatter().formatGroupMembers(groupVM.getMembersCount().get());
         if (online > 0) {
             presence += ", " + messenger.getFormatter().formatGroupOnline(online);
         }
@@ -45,7 +46,7 @@ public class JsGroup extends JavaScriptObject {
             // Log.d("JsGroup", "PeerInfo: " + peerInfo);
             convertedMembers.add(JsGroupMember.create(peerInfo,
                     g.isAdministrator(),
-                    g.getInviterUid() == messenger.myUid() || groupVM.getCreatorId() == messenger.myUid()));
+                    g.getInviterUid() == messenger.myUid()));
         }
         Collections.sort(convertedMembers, new Comparator<JsGroupMember>() {
             @Override
@@ -58,16 +59,16 @@ public class JsGroup extends JavaScriptObject {
             jsMembers.push(member);
         }
         return create(groupVM.getId(), groupVM.getName().get(), groupVM.getAbout().get(), fileUrl, bigFileUrl,
-                Placeholders.getPlaceholder(groupVM.getId()), groupVM.getCreatorId(), presence,
+                Placeholders.getPlaceholder(groupVM.getId()), presence,
                 jsMembers);
     }
 
     public static native JsGroup create(int id, String name, String about, String avatar, String bigAvatar,
-                                        String placeholder, int adminId, String presence,
+                                        String placeholder, String presence,
                                         JsArray<JsGroupMember> members)/*-{
         return {
             id: id, name: name, about: about, avatar: avatar, bigAvatar: bigAvatar, placeholder: placeholder,
-            adminId: adminId, presence: presence, members: members
+            presence: presence, members: members
         };
     }-*/;
 
