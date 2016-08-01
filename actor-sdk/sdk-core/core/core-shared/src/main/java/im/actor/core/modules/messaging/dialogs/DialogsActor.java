@@ -333,7 +333,7 @@ public class DialogsActor extends ModuleActor {
 
         if (!isEmpty.equals(emptyNotified)) {
             emptyNotified = isEmpty;
-            context().getAppStateModule().onDialogsUpdate(isEmpty);
+            context().getConductor().getConductor().onDialogsChanged(isEmpty);
         }
     }
 

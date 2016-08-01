@@ -399,7 +399,7 @@ public class Messenger {
     @NotNull
     @ObjectiveCName("getAppState")
     public AppStateVM getAppState() {
-        return modules.getAppStateModule().getAppStateVM();
+        return modules.getConductor().getAppStateVM();
     }
 
     /**
@@ -410,7 +410,7 @@ public class Messenger {
     @NotNull
     @ObjectiveCName("getGlobalState")
     public GlobalStateVM getGlobalState() {
-        return modules.getAppStateModule().getGlobalStateVM();
+        return modules.getConductor().getGlobalStateVM();
     }
 
     /**

@@ -30,25 +30,19 @@ public class GlobalStateVM {
         this.isConnecting = new BooleanValueModel("app.connecting", false);
         this.isSyncing = new BooleanValueModel("app.syncing", false);
 
-        context.getEvents().subscribe(new BusSubscriber() {
-            @Override
-            public void onBusEvent(Event event) {
-                if (event instanceof AppVisibleChanged) {
-                    if (((AppVisibleChanged) event).isVisible()) {
-                        isAppVisible.change(true);
-                        globalTempCounter.change(0);
-                    } else {
-                        isAppVisible.change(false);
-                    }
+        context.getEvents().subscribe(event -> {
+            if (event instanceof AppVisibleChanged) {
+                if (((AppVisibleChanged) event).isVisible()) {
+                    isAppVisible.change(true);
+                    globalTempCounter.change(0);
+                } else {
+                    isAppVisible.change(false);
                 }
             }
         }, AppVisibleChanged.EVENT);
 
-        context.getEvents().subscribe(new BusSubscriber() {
-            @Override
-            public void onBusEvent(Event event) {
-                isConnecting.change(((ConnectingStateChanged) event).isConnecting());
-            }
+        context.getEvents().subscribe(event -> {
+            isConnecting.change(((ConnectingStateChanged) event).isConnecting());
         }, ConnectingStateChanged.EVENT);
     }
 

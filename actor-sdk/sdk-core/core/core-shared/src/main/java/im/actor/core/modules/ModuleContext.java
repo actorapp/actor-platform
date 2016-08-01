@@ -7,11 +7,9 @@ import im.actor.core.modules.api.ApiModule;
 import im.actor.core.modules.auth.Authentication;
 import im.actor.core.modules.eventbus.EventBusModule;
 import im.actor.core.modules.sequence.Updates;
-import im.actor.core.modules.misc.AppStateModule;
 import im.actor.core.modules.calls.CallsModule;
 import im.actor.core.modules.contacts.ContactsModule;
-import im.actor.core.modules.misc.DeviceInfoModule;
-import im.actor.core.modules.misc.DisplayLists;
+import im.actor.core.modules.conductor.DisplayLists;
 import im.actor.core.modules.encryption.EncryptionModule;
 import im.actor.core.modules.external.ExternalModule;
 import im.actor.core.modules.file.FilesModule;
@@ -29,6 +27,7 @@ import im.actor.core.modules.stickers.StickersModule;
 import im.actor.core.modules.storage.StorageModule;
 import im.actor.core.modules.typing.TypingModule;
 import im.actor.core.modules.users.UsersModule;
+import im.actor.core.modules.conductor.ConductorModule;
 import im.actor.core.network.ActorApi;
 import im.actor.runtime.eventbus.EventBus;
 import im.actor.runtime.storage.PreferencesStorage;
@@ -84,8 +83,6 @@ public interface ModuleContext {
 
     ProfileModule getProfileModule();
 
-    AppStateModule getAppStateModule();
-
     PushesModule getPushesModule();
 
     SecurityModule getSecurityModule();
@@ -100,9 +97,9 @@ public interface ModuleContext {
 
     MentionsModule getMentions();
 
-    DeviceInfoModule getDeviceInfoModule();
-
     EncryptionModule getEncryption();
 
     EventBusModule getEventBus();
+
+    ConductorModule getConductor();
 }
