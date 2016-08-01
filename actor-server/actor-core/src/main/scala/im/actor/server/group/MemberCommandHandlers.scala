@@ -5,6 +5,7 @@ import java.time.{ Instant, LocalDateTime, ZoneOffset }
 import akka.actor.Status
 import akka.http.scaladsl.util.FastFuture
 import akka.pattern.pipe
+import com.github.ghik.silencer.silent
 import im.actor.api.rpc.Update
 import im.actor.api.rpc.groups._
 import im.actor.api.rpc.messaging.{ ApiServiceMessage, UpdateChatDropCache, UpdateMessage }
@@ -83,7 +84,7 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
         val serviceMessage = GroupServiceMessages.userInvited(cmd.inviteeUserId)
 
         //TODO: remove deprecated
-        db.run(GroupUserRepo.create(groupId, cmd.inviteeUserId, cmd.inviterUserId, evt.ts, None, isAdmin = false))
+        db.run(GroupUserRepo.create(groupId, cmd.inviteeUserId, cmd.inviterUserId, evt.ts, None, isAdmin = false): @silent)
 
         def inviteGROUPUpdates: Future[SeqStateDate] =
           for {
@@ -215,7 +216,7 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
       val wasInvited = state.isInvited(cmd.joiningUserId)
 
       // trying to figure out who invited joining user.
-      // Descdending priority:
+      // Descending priority:
       // • inviter defined in `Join` command (when invited via token)
       // • inviter from members list (when invited by other user)
       // • group creator (safe fallback)
@@ -292,7 +293,7 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
           invitedAt = optMember.map(_.invitedAt).getOrElse(date),
           joinedAt = Some(LocalDateTime.now(ZoneOffset.UTC)),
           isAdmin = false
-        ))
+        ): @silent)
 
         def joinGROUPUpdates: Future[SeqStateDate] =
           for {
@@ -447,8 +448,8 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
         //TODO: remove deprecated. GroupInviteTokenRepo don't have replacement yet.
         db.run(
           for {
-            _ ← GroupUserRepo.delete(groupId, cmd.userId)
-            _ ← GroupInviteTokenRepo.revoke(groupId, cmd.userId)
+            _ ← GroupUserRepo.delete(groupId, cmd.userId): @silent
+            _ ← GroupInviteTokenRepo.revoke(groupId, cmd.userId): @silent
           } yield ()
         )
 
@@ -582,8 +583,8 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
         //TODO: remove deprecated. GroupInviteTokenRepo don't have replacement yet.
         db.run(
           for {
-            _ ← GroupUserRepo.delete(groupId, cmd.kickedUserId)
-            _ ← GroupInviteTokenRepo.revoke(groupId, cmd.kickedUserId)
+            _ ← GroupUserRepo.delete(groupId, cmd.kickedUserId): @silent
+            _ ← GroupInviteTokenRepo.revoke(groupId, cmd.kickedUserId): @silent
           } yield ()
         )
 

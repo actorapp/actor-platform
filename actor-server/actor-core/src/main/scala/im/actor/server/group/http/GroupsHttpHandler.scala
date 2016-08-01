@@ -6,6 +6,7 @@ import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.util.FastFuture
+import com.github.ghik.silencer.silent
 import im.actor.server.api.http.json.JsonFormatters.{ errorsFormat, groupInviteInfoFormat }
 import im.actor.server.api.http.{ HttpHandler, json }
 import im.actor.server.db.DbExtension
@@ -50,7 +51,7 @@ private[group] final class GroupsHttpHandler()(implicit system: ActorSystem) ext
     }
 
   private def retrieve(tokenOrShortName: String): Future[Either[json.Errors, json.GroupInviteInfo]] = for {
-    byToken ← db.run(GroupInviteTokenRepo.findByToken(tokenOrShortName))
+    byToken ← db.run(GroupInviteTokenRepo.findByToken(tokenOrShortName): @silent)
     byGroupId ← globalNamesStorage.getGroupId(tokenOrShortName)
     optInviteData = (byToken, byGroupId) match {
       case (Some(tokenInfo), _) ⇒ Some(tokenInfo.groupId → Some(tokenInfo.creatorId))

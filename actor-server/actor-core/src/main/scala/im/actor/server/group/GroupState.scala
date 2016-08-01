@@ -7,8 +7,9 @@ import im.actor.api.rpc.groups.ApiAdminSettings
 import im.actor.api.rpc.misc.ApiExtension
 import im.actor.server.cqrs.{ Event, ProcessorState }
 import im.actor.server.file.Avatar
+import im.actor.server.group.GroupErrors.IncorrectGroupType
 import im.actor.server.group.GroupEvents._
-import im.actor.server.group.GroupType.{ Channel, General }
+import im.actor.server.group.GroupType.{ Channel, General, Unrecognized }
 
 private[group] final case class Member(
   userId:        Int,
@@ -159,8 +160,9 @@ private[group] final case class GroupState(
 
   def getShowableOwner(clientUserId: Int): Option[Int] =
     groupType match {
-      case General ⇒ Some(creatorUserId)
-      case Channel ⇒ if (isAdmin(clientUserId)) Some(creatorUserId) else None
+      case General         ⇒ Some(creatorUserId)
+      case Channel         ⇒ if (isAdmin(clientUserId)) Some(creatorUserId) else None
+      case Unrecognized(v) ⇒ throw IncorrectGroupType(v)
     }
 
   override def updated(e: Event): GroupState = e match {
@@ -332,8 +334,9 @@ private[group] final case class GroupState(
     private def canSendMessage(clientUserId: Int) =
       {
         groupType match {
-          case General ⇒ isMember(clientUserId)
-          case Channel ⇒ isAdmin(clientUserId) || isOwner(clientUserId)
+          case General         ⇒ isMember(clientUserId)
+          case Channel         ⇒ isAdmin(clientUserId) || isOwner(clientUserId)
+          case Unrecognized(v) ⇒ throw IncorrectGroupType(v)
         }
       } || bot.exists(_.userId == clientUserId)
 
@@ -412,8 +415,9 @@ private[group] final case class GroupState(
      */
     def canViewMembers(clientUserId: Int) =
       groupType match {
-        case General ⇒ isMember(clientUserId)
-        case Channel ⇒ isAdmin(clientUserId) || isOwner(clientUserId)
+        case General         ⇒ isMember(clientUserId)
+        case Channel         ⇒ isAdmin(clientUserId) || isOwner(clientUserId)
+        case Unrecognized(v) ⇒ throw IncorrectGroupType(v)
       }
 
     /**
@@ -455,8 +459,9 @@ private[group] final case class GroupState(
      */
     def canKickInvited(userId: Int): Boolean =
       groupType match {
-        case General ⇒ isMember(userId)
-        case Channel ⇒ isAdmin(userId) || isOwner(userId)
+        case General         ⇒ isMember(userId)
+        case Channel         ⇒ isAdmin(userId) || isOwner(userId)
+        case Unrecognized(v) ⇒ throw IncorrectGroupType(v)
       }
 
     /**

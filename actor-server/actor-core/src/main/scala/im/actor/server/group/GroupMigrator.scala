@@ -9,6 +9,7 @@ import scala.concurrent.{ ExecutionContext, Future, Promise }
 import akka.actor.{ ActorSystem, Props }
 import akka.pattern.pipe
 import akka.persistence.RecoveryCompleted
+import com.github.ghik.silencer.silent
 import im.actor.server.db.DbExtension
 import org.joda.time.DateTime
 import im.actor.server.event.TSEvent
@@ -49,12 +50,12 @@ private final class GroupMigrator(promise: Promise[Unit], groupId: Int) extends 
   override def persistenceId = GroupProcessor.persistenceIdFor(groupId)
 
   private def migrate(): Unit = {
-    db.run(GroupRepo.findFull(groupId)) foreach {
+    db.run(GroupRepo.findFull(groupId): @silent) foreach {
       case Some(group) ⇒
         db.run(for {
           avatarOpt ← AvatarDataRepo.findByGroupId(groupId)
-          bots ← GroupBotRepo.findByGroup(groupId) map (_.map(Seq(_)).getOrElse(Seq.empty))
-          users ← GroupUserRepo.find(groupId)
+          bots ← (GroupBotRepo.findByGroup(groupId): @silent) map (_.map(Seq(_)).getOrElse(Seq.empty))
+          users ← GroupUserRepo.find(groupId): @silent
         } yield Migrate(
           group = group,
           avatarData = avatarOpt,
