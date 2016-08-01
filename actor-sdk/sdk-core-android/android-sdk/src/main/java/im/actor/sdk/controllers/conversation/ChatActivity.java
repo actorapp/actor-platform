@@ -96,8 +96,8 @@ public class ChatActivity extends BaseActivity {
 
         if (saveInstance == null) {
             Peer peer = Peer.fromUniqueId(getIntent().getExtras().getLong(EXTRA_CHAT_PEER));
-            ChatFragment fragment = ActorSDK.sharedActor().getDelegate().fragmentForChat(peer);
-            if (fragment == null) {
+            chatFragment = ActorSDK.sharedActor().getDelegate().fragmentForChat(peer);
+            if (chatFragment == null) {
                 chatFragment = ChatFragment.create(peer);
             }
             getSupportFragmentManager().beginTransaction()
