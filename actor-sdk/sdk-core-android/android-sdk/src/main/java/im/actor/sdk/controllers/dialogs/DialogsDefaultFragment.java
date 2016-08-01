@@ -85,7 +85,9 @@ public class DialogsDefaultFragment extends BaseDialogFragment {
                             startActivity(Intents.editGroupTitle(dialog.getPeer().getPeerId(), getActivity()));
                         } else if (which == 2) {
                             new AlertDialog.Builder(getActivity())
-                                    .setMessage(getString(R.string.alert_leave_group_message, dialog.getDialogTitle()))
+                                    .setMessage(getString(groupVM.getIsCanLeave().get() ? R.string.alert_delete_group_title :
+                                            groupVM.getIsCanDelete().get() ? R.string.alert_delete_group_title :
+                                                    R.string.alert_leave_group_message, dialog.getDialogTitle()))
                                     .setNegativeButton(R.string.dialog_cancel, null)
                                     .setPositiveButton(R.string.alert_leave_group_yes, (d1, which1) -> {
                                         if (groupVM.getIsCanLeave().get()) {

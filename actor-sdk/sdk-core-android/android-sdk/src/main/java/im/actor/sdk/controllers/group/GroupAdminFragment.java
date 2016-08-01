@@ -3,13 +3,20 @@ package im.actor.sdk.controllers.group;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import im.actor.core.entity.GroupType;
+import im.actor.core.entity.Peer;
+import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.GroupVM;
+import im.actor.runtime.actors.messages.*;
+import im.actor.runtime.actors.messages.Void;
+import im.actor.runtime.mvvm.ValueDoubleListener;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.BaseFragment;
@@ -136,22 +143,39 @@ public class GroupAdminFragment extends BaseFragment {
             delete.setText(R.string.group_delete);
             deleteHint.setText(R.string.group_delete_hint);
         }
-        bind(groupVM.getIsCanDelete(), canDelete -> {
-            if (canDelete) {
+
+        bind(groupVM.getIsCanLeave(), groupVM.getIsCanDelete(), (canLeave, canDelete) -> {
+            if (canDelete || canDelete) {
                 deleteContainer.setVisibility(View.VISIBLE);
                 delete.setOnClickListener(v -> {
-                    execute(messenger().deleteGroup(groupVM.getId())).then(r -> {
-                        ActorSDK.sharedActor().startMessagingApp(getActivity());
-                        finishActivity();
-                    });
+
+                    new AlertDialog.Builder(getActivity())
+                            .setMessage(getString(groupVM.getIsCanLeave().get() ? R.string.alert_delete_group_title :
+                                    groupVM.getIsCanDelete().get() ? R.string.alert_delete_group_title :
+                                            R.string.alert_leave_group_message, groupVM.getName().get()))
+                            .setNegativeButton(R.string.dialog_cancel, null)
+                            .setPositiveButton(R.string.alert_delete_group_yes, (d1, which1) -> {
+                                if (groupVM.getIsCanLeave().get()) {
+                                    execute(messenger().leaveAndDeleteGroup(groupVM.getId()), R.string.progress_common).failure(e -> {
+                                        Toast.makeText(getActivity(), R.string.toast_unable_leave, Toast.LENGTH_LONG).show();
+                                    });
+                                } else if (groupVM.getIsCanDelete().get()) {
+                                    execute(messenger().deleteGroup(groupVM.getId()), R.string.progress_common).failure(e -> {
+                                        Toast.makeText(getActivity(), R.string.toast_unable_delete_chat, Toast.LENGTH_LONG).show();
+                                    });
+                                }
+                            })
+                            .show();
+
                 });
+
             } else {
                 deleteContainer.setVisibility(View.GONE);
                 delete.setOnClickListener(null);
                 delete.setClickable(false);
             }
-
         });
+
 
         return res;
     }
