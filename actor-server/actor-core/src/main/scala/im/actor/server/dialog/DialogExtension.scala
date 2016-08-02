@@ -15,6 +15,7 @@ import im.actor.api.rpc.peers.ApiPeer
 import im.actor.extension.InternalExtensions
 import im.actor.server.db.DbExtension
 import im.actor.server.dialog.DialogCommands._
+import im.actor.server.dialog.DialogRootCommands.BumpAck
 import im.actor.server.group.{ GroupEnvelope, GroupExtension }
 import im.actor.server.model._
 import im.actor.server.persist.HistoryMessageRepo
@@ -100,7 +101,7 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
       senderUserId = senderUserId,
       sendMessage = SendMessage(
         origin = Some(Peer.privat(senderUserId)),
-        dest = Some(peer.asModel),
+        dest = Some(mPeer),
         senderAuthId = None,
         date = None,
         randomId = randomId,
@@ -155,25 +156,26 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
   def ackSendMessage(peer: Peer, sm: SendMessage): Future[SendMessageAck] =
     (processorRegion(peer) ? envelope(peer, DialogEnvelope().withSendMessage(sm))).mapTo[SendMessageAck]
 
-  def writeMessage(
-    peer:         ApiPeer,
-    senderUserId: Int,
-    date:         Instant,
-    randomId:     Long,
-    message:      ApiMessage
-  ): Future[Unit] =
-    withValidPeer(peer.asModel, senderUserId, failed = FastFuture.successful(())) {
-      for {
-        memberIds ← fetchMemberIds(DialogId(peer.asModel, senderUserId))
-        _ ← Future.sequence(memberIds map (writeMessageSelf(_, peer, senderUserId, new DateTime(date.toEpochMilli), randomId, message)))
-      } yield ()
-    }
+  // TODO: figure out if we still need it.
+  //  def writeMessage(
+  //    peer:         ApiPeer,
+  //    senderUserId: Int,
+  //    date:         Instant,
+  //    randomId:     Long,
+  //    message:      ApiMessage
+  //  ): Future[Unit] =
+  //    withValidPeer(peer.asModel, senderUserId, failed = FastFuture.successful(())) {
+  //      for {
+  //        memberIds ← fetchMemberIds(DialogId(peer.asModel, senderUserId))
+  //        _ ← Future.sequence(memberIds map (writeMessageSelf(_, peer, senderUserId, new DateTime(date.toEpochMilli), randomId, message)))
+  //      } yield ()
+  //    }
 
   def writeMessageSelf(
     userId:       Int,
     peer:         ApiPeer,
     senderUserId: Int,
-    date:         DateTime,
+    dateMillis:   Long,
     randomId:     Long,
     message:      ApiMessage
   ): Future[Unit] =
@@ -182,7 +184,7 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
         envelope(Peer.privat(userId), DialogEnvelope().withWriteMessageSelf(WriteMessageSelf(
           dest = Some(peer.asModel),
           senderUserId,
-          date.getMillis,
+          dateMillis,
           randomId,
           message
         )))) map (_ ⇒ ())
@@ -258,6 +260,17 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
       (userExt.processorRegion.ref ?
         UserEnvelope(userId).withDialogRootEnvelope(DialogRootEnvelope().withDelete(DialogRootCommands.Delete(Some(peer), clientAuthId))))
         .mapTo[SeqState]
+    }
+
+  def bump(userId: Int, peer: Peer): Future[Unit] =
+    withValidPeer(peer, userId, failed = Future.failed[Unit](DialogErrors.MessageToSelf)) {
+      (userExt.processorRegion.ref ?
+        UserEnvelope(userId)
+        .withDialogRootEnvelope(
+          DialogRootEnvelope().withBump(DialogRootCommands.Bump(Some(peer)))
+        ))
+        .mapTo[BumpAck]
+        .map(_ ⇒ ())
     }
 
   def setReaction(userId: Int, authId: Long, peer: Peer, randomId: Long, code: String): Future[SetReactionAck] =

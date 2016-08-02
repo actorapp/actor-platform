@@ -5,7 +5,6 @@ import java.time.Instant
 import akka.actor.Status
 import akka.http.scaladsl.util.FastFuture
 import akka.pattern.pipe
-import com.google.protobuf.wrappers.Int64Value
 import im.actor.api.rpc.PeersImplicits
 import im.actor.api.rpc.messaging._
 import im.actor.server.ApiConversions._
@@ -17,7 +16,6 @@ import im.actor.server.pubsub.{ PeerMessage, PubSubExtension }
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.social.SocialManager
 import im.actor.util.cache.CacheHelpers._
-import org.joda.time.DateTime
 
 import scala.concurrent.Future
 import scala.util.Failure
@@ -57,19 +55,31 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
             case true ⇒ FastFuture.failed(NotUniqueRandomId)
             case false ⇒
               withNonBlockedPeer[SeqStateDate](userId, sm.getDest)(
-                default = for {
-                SendMessageAck(updatedSender) ← dialogExt.ackSendMessage(peer, sm.withDate(sendDate))
-                finalPeer = updatedSender getOrElse selfPeer
-                _ ← db.run(writeHistoryMessage(finalPeer, peer, new DateTime(sendDate), sm.randomId, message.header, message.toByteArray))
-                //_ = dialogExt.updateCounters(peer, userId)
-                SeqState(seq, state) ← deliveryExt.senderDelivery(userId, optClientAuthId, peer, sm.randomId, sendDate, message, sm.isFat, sm.deliveryTag)
-              } yield SeqStateDate(seq, state, sendDate),
-                failed = for {
-                _ ← db.run(writeHistoryMessageSelf(userId, peer, userId, new DateTime(sendDate), sm.randomId, message.header, message.toByteArray))
-                SeqState(seq, state) ← deliveryExt.senderDelivery(userId, optClientAuthId, peer, sm.randomId, sendDate, message, sm.isFat, sm.deliveryTag)
-              } yield {
-                SeqStateDate(seq, state, sendDate)
-              }
+                default =
+                for {
+                  SendMessageAck(updatedSender) ← dialogExt.ackSendMessage(peer, sm.withDate(sendDate))
+                  finalPeer = updatedSender getOrElse selfPeer
+                  _ ← db.run(writeHistoryMessage(finalPeer, peer, sendDate, sm.randomId, message.header, message.toByteArray))
+                  //_ = dialogExt.updateCounters(peer, userId)
+                  _ ← dialogExt.bump(userId, peer)
+                  SeqState(seq, state) ← deliveryExt.senderDelivery(
+                    senderUserId = userId,
+                    senderAuthId = optClientAuthId,
+                    peer = peer,
+                    randomId = sm.randomId,
+                    timestamp = sendDate,
+                    message = message,
+                    isFat = sm.isFat,
+                    deliveryTag = sm.deliveryTag
+                  )
+                } yield SeqStateDate(seq, state, sendDate),
+                failed =
+                for {
+                  _ ← db.run(writeHistoryMessageSelf(userId, peer, userId, sendDate, sm.randomId, message.header, message.toByteArray))
+                  SeqState(seq, state) ← deliveryExt.senderDelivery(userId, optClientAuthId, peer, sm.randomId, sendDate, message, sm.isFat, sm.deliveryTag)
+                } yield {
+                  SeqStateDate(seq, state, sendDate)
+                }
               )
           }
         } yield seqStateDate
@@ -90,10 +100,19 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
         SocialManager.recordRelation(userId, sm.getOrigin.id)
       }
 
-      deliveryExt
-        .receiverDelivery(userId, sm.getOrigin.id, peer, sm.randomId, messageDate, sm.message, sm.isFat, sm.deliveryTag)
-        .map(_ ⇒ SendMessageAck())
-        .pipeTo(sender())
+      (for {
+        _ ← dialogExt.bump(userId, peer)
+        _ ← deliveryExt.receiverDelivery(
+          receiverUserId = userId,
+          senderUserId = sm.getOrigin.id,
+          peer = peer,
+          randomId = sm.randomId,
+          timestamp = messageDate,
+          message = sm.message,
+          isFat = sm.isFat,
+          deliveryTag = sm.deliveryTag
+        )
+      } yield SendMessageAck()) pipeTo sender()
 
       deliveryExt.sendCountersUpdate(userId)
     }
@@ -110,8 +129,18 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
     } else {
       persist(NewMessage(randomId, Instant.ofEpochMilli(dateMillis), senderUserId, message.header)) { e ⇒
         commit(e)
-        db.run(writeHistoryMessageSelf(userId, peer, senderUserId, new DateTime(dateMillis), randomId, message.header, message.toByteArray))
-          .map(_ ⇒ WriteMessageSelfAck()) pipeTo sender()
+        (for {
+          _ ← dialogExt.bump(userId, peer)
+          _ ← db.run(writeHistoryMessageSelf(
+            userId,
+            peer,
+            senderUserId,
+            dateMillis,
+            randomId,
+            message.header,
+            message.toByteArray
+          ))
+        } yield WriteMessageSelfAck()) pipeTo sender()
       }
     }
   }
