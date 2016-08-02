@@ -157,6 +157,7 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
               ),
               deliveryTag = Some(Optimization.GroupV2)
             )
+            _ ← dialogExt.bump(cmd.inviteeUserId, apiGroupPeer.asModel)
           } yield SeqStateDate(seq, state, dateMillis)
 
         val result: Future[SeqStateDate] = for {
@@ -330,17 +331,28 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
                 serviceMessage // no delivery tag. This updated handled this way in Groups V1
               ) map (_.date)
             } else {
-              // push join message only to joining user
-              seqUpdExt.deliverUserUpdate(
-                userId = cmd.joiningUserId,
-                update = serviceMessageUpdate(
-                  cmd.joiningUserId,
-                  dateMillis,
-                  randomId,
+              // write service message only for joining user
+              // and push join message
+              for {
+                _ ← dialogExt.writeMessageSelf(
+                  userId = cmd.joiningUserId,
+                  peer = apiGroupPeer,
+                  senderUserId = cmd.joiningUserId,
+                  dateMillis = dateMillis,
+                  randomId = randomId,
                   serviceMessage
-                ),
-                deliveryTag = Some(Optimization.GroupV2)
-              ) map (_ ⇒ dateMillis)
+                )
+                _ ← seqUpdExt.deliverUserUpdate(
+                  userId = cmd.joiningUserId,
+                  update = serviceMessageUpdate(
+                    cmd.joiningUserId,
+                    dateMillis,
+                    randomId,
+                    serviceMessage
+                  ),
+                  deliveryTag = Some(Optimization.GroupV2)
+                )
+              } yield dateMillis
             }
           } yield SeqStateDate(seq, state, date)
 
@@ -377,6 +389,7 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
               ),
               deliveryTag = Some(Optimization.GroupV2)
             )
+            _ ← dialogExt.bump(cmd.joiningUserId, apiGroupPeer.asModel)
           } yield SeqStateDate(seq, state, dateMillis)
 
         val result: Future[(SeqStateDate, Vector[Int], Long)] =

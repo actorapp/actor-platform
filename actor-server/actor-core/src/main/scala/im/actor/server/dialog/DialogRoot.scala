@@ -136,36 +136,13 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
   }
 
   override protected def handleCommand: Receive = {
-    case dc: DialogCommand if dc.isInstanceOf[SendMessage] || dc.isInstanceOf[WriteMessageSelf] ⇒
-      needCheckDialog(dc) match {
-        case peerOpt @ Some(peer) ⇒
-          val now = Instant.now
-
-          val isCreated = isDialogCreated(peer)
-          val isShown = isDialogShown(peer)
-
-          val events = if (isCreated) {
-            (if (!isShown) List(Unarchived(now, peerOpt)) else List.empty) ++
-              (if (!isDialogOnTop(peer)) List(Bumped(now, peerOpt)) else List.empty)
-          } else {
-            log.debug("Creating dialog with peer type: {} id: {}", peerOpt.get.`type`, peerOpt.get.id)
-            List(Created(now, peerOpt))
-          }
-
-          persistAllAsync(events)(e ⇒ commit(e))
-
-          deferAsync(()) { _ ⇒
-            if (!isCreated || !isShown)
-              sendChatGroupsChanged(0L)
-          }
-        case None ⇒
-      }
-    case CheckArchive()                        ⇒ checkArchive()
+    case Bump(Some(peer))                      ⇒ bump(peer)
     case Archive(Some(peer), clientAuthId)     ⇒ archive(peer, clientAuthId)
     case Unarchive(Some(peer), clientAuthId)   ⇒ unarchive(peer, clientAuthId)
     case Favourite(Some(peer), clientAuthId)   ⇒ favourite(peer, clientAuthId)
     case Unfavourite(Some(peer), clientAuthId) ⇒ unfavourite(peer, clientAuthId)
     case Delete(Some(peer), clientAuthId)      ⇒ delete(peer, clientAuthId)
+    case CheckArchive()                        ⇒ checkArchive()
   }
 
   private def checkArchive(): Unit =
@@ -226,18 +203,26 @@ private class DialogRoot(val userId: Int, extensions: Seq[ApiExtension])
     }
   }
 
-  private def needCheckDialog(cmd: DialogCommand): Option[Peer] = {
-    cmd match {
-      case sm: SendMessage ⇒
-        Some(sm.getOrigin.typ match {
-          case PeerType.Group ⇒ sm.getDest
-          case PeerType.Private ⇒
-            if (selfPeer == sm.getDest) sm.getOrigin
-            else sm.getDest
-          case _ ⇒ throw new RuntimeException("Unknown peer type")
-        })
-      case wm: WriteMessageSelf ⇒ Some(wm.getDest)
-      case _                    ⇒ None
+  private def bump(peer: Peer) = {
+    val now = Instant.now
+
+    val isCreated = isDialogCreated(peer)
+    val isShown = isDialogShown(peer)
+
+    val createdEvt = if (!isCreated) Some(Created(now).withPeer(peer)) else None
+    val shownEvt = if (isCreated && !isShown) Some(Unarchived(now).withPeer(peer)) else None
+    val bumpedEvt = if (isCreated && !isDialogOnTop(peer)) Some(Bumped(now).withPeer(peer)) else None
+
+    val events: List[DialogRootEvent] = (createdEvt ++ shownEvt ++ bumpedEvt).toList
+
+    persistAllAsync(events)(e ⇒ commit(e))
+
+    val replyTo = sender()
+    deferAsync(()) { _ ⇒
+      (if (!isCreated || !isShown)
+        sendChatGroupsChanged(0L) map (_ ⇒ BumpAck())
+      else
+        FastFuture.successful(BumpAck())) pipeTo replyTo
     }
   }
 

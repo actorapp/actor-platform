@@ -23,7 +23,13 @@ object Build extends sbt.Build with Versioning with Releasing with Packaging {
         organization := "im.actor.server",
         organizationHomepage := Some(url("https://actor.im")),
         resolvers ++= Resolvers.seq,
-        scalacOptions ++= Seq("-Yopt-warnings"),
+//        scalacOptions ++= Seq(
+//          "-Ywarn-unused",
+//          "-Ywarn-adapted-args",
+//          "-Ywarn-nullary-override",
+//          "-Ywarn-nullary-unit",
+//          "-Ywarn-value-discard"
+//        ),
         parallelExecution := true
       ) ++ Sonatype.sonatypeSettings
 

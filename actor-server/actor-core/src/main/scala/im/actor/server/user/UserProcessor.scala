@@ -262,9 +262,6 @@ private[user] final class UserProcessor
       val msg = de.getAllFields.values.head
 
       msg match {
-        case dc: DialogCommand if dc.isInstanceOf[DialogCommands.SendMessage] || dc.isInstanceOf[DialogCommands.WriteMessageSelf] ⇒
-          dialogRoot(state.internalExtensions) ! msg
-          handleDialogCommand(state)(dc)
         case dc: DialogCommand ⇒ handleDialogCommand(state)(dc)
         case dq: DialogQuery   ⇒ handleDialogQuery(state)(dq)
       }
