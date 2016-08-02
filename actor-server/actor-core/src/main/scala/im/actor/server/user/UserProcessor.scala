@@ -254,8 +254,8 @@ private[user] final class UserProcessor
     case query: GetLocalName                        ⇒ contacts.ref forward query
     case StopOffice                                 ⇒ context stop self
     case ReceiveTimeout                             ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
-    case e @ DialogRootEnvelope(query, command) ⇒
-      val msg = e.getAllFields.values.head
+    case env: DialogRootEnvelope ⇒
+      val msg = env.getAllFields.values.head
 
       (dialogRoot(state.internalExtensions) ? msg) pipeTo sender()
     case de: DialogEnvelope ⇒

@@ -218,7 +218,7 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
 
   // DialogRootOperations
   def unarchive(userId: Int, clientAuthId: Long, peer: Peer): Future[SeqState] =
-    withValidPeer(peer, userId, failed = Future.failed[SeqState](DialogErrors.MessageToSelf)) {
+    withValidPeer(peer, userId) {
       (userExt.processorRegion.ref ?
         UserEnvelope(userId)
         .withDialogRootEnvelope(
@@ -228,7 +228,7 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
     }
 
   def archive(userId: Int, clientAuthId: Long, peer: Peer): Future[SeqState] =
-    withValidPeer(peer, userId, failed = Future.failed[SeqState](DialogErrors.MessageToSelf)) {
+    withValidPeer(peer, userId) {
       (userExt.processorRegion.ref ?
         UserEnvelope(userId)
         .withDialogRootEnvelope(
@@ -238,7 +238,7 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
     }
 
   def favourite(userId: Int, clientAuthId: Long, peer: Peer): Future[SeqState] =
-    withValidPeer(peer, userId, failed = Future.failed[SeqState](DialogErrors.MessageToSelf)) {
+    withValidPeer(peer, userId) {
       (userExt.processorRegion.ref ?
         UserEnvelope(userId)
         .withDialogRootEnvelope(
@@ -248,7 +248,7 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
     }
 
   def unfavourite(userId: Int, clientAuthId: Long, peer: Peer): Future[SeqState] =
-    withValidPeer(peer, userId, failed = Future.failed[SeqState](DialogErrors.MessageToSelf)) {
+    withValidPeer(peer, userId) {
       (userExt.processorRegion.ref ?
         UserEnvelope(userId)
         .withDialogRootEnvelope(DialogRootEnvelope().withUnfavourite(DialogRootCommands.Unfavourite(Some(peer), clientAuthId))))
@@ -263,7 +263,7 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
     }
 
   def bump(userId: Int, peer: Peer): Future[Unit] =
-    withValidPeer(peer, userId, failed = Future.failed[Unit](DialogErrors.MessageToSelf)) {
+    withValidPeer(peer, userId) {
       (userExt.processorRegion.ref ?
         UserEnvelope(userId)
         .withDialogRootEnvelope(

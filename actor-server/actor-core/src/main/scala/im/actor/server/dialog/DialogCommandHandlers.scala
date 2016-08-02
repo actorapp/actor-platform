@@ -40,7 +40,7 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
         replyTo forward fail
         context.become(receiveCommand)
         unstashAll()
-    }: Receive) orElse reactions, discardOld = true)
+    }: Receive) orElse reactions orElse queries, discardOld = true)
 
     val optClientAuthId = sm.senderAuthId
     withValidAccessHash(sm.getDest, optClientAuthId, sm.accessHash) {
