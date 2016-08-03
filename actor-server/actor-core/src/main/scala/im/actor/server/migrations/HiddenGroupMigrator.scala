@@ -2,6 +2,7 @@ package im.actor.server.migrations
 
 import akka.actor.{ ActorLogging, ActorSystem, PoisonPill, Props }
 import akka.persistence.{ PersistentActor, RecoveryCompleted }
+import com.github.ghik.silencer.silent
 import im.actor.concurrent.FutureExt
 import im.actor.server.db.DbExtension
 import im.actor.server.event.TSEvent
@@ -52,7 +53,7 @@ private final class HiddenGroupMigrator(promise: Promise[Unit], groupId: Int) ex
 
   private def migrate(): Unit = {
     if (isHidden) {
-      db.run(GroupRepo.makeHidden(groupId)) onComplete {
+      db.run(GroupRepo.makeHidden(groupId): @silent) onComplete {
         case Failure(e) ⇒
           promise.failure(e)
           self ! PoisonPill

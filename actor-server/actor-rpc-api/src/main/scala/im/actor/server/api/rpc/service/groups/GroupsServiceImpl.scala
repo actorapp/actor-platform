@@ -5,6 +5,7 @@ import java.time.Instant
 import akka.actor.ActorSystem
 import akka.http.scaladsl.util.FastFuture
 import cats.data.Xor
+import com.github.ghik.silencer.silent
 import im.actor.api.rpc.PeerHelpers._
 import im.actor.api.rpc._
 import im.actor.api.rpc.files.ApiFileLocation
@@ -356,12 +357,12 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
           } else {
             withGroupOutPeer(groupPeer) {
               db.run(for {
-                token ← GroupInviteTokenRepo.find(groupPeer.groupId, client.userId).headOption.flatMap {
+                token ← (GroupInviteTokenRepo.find(groupPeer.groupId, client.userId): @silent).headOption.flatMap {
                   case Some(invToken) ⇒ DBIO.successful(invToken.token)
                   case None ⇒
                     val token = ACLUtils.accessToken(ThreadLocalSecureRandom.current())
                     val inviteToken = GroupInviteToken(groupPeer.groupId, client.userId, token)
-                    for (_ ← GroupInviteTokenRepo.create(inviteToken)) yield token
+                    for (_ ← GroupInviteTokenRepo.create(inviteToken): @silent) yield token
                 }
               } yield Ok(ResponseInviteUrl(genInviteUrl(token))))
             }
@@ -383,7 +384,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
         joinInfo ← joinSting match {
           case Xor.Left(token) ⇒
             for {
-              info ← fromFutureOption(GroupRpcErrors.InvalidInviteToken)(db.run(GroupInviteTokenRepo.findByToken(token)))
+              info ← fromFutureOption(GroupRpcErrors.InvalidInviteToken)(db.run(GroupInviteTokenRepo.findByToken(token): @silent))
             } yield info.groupId → Some(info.creatorId)
           case Xor.Right(groupName) ⇒
             for {
@@ -441,10 +442,10 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
         val token = ACLUtils.accessToken()
         db.run(
           for {
-            _ ← GroupInviteTokenRepo.revoke(groupPeer.groupId, client.userId)
+            _ ← GroupInviteTokenRepo.revoke(groupPeer.groupId, client.userId): @silent
             _ ← GroupInviteTokenRepo.create(
               GroupInviteToken(groupPeer.groupId, client.userId, token)
-            )
+            ): @silent
           } yield Ok(ResponseInviteUrl(genInviteUrl(token)))
         )
       }
@@ -591,7 +592,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
           result ← if (isHistoryShared) {
             db.run(
               for {
-                member ← GroupUserRepo.find(groupPeer.groupId, client.userId)
+                member ← GroupUserRepo.find(groupPeer.groupId, client.userId): @silent
                 response ← member match {
                   case Some(_) ⇒ DBIO.successful(Error(GroupRpcErrors.AlreadyInvited))
                   case None ⇒

@@ -5,6 +5,7 @@ import java.time.Instant
 import akka.actor.Status
 import akka.pattern.pipe
 import akka.http.scaladsl.util.FastFuture
+import com.github.ghik.silencer.silent
 import im.actor.api.rpc.Update
 import im.actor.api.rpc.groups._
 import im.actor.api.rpc.messaging.UpdateChatClear
@@ -35,7 +36,7 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
         val newState = commit(evt)
 
         //TODO: remove deprecated
-        db.run(GroupBotRepo.updateToken(groupId, newToken))
+        db.run(GroupBotRepo.updateToken(groupId, newToken): @silent)
 
         val result: Future[RevokeIntegrationTokenAck] = for {
           _ ← oldToken match {
@@ -75,7 +76,7 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
         val updateObsolete = UpdateGroupMembersUpdateObsolete(groupId, members)
 
         //TODO: remove deprecated
-        db.run(GroupUserRepo.makeAdmin(groupId, cmd.candidateUserId))
+        db.run(GroupUserRepo.makeAdmin(groupId, cmd.candidateUserId): @silent)
 
         val adminGROUPUpdates: Future[SeqStateDate] =
           for {
@@ -160,7 +161,7 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
         val updateObsolete = UpdateGroupMembersUpdateObsolete(groupId, members)
 
         //TODO: remove deprecated
-        db.run(GroupUserRepo.dismissAdmin(groupId, cmd.targetUserId))
+        db.run(GroupUserRepo.dismissAdmin(groupId, cmd.targetUserId): @silent)
 
         val adminGROUPUpdates: Future[SeqState] =
           for {
@@ -340,8 +341,8 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
         exMemberIds foreach { userId ⇒
           db.run(
             for {
-              _ ← GroupUserRepo.delete(groupId, userId)
-              _ ← GroupInviteTokenRepo.revoke(groupId, userId)
+              _ ← GroupUserRepo.delete(groupId, userId): @silent
+              _ ← GroupInviteTokenRepo.revoke(groupId, userId): @silent
             } yield ()
           )
         }

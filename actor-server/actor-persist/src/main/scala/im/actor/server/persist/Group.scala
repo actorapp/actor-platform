@@ -93,7 +93,7 @@ object GroupRepo {
     )
   }
 
-  @deprecated("Replace with some sort of key-value maybe?", "2016-06-05")
+  // TODO: Replace with key value
   def findAllIds = allIds.result
 
   @deprecated("Remove, only used in tests", "2016-06-05")

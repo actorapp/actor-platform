@@ -42,4 +42,6 @@ object GroupErrors {
   case object NoPermission extends Exception with NoStackTrace
 
   case object CantLeaveGroup extends Exception with NoStackTrace
+
+  final case class IncorrectGroupType(value: Int) extends Exception with NoStackTrace
 }

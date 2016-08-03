@@ -10,6 +10,7 @@ import akka.stream.{ ActorMaterializer, Materializer }
 import akka.stream.scaladsl._
 import akka.stream.stage.{ Context, PushStage, SyncDirective, TerminationDirective }
 import akka.util.ByteString
+import com.github.ghik.silencer.silent
 import im.actor.server.session.SessionRegion
 
 import scala.concurrent.duration._
@@ -66,6 +67,7 @@ object WsFrontend extends Frontend("ws") {
       .via(completionFlow(System.currentTimeMillis()))
   }
 
+  @silent
   def completionFlow[T](connStartTime: Long)(implicit system: ActorSystem): Flow[T, T, akka.NotUsed] =
     Flow[T]
       .transform(() ⇒ new PushStage[T, T] {
