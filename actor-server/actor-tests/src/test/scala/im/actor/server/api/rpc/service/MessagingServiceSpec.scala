@@ -154,9 +154,6 @@ class MessagingServiceSpec
           implicit val clientData = clientData2
           expectUpdate(classOf[UpdateChatGroupsChanged])(identity)
           expectUpdate(classOf[UpdateMessage])(identity)
-          expectUpdate(classOf[UpdateCountersChanged]) { upd ⇒
-            upd.counters.globalCounter shouldEqual Some(1)
-          }
         }
       }
     }

@@ -76,7 +76,7 @@ private[group] final class GroupsHttpHandler()(implicit system: ActorSystem) ext
           }
         } yield Right(
           json.GroupInviteInfo(
-            group = json.GroupInfo(groupTitle, groupAvatarUrls),
+            group = json.GroupInfo(groupId, groupTitle, groupAvatarUrls),
             inviter = optInviterInfo
           )
         )
