@@ -101,7 +101,6 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
       }
 
       (for {
-        _ ← dialogExt.bump(userId, peer)
         _ ← deliveryExt.receiverDelivery(
           receiverUserId = userId,
           senderUserId = sm.getOrigin.id,
@@ -112,6 +111,7 @@ trait DialogCommandHandlers extends PeersImplicits with UserAcl {
           isFat = sm.isFat,
           deliveryTag = sm.deliveryTag
         )
+        _ ← dialogExt.bump(userId, peer)
       } yield SendMessageAck()) pipeTo sender()
 
       deliveryExt.sendCountersUpdate(userId)
