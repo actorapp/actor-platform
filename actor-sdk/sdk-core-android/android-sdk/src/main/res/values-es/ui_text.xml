@@ -31,7 +31,7 @@
     <string name="toast_unable_change">No es posible cambiar el nombre</string>
     <string name="toast_empty_nick">No es posible dejar el alias en blanco</string>
     <string name="toast_unable_change_nick">No es posible dejar "Alias" en blanco</string>
-    <string name="toast_empty_about">No es posible dejar "Descripción" en blanco</string>
+    <string name="toast_empty_about">No es posible dejar el "Estado" en blanco</string>
     <string name="toast_unable_open">Sin aplicaciones para abrir</string>
     <string name="toast_unable_leave">No es posible salir del grupo</string>
     <string name="toast_unable_create_group">No es posible crear el grupo</string>
@@ -191,8 +191,8 @@
     <string name="nickname">Alias</string>
     <string name="nickname_hint">Puedes escoger un alias en {appName}. Así otros usuarios te encontrarán por tu alias y te contactarán sin saber tu número telefónico.\n\nPuedes usar a–z, 0–9 y guión bajo. El mínimo es de 5 caracteres.</string>
     <string name="nickname_edittext_hint">Enter your Username</string>
-    <string name="about_user_me">Mi descripción</string>
-    <string name="about_user">Descripción del usuario</string>
+    <string name="about_user_me">Mi estado</string>
+    <string name="about_user">Estado del usuario</string>
     <string name="wallpaper">Fondo de pantalla</string>
 
     <!-- Profile controls -->
@@ -460,8 +460,8 @@
     <string name="edit_name_save">GUARDAR</string>
     <string name="edit_name_process">Cambiando nombre…</string>
     <string name="edit_nick_process">Changing username…</string>
-    <string name="edit_about_process">Cambiando descripción…</string>
-    <string name="edit_theme_process">Changing tema…</string>
+    <string name="edit_about_process">Cambiando estado…</string>
+    <string name="edit_theme_process">Cambiando tema…</string>
     <string name="edit_about_edittext_hint">Decirle a la gente lo que quieres, resumidamente.</string>
 
 

@@ -43,7 +43,7 @@
 "SettingsEdit" = "Editar";
 
 
-"SettingsSetPhoto" = "Establece foto de perfil";
+"SettingsSetPhoto" = "Establece tu foto de perfil";
 
 "SettingsChangeName" = "Cambia tu nombre";
 
@@ -77,13 +77,13 @@
 
 "SettingsMedia" = "Media";
 
-"SettingsNotifications" = "Notificaciones y Sonidos";
+"SettingsNotifications" = "Notificaciones y sonidos";
 
 "SettingsAskQuestion" = "Preguntas";
 
-"SettingsTwitter" = "App Twitter";
+"SettingsTwitter" = "Twitter";
 
-"SettingsAbout" = "Página principal";
+"SettingsAbout" = "Página web";
 
 "SettingsVersion" = "Version {version}";
 
@@ -97,13 +97,13 @@
  * Notifications
  */
 
-"NotificationsTitle" = "Notificaciones y Sonidos";
+"NotificationsTitle" = "Notificaciones y sonidos";
 
 "NotificationsEffectsTitle" = "Efectos";
 
 "NotificationsMobileTitle" = "Notificaciones móviles";
 
-"NotificationsInAppTitle" = "In-App notifications";
+"NotificationsInAppTitle" = "Notifications dentro de la aplicación";
 
 "NotificationsNotificationHint" = "Puedes desactivar las notificaciones para determinados usuarios o grupos en sus páginas de información.";
 
@@ -125,7 +125,7 @@
 
 "NotificationsGroups" = "Notificaciones de grupo";
 
-"NotificationsOnlyMentions" = "Sólo Menciones";
+"NotificationsOnlyMentions" = "Sólo menciones";
 
 "NotificationsOnlyMentionsHint" = "Puedes activar las notificaciones sólo para mensajes que contiene la mención";
 
@@ -133,7 +133,7 @@
  * Media
  */
 
-"MediaTitle" = "Media Settings";
+"MediaTitle" = "Ajuste de media";
 
 "MediaPhotoDownloadHeader"= "Descarga automatica de foto";
 
@@ -147,7 +147,7 @@
  * Privacy
  */
 
-"PrivacyTitle" = "Privacidad y Seguridad";
+"PrivacyTitle" = "Privacidad y seguridad";
 
 
 "PrivacyHeader" = "Privacidad";
@@ -199,9 +199,9 @@
 
 "CallsSpeaker" = "Altavoz";
 
-"CallsVideo" = "video";
+"CallsVideo" = "Video";
 
-"CallStateRinging" = "llamando...";
+"CallStateRinging" = "Llamando...";
 
 "CallStateConnecting" = "Conectando...";
 
@@ -245,9 +245,9 @@
 
 "ProfileUsername" = "Nombre de usuario";
 
-"ProfileBlockContact" = "Block User";
+"ProfileBlockContact" = "Bloquear usuario";
 
-"ProfileUnblockContact" = "Unblock User";
+"ProfileUnblockContact" = "Desbloquear usuario";
 
 "ProfileTitle" = "Info";
 
@@ -388,7 +388,7 @@
 
 
 
-"GroupInviteLinkPageTitle" = "invitar por Enlace";
+"GroupInviteLinkPageTitle" = "Invitar por enlace";
 
 "GroupInviteLinkTitle" = "ENLACE";
 
@@ -420,11 +420,11 @@
 
 "CreateGroupHint" = "Por favor, introduce un nombre de grupo e inserta una imagen.";
 
-"CreateGroupNamePlaceholder" = "Asunto del Grupo";
+"CreateGroupNamePlaceholder" = "Asunto del grupo";
 
-"CreateChannelTitle" = "Crear Canal";
+"CreateChannelTitle" = "Crear canal";
 
-"CreateChannelHint" = "Por favor, proporcione el nombre del canal y un icono de canal opcional";
+"CreateChannelHint" = "Por favor, nombre el canal y añade un icono de canal opcional";
 
 "CreateChannelNamePlaceholder" = "Nombre del canal";
 
@@ -462,7 +462,7 @@
 
 "ChatDeleted" = "This chat was deleted by owner.";
 
-"ChatJoin" = "Join";
+"ChatJoin" = "Unir";
 
 /*
  * Chat attachment menu
@@ -494,7 +494,7 @@
 
 "Placeholder_Empty_Action" = "CONTAR A UN AMIGO";
 
-"Placeholder_Empty_Message2" = "o añadir manualmente contactos";
+"Placeholder_Empty_Message2" = "o añadir manualmente los contactos";
 
 "Placeholder_Empty_Action2" = "AÑADIR CONTACTO";
 
@@ -520,7 +520,7 @@
 
 "Placeholder_Location_Title" = "Activar ubicación";
 
-"Placeholder_Location_Message" = "Por favor, activa los servicios de ubicación en la configuración del dispositivo para compartir su ubicación.";
+"Placeholder_Location_Message" = "Por favor, activa los servicios de ubicación en la configuración del dispositivo para compartir tu ubicación.";
 
 /*
  * Welcome
@@ -648,7 +648,7 @@
 
 "AlertOk" = "OK";
 
-"AlertYes" = "Si";
+"AlertYes" = "Sí";
 
 "AlertNo" = "No";
 
@@ -658,7 +658,7 @@
 
 "AlertInvite" = "Invitación";
 
-"UnsupportedContent" = "Mensaje no es compatible con esta versión. Por favor, espera actualización de la aplicación para ver el mensaje.";
+"UnsupportedContent" = "El mensaje no es compatible en esta versión. Por favor, espera que se actualice la aplicación para ver el mensaje.";
 
 /*
  * Actions
@@ -684,7 +684,7 @@
 
 "ActionMute" = "Silenciar";
 
-"ActionUnmute" = "No silenciado";
+"ActionUnmute" = "No silenciar";
 
 
 "ActionDelete" = "Eliminar";
@@ -694,11 +694,11 @@
 
 "ActionDeleteChannel" = "Eliminar canal";
 
-"ActionDeleteChannelMessage" = "Wait! Deleting this channel will remove all members and all messages will be lost. Delete the channel anyway?";
+"ActionDeleteChannelMessage" = "¡Espera! Perderás todos los miembros y mensajes cuando elimines el canal. ¿Estás seguro que quieres eliminarlo?";
 
-"ActionDeleteGroup" = "Delete Group";
+"ActionDeleteGroup" = "Eliminar grupo";
 
-"ActionDeleteGroupMessage" = "¡Espere! La eliminación de este canal, eliminará todos los miembros y se perderán todos los mensajes. Eliminar el canal de todos modos?";
+"ActionDeleteGroupMessage" = "¡Espera! Perderás todos los miembros y mensajes cuando elimines el grupo. ¿Estás seguro que quieres eliminarlo?";
 
 
 "ActionLeaveChannel" = "Abandonar Canal";
@@ -711,7 +711,7 @@
 
 "ActionDeleteAndExit" = "Eliminar y Salir";
 
-"ActionDeleteAndExitMessage" = "¿Seguro desea salir del grupo y eliminar todos los mensajes?";
+"ActionDeleteAndExitMessage" = "¿Quieres salir del grupo y eliminar todos los mensajes?";
 
 "ActionDeleteAndExitAction" = "Salir";
 
@@ -719,7 +719,7 @@
 
 "ActionClearHistory" = "Borrar historial";
 
-"ActionClearHistoryMessage" = "¿Seguro desea borrar el historial?";
+"ActionClearHistoryMessage" = "¿Quieres borrar el historial?";
 
 "ActionClearHistoryAction" = "Borrar";
 
@@ -741,4 +741,4 @@
 
 "ErrorAlreadyJoined" = "Ya eres miembro del grupo";
 
-"ErrorUnableToJoin" = "No es posible unirse al grupo";
+"ErrorUnableToJoin" = "No es posible unirte al grupo";
