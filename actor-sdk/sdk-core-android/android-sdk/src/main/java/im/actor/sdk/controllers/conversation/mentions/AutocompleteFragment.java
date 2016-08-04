@@ -34,10 +34,12 @@ public class AutocompleteFragment extends BaseFragment {
     private HolderAdapter autocompleteAdapter;
     private RecyclerListView autocompleteList;
 
-    public AutocompleteFragment(Peer peer) {
+    public static AutocompleteFragment create(Peer peer) {
+        AutocompleteFragment res = new AutocompleteFragment();
         Bundle bundle = new Bundle();
         bundle.putLong("peer", peer.getUnuqueId());
-        setArguments(bundle);
+        res.setArguments(bundle);
+        return res;
     }
 
     public AutocompleteFragment() {
