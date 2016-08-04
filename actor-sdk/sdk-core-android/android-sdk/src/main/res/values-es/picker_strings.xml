@@ -39,7 +39,7 @@
     <string name="picker_map_pick_my">Envíar mi ubicación actual</string>
     <string name="picker_map_pick_my_fetching">Estableciendo…</string>
     <string name="picker_map_pick_my_accuracy">A %d metros de precisión</string>
-    <string name="picker_map_pick_my_wait">Espera hasta que te localicemos</string>
+    <string name="picker_map_pick_my_wait">Espera hasta que te ubiquemos</string>
     <string name="picker_map_nearby_header">o selecciona lo más cercanos</string>
     <string name="picker_map_nearby_empty">Sin lugares cercanos</string>
 

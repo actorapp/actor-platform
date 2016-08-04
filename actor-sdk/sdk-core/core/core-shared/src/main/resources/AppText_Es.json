@@ -4,23 +4,27 @@
 	},
 
 	"language": {
+	
 		"code": "Es",
 
 		"format": {
 			"time": {
-				"yesterday": "Ayer",
+				"yesterday":{
+					"short": "Ayer",
+					"full": "Ayer"
+				},
 				"now": "Ahora",
 				"minutes": {
 					"short": "{minutes} min",
-					"full": "{minutes} minutes"
+					"full": "{minutes} minutos"
 				},
 				"hours": {
-					"short": "{hours} hrs",
-					"full": "{hours} hours"
+					"short": "{hours} h",
+					"full": "{hours} horass"
 				}
 			}
 		},
-
+		
 		"file_size": {
 			"bytes": "{bytes} B",
 			"kbytes": "{kbytes} KB",
@@ -29,26 +33,29 @@
 		},
 
 		"referencing": {
-			"you": "Tu",
-			"thee": "Tu"
+			"you": "Tu persona",
+			"thee": "Tu persona"
 		},
 
 		"sequence": {
 			"or": ", ",
-			"and": " and "
+			"and": " y "
 		}
 	},
 
 	"groups": {
-		"members": "{count} miembros"
+		"members": {
+		  "other": "{count} integrantes",
+			"one": "{count} integrante"
+		}
 	},
 
 	"presence": {
 		"online": "En línea",
 		"offline": "Desconectado",
-		"now": "visto segundos atrás",
+		"now": "visto recientemente",
 		"today": "últ. vez {time}",
-		"yesterday": "últ. vez ayer {time}",
+		"yesterday": "últ. vez ayer a las {time}",
 		"at_day": "ult. vez el {date}",
 		"at_day_time": "ult. vez el {date} a las {time}",
 		"members": "{count} en línea"
@@ -58,68 +65,68 @@
 		"simple": "escribiendo...",
 		"user": "{user} está escribiendo...",
 		"group": {
-			"sequenced": "{users} estan escribiendo...",
-			"many": "{count} personas estan escribiendo..."
+			"sequenced": "{users} están escribiendo...",
+			"many": "{count} personas están escribiendo..."
 		}
 	},
 
 	"content": {
 
 		"unknown": "Contenido no compatible",
-		"document": "Documentos",
+		"document": "Documento",
 		"photo": "Foto",
 		"video": "Vídeo",
 		"audio": "Audio",
 		"contact": "Contacto",
-		"location": "Localización",
+		"location": "Ubicación",
 		"sticker": "Sticker",
 
 		"service": {
 			"registered": {
-				"full": "{name} unido a la red {app_name}",
-				"compact": "Entro en {app_name}"
+				"full": "{name} se unió a la red {app_name}",
+				"compact": "Se unió a {app_name}"
 			},
 			"groups": {
-				"created": "{name} сreado el grupo",
+				"created": "{name} creó el grupo",
 				"invited": "{name} invitó a {name_added}",
 				"joined": "{name} se unió al grupo",
-				"kicked": "{name} expulsaste a {name_kicked}",
-				"left": "{name} elimino el grupo",
+				"kicked": "{name} expulsó a {name_kicked}",
+				"left": "{name} eliminó el grupo",
 				"title_changed": {
-					"full":  "{name} cambio el nombre del grupo a \"{title}\"",
-					"compact": "{name} a modificado el nombre del grupo"
+					"full":  "{name} cambió el nombre del grupo a \"{title}\"",
+					"compact": "{name} modificó el nombre del grupo"
 				},
 				"topic_changed": {
-					"full":  "{name} changed the group topic to \"{topic}\"",
-					"compact": "{name} changed the group topic"
+					"full":  "{name} cambió el tema del grupo a \"{topic}\"",
+					"compact": "{name} cambió el tema del grupo"
 				},
 				"about_changed": {
-					"full":  "{name} changed the group about to \"{about}\"",
-					"compact": "{name} changed the group about"
+					"full":  "{name} cambió la descripción del grupo a \"{about}\"",
+					"compact": "{name} cambió la descripción del grupo"
 				},
-				"avatar_changed": "{name} modificada la foto de grupo",
-				"avatar_removed": "{name} eliminada la foto de grupo"
+				"avatar_changed": "{name} modificó la foto de grupo",
+				"avatar_removed": "{name} eliminó la foto de grupo"
 			},
 			"channels": {
-				"created": "Creado el canal",
+				"created": "Se creó el canal",
 				"invited": "{name} invitó a {name_added}",
 				"joined": "{name} se unió al canal",
-				"kicked": "{name} expulsaste a {name_kicked}",
-				"left": "{name} elimino el canal",
+				"kicked": "{name} expulsó a {name_kicked}",
+				"left": "{name} eliminó el canal",
 				"title_changed": {
-					"full":  "{name} cambio el nombre del canal a \"{title}\"",
-					"compact": "{name} a modificado el nombre del canal"
+					"full":  "{name} cambió el nombre del canal a \"{title}\"",
+					"compact": "{name} cambió el nombre del canal"
 				},
 				"topic_changed": {
-					"full":  "{name} changed the canal topic to \"{topic}\"",
-					"compact": "{name} changed the canal topic"
+					"full":  "{name} cambió la sección del canal a \"{topic}\"",
+					"compact": "{name} cambió la sección del canal"
 				},
 				"about_changed": {
-					"full":  "{name} changed the canal about to \"{about}\"",
-					"compact": "{name} changed the canal about"
+					"full":  "{name} cambió la descripción del canal \"{about}\"",
+					"compact": "{name} cambió la descripción del canal"
 				},
-				"avatar_changed": "{name} modificada la foto de canal",
-				"avatar_removed": "{name} eliminada la foto de canal"
+				"avatar_changed": "{name} modificó la foto de canal",
+				"avatar_removed": "{name} eliminó la foto de canal"
 			},
 			"calls": {
 				"missed": "Llamada perdida",
@@ -129,20 +136,20 @@
 	},
 
 	"errors": {
-		"unknown": "Unknown error. Please, try again later.",
-		"internal": "Error Interno del Servidor. Por favor, inténtelo de nuevo más tarde.",
+		"unknown": "Error desconocido. Inténtelo más tarde.",
+		"internal": "Error interno del servidor. Por favor, inténtelo de nuevo más tarde.",
 		"phone": {
 			"empty": "Por favor, introduce tu número de teléfono.",
 			"incorrect": "Número de teléfono introducido no es válido. Por favor, vuelve a intentarlo."
 		},
 		"code": {
-			"empty": "Código no válido. Por favor, vuelve a intentarlo.",
-			"incorrect": "El código introducido es incorrecta. Por favor, vuelve a intentarlo.",
-			"expired": "Código expirado. Por favor, inicia la autenticación de nuevo."
+			"empty": "Sin código. Por favor, añádelo.",
+			"incorrect": "El código no es válido. Vuelve a intentarlo.",
+			"expired": "El código se caducó. Por favor, pide otro código nuevamente."
 		},
 		"groups": {
 			"already_joined": "Ya eres miembro del grupo.",
-			"unable_to_join": "No puede unirse al grupo."
+			"unable_to_join": "No puedes unirte al grupo."
 		}
 	},
 

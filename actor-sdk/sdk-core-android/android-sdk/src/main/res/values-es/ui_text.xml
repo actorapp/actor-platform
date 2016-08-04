@@ -24,7 +24,7 @@
     <string name="toast_email_copied">Email copiado al portapapeles</string>
     <string name="toast_messages_copied">Mensajes copiado al portapapeles</string>
     <string name="toast_nickname_copied">Nombre de usuario copiado al portapapeles</string>
-    <string name="toast_unable_kick">No es posible quitar el integrante del grupo</string>
+    <string name="toast_unable_kick">No es posible expulsar el integrante del grupo</string>
     <string name="toast_unable_add">No es posible añadir el usuario al grupo</string>
     <string name="toast_already_member">El usuario ya es un miembro del grupo</string>
     <string name="toast_empty_name">No es posible dejar "Nombre" en blanco</string>
