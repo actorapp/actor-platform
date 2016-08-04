@@ -81,7 +81,7 @@ public class RootActivity extends BaseFragmentActivity {
                     joinGroupUrl = urlSplit[urlSplit.length - 1];
 
                     final String token = joinGroupUrl;
-                    HTTP.getMethod("https://api.actor.im/v1/groups/invites/" + joinGroupUrl, 0, 0, 0).then(new Consumer<HTTPResponse>() {
+                    HTTP.getMethod(ActorSDK.sharedActor().getInviteDataUrl() + joinGroupUrl, 0, 0, 0).then(new Consumer<HTTPResponse>() {
                         @Override
                         public void apply(HTTPResponse httpResponse) {
                             try {
