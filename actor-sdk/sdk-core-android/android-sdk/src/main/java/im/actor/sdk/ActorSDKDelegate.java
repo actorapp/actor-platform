@@ -11,8 +11,10 @@ import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.sdk.controllers.conversation.ChatFragment;
 import im.actor.sdk.controllers.conversation.attach.AbsAttachFragment;
 import im.actor.sdk.controllers.conversation.inputbar.InputBarFragment;
+import im.actor.sdk.controllers.conversation.mentions.AutocompleteFragment;
 import im.actor.sdk.controllers.conversation.messages.content.MessageHolder;
 import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
+import im.actor.sdk.controllers.conversation.quote.QuoteFragment;
 import im.actor.sdk.controllers.settings.BaseGroupInfoActivity;
 import im.actor.sdk.intents.ActorIntent;
 import im.actor.sdk.intents.ActorIntentFragmentActivity;
@@ -97,6 +99,21 @@ public interface ActorSDKDelegate {
      */
     @Nullable
     InputBarFragment fragmentForChatInput();
+
+    /**
+     * If Not null returned, overrides chat autocomplete fragment
+     *
+     * @return Custom chat autocomplete fragment
+     * @param peer peer
+     */
+    AutocompleteFragment fragmentForAutocomplete(Peer peer);
+
+    /**
+     * If Not null returned, overrides chat quote fragment
+     *
+     * @return Custom chat quote fragment
+     */
+    QuoteFragment fragmentForQuote();
 
     /**
      * If Not null returned, overrides default toolbar (no-ui) fragment
@@ -201,4 +218,6 @@ public interface ActorSDKDelegate {
      * @return notification sound color
      */
     int getNotificationColor();
+
+
 }
