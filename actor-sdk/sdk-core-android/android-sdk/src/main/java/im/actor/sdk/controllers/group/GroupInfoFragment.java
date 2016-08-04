@@ -35,6 +35,7 @@ import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorSDKLauncher;
 import im.actor.sdk.ActorStyle;
 import im.actor.sdk.R;
+import im.actor.sdk.controllers.ActorBinder;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.activity.BaseActivity;
 import im.actor.sdk.controllers.BaseFragment;
@@ -53,6 +54,7 @@ import static im.actor.sdk.util.ActorSDKMessenger.users;
 public class GroupInfoFragment extends BaseFragment {
 
     private static final String EXTRA_CHAT_ID = "chat_id";
+    private ActorBinder.Binding[] memberBindings;
 
     public static GroupInfoFragment create(int chatId) {
         Bundle args = new Bundle();
@@ -256,7 +258,7 @@ public class GroupInfoFragment extends BaseFragment {
                             .setMessage(getString(R.string.alert_leave_group_message).replace("%1$s",
                                     groupVM.getName().get()))
                             .setPositiveButton(R.string.alert_leave_group_yes, (dialog2, which) -> {
-                                execute(messenger().leaveGroup(chatId));
+                                execute(messenger().leaveAndDeleteGroup(chatId));
                             })
                             .setNegativeButton(R.string.dialog_cancel, null)
                             .show()
@@ -275,13 +277,7 @@ public class GroupInfoFragment extends BaseFragment {
         //
 
         groupUserAdapter = new MembersAdapter(getActivity(), getArguments().getInt("groupId"));
-        bind(groupVM.getIsAsyncMembers(), groupVM.getMembers(), (isAsyncMembers, valueModel, memberList, valueModel2) -> {
-            if (isAsyncMembers) {
-                groupUserAdapter.setMembers(new ArrayList<>());
-            } else {
-                groupUserAdapter.setMembers(memberList);
-            }
-        });
+
         listView.setAdapter(groupUserAdapter);
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Object item = parent.getItemAtPosition(position);
@@ -424,6 +420,28 @@ public class GroupInfoFragment extends BaseFragment {
                 })
                 .show()
                 .setCanceledOnTouchOutside(true);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        memberBindings = bind(groupVM.getIsAsyncMembers(), groupVM.getMembers(), (isAsyncMembers, valueModel, memberList, valueModel2) -> {
+            if (isAsyncMembers) {
+                groupUserAdapter.setMembers(new ArrayList<>());
+            } else {
+                groupUserAdapter.setMembers(memberList);
+            }
+        });
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (memberBindings != null) {
+            for (ActorBinder.Binding b : memberBindings) {
+                getBINDER().unbind(b);
+            }
+        }
     }
 
     @Override

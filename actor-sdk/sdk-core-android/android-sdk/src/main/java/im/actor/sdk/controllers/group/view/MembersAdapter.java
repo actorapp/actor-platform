@@ -40,10 +40,13 @@ public class MembersAdapter extends HolderAdapter<GroupMember> {
     }
 
     public void setMembers(Collection<GroupMember> members) {
-        setMembers(members, true);
+        setMembers(members, true, true);
     }
 
-    public void setMembers(Collection<GroupMember> members, boolean sort) {
+    public void setMembers(Collection<GroupMember> members, boolean clear, boolean sort) {
+        if (clear) {
+            this.members.clear();
+        }
         if (sort) {
             GroupMember[] membersArray = members.toArray(new GroupMember[members.size()]);
             Arrays.sort(membersArray, (a, b) -> {
@@ -102,7 +105,7 @@ public class MembersAdapter extends HolderAdapter<GroupMember> {
                 nextMembers = groupMembersSlice.getNext();
                 loaddedToEnd = nextMembers == null;
                 loadInProgress = false;
-                setMembers(groupMembersSlice.getMembers(), false);
+                setMembers(groupMembersSlice.getMembers(), false, false);
             });
         }
     }
