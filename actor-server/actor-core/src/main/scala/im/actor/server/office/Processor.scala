@@ -22,7 +22,7 @@ case object StopOffice
 
 trait ProcessorState
 
-@deprecated("use im.actor.server.cqrs.Processor instead", "2016-07-07")
+// TODO: replace with im.actor.server.cqrs.Processor
 trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorFutures with AlertingActor {
 
   case class BreakStashing(ts: Instant, evts: Seq[Event], state: State)

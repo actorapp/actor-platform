@@ -109,6 +109,7 @@ object Dependencies {
     val guava                   = "com.google.guava"              % "guava"                          % "19.0"
     val alpn                    = "org.eclipse.jetty.alpn"        % "alpn-api"                       % "1.1.2.v20150522" % "runtime"
     val tcnative                = "io.netty"                      % "netty-tcnative"                 % "1.1.33.Fork15" classifier "linux-x86_64"
+    val silencer                = "com.github.ghik"               % "silencer-lib"                   % "0.4"
   }
 
   object Testing {
@@ -134,7 +135,8 @@ object Dependencies {
     scalaLogging,
     tyrex,
     kamonCore,
-    kamonDatadog
+    kamonDatadog,
+    silencer
   )
 
   val root = shared ++ Seq(

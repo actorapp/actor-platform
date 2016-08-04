@@ -6,7 +6,7 @@ import akka.stream.scaladsl.Source
 import com.google.protobuf.ByteString
 import com.google.protobuf.wrappers.Int32Value
 import im.actor.api.rpc.groups._
-import im.actor.server.group.GroupErrors.{ NoPermission, NotOwner }
+import im.actor.server.group.GroupErrors.{ IncorrectGroupType, NoPermission, NotOwner }
 import im.actor.server.group.GroupQueries._
 import im.actor.server.group.GroupType.{ Channel, General, Unrecognized }
 
@@ -77,6 +77,7 @@ trait GroupQueryHandlers {
       case Channel ⇒
         if (state.isAdmin(clientUserId)) load
         else FastFuture.successful(LoadMembersResponse(Seq.empty, offsetBs))
+      case Unrecognized(v) ⇒ throw IncorrectGroupType(v)
     }
   }
 
@@ -110,8 +111,9 @@ trait GroupQueryHandlers {
           ext = None,
           membersCount = Some(count),
           groupType = Some(state.groupType match {
-            case Channel                   ⇒ ApiGroupType.CHANNEL
-            case General | Unrecognized(_) ⇒ ApiGroupType.GROUP
+            case Channel         ⇒ ApiGroupType.CHANNEL
+            case General         ⇒ ApiGroupType.GROUP
+            case Unrecognized(v) ⇒ throw IncorrectGroupType(v)
           }),
           permissions = Some(state.permissions.groupFor(clientUserId)),
           isDeleted = Some(state.isDeleted)
@@ -147,8 +149,9 @@ trait GroupQueryHandlers {
     FastFuture.successful {
       val canSend = state.bot.exists(_.userId == clientUserId) || {
         state.groupType match {
-          case General ⇒ state.isMember(clientUserId)
-          case Channel ⇒ state.isAdmin(clientUserId)
+          case General         ⇒ state.isMember(clientUserId)
+          case Channel         ⇒ state.isAdmin(clientUserId)
+          case Unrecognized(v) ⇒ throw IncorrectGroupType(v)
         }
       }
       CanSendMessageResponse(
@@ -201,6 +204,7 @@ trait GroupQueryHandlers {
             apiMembers → group.membersCount
           else
             apiMembers.find(_.userId == clientUserId).toVector → group.membersCount
+        case Unrecognized(v) ⇒ throw IncorrectGroupType(v)
       }
     } else {
       Vector.empty[ApiMember] → 0

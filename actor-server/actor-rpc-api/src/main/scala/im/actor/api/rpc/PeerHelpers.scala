@@ -62,15 +62,6 @@ object PeerHelpers {
     accessHashCheck(checkGroupOutPeers(groupOutPeers), authorizedAction)
   }
 
-  //TODO: remove in future
-  @deprecated("Use Future inner type instead", "2016-07-07")
-  def withOutPeerDBIO[R <: RpcResponse](outPeer: ApiOutPeer)(f: ⇒ DBIO[RpcError Xor R])(
-    implicit
-    client: AuthorizedClientData,
-    system: ActorSystem
-  ): DBIO[RpcError Xor R] =
-    DBIO.from(withOutPeer(outPeer)(DbExtension(system).db.run(f)))
-
   private def accessHashCheck[R <: RpcResponse](check: Future[Boolean], authorizedAction: ⇒ Future[RpcError Xor R])(implicit ec: ExecutionContext) =
     check flatMap { isValid ⇒
       if (isValid) {

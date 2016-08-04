@@ -193,6 +193,7 @@ public class ActorSDK {
      */
     private boolean callsEnabled = false;
     private boolean videoCallsEnabled = false;
+    private String inviteDataUrl = "https://api.actor.im/v1/groups/invites/";
 
     private ActorSDK() {
         endpoints = new String[]{
@@ -1050,6 +1051,14 @@ public class ActorSDK {
 
     public void setVideoCallsEnabled(boolean videoCallsEnabled) {
         this.videoCallsEnabled = videoCallsEnabled;
+    }
+
+    public String getInviteDataUrl() {
+        return inviteDataUrl;
+    }
+
+    public void setInviteDataUrl(String inviteDataUrl) {
+        this.inviteDataUrl = inviteDataUrl;
     }
 
     /**

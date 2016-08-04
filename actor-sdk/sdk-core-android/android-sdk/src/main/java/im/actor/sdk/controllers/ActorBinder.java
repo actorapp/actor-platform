@@ -250,27 +250,31 @@ public class ActorBinder {
         return b;
     }
 
-    public <T> void bind(Value<T> value, boolean notify, ValueChangedListener<T> listener) {
+    public <T> Binding bind(Value<T> value, boolean notify, ValueChangedListener<T> listener) {
         value.subscribe(listener, notify);
-        bindings.add(new Binding(value, listener));
+        Binding binding = new Binding(value, listener);
+        bindings.add(binding);
+        return binding;
     }
 
-    public <T, V> void bind(final Value<T> value1, final Value<V> value2,
+    public <T, V> Binding[] bind(final Value<T> value1, final Value<V> value2,
                             final ValueDoubleChangedListener<T, V> listener) {
 
-        bind(value1, false, new ValueChangedListener<T>() {
+        Binding[] bindings = new Binding[2];
+        bindings[0] = bind(value1, false, new ValueChangedListener<T>() {
             @Override
             public void onChanged(T val, Value<T> Value) {
                 listener.onChanged(val, Value, value2.get(), value2);
             }
         });
-        bind(value2, false, new ValueChangedListener<V>() {
+        bindings[1] = bind(value2, false, new ValueChangedListener<V>() {
             @Override
             public void onChanged(V val, Value<V> Value) {
                 listener.onChanged(value1.get(), value1, val, Value);
             }
         });
         listener.onChanged(value1.get(), value1, value2.get(), value2);
+        return bindings;
     }
 
     public <T, V, S> void bind(final Value<T> value1, final Value<V> value2, final Value<S> value3,

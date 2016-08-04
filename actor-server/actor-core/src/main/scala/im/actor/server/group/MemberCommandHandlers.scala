@@ -5,6 +5,7 @@ import java.time.{ Instant, LocalDateTime, ZoneOffset }
 import akka.actor.Status
 import akka.http.scaladsl.util.FastFuture
 import akka.pattern.pipe
+import com.github.ghik.silencer.silent
 import im.actor.api.rpc.Update
 import im.actor.api.rpc.groups._
 import im.actor.api.rpc.messaging.{ ApiServiceMessage, UpdateChatDropCache, UpdateMessage }
@@ -83,7 +84,7 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
         val serviceMessage = GroupServiceMessages.userInvited(cmd.inviteeUserId)
 
         //TODO: remove deprecated
-        db.run(GroupUserRepo.create(groupId, cmd.inviteeUserId, cmd.inviterUserId, evt.ts, None, isAdmin = false))
+        db.run(GroupUserRepo.create(groupId, cmd.inviteeUserId, cmd.inviterUserId, evt.ts, None, isAdmin = false): @silent)
 
         def inviteGROUPUpdates: Future[SeqStateDate] =
           for {
@@ -156,6 +157,7 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
               ),
               deliveryTag = Some(Optimization.GroupV2)
             )
+            _ ← dialogExt.bump(cmd.inviteeUserId, apiGroupPeer.asModel)
           } yield SeqStateDate(seq, state, dateMillis)
 
         val result: Future[SeqStateDate] = for {
@@ -215,7 +217,7 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
       val wasInvited = state.isInvited(cmd.joiningUserId)
 
       // trying to figure out who invited joining user.
-      // Descdending priority:
+      // Descending priority:
       // • inviter defined in `Join` command (when invited via token)
       // • inviter from members list (when invited by other user)
       // • group creator (safe fallback)
@@ -292,7 +294,7 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
           invitedAt = optMember.map(_.invitedAt).getOrElse(date),
           joinedAt = Some(LocalDateTime.now(ZoneOffset.UTC)),
           isAdmin = false
-        ))
+        ): @silent)
 
         def joinGROUPUpdates: Future[SeqStateDate] =
           for {
@@ -329,17 +331,28 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
                 serviceMessage // no delivery tag. This updated handled this way in Groups V1
               ) map (_.date)
             } else {
-              // push join message only to joining user
-              seqUpdExt.deliverUserUpdate(
-                userId = cmd.joiningUserId,
-                update = serviceMessageUpdate(
-                  cmd.joiningUserId,
-                  dateMillis,
-                  randomId,
+              // write service message only for joining user
+              // and push join message
+              for {
+                _ ← dialogExt.writeMessageSelf(
+                  userId = cmd.joiningUserId,
+                  peer = apiGroupPeer,
+                  senderUserId = cmd.joiningUserId,
+                  dateMillis = dateMillis,
+                  randomId = randomId,
                   serviceMessage
-                ),
-                deliveryTag = Some(Optimization.GroupV2)
-              ) map (_ ⇒ dateMillis)
+                )
+                _ ← seqUpdExt.deliverUserUpdate(
+                  userId = cmd.joiningUserId,
+                  update = serviceMessageUpdate(
+                    cmd.joiningUserId,
+                    dateMillis,
+                    randomId,
+                    serviceMessage
+                  ),
+                  deliveryTag = Some(Optimization.GroupV2)
+                )
+              } yield dateMillis
             }
           } yield SeqStateDate(seq, state, date)
 
@@ -376,6 +389,7 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
               ),
               deliveryTag = Some(Optimization.GroupV2)
             )
+            _ ← dialogExt.bump(cmd.joiningUserId, apiGroupPeer.asModel)
           } yield SeqStateDate(seq, state, dateMillis)
 
         val result: Future[(SeqStateDate, Vector[Int], Long)] =
@@ -447,8 +461,8 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
         //TODO: remove deprecated. GroupInviteTokenRepo don't have replacement yet.
         db.run(
           for {
-            _ ← GroupUserRepo.delete(groupId, cmd.userId)
-            _ ← GroupInviteTokenRepo.revoke(groupId, cmd.userId)
+            _ ← GroupUserRepo.delete(groupId, cmd.userId): @silent
+            _ ← GroupInviteTokenRepo.revoke(groupId, cmd.userId): @silent
           } yield ()
         )
 
@@ -582,8 +596,8 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
         //TODO: remove deprecated. GroupInviteTokenRepo don't have replacement yet.
         db.run(
           for {
-            _ ← GroupUserRepo.delete(groupId, cmd.kickedUserId)
-            _ ← GroupInviteTokenRepo.revoke(groupId, cmd.kickedUserId)
+            _ ← GroupUserRepo.delete(groupId, cmd.kickedUserId): @silent
+            _ ← GroupInviteTokenRepo.revoke(groupId, cmd.kickedUserId): @silent
           } yield ()
         )
 

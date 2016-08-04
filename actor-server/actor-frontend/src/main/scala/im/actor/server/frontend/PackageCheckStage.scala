@@ -1,9 +1,10 @@
 package im.actor.server.frontend
 
 import akka.stream.stage.{ Context, PushStage, SyncDirective }
-
+import com.github.ghik.silencer.silent
 import im.actor.server.mtproto.transport.{ Handshake, TransportPackage }
 
+@silent
 private[frontend] final class PackageCheckStage extends PushStage[TransportPackage, TransportPackage] {
 
   private trait State

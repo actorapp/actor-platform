@@ -23,7 +23,13 @@ object Build extends sbt.Build with Versioning with Releasing with Packaging {
         organization := "im.actor.server",
         organizationHomepage := Some(url("https://actor.im")),
         resolvers ++= Resolvers.seq,
-        scalacOptions ++= Seq("-Yopt-warnings"),
+//        scalacOptions ++= Seq(
+//          "-Ywarn-unused",
+//          "-Ywarn-adapted-args",
+//          "-Ywarn-nullary-override",
+//          "-Ywarn-nullary-unit",
+//          "-Ywarn-value-discard"
+//        ),
         parallelExecution := true
       ) ++ Sonatype.sonatypeSettings
 
@@ -82,7 +88,8 @@ object Build extends sbt.Build with Versioning with Releasing with Packaging {
         },
         resolvers ++= Resolvers.seq,
         fork in Test := false,
-        updateOptions := updateOptions.value.withCachedResolution(true)
+        updateOptions := updateOptions.value.withCachedResolution(true),
+        addCompilerPlugin("com.github.ghik" % "silencer-plugin" % "0.4")
       )
 
   lazy val root = Project(
@@ -174,8 +181,7 @@ object Build extends sbt.Build with Versioning with Releasing with Packaging {
     id = "actor-core",
     base = file("actor-core"),
     settings = defaultSettingsServer ++ SbtActorApi.settings ++ Seq(
-      libraryDependencies ++= Dependencies.core,
-      scalacOptions in Compile := (scalacOptions in Compile).value.filterNot(_ == "-Xfatal-warnings")
+      libraryDependencies ++= Dependencies.core
     )
   )
     .dependsOn(actorCodecs, actorFileAdapter, actorModels, actorPersist, actorRuntime)
@@ -194,8 +200,7 @@ object Build extends sbt.Build with Versioning with Releasing with Packaging {
     id = "actor-enrich",
     base = file("actor-enrich"),
     settings = defaultSettingsServer ++ Seq(
-      libraryDependencies ++= Dependencies.enrich,
-      scalacOptions in Compile := (scalacOptions in Compile).value.filterNot(_ == "-Xfatal-warnings")
+      libraryDependencies ++= Dependencies.enrich
     )
   )
     .dependsOn(actorRpcApi, actorRuntime)
@@ -247,8 +252,7 @@ object Build extends sbt.Build with Versioning with Releasing with Packaging {
     id = "actor-rpc-api",
     base = file("actor-rpc-api"),
     settings = defaultSettingsServer ++ Seq(
-      libraryDependencies ++= Dependencies.rpcApi,
-      scalacOptions in Compile := (scalacOptions in Compile).value.filterNot(_ == "-Xfatal-warnings")
+      libraryDependencies ++= Dependencies.rpcApi
     )
   )
     .dependsOn(
@@ -269,8 +273,7 @@ object Build extends sbt.Build with Versioning with Releasing with Packaging {
     id = "actor-fs-adapters",
     base = file("actor-fs-adapters"),
     settings = defaultSettingsServer ++ Seq(
-      libraryDependencies ++= Dependencies.fileAdapter,
-      scalacOptions in Compile := (scalacOptions in Compile).value.filterNot(_ == "-Xfatal-warnings")
+      libraryDependencies ++= Dependencies.fileAdapter
     )
   )
     .dependsOn(actorHttpApi, actorPersist)
@@ -279,8 +282,7 @@ object Build extends sbt.Build with Versioning with Releasing with Packaging {
     id = "actor-frontend",
     base = file("actor-frontend"),
     settings = defaultSettingsServer ++ Seq(
-      libraryDependencies ++= Dependencies.frontend,
-      scalacOptions in Compile := (scalacOptions in Compile).value.filterNot(_ == "-Xfatal-warnings")
+      libraryDependencies ++= Dependencies.frontend
     )
   )
     .dependsOn(actorCore, actorSession)
