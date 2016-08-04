@@ -31,6 +31,7 @@ This repository contains all of the source code you need to start your own serve
 * [Android 4.0.3+](https://actor.im/android)
 * [iPhone/iPad 7.0+](https://actor.im/ios)
 * [Web](https://app.actor.im/)
+* [Desktop](https://blog.actor.im/desktop-apps-updated/)
 
 # Lastest SDK versions
  Platform   | Link 
