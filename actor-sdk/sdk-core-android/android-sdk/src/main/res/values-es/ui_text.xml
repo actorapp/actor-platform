@@ -508,7 +508,7 @@
     <string name="settings_animation_auto_play_subtitle">Las animaciones se reproducirán al descargarse</string>
 
     <string name="settings_chat_markdown">Markdown</string>
-    <string name="settings_chat_markdown_subtitle">Is markdown enabled</string>
+    <string name="settings_chat_markdown_subtitle">Permite el uso de texto formateado</string>
 
     <!-- Security -->
     <string name="security_title">Seguridad</string>
