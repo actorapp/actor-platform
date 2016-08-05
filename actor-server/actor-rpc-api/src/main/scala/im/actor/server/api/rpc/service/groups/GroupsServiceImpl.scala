@@ -350,23 +350,27 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
 
   override def doHandleGetGroupInviteUrl(groupPeer: ApiGroupOutPeer, clientData: ClientData): Future[HandlerResult[ResponseInviteUrl]] =
     authorized(clientData) { implicit client ⇒
-      groupExt.getMemberIds(groupPeer.groupId) flatMap {
-        case (memberIds, _, _) ⇒
-          if (!memberIds.contains(client.userId)) {
-            FastFuture.successful(Error(GroupRpcErrors.NotAMember))
-          } else {
-            withGroupOutPeer(groupPeer) {
-              db.run(for {
-                token ← (GroupInviteTokenRepo.find(groupPeer.groupId, client.userId): @silent).headOption.flatMap {
-                  case Some(invToken) ⇒ DBIO.successful(invToken.token)
-                  case None ⇒
-                    val token = ACLUtils.accessToken(ThreadLocalSecureRandom.current())
-                    val inviteToken = GroupInviteToken(groupPeer.groupId, client.userId, token)
-                    for (_ ← GroupInviteTokenRepo.create(inviteToken): @silent) yield token
-                }
-              } yield Ok(ResponseInviteUrl(genInviteUrl(token))))
-            }
+      groupExt.getApiFullStruct(groupPeer.groupId, client.userId) flatMap { group ⇒
+        val isMember = group.members.exists(_.userId == client.userId)
+        if (!isMember) {
+          FastFuture.successful(Error(GroupRpcErrors.NotAMember))
+        } else {
+          withGroupOutPeer(groupPeer) {
+            for {
+              inviteString ← group.shortName match {
+                case Some(name) ⇒ FastFuture.successful(name)
+                case None ⇒
+                  db.run((GroupInviteTokenRepo.find(groupPeer.groupId, client.userId): @silent).headOption flatMap {
+                    case Some(invToken) ⇒ DBIO.successful(invToken.token)
+                    case None ⇒
+                      val token = ACLUtils.accessToken()
+                      val inviteToken = GroupInviteToken(groupPeer.groupId, client.userId, token)
+                      for (_ ← GroupInviteTokenRepo.create(inviteToken): @silent) yield token
+                  })
+              }
+            } yield Ok(ResponseInviteUrl(genInviteUrl(inviteString)))
           }
+        }
       }
     }
 
