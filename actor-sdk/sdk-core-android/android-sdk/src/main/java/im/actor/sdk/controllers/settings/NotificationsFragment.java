@@ -96,6 +96,15 @@ public class NotificationsFragment extends BaseFragment {
         ((TextView) res.findViewById(R.id.settings_titles_hint)).setTextColor(style.getTextSecondaryColor());
 
         // Sound
+        View soundPickerCont = res.findViewById(R.id.soundPickerCont);
+        View soundPickerDivider = res.findViewById(R.id.divider);
+
+        if (messenger().isNotificationSoundEnabled()) {
+            ViewUtils.showViews(false, soundPickerCont, soundPickerDivider);
+        } else {
+            ViewUtils.goneViews(false, soundPickerCont, soundPickerDivider);
+        }
+
         final CheckBox enableSound = (CheckBox) res.findViewById(R.id.enableSound);
         enableSound.setChecked(messenger().isNotificationSoundEnabled());
         View.OnClickListener enableSoundListener = v -> {
@@ -103,12 +112,10 @@ public class NotificationsFragment extends BaseFragment {
             enableSound.setChecked(messenger().isNotificationSoundEnabled());
 
             //show/hide sound picker
-            View cont = res.findViewById(R.id.soundPickerCont);
-            View div = res.findViewById(R.id.divider);
             if (messenger().isNotificationSoundEnabled()) {
-                ViewUtils.showViews(cont, div);
+                ViewUtils.showViews(soundPickerCont, soundPickerDivider);
             } else {
-                ViewUtils.goneViews(cont, div);
+                ViewUtils.goneViews(soundPickerCont, soundPickerDivider);
             }
         };
         enableSound.setOnClickListener(enableSoundListener);
