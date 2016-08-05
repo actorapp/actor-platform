@@ -1,6 +1,13 @@
 package im.actor.sdk.controllers.settings;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,10 +18,16 @@ import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorStyle;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.BaseFragment;
+import im.actor.sdk.util.ViewUtils;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
 public class NotificationsFragment extends BaseFragment {
+
+    private SharedPreferences notificationPreferences;
+    private SharedPreferences.Editor notificationPreferencesEditor;
+
+    public static int SOUND_PICKER_REQUEST_CODE = 122;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -25,6 +38,7 @@ public class NotificationsFragment extends BaseFragment {
         res.findViewById(R.id.divider2).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
         res.findViewById(R.id.divider3).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
         res.findViewById(R.id.divider4).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
+        res.findViewById(R.id.divider5).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
 
         // Conversation tone
         final CheckBox enableTones = (CheckBox) res.findViewById(R.id.enableConversationTones);
@@ -42,20 +56,6 @@ public class NotificationsFragment extends BaseFragment {
         enableTones.setOnClickListener(enableTonesListener);
         res.findViewById(R.id.conversationTonesCont).setOnClickListener(enableTonesListener);
 
-        // Sound
-        final CheckBox enableSound = (CheckBox) res.findViewById(R.id.enableSound);
-        enableSound.setChecked(messenger().isNotificationSoundEnabled());
-        View.OnClickListener enableSoundListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                messenger().changeNotificationSoundEnabled(!messenger().isNotificationSoundEnabled());
-                enableSound.setChecked(messenger().isNotificationSoundEnabled());
-            }
-        };
-        enableSound.setOnClickListener(enableSoundListener);
-        res.findViewById(R.id.soundCont).setOnClickListener(enableSoundListener);
-        ((TextView) res.findViewById(R.id.settings_sound_title)).setTextColor(style.getTextPrimaryColor());
-        ((TextView) res.findViewById(R.id.settings_sound_hint)).setTextColor(style.getTextSecondaryColor());
         // Vibration
         final CheckBox enableVibration = (CheckBox) res.findViewById(R.id.enableVibration);
         enableVibration.setChecked(messenger().isNotificationVibrationEnabled());
@@ -70,6 +70,7 @@ public class NotificationsFragment extends BaseFragment {
         res.findViewById(R.id.vibrationCont).setOnClickListener(enableVibrationListener);
         ((TextView) res.findViewById(R.id.settings_vibration_title)).setTextColor(style.getTextPrimaryColor());
         ((TextView) res.findViewById(R.id.settings_vibration_hint)).setTextColor(style.getTextSecondaryColor());
+
         // Group
         final CheckBox enableGroup = (CheckBox) res.findViewById(R.id.enableGroup);
         enableGroup.setChecked(messenger().isGroupNotificationsEnabled());
@@ -84,6 +85,7 @@ public class NotificationsFragment extends BaseFragment {
         res.findViewById(R.id.groupCont).setOnClickListener(enableGroupListener);
         ((TextView) res.findViewById(R.id.settings_group_title)).setTextColor(style.getTextPrimaryColor());
         ((TextView) res.findViewById(R.id.settings_group_hint)).setTextColor(style.getTextSecondaryColor());
+
         // Mentions
         final CheckBox enableGroupMentions = (CheckBox) res.findViewById(R.id.enableGroupMentions);
         enableGroupMentions.setChecked(messenger().isGroupNotificationsOnlyMentionsEnabled());
@@ -98,8 +100,8 @@ public class NotificationsFragment extends BaseFragment {
         res.findViewById(R.id.groupMentionsCont).setOnClickListener(enableGroupMentionsListener);
         ((TextView) res.findViewById(R.id.settings_group_mentions_title)).setTextColor(style.getTextPrimaryColor());
         ((TextView) res.findViewById(R.id.settings_group_mentions_hint)).setTextColor(style.getTextSecondaryColor());
-        // Names and messages
 
+        // Names and messages
         final CheckBox enableText = (CheckBox) res.findViewById(R.id.enableTitles);
         enableText.setChecked(messenger().isShowNotificationsText());
         View.OnClickListener enableTextListener = new View.OnClickListener() {
@@ -113,6 +115,78 @@ public class NotificationsFragment extends BaseFragment {
         res.findViewById(R.id.titlesCont).setOnClickListener(enableTextListener);
         ((TextView) res.findViewById(R.id.settings_titles_title)).setTextColor(style.getTextPrimaryColor());
         ((TextView) res.findViewById(R.id.settings_titles_hint)).setTextColor(style.getTextSecondaryColor());
+
+        // Sound
+        final CheckBox enableSound = (CheckBox) res.findViewById(R.id.enableSound);
+        enableSound.setChecked(messenger().isNotificationSoundEnabled());
+        View.OnClickListener enableSoundListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                messenger().changeNotificationSoundEnabled(!messenger().isNotificationSoundEnabled());
+                enableSound.setChecked(messenger().isNotificationSoundEnabled());
+
+                //show/hide sound picker
+                View cont = res.findViewById(R.id.soundPickerCont);
+                View div = res.findViewById(R.id.divider5);
+                if (messenger().isNotificationSoundEnabled()) {
+                    ViewUtils.showViews(cont, div);
+                } else {
+                    ViewUtils.goneViews(cont, div);
+                }
+            }
+        };
+        enableSound.setOnClickListener(enableSoundListener);
+        res.findViewById(R.id.soundCont).setOnClickListener(enableSoundListener);
+        ((TextView) res.findViewById(R.id.settings_sound_title)).setTextColor(style.getTextPrimaryColor());
+        ((TextView) res.findViewById(R.id.settings_sound_hint)).setTextColor(style.getTextSecondaryColor());
+
+        // Sound picker
+        notificationPreferences = getActivity().getSharedPreferences("notifications", Context.MODE_PRIVATE);
+        notificationPreferencesEditor = notificationPreferences.edit();
+        View.OnClickListener soundPickerListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true);
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_DEFAULT_URI, RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
+
+                Uri currentSound = null;
+                String defaultPath = null;
+                Uri defaultUri = Settings.System.DEFAULT_NOTIFICATION_URI;
+                if (defaultUri != null) {
+                    defaultPath = defaultUri.getPath();
+                }
+
+                String path = notificationPreferences.getString("globalSound", defaultPath);
+                if (path != null && !path.equals("none")) {
+                    if (path.equals(defaultPath)) {
+                        currentSound = defaultUri;
+                    } else {
+                        currentSound = Uri.parse(path);
+                    }
+                }
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, currentSound);
+                startActivityForResult(intent, SOUND_PICKER_REQUEST_CODE);
+            }
+        };
+        res.findViewById(R.id.soundPickerCont).setOnClickListener(soundPickerListener);
+        ((TextView) res.findViewById(R.id.settings_sound_picker_title)).setTextColor(style.getTextPrimaryColor());
+        ((TextView) res.findViewById(R.id.settings_sound_picker_hint)).setTextColor(style.getTextSecondaryColor());
         return res;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK && requestCode == SOUND_PICKER_REQUEST_CODE) {
+            Uri ringtone = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+
+            if (ringtone != null) {
+                notificationPreferencesEditor.putString("globalSound", ringtone.toString());
+            } else {
+                notificationPreferencesEditor.putString("globalSound", "none");
+            }
+            notificationPreferencesEditor.commit();
+        }
     }
 }

@@ -1,14 +1,9 @@
 package im.actor.sdk.util;
 
-import android.graphics.Color;
-import android.os.Handler;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
-import android.view.animation.CycleInterpolator;
 import android.view.animation.ScaleAnimation;
-import android.view.animation.Transformation;
-import android.widget.AbsListView;
 
 import im.actor.sdk.view.MaterialInterpolator;
 
@@ -40,6 +35,20 @@ public class ViewUtils {
         }
     }
 
+    public static void goneViews(View... views) {
+        goneViews(true, views);
+    }
+
+    public static void goneViews(boolean isAnimated, View... views) {
+        goneViews(isAnimated, true, views);
+    }
+
+    public static void goneViews(boolean isAnimated, boolean isSlow, View... views) {
+        for (View view : views) {
+            goneView(view, isAnimated, isSlow);
+        }
+    }
+
     public static void hideView(View view) {
         hideView(view, true);
     }
@@ -64,6 +73,20 @@ public class ViewUtils {
             }
         } else {
             view.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    public static void hideViews(View... views) {
+        hideViews(true, views);
+    }
+
+    public static void hideViews(boolean isAnimated, View... views) {
+        hideViews(isAnimated, true, views);
+    }
+
+    public static void hideViews(boolean isAnimated, boolean isSlow, View... views) {
+        for (View view : views) {
+            hideView(view, isAnimated, isSlow);
         }
     }
 
@@ -125,6 +148,20 @@ public class ViewUtils {
             }
         } else {
             view.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public static void showViews(View... views) {
+        showViews(true, views);
+    }
+
+    public static void showViews(boolean isAnimated, View... views) {
+        showViews(isAnimated, true, views);
+    }
+
+    public static void showViews(boolean isAnimated, boolean isSlow, View... views) {
+        for (View view : views) {
+            showView(view, isAnimated, isSlow);
         }
     }
 

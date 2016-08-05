@@ -1,5 +1,7 @@
 package im.actor.sdk;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
@@ -8,15 +10,15 @@ import android.view.ViewGroup;
 import org.jetbrains.annotations.Nullable;
 
 import im.actor.core.entity.Peer;
+import im.actor.runtime.android.AndroidContext;
 import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.sdk.controllers.conversation.ChatFragment;
 import im.actor.sdk.controllers.conversation.attach.AbsAttachFragment;
 import im.actor.sdk.controllers.conversation.inputbar.InputBarFragment;
 import im.actor.sdk.controllers.conversation.mentions.AutocompleteFragment;
-import im.actor.sdk.controllers.conversation.messages.content.MessageHolder;
 import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
+import im.actor.sdk.controllers.conversation.messages.content.MessageHolder;
 import im.actor.sdk.controllers.conversation.quote.QuoteFragment;
-import im.actor.sdk.controllers.settings.BaseGroupInfoActivity;
 import im.actor.sdk.intents.ActorIntent;
 import im.actor.sdk.intents.ActorIntentFragmentActivity;
 
@@ -96,7 +98,7 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
     public ActorIntentFragmentActivity getSettingsIntent() {
         return null;
     }
-    
+
     @Override
     public ActorIntentFragmentActivity getChatSettingsIntent() {
         return null;
@@ -123,6 +125,17 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
     }
 
     public Uri getNotificationSoundForPeer(Peer peer) {
+        SharedPreferences sharedPreferences = AndroidContext.getContext().getSharedPreferences("notifications", Context.MODE_PRIVATE);
+
+        String globalSound = sharedPreferences.getString("userSound_" + peer.getPeerId(), null);
+        if (globalSound != null) {
+            if (globalSound.equals("none")) {
+                return null;
+            } else {
+                return Uri.parse(globalSound);
+            }
+        }
+
         return getNotificationSound();
     }
 
@@ -131,6 +144,17 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
     }
 
     public Uri getNotificationSound() {
+        SharedPreferences sharedPreferences = AndroidContext.getContext().getSharedPreferences("notifications", Context.MODE_PRIVATE);
+
+        String globalSound = sharedPreferences.getString("globalSound", null);
+        if (globalSound != null) {
+            if (globalSound.equals("none")) {
+                return null;
+            } else {
+                return Uri.parse(globalSound);
+            }
+        }
+
         return Settings.System.DEFAULT_NOTIFICATION_URI;
     }
 

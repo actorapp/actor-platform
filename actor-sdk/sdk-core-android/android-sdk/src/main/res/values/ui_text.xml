@@ -308,6 +308,7 @@
     <string name="profile_shared_media">Media</string>
     <string name="profile_settings_header">Settings</string>
     <string name="profile_settings_notifications">Notifications</string>
+    <string name="profile_settings_notifications_picker">Notifications sound</string>
     <string name="profile_settings_block">Block user</string>
     <string name="profile_settings_unblock">Unblock user</string>
     <string name="profile_settings_block_confirm">Block {user}?</string>
@@ -483,8 +484,7 @@
     <string name="not_title">Notifications</string>
     <string name="not_conv_tones">Conversation tones</string>
     <string name="not_conv_tones_subtitle">Play sounds for incoming and outgoing messages.</string>
-    <string name="not_sound">Sound</string>
-    <string name="not_sound_subtitle">Enable notification sounds</string>
+
     <string name="not_vibration">Vibration</string>
     <string name="not_vibration_subtitle">Enable vibration in notifications</string>
     <string name="not_group">Group</string>
@@ -493,6 +493,10 @@
     <string name="not_group_mentions_subtitle">Enable group notifications only for mentions</string>
     <string name="not_show_text">Show names and messages</string>
     <string name="not_show_text_subtitle">Show message text and sender name in notification panel</string>
+    <string name="not_sound">Sound</string>
+    <string name="not_sound_subtitle">Enable notification sounds</string>
+    <string name="not_sound_picker">Set sound</string>
+    <string name="not_sound_picker_subtitle">Set notification sound</string>
     <string name="notification_multiple_canversations_after_msg_count">" messages in "</string>
     <string name="notifications_multiple_canversations_after_coversations_count">" chats"</string>
     <string name="notifications_single_conversation_аfter_messages_count">" messages"</string>
