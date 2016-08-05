@@ -11,12 +11,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import im.actor.core.entity.GroupType;
-import im.actor.core.entity.Peer;
-import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.GroupVM;
-import im.actor.runtime.actors.messages.*;
-import im.actor.runtime.actors.messages.Void;
-import im.actor.runtime.mvvm.ValueDoubleListener;
+import im.actor.runtime.mvvm.Value;
+import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.BaseFragment;
@@ -69,11 +66,18 @@ public class GroupAdminFragment extends BaseFragment {
         } else {
             groupTypeTitle.setText(R.string.group_type);
         }
-        if (groupVM.getShortName().get() == null) {
-            groupTypeValue.setText(R.string.group_type_private);
-        } else {
-            groupTypeValue.setText(R.string.group_type_pubic);
-        }
+
+        bind(groupVM.getShortName(), new ValueChangedListener<String>() {
+            @Override
+            public void onChanged(String val, Value<String> valueModel) {
+                if (val == null) {
+                    groupTypeValue.setText(R.string.group_type_private);
+                } else {
+                    groupTypeValue.setText(R.string.group_type_pubic);
+                }
+            }
+        });
+
         if (groupVM.getIsCanEditAdministration().get()) {
             res.findViewById(R.id.groupTypeContainer).setOnClickListener(v -> {
                 startActivity(new Intent(getContext(), GroupTypeActivity.class)
@@ -156,13 +160,17 @@ public class GroupAdminFragment extends BaseFragment {
                             .setNegativeButton(R.string.dialog_cancel, null)
                             .setPositiveButton(R.string.alert_delete_group_yes, (d1, which1) -> {
                                 if (groupVM.getIsCanLeave().get()) {
-                                    execute(messenger().leaveAndDeleteGroup(groupVM.getId()), R.string.progress_common).failure(e -> {
-                                        Toast.makeText(getActivity(), R.string.toast_unable_leave, Toast.LENGTH_LONG).show();
-                                    });
+                                    execute(messenger().leaveAndDeleteGroup(groupVM.getId()), R.string.progress_common)
+                                            .then(aVoid -> ActorSDK.returnToRoot(getActivity()))
+                                            .failure(e -> {
+                                                Toast.makeText(getActivity(), R.string.toast_unable_leave, Toast.LENGTH_LONG).show();
+                                            });
                                 } else if (groupVM.getIsCanDelete().get()) {
-                                    execute(messenger().deleteGroup(groupVM.getId()), R.string.progress_common).failure(e -> {
-                                        Toast.makeText(getActivity(), R.string.toast_unable_delete_chat, Toast.LENGTH_LONG).show();
-                                    });
+                                    execute(messenger().deleteGroup(groupVM.getId()), R.string.progress_common)
+                                            .then(aVoid -> ActorSDK.returnToRoot(getActivity()))
+                                            .failure(e -> {
+                                                Toast.makeText(getActivity(), R.string.toast_unable_delete_chat, Toast.LENGTH_LONG).show();
+                                            });
                                 }
                             })
                             .show();

@@ -1,6 +1,9 @@
 package im.actor.sdk.controllers.group;
 
 import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -190,6 +193,15 @@ public class GroupInfoFragment extends BaseFragment {
             }
             shortNameCont.setVisibility(shortName != null ? View.VISIBLE : View.GONE);
         });
+        final ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+        shortNameCont.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String link = shortLinkView.getText().toString();
+                clipboard.setPrimaryClip(ClipData.newPlainText(null, (link.contains("://") ? "" : "https://") + link));
+                Toast.makeText(getActivity(), getString(R.string.invite_link_copied), Toast.LENGTH_SHORT).show();
+            }
+        });
         bind(groupVM.getAbout(), groupVM.getShortName(), (about, shortName) -> {
             descriptionContainer.setVisibility(about != null || shortName != null
                     ? View.VISIBLE
@@ -258,7 +270,7 @@ public class GroupInfoFragment extends BaseFragment {
                             .setMessage(getString(R.string.alert_leave_group_message).replace("%1$s",
                                     groupVM.getName().get()))
                             .setPositiveButton(R.string.alert_leave_group_yes, (dialog2, which) -> {
-                                execute(messenger().leaveAndDeleteGroup(chatId));
+                                execute(messenger().leaveAndDeleteGroup(chatId).then(aVoid -> ActorSDK.returnToRoot(getActivity())));
                             })
                             .setNegativeButton(R.string.dialog_cancel, null)
                             .show()

@@ -1068,4 +1068,16 @@ public class ActorSDK {
         T onNotDelegated();
 
     }
+
+    public static void returnToRoot(Context context) {
+        Intent i;
+        ActorIntent startIntent = ActorSDK.sharedActor().getDelegate().getStartIntent();
+        if (startIntent != null && startIntent instanceof ActorIntentActivity) {
+            i = ((ActorIntentActivity) startIntent).getIntent();
+        } else {
+            i = new Intent(context, RootActivity.class);
+        }
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        context.startActivity(i);
+    }
 }

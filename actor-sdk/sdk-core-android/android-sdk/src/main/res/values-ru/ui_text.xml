@@ -388,7 +388,7 @@
     <string name="group_share_history">Поделиться историей</string>
     <string name="group_share_history_hint">Все сообщения будут доступны всем участникам</string>
     <string name="group_type">Тип группы</string>
-    <string name="group_type_private">Частная</string>
+    <string name="group_type_private">Приватная</string>
     <string name="group_type_pubic">Публичная</string>
 
     <!-- Channel-->
