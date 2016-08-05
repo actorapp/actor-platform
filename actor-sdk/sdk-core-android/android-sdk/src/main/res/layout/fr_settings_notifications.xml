@@ -57,10 +57,9 @@
                 android:gravity="center_vertical" />
         </LinearLayout>
 
-        <View
-            android:id="@+id/divider1"
+        <im.actor.sdk.view.DividerView
             android:layout_width="match_parent"
-            android:layout_height="@dimen/div_size" />
+            android:layout_height="@dimen/div_size"/>
 
         <LinearLayout
             android:id="@+id/vibrationCont"
@@ -104,10 +103,9 @@
                 android:gravity="center_vertical" />
         </LinearLayout>
 
-        <View
-            android:id="@+id/divider2"
+        <im.actor.sdk.view.DividerView
             android:layout_width="match_parent"
-            android:layout_height="@dimen/div_size" />
+            android:layout_height="@dimen/div_size"/>
 
         <LinearLayout
             android:id="@+id/groupCont"
@@ -151,10 +149,9 @@
                 android:gravity="center_vertical" />
         </LinearLayout>
 
-        <View
-            android:id="@+id/divider3"
+        <im.actor.sdk.view.DividerView
             android:layout_width="match_parent"
-            android:layout_height="@dimen/div_size" />
+            android:layout_height="@dimen/div_size"/>
 
         <LinearLayout
             android:id="@+id/groupMentionsCont"
@@ -198,10 +195,9 @@
                 android:gravity="center_vertical" />
         </LinearLayout>
 
-        <View
-            android:id="@+id/divider4"
+        <im.actor.sdk.view.DividerView
             android:layout_width="match_parent"
-            android:layout_height="@dimen/div_size" />
+            android:layout_height="@dimen/div_size"/>
 
         <LinearLayout
             android:id="@+id/titlesCont"
@@ -244,10 +240,9 @@
                 android:gravity="center_vertical" />
         </LinearLayout>
 
-        <View
-            android:id="@+id/divider"
+        <im.actor.sdk.view.DividerView
             android:layout_width="match_parent"
-            android:layout_height="@dimen/div_size" />
+            android:layout_height="@dimen/div_size"/>
 
         <LinearLayout
             android:id="@+id/soundCont"
@@ -291,10 +286,10 @@
                 android:gravity="center_vertical" />
         </LinearLayout>
 
-        <View
-            android:id="@+id/divider5"
+        <im.actor.sdk.view.DividerView
+            android:id="@+id/divider"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/div_size" />
+            android:layout_height="@dimen/div_size"/>
 
         <LinearLayout
             android:id="@+id/soundPickerCont"
