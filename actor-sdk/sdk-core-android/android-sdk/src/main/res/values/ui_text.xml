@@ -359,6 +359,8 @@
     <string name="group_leave">Leave group</string>
     <string name="group_leave_channel">Leave channel</string>
     <string name="group_administration">Administration</string>
+    <string name="group_make_admin">Make admin</string>
+    <string name="group_revoke_admin">Revoke admin rights</string>
 
     <string name="group_admin_title">Group Administration</string>
     <string name="channel_admin_title">Channel Administration</string>
