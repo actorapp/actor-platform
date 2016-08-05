@@ -397,6 +397,9 @@
 
     <string name="members_adapter_bot_online_status">bot</string>
 
+    <string name="group_edit_change_short_name_error">Unable to change group short name</string>
+
+
     <!-- Avatar -->
     <string name="avatar_title_your">Your photo</string>
     <string name="avatar_title_person">Photo</string>
