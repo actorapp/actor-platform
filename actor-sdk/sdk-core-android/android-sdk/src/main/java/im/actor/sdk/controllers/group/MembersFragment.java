@@ -7,21 +7,27 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import fr.castorflex.android.circularprogressbar.CircularProgressBar;
+import im.actor.core.entity.GroupMember;
 import im.actor.core.viewmodel.GroupVM;
+import im.actor.core.viewmodel.UserVM;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.BaseFragment;
 import im.actor.sdk.controllers.Intents;
+import im.actor.sdk.controllers.activity.BaseActivity;
 import im.actor.sdk.controllers.group.view.MembersAdapter;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.DividerView;
 import im.actor.sdk.view.adapters.RecyclerListView;
 
 import static im.actor.sdk.util.ActorSDKMessenger.groups;
+import static im.actor.sdk.util.ActorSDKMessenger.myUid;
+import static im.actor.sdk.util.ActorSDKMessenger.users;
 
 public class MembersFragment extends BaseFragment {
 
@@ -96,6 +102,36 @@ public class MembersFragment extends BaseFragment {
         }
 
         list.setAdapter(adapter);
+        list.setOnItemClickListener((parent, view, position, id) -> {
+            Object item = parent.getItemAtPosition(position);
+            if (item != null && item instanceof GroupMember) {
+                GroupMember groupMember = (GroupMember) item;
+                if (groupMember.getUid() != myUid()) {
+                    UserVM userVM = users().get(groupMember.getUid());
+                    if (userVM != null) {
+                        startActivity(Intents.openPrivateDialog(userVM.getId(), true, getActivity()));
+                    }
+                }
+            }
+        });
+
+        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Object item = adapterView.getItemAtPosition(i);
+                if (item != null && item instanceof GroupMember) {
+                    GroupMember groupMember = (GroupMember) item;
+                    if (groupMember.getUid() != myUid()) {
+                        UserVM userVM = users().get(groupMember.getUid());
+                        if (userVM != null) {
+                            adapter.onMemberClick(groupVM, userVM, groupMember.isAdministrator(), groupMember.getInviterUid() == myUid(), (BaseActivity) getActivity());
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+        });
 
         progressView = (CircularProgressBar) res.findViewById(R.id.loadingProgress);
         progressView.setIndeterminate(true);
