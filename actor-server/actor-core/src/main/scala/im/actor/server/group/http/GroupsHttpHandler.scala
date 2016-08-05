@@ -28,7 +28,6 @@ private[group] final class GroupsHttpHandler()(implicit system: ActorSystem) ext
   private val db = DbExtension(system).db
   private val fsAdapter = FileStorageExtension(system).fsAdapter
   private val globalNamesStorage = new GlobalNamesStorageKeyValueStorage
-  private val groupExt = GroupExtension(system)
 
   override def routes: Route =
     defaultVersion {
@@ -62,8 +61,8 @@ private[group] final class GroupsHttpHandler()(implicit system: ActorSystem) ext
     result ← optInviteData map {
       case (groupId, optInviterId) ⇒
         for {
-          groupInfo ← groupExt.getApiStruct(groupId, 0)
-          isHistoryShared ← groupExt.isHistoryShared(groupId)
+          groupInfo ← GroupExtension(system).getApiStruct(groupId, 0)
+          isHistoryShared ← GroupExtension(system).isHistoryShared(groupId)
           groupTitle = groupInfo.title
           groupAvatar = groupInfo.avatar
           groupAvatarUrls ← avatarUrls(groupAvatar)
