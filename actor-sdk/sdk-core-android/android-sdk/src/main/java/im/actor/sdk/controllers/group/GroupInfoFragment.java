@@ -44,6 +44,7 @@ import im.actor.sdk.controllers.activity.BaseActivity;
 import im.actor.sdk.controllers.BaseFragment;
 import im.actor.sdk.controllers.group.view.MembersAdapter;
 import im.actor.sdk.controllers.fragment.preview.ViewAvatarActivity;
+import im.actor.sdk.util.AlertListBuilder;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.TintImageView;
 import im.actor.sdk.view.adapters.RecyclerListView;
@@ -362,74 +363,58 @@ public class GroupInfoFragment extends BaseFragment {
 
     public void onMemberClicked(UserVM userVM, boolean isInvitedByMe) {
 
-        CharSequence[] items;
-        if (groupVM.getIsCanKickAnyone().get() || (groupVM.getIsCanKickInvited().get() && isInvitedByMe)) {
-            items = new CharSequence[]{
-                    getString(R.string.group_context_message).replace("{0}", userVM.getName().get()),
-                    getString(R.string.group_context_call).replace("{0}", userVM.getName().get()),
-                    getString(R.string.group_context_view).replace("{0}", userVM.getName().get()),
-                    getString(R.string.group_context_remove).replace("{0}", userVM.getName().get()),
-            };
-        } else {
-            items = new CharSequence[]{
-                    getString(R.string.group_context_message).replace("{0}", userVM.getName().get()),
-                    getString(R.string.group_context_call).replace("{0}", userVM.getName().get()),
-                    getString(R.string.group_context_view).replace("{0}", userVM.getName().get())
-            };
-        }
-
-        new AlertDialog.Builder(getActivity())
-                .setItems(items, (dialog, which) -> {
-                    if (which == 0) {
-                        startActivity(Intents.openPrivateDialog(userVM.getId(), true, getActivity()));
-                    } else if (which == 1) {
-                        final ArrayList<UserPhone> phones = userVM.getPhones().get();
-                        if (phones.size() == 0) {
-                            Toast.makeText(getActivity(), "No phones available", Toast.LENGTH_SHORT).show();
-                        } else if (phones.size() == 1) {
-                            startActivity(Intents.call(phones.get(0).getPhone()));
-                        } else {
-                            CharSequence[] sequences = new CharSequence[phones.size()];
-                            for (int i = 0; i < sequences.length; i++) {
-                                try {
-                                    Phonenumber.PhoneNumber number = PhoneNumberUtil.getInstance().parse("+" + phones.get(i).getPhone(), "us");
-                                    sequences[i] = phones.get(which).getTitle() + ": " + PhoneNumberUtil.getInstance().format(number, PhoneNumberUtil.PhoneNumberFormat.INTERNATIONAL);
-                                } catch (NumberParseException e) {
-                                    e.printStackTrace();
-                                    sequences[i] = phones.get(which).getTitle() + ": +" + phones.get(i).getPhone();
-                                }
-                            }
-                            new AlertDialog.Builder(getActivity())
-                                    .setItems(sequences, (dialog1, which1) -> {
-                                        startActivity(Intents.call(phones.get(which1).getPhone()));
-                                    })
-                                    .show()
-                                    .setCanceledOnTouchOutside(true);
+        AlertListBuilder alertListBuilder = new AlertListBuilder();
+        final ArrayList<UserPhone> phones = userVM.getPhones().get();
+        alertListBuilder.addItem(getString(R.string.group_context_message).replace("{0}", userVM.getName().get()), () -> startActivity(Intents.openPrivateDialog(userVM.getId(), true, getActivity())));
+        if (phones.size() != 0) {
+            alertListBuilder.addItem(getString(R.string.group_context_call).replace("{0}", userVM.getName().get()), () -> {
+                if (phones.size() == 1) {
+                    startActivity(Intents.call(phones.get(0).getPhone()));
+                } else {
+                    CharSequence[] sequences = new CharSequence[phones.size()];
+                    for (int i = 0; i < sequences.length; i++) {
+                        try {
+                            Phonenumber.PhoneNumber number = PhoneNumberUtil.getInstance().parse("+" + phones.get(i).getPhone(), "us");
+                            sequences[i] = phones.get(i).getTitle() + ": " + PhoneNumberUtil.getInstance().format(number, PhoneNumberUtil.PhoneNumberFormat.INTERNATIONAL);
+                        } catch (NumberParseException e) {
+                            e.printStackTrace();
+                            sequences[i] = phones.get(i).getTitle() + ": +" + phones.get(i).getPhone();
                         }
-                    } else if (which == 2) {
-                        ActorSDKLauncher.startProfileActivity(getActivity(), userVM.getId());
-                    } else if (which == 3) {
-                        new AlertDialog.Builder(getActivity())
-                                .setMessage(getString(R.string.alert_group_remove_text).replace("{0}", userVM.getName().get()))
-                                .setPositiveButton(R.string.alert_group_remove_yes, (dialog2, which1) -> {
-                                    execute(messenger().kickMember(chatId, userVM.getId()),
-                                            R.string.progress_common, new CommandCallback<Void>() {
-                                                @Override
-                                                public void onResult(Void res1) {
-
-                                                }
-
-                                                @Override
-                                                public void onError(Exception e) {
-                                                    Toast.makeText(getActivity(), R.string.toast_unable_kick, Toast.LENGTH_SHORT).show();
-                                                }
-                                            });
-                                })
-                                .setNegativeButton(R.string.dialog_cancel, null)
-                                .show()
-                                .setCanceledOnTouchOutside(true);
                     }
-                })
+                    new AlertDialog.Builder(getActivity())
+                            .setItems(sequences, (dialog1, which1) -> {
+                                startActivity(Intents.call(phones.get(which1).getPhone()));
+                            })
+                            .show()
+                            .setCanceledOnTouchOutside(true);
+                }
+            });
+        }
+        alertListBuilder.addItem(getString(R.string.group_context_view).replace("{0}", userVM.getName().get()), () -> ActorSDKLauncher.startProfileActivity(getActivity(), userVM.getId()));
+        if (groupVM.getIsCanKickAnyone().get() || (groupVM.getIsCanKickInvited().get() && isInvitedByMe)) {
+            alertListBuilder.addItem(getString(R.string.group_context_remove).replace("{0}", userVM.getName().get()), () -> {
+                new AlertDialog.Builder(getActivity())
+                        .setMessage(getString(R.string.alert_group_remove_text).replace("{0}", userVM.getName().get()))
+                        .setPositiveButton(R.string.alert_group_remove_yes, (dialog2, which1) -> {
+                            execute(messenger().kickMember(chatId, userVM.getId()),
+                                    R.string.progress_common, new CommandCallback<Void>() {
+                                        @Override
+                                        public void onResult(Void res1) {
+
+                                        }
+
+                                        @Override
+                                        public void onError(Exception e) {
+                                            Toast.makeText(getActivity(), R.string.toast_unable_kick, Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                        })
+                        .setNegativeButton(R.string.dialog_cancel, null)
+                        .show()
+                        .setCanceledOnTouchOutside(true);
+            });
+        }
+        alertListBuilder.build(getActivity())
                 .show()
                 .setCanceledOnTouchOutside(true);
     }
