@@ -10,6 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -39,6 +40,25 @@ public class SecuritySettingsFragment extends BaseFragment {
         loading.setVisibility(View.GONE);
         loading.setOnClickListener(v -> performLoad());
         authItems = (LinearLayout) res.findViewById(R.id.authItems);
+
+        ((TextView) res.findViewById(R.id.settings_last_seen_title)).setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
+        ((TextView) res.findViewById(R.id.settings_last_seen_hint)).setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
+
+        res.findViewById(R.id.lastSeen).setOnClickListener(v -> {
+            String[] itemsValues = new String[]{"always", "contacts", "none"};
+            String[] items = new String[]{getString(R.string.security_last_seen_everybody), getString(R.string.security_last_seen_contacts), getString(R.string.security_last_seen_nobody)};
+            int currentLastSeen = Arrays.asList(itemsValues).indexOf(messenger().getPrivacy());
+
+            new AlertDialog.Builder(getActivity())
+                    .setTitle(R.string.security_last_seen_title)
+                    .setSingleChoiceItems(items, currentLastSeen, (dialog, which) -> {
+                        messenger().setPrivacy(itemsValues[which]);
+                        dialog.dismiss();
+                    })
+                    .setNegativeButton(R.string.dialog_cancel, null)
+                    .setPositiveButton(R.string.dialog_ok, null)
+                    .show();
+        });
 
         res.findViewById(R.id.terminateSessions).setOnClickListener(v -> new AlertDialog.Builder(getActivity())
                 .setMessage(R.string.security_terminate_message)
@@ -93,7 +113,7 @@ public class SecuritySettingsFragment extends BaseFragment {
                     ((TextView) view.findViewById(R.id.deviceTitle)).setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
                     if (!isThisDevice) {
                         view.setOnClickListener(v -> new AlertDialog.Builder(getActivity())
-                                .setMessage(getString(R.string.security_terminate_this_message).replace("{device}", item.getDeviceTitle() ))
+                                .setMessage(getString(R.string.security_terminate_this_message).replace("{device}", item.getDeviceTitle()))
                                 .setPositiveButton(R.string.dialog_yes, (dialog, which) -> execute(messenger().terminateSession(item.getId()), R.string.progress_common,
                                         new CommandCallback<Void>() {
                                             @Override
@@ -103,7 +123,7 @@ public class SecuritySettingsFragment extends BaseFragment {
 
                                             @Override
                                             public void onError(Exception e) {
-                                                Toast.makeText(getActivity(), R.string.security_toast_unable_remove_auth , Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(getActivity(), R.string.security_toast_unable_remove_auth, Toast.LENGTH_SHORT).show();
                                                 performLoad();
                                             }
                                         }))

@@ -183,7 +183,7 @@
     <string name="settings_notifications">Оповещения</string>
     <string name="settings_chat">Настройки чата</string>
     <string name="settings_home_page">Домашняя страница</string>
-    <string name="settings_security">Безопасность</string>
+    <string name="settings_security">Безопасность и Приватность</string>
     <string name="settings_blocked_list">Заблокированные пользователи</string>
     <string name="nickname_empty">Добавить ник</string>
     <string name="nickname_hint">Вы можете выбрать ник в {appName}. Так другие люди смогут найти вас без номера телефона.\n\nВы можете использовать латинские буквы, цифры и подчеркивание. Минимальная длина - 5 символов.</string>
@@ -537,12 +537,19 @@
 
 
     <!-- Security -->
-    <string name="security_title">Безопасность</string>
+    <string name="security_title">Безопасность и Приватность</string>
     <string name="security_terminate_title">Уничтожить все сессии</string>
     <string name="security_terminate_subtitle">Произвести выход на всех устройствах</string>
     <string name="security_terminate_message">Вы уверены, что хотите уничтожить сессии на всех устройствах? Все данные приложения на них будут удалены.</string>
     <string name="security_authorized_header">Авторизованные устройства и сервисы</string>
     <string name="security_authorized_loading">Загрузка…</string>
+
+    <!-- Last Seen -->
+    <string name="security_last_seen_title">Последняя активность</string>
+    <string name="security_last_seen_subtitle">Укажите, кто может видеть вашу последнюю активность.</string>
+    <string name="security_last_seen_everybody">Все</string>
+    <string name="security_last_seen_contacts">Контакты</string>
+    <string name="security_last_seen_nobody">Никто</string>
 
     <!-- Blocked list -->
     <string name="blocked_title">Заблокированные пользователи</string>

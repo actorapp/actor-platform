@@ -20,6 +20,39 @@
             android:visibility="gone" />
 
         <LinearLayout
+            android:id="@+id/lastSeen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector"
+            android:gravity="center_vertical"
+            android:paddingBottom="@dimen/settings_content_padding"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
+            android:paddingTop="@dimen/settings_content_padding">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/settings_last_seen_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/security_last_seen_title"
+                    android:textSize="@dimen/text_primary" />
+
+                <TextView
+                    android:id="@+id/settings_last_seen_hint"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/security_last_seen_subtitle"
+                    android:textSize="@dimen/text_secondary" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/terminateSessions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

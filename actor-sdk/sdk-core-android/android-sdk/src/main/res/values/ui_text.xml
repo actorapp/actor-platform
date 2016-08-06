@@ -183,7 +183,7 @@
     <string name="settings_home_page">Home page</string>
     <string name="settings_notifications">Notifications</string>
     <string name="settings_chat">Chat Settings</string>
-    <string name="settings_security">Security</string>
+    <string name="settings_security">Security and Privacy</string>
     <string name="settings_blocked_list">Blocked list</string>
     <string name="nickname_empty">Set username</string>
     <string name="nickname_change">Change username</string>
@@ -521,7 +521,7 @@
     <string name="settings_chat_markdown_subtitle">Is markdown enabled</string>
 
     <!-- Security -->
-    <string name="security_title">Security</string>
+    <string name="security_title">Security and Privacy</string>
     <string name="security_terminate_title">Terminate all sessions</string>
     <string name="security_terminate_subtitle">Sign Out on all devices</string>
     <string name="security_terminate_message">Are you sure you want to log out on all other devices? All app data will be lost on these devices.</string>
@@ -531,6 +531,13 @@
     <string name="security_toast_unable_remove_auth">Unable to remove auth</string>
     <string name="security_this_title">(This) </string>
     <string name="security_toast_unable_to_load">Unable to load. Please try again.</string>
+
+    <!-- Last Seen -->
+    <string name="security_last_seen_title">Last seen</string>
+    <string name="security_last_seen_subtitle">Change who can see your Last Seen time.</string>
+    <string name="security_last_seen_everybody">Everybody</string>
+    <string name="security_last_seen_contacts">My Contacts</string>
+    <string name="security_last_seen_nobody">Nobody</string>
 
     <!-- Blocked list -->
     <string name="blocked_title">Blocked list</string>
