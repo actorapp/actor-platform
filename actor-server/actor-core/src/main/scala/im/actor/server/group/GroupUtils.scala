@@ -20,7 +20,7 @@ object GroupUtils {
     for {
       groups ← Future.sequence(groupIds map (GroupExtension(system).getApiStruct(_, clientUserId)))
       memberIds = getUserIds(groups)
-      users ← Future.sequence((userIds.toSet ++ memberIds.toSet).filterNot(_ == 0) map (UserUtils.safeGetUser(_, clientUserId, clientAuthId))) map (_.flatten)
+      users ← Future.sequence((userIds.toSet ++ memberIds).filterNot(_ == 0) map (UserUtils.safeGetUser(_, clientUserId, clientAuthId))) map (_.flatten)
     } yield (groups, users.toSeq)
   }
 }

@@ -100,8 +100,17 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
   ): Future[HandlerResult[ResponseGetReferencedEntitites]] =
     authorized(clientData) { client ⇒
       (for {
+        // check access hash only for private groups.
+        // No need to check access hash for public groups.
+        privateGroups ← fromFuture((groups foldLeft FastFuture.successful(Vector.empty[ApiGroupOutPeer])) {
+          case (accFu, el) ⇒
+            for {
+              acc ← accFu
+              isShared ← groupExt.isHistoryShared(el.groupId)
+            } yield if (isShared) acc else acc :+ el
+        })
         _ ← fromFutureBoolean(CommonRpcErrors.InvalidAccessHash)(ACLUtils.checkUserOutPeers(users, client.authId))
-        _ ← fromFutureBoolean(CommonRpcErrors.InvalidAccessHash)(ACLUtils.checkGroupOutPeers(groups))
+        _ ← fromFutureBoolean(CommonRpcErrors.InvalidAccessHash)(ACLUtils.checkGroupOutPeers(privateGroups))
         res ← fromFuture(GroupUtils.getGroupsUsers(
           groups map (_.groupId),
           users map (_.userId), client.userId, client.authId

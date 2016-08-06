@@ -107,6 +107,7 @@
                 android:paddingBottom="8dp"
                 android:paddingLeft="72dp"
                 android:paddingRight="8dp"
+                android:background="@drawable/selector"
                 android:paddingTop="8dp">
 
                 <TextView
