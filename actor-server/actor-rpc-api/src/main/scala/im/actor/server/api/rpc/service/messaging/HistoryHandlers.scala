@@ -10,16 +10,13 @@ import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
 import im.actor.api.rpc.peers.{ ApiGroupOutPeer, ApiOutPeer, ApiPeerType, ApiUserOutPeer }
 import im.actor.api.rpc.sequence.ApiUpdateOptimization
 import im.actor.server.dialog.HistoryUtils
-import im.actor.server.group.GroupQueries.CanSendMessageResponse
 import im.actor.server.group.{ CanSendMessageInfo, GroupUtils }
-import im.actor.server.model.{ DialogObsolete, HistoryMessage, Peer, PeerType }
+import im.actor.server.model.Peer
 import im.actor.server.persist.contact.UserContactRepo
-import im.actor.server.persist.dialog.DialogRepo
-import im.actor.server.persist.{ GroupUserRepo, HistoryMessageRepo }
+import im.actor.server.persist.HistoryMessageRepo
 import im.actor.server.sequence.SeqState
 import im.actor.server.user.UserUtils
 import org.joda.time.DateTime
-import slick.dbio
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.Future
@@ -196,9 +193,9 @@ trait HistoryHandlers {
     clientData:    ClientData
   ): Future[HandlerResult[ResponseLoadHistory]] =
     authorized(clientData) { implicit client ⇒
-      val action = withOutPeerDBIO(peer) {
+      withOutPeer(peer) {
         val modelPeer = peer.asModel
-        for {
+        val action = for {
           historyOwner ← DBIO.from(getHistoryOwner(modelPeer, client.userId))
           (lastReceivedAt, lastReadAt) ← getLastReceiveReadDates(modelPeer)
           messageModels ← mode match {
@@ -240,8 +237,8 @@ trait HistoryHandlers {
             groupPeers = groups map (g ⇒ ApiGroupOutPeer(g.id, g.accessHash))
           ))
         }
+        db.run(action)
       }
-      db.run(action)
     }
 
   override def doHandleDeleteMessage(outPeer: ApiOutPeer, randomIds: IndexedSeq[Long], clientData: ClientData): Future[HandlerResult[ResponseSeq]] =

@@ -1,6 +1,6 @@
 package im.actor.server.user
 
-import java.time.{ LocalDateTime, ZoneOffset }
+import java.time.{ Instant, LocalDateTime, ZoneOffset }
 import java.util.TimeZone
 
 import akka.actor.{ ActorSystem, Status }
@@ -437,13 +437,13 @@ private[user] trait UserCommandHandlers {
 
   // TODO: DRY it, finally!
   private def markContactRegistered(user: UserState, phoneNumber: Long, isSilent: Boolean): Future[Unit] = {
-    val date = new DateTime
+    val dateMillis = Instant.now.toEpochMilli
     for {
       contacts ← db.run(UnregisteredPhoneContactRepo.find(phoneNumber))
       _ = log.debug(s"Unregistered $phoneNumber is in contacts of users: $contacts")
       _ ← Future.sequence(contacts map { contact ⇒
         val randomId = ThreadLocalSecureRandom.current().nextLong()
-        val updateContactRegistered = UpdateContactRegistered(user.id, isSilent, date.getMillis, randomId)
+        val updateContactRegistered = UpdateContactRegistered(user.id, isSilent, dateMillis, randomId)
         val updateContactsAdded = UpdateContactsAdded(Vector(user.id))
         val localName = contact.name
         val serviceMessage = ServiceMessages.contactRegistered(user.id, localName.getOrElse(user.name))
@@ -463,7 +463,7 @@ private[user] trait UserCommandHandlers {
             contact.ownerUserId,
             ApiPeer(ApiPeerType.Private, user.id),
             user.id,
-            date,
+            dateMillis,
             randomId,
             serviceMessage
           )
@@ -476,14 +476,14 @@ private[user] trait UserCommandHandlers {
   }
 
   private def markContactRegistered(user: UserState, email: String, isSilent: Boolean): Future[Unit] = {
-    val date = new DateTime
+    val dateMillis = Instant.now.toEpochMilli
     for {
       _ ← userExt.hooks.beforeEmailContactRegistered.runAll(user.id, email)
       contacts ← db.run(UnregisteredEmailContactRepo.find(email))
       _ = log.debug(s"Unregistered $email is in contacts of users: $contacts")
       _ ← Future.sequence(contacts.map { contact ⇒
         val randomId = ThreadLocalSecureRandom.current().nextLong()
-        val updateContactRegistered = UpdateContactRegistered(user.id, isSilent, date.getMillis, randomId)
+        val updateContactRegistered = UpdateContactRegistered(user.id, isSilent, dateMillis, randomId)
         val updateContactsAdded = UpdateContactsAdded(Vector(user.id))
         val localName = contact.name
         val serviceMessage = ServiceMessages.contactRegistered(user.id, localName.getOrElse(user.name))
@@ -503,7 +503,7 @@ private[user] trait UserCommandHandlers {
             contact.ownerUserId,
             ApiPeer(ApiPeerType.Private, user.id),
             user.id,
-            date,
+            dateMillis,
             randomId,
             serviceMessage
           )

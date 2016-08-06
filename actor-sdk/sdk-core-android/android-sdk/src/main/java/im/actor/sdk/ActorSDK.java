@@ -193,6 +193,7 @@ public class ActorSDK {
      */
     private boolean callsEnabled = false;
     private boolean videoCallsEnabled = false;
+    private String inviteDataUrl = "https://api.actor.im/v1/groups/invites/";
 
     private ActorSDK() {
         endpoints = new String[]{
@@ -1052,11 +1053,31 @@ public class ActorSDK {
         this.videoCallsEnabled = videoCallsEnabled;
     }
 
+    public String getInviteDataUrl() {
+        return inviteDataUrl;
+    }
+
+    public void setInviteDataUrl(String inviteDataUrl) {
+        this.inviteDataUrl = inviteDataUrl;
+    }
+
     /**
      * Used for handling delegated ViewHolders
      */
     public interface OnDelegateViewHolder<T> {
         T onNotDelegated();
 
+    }
+
+    public static void returnToRoot(Context context) {
+        Intent i;
+        ActorIntent startIntent = ActorSDK.sharedActor().getDelegate().getStartIntent();
+        if (startIntent != null && startIntent instanceof ActorIntentActivity) {
+            i = ((ActorIntentActivity) startIntent).getIntent();
+        } else {
+            i = new Intent(context, RootActivity.class);
+        }
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        context.startActivity(i);
     }
 }

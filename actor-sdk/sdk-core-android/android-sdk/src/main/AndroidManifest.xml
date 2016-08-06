@@ -67,7 +67,30 @@
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:theme="@style/MainActivityTheme"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data
+                    android:host="quit.email"
+                    android:pathPrefix="/join/"
+                    android:scheme="https" />
+                <data
+                    android:host="actor.im"
+                    android:pathPrefix="/join/"
+                    android:scheme="https" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="actor" />
+            </intent-filter>
+
+        </activity>
 
         <activity
             android:name=".controllers.share.ShareActivity"
@@ -75,43 +98,6 @@
             android:label="@string/app_name"
             android:theme="@style/MainActivityTheme"
             android:windowSoftInputMode="adjustResize">
-
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.BROWSABLE" />
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data
-                    android:host="actor.cc"
-                    android:pathPrefix="/join/"
-                    android:scheme="https" />
-                <data
-                    android:host="quit.email"
-                    android:pathPrefix="/join/"
-                    android:scheme="https" />
-                <data
-                    android:host="app.actor.im"
-                    android:pathPrefix="/#/join/"
-                    android:scheme="https" />
-            </intent-filter>
-
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="actor" />
-            </intent-filter>
-
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data
-                    android:host="app.actor.im"
-                    android:scheme="https" />
-            </intent-filter>
 
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />

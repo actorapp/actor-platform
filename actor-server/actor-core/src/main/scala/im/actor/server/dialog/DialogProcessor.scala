@@ -1,8 +1,8 @@
 package im.actor.server.dialog
 
 import akka.actor._
-import akka.event.Logging
 import akka.http.scaladsl.util.FastFuture
+import akka.pattern.pipe
 import akka.util.Timeout
 import com.github.benmanes.caffeine.cache.Cache
 import im.actor.api.rpc.misc.ApiExtension
@@ -114,6 +114,9 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
     case rr: RemoveReaction if invokes(rr)                          ⇒ removeReaction(rr)
     case WriteMessageSelf(_, senderUserId, date, randomId, message) ⇒ writeMessageSelf(senderUserId, date, randomId, message)
   }
+
+  // queries that dialog can actually reply when sending messages
+  def queries: Receive = handleQuery andThen (_ pipeTo sender())
 
   /**
    * dialog owner invokes `dc`

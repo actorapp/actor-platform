@@ -5,6 +5,7 @@ import java.time.Instant
 import akka.actor.Status
 import akka.pattern.pipe
 import akka.http.scaladsl.util.FastFuture
+import com.github.ghik.silencer.silent
 import im.actor.api.rpc.files.ApiAvatar
 import im.actor.api.rpc.groups._
 import im.actor.server.file.{ Avatar, ImageUtils }
@@ -97,7 +98,7 @@ private[group] trait InfoCommandHandlers {
         val pushRules = seqUpdExt.pushRules(isFat = false, Some(PushTexts.titleChanged(newState.groupType)))
 
         //TODO: remove deprecated
-        db.run(GroupRepo.updateTitle(groupId, title, cmd.clientUserId, cmd.randomId, date = evt.ts))
+        db.run(GroupRepo.updateTitle(groupId, title, cmd.clientUserId, cmd.randomId, date = evt.ts): @silent)
 
         val result: Future[SeqStateDate] = for {
 
@@ -171,7 +172,7 @@ private[group] trait InfoCommandHandlers {
         val pushRules = seqUpdExt.pushRules(isFat = false, Some(PushTexts.topicChanged(newState.groupType)))
 
         //TODO: remove deprecated
-        db.run(GroupRepo.updateTopic(groupId, topic))
+        db.run(GroupRepo.updateTopic(groupId, topic): @silent)
 
         val result: Future[SeqStateDate] = for {
 
@@ -235,7 +236,7 @@ private[group] trait InfoCommandHandlers {
         val pushRules = seqUpdExt.pushRules(isFat = false, Some(PushTexts.topicChanged(newState.groupType)))
 
         //TODO: remove deprecated
-        db.run(GroupRepo.updateAbout(groupId, about))
+        db.run(GroupRepo.updateAbout(groupId, about): @silent)
 
         val result: Future[SeqStateDate] = for {
 

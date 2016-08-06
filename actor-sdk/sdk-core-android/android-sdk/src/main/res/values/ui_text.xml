@@ -142,7 +142,6 @@
     <string name="auth_error_empty_phone">Please, enter your phone number</string>
     <string name="auth_error_empty_email">Please, enter your email</string>
     <string name="auth_error_code_expired">The code has expired. Please perform validation again.</string>
-    au
     <string name="auth_error_code_invalid">The code is invalid. Please try again.</string>
     <string name="auth_error_failed_get_oauth2_token">Authorization server error. Please, try again.</string>
 
@@ -360,6 +359,8 @@
     <string name="group_leave">Leave group</string>
     <string name="group_leave_channel">Leave channel</string>
     <string name="group_administration">Administration</string>
+    <string name="group_make_admin">Make admin</string>
+    <string name="group_revoke_admin">Revoke admin rights</string>
 
     <string name="group_admin_title">Group Administration</string>
     <string name="channel_admin_title">Channel Administration</string>
@@ -397,6 +398,9 @@
     <string name="theme_group_empty">Set group theme</string>
 
     <string name="members_adapter_bot_online_status">bot</string>
+
+    <string name="group_edit_change_short_name_error">Unable to change group short name</string>
+
 
     <!-- Avatar -->
     <string name="avatar_title_your">Your photo</string>
@@ -444,6 +448,8 @@
     <string name="invite_link_error_get_link">Unable to get invite link</string>
     <string name="invite_link_error_revoke_link">Unable to revoke invite link</string>
     <string name="invite_link_empty_view">Loading invite link</string>
+
+    <string name="invite_link_join_confirm">Join "%1$s"?</string>
 
     <!-- Documents -->
     <string name="documents_title">Documents</string>

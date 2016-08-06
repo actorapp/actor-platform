@@ -28,7 +28,6 @@ import im.actor.core.entity.MessageSearchEntity;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerSearchEntity;
 import im.actor.core.entity.PeerSearchType;
-import im.actor.core.entity.PeerType;
 import im.actor.core.entity.SearchResult;
 import im.actor.core.entity.Sex;
 import im.actor.core.entity.User;
@@ -1643,6 +1642,21 @@ public class Messenger {
     @ObjectiveCName("makeAdminCommandWithGid:withUid:")
     public Command<Void> makeAdmin(final int gid, final int uid) {
         return callback -> modules.getGroupsModule().makeAdmin(gid, uid)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
+    }
+
+    /**
+     * Revoke member admin rights of group
+     *
+     * @param gid group's id
+     * @param uid user's id
+     * @return Command for execution
+     */
+    @NotNull
+    @ObjectiveCName("revokeAdminCommandWithGid:withUid:")
+    public Command<Void> revokeAdmin(final int gid, final int uid) {
+        return callback -> modules.getGroupsModule().revokeAdmin(gid, uid)
                 .then(v -> callback.onResult(v))
                 .failure(e -> callback.onError(e));
     }
