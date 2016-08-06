@@ -8,6 +8,7 @@ buildscript {
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
 
+
 android {
     compileSdkVersion 24
     buildToolsVersion "24.0.0"

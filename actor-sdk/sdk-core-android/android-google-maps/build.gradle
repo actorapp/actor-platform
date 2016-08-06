@@ -131,16 +131,16 @@ project.afterEvaluate {
 
     if (isDeployConfigured) {
 
-        signing {
-            sign configurations.archives
-        }
+//        signing {
+//            sign configurations.archives
+//        }
 
         uploadArchives {
             repositories {
                 mavenDeployer {
-                    beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+//                    beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-                    repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                    repository(url: "http://64.137.236.110:8081/repository/maven-snapshots/") {
                         authentication(userName: ossrhUsername, password: ossrhPassword)
                     }
 
