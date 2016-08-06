@@ -1,5 +1,6 @@
 package im.actor;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.multidex.MultiDex;
 import android.support.v4.app.Fragment;
@@ -43,10 +44,19 @@ public class Application extends ActorSDKApplication {
     public void onConfigureActorSDK() {
         ActorSDK.sharedActor().setDelegate(new ActorSDKDelegate());
         ActorSDK.sharedActor().setPushId(209133700967L);
+        ActorSDK.sharedActor().setActorPushEndpoint(null);
 
         ActorStyle style = ActorSDK.sharedActor().style;
         style.setDialogsActiveTextColor(0xff5882ac);
         style.setShowAvatarPrivateInTitle(false);
+
+        style.setDialogsActiveTextColor(0xff5882ac);
+        style.setMainColor(Color.parseColor("#A43436"));
+        style.setAccentColor(Color.parseColor("#1F3255"));
+        style.setAccentPressedColor(Color.parseColor("#1F3255"));
+        style.setPrimaryAltColor(Color.parseColor("#A43436"));
+        style.setToolBarColor(Color.parseColor("#A43436"));
+        style.setFabColor(Color.parseColor("#A43436"));
 
         ActorSDK.sharedActor().setFastShareEnabled(true);
 
@@ -60,6 +70,8 @@ public class Application extends ActorSDKApplication {
         ActorSDK.sharedActor().setAutoJoinGroups(new String[]{
                 "actor_news"
         });
+
+        ActorSDK.sharedActor().setEndpoints(new String[]{"tcp://192.168.1.8:9070"});
 
 
 //        ActorSDK.sharedActor().setTwitter("");
