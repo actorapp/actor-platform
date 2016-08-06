@@ -27,23 +27,29 @@ public class CallViewModels {
         return callModels.get(id);
     }
 
-    public synchronized CallVM spawnNewVM(long callId, Peer peer, boolean isOutgoing, boolean isVideoEnabled, ArrayList<CallMember> members, CallState callState) {
-        CallVM callVM = new CallVM(callId, peer, isOutgoing, isVideoEnabled, members, callState);
+    public synchronized CallVM spawnNewVM(long callId, Peer peer, boolean isOutgoing,
+                                          boolean isVideoEnabled, boolean isVideoPreffered,
+                                          ArrayList<CallMember> members, CallState callState) {
+        CallVM callVM = new CallVM(callId, peer, isOutgoing, isVideoEnabled, isVideoPreffered,
+                members, callState);
         synchronized (callModels) {
             callModels.put(callId, callVM);
         }
         return callVM;
     }
 
-    public synchronized CallVM spawnNewIncomingVM(long callId, Peer peer, boolean isVideoEnabled, CallState callState) {
-        CallVM callVM = new CallVM(callId, peer, false, isVideoEnabled, new ArrayList<>(), callState);
+    public synchronized CallVM spawnNewIncomingVM(long callId, Peer peer, boolean isVideoEnabled,
+                                                  boolean isVideoPreffered, CallState callState) {
+        CallVM callVM = new CallVM(callId, peer, false, isVideoEnabled, isVideoPreffered,
+                new ArrayList<>(), callState);
         synchronized (callModels) {
             callModels.put(callId, callVM);
         }
         return callVM;
     }
 
-    public synchronized CallVM spawnNewOutgoingVM(long callId, Peer peer, boolean isVideoEnabled) {
+    public synchronized CallVM spawnNewOutgoingVM(long callId, Peer peer, boolean isVideoEnabled,
+                                                  boolean isVideoPreferred) {
         ArrayList<CallMember> members = new ArrayList<>();
         if (peer.getPeerType() == PeerType.PRIVATE ||
                 peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
@@ -56,6 +62,7 @@ public class CallViewModels {
                 }
             }
         }
-        return spawnNewVM(callId, peer, true, isVideoEnabled, members, CallState.RINGING);
+        return spawnNewVM(callId, peer, true, isVideoEnabled, isVideoPreferred, members,
+                CallState.RINGING);
     }
 }
