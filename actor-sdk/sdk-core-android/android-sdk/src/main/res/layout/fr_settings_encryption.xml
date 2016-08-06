@@ -14,8 +14,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <View
-            android:id="@+id/divider"
+        <im.actor.sdk.view.DividerView
             android:layout_width="match_parent"
             android:layout_height="@dimen/div_size"
             android:visibility="gone" />
