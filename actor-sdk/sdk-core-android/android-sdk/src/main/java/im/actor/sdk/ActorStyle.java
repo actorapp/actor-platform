@@ -54,12 +54,25 @@ public class ActorStyle {
     //main color
     private int mainColor = 0xff4d74a6;
 
+
+
     public int getMainColor() {
         return mainColor;
     }
 
     public void setMainColor(int mainColor) {
         this.mainColor = mainColor;
+    }
+
+    //status bar color
+    private int statusBarColor = 0xff4d74a6;
+
+    public int getStatusBarColor() {
+        return statusBarColor;
+    }
+
+    public void setStatusBarColor(int statusBarColor) {
+        this.statusBarColor = statusBarColor;
     }
 
     // primary alt colors

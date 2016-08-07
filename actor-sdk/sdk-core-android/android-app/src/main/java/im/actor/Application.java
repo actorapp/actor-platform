@@ -53,6 +53,7 @@ public class Application extends ActorSDKApplication {
         style.setDialogsActiveTextColor(0xff5882ac);
         style.setMainColor(Color.parseColor("#A43436"));
         style.setAccentColor(Color.parseColor("#1F3255"));
+        style.setStatusBarColor(Color.parseColor("#A43436"));
         style.setAccentPressedColor(Color.parseColor("#1F3255"));
         style.setPrimaryAltColor(Color.parseColor("#A43436"));
         style.setToolBarColor(Color.parseColor("#A43436"));
@@ -71,7 +72,8 @@ public class Application extends ActorSDKApplication {
                 "actor_news"
         });
 
-        ActorSDK.sharedActor().setEndpoints(new String[]{"tcp://192.168.1.8:9070"});
+//        ActorSDK.sharedActor().setEndpoints(new String[]{"tcp://192.168.1.8:9070"});
+        ActorSDK.sharedActor().setEndpoints(new String[]{"tcp://64.137.236.110:9070"});
 
 
 //        ActorSDK.sharedActor().setTwitter("");
