@@ -62,9 +62,9 @@ private[group] final class GroupsHttpHandler()(implicit system: ActorSystem) ext
       case (groupId, optInviterId) ⇒
         for {
           groupInfo ← GroupExtension(system).getApiStruct(groupId, 0)
+          isPublic ← GroupExtension(system).getApiFullStruct(groupId, 0) map (_.shortName.isDefined)
           groupTitle = groupInfo.title
-          groupAvatar = groupInfo.avatar
-          groupAvatarUrls ← avatarUrls(groupAvatar)
+          groupAvatarUrls ← avatarUrls(groupInfo.avatar)
 
           optInviterInfo ← optInviterId match {
             case Some(inviterId) ⇒
@@ -76,7 +76,7 @@ private[group] final class GroupsHttpHandler()(implicit system: ActorSystem) ext
           }
         } yield Right(
           json.GroupInviteInfo(
-            group = json.GroupInfo(groupId, groupTitle, groupAvatarUrls),
+            group = json.GroupInfo(groupId, groupTitle, isPublic, groupAvatarUrls),
             inviter = optInviterInfo
           )
         )

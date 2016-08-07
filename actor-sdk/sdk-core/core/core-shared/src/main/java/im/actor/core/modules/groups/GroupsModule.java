@@ -17,6 +17,7 @@ import im.actor.core.api.ApiPeerType;
 import im.actor.core.api.ApiUserOutPeer;
 import im.actor.core.api.rpc.RequestCreateGroup;
 import im.actor.core.api.rpc.RequestDeleteGroup;
+import im.actor.core.api.rpc.RequestDismissUserAdmin;
 import im.actor.core.api.rpc.RequestEditGroupAbout;
 import im.actor.core.api.rpc.RequestEditGroupShortName;
 import im.actor.core.api.rpc.RequestEditGroupTitle;
@@ -223,6 +224,14 @@ public class GroupsModule extends AbsModule implements BusSubscriber {
     public Promise<Void> makeAdmin(final int gid, final int uid) {
         return Promises.tuple(getGroups().getValueAsync(gid), users().getValueAsync(uid))
                 .flatMap(groupUserTuple2 -> api(new RequestMakeUserAdminObsolete(
+                        new ApiGroupOutPeer(gid, groupUserTuple2.getT1().getAccessHash()),
+                        new ApiUserOutPeer(uid, groupUserTuple2.getT2().getAccessHash()))))
+                .flatMap(r -> updates().waitForUpdate(r.getSeq()));
+    }
+
+    public Promise<Void> revokeAdmin(final int gid, final int uid) {
+        return Promises.tuple(getGroups().getValueAsync(gid), users().getValueAsync(uid))
+                .flatMap(groupUserTuple2 -> api(new RequestDismissUserAdmin(
                         new ApiGroupOutPeer(gid, groupUserTuple2.getT1().getAccessHash()),
                         new ApiUserOutPeer(uid, groupUserTuple2.getT2().getAccessHash()))))
                 .flatMap(r -> updates().waitForUpdate(r.getSeq()));

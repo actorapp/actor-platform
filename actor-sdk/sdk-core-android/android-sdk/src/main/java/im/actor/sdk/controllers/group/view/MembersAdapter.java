@@ -1,19 +1,34 @@
 package im.actor.sdk.controllers.group.view;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.i18n.phonenumbers.NumberParseException;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.Phonenumber;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 
+import im.actor.core.viewmodel.CommandCallback;
+import im.actor.core.viewmodel.GroupVM;
+import im.actor.core.viewmodel.UserPhone;
+import im.actor.runtime.actors.messages.*;
+import im.actor.runtime.actors.messages.Void;
 import im.actor.sdk.ActorSDK;
+import im.actor.sdk.ActorSDKLauncher;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.ActorBinder;
+import im.actor.sdk.controllers.Intents;
+import im.actor.sdk.controllers.activity.BaseActivity;
+import im.actor.sdk.util.AlertListBuilder;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.avatar.AvatarView;
 import im.actor.sdk.view.adapters.HolderAdapter;
@@ -56,8 +71,8 @@ public class MembersAdapter extends HolderAdapter<GroupMember> {
                 if (b.isAdministrator() && !a.isAdministrator()) {
                     return 1;
                 }
-                String an = users().get(a.getInviterUid()).getName().get();
-                String bn = users().get(b.getInviterUid()).getName().get();
+                String an = users().get(a.getUid()).getName().get();
+                String bn = users().get(b.getUid()).getName().get();
                 return an.compareTo(bn);
             });
             this.members.addAll(Arrays.asList(membersArray));
@@ -155,11 +170,14 @@ public class MembersAdapter extends HolderAdapter<GroupMember> {
 
         @Override
         public void bind(GroupMember data, int position, Context context) {
+            boolean needRebind = user == null || data.getUid() != user.getId();
             user = users().get(data.getUid());
             ActorSDK.sharedActor().getMessenger().onUserVisible(data.getUid());
             onlineBinding = BINDER.bindOnline(online, user);
 
-            avatarView.bind(user);
+            if (needRebind) {
+                avatarView.bind(user);
+            }
 
             userName.setText(user.getName().get());
 
@@ -186,5 +204,91 @@ public class MembersAdapter extends HolderAdapter<GroupMember> {
     public void dispose() {
         super.dispose();
         BINDER.unbindAll();
+    }
+
+    public void onMemberClick(GroupVM groupVM, UserVM userVM, boolean isAdministrator, boolean isInvitedByMe, BaseActivity activity) {
+        AlertListBuilder alertListBuilder = new AlertListBuilder();
+        final ArrayList<UserPhone> phones = userVM.getPhones().get();
+        alertListBuilder.addItem(activity.getString(R.string.group_context_message).replace("{0}", userVM.getName().get()), () -> activity.startActivity(Intents.openPrivateDialog(userVM.getId(), true, activity)));
+        if (phones.size() != 0) {
+            alertListBuilder.addItem(activity.getString(R.string.group_context_call).replace("{0}", userVM.getName().get()), () -> {
+                if (phones.size() == 1) {
+                    activity.startActivity(Intents.call(phones.get(0).getPhone()));
+                } else {
+                    CharSequence[] sequences = new CharSequence[phones.size()];
+                    for (int i = 0; i < sequences.length; i++) {
+                        try {
+                            Phonenumber.PhoneNumber number = PhoneNumberUtil.getInstance().parse("+" + phones.get(i).getPhone(), "us");
+                            sequences[i] = phones.get(i).getTitle() + ": " + PhoneNumberUtil.getInstance().format(number, PhoneNumberUtil.PhoneNumberFormat.INTERNATIONAL);
+                        } catch (NumberParseException e) {
+                            e.printStackTrace();
+                            sequences[i] = phones.get(i).getTitle() + ": +" + phones.get(i).getPhone();
+                        }
+                    }
+                    new AlertDialog.Builder(activity)
+                            .setItems(sequences, (dialog1, which1) -> {
+                                activity.startActivity(Intents.call(phones.get(which1).getPhone()));
+                            })
+                            .show()
+                            .setCanceledOnTouchOutside(true);
+                }
+            });
+        }
+        alertListBuilder.addItem(activity.getString(R.string.group_context_view).replace("{0}", userVM.getName().get()), () -> ActorSDKLauncher.startProfileActivity(activity, userVM.getId()));
+        if (groupVM.getIsCanKickAnyone().get() || (groupVM.getIsCanKickInvited().get() && isInvitedByMe)) {
+            alertListBuilder.addItem(activity.getString(R.string.group_context_remove).replace("{0}", userVM.getName().get()), () -> {
+                new AlertDialog.Builder(activity)
+                        .setMessage(activity.getString(R.string.alert_group_remove_text).replace("{0}", userVM.getName().get()))
+                        .setPositiveButton(R.string.alert_group_remove_yes, (dialog2, which1) -> {
+                            activity.execute(messenger().kickMember(groupVM.getId(), userVM.getId()),
+                                    R.string.progress_common, new CommandCallback<Void>() {
+                                        @Override
+                                        public void onResult(Void res1) {
+
+                                        }
+
+                                        @Override
+                                        public void onError(Exception e) {
+                                            Toast.makeText(activity, R.string.toast_unable_kick, Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                        })
+                        .setNegativeButton(R.string.dialog_cancel, null)
+                        .show()
+                        .setCanceledOnTouchOutside(true);
+            });
+        }
+        if (groupVM.getIsCanEditAdministration().get() && !userVM.isBot()) {
+            alertListBuilder.addItem(!isAdministrator ? activity.getResources().getString(R.string.group_make_admin) : activity.getResources().getString(R.string.group_revoke_admin), () -> {
+                if (!isAdministrator) {
+                    messenger().makeAdmin(groupVM.getId(), userVM.getId()).start(new CommandCallback<Void>() {
+                        @Override
+                        public void onResult(Void res) {
+
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+
+                        }
+                    });
+                } else {
+                    messenger().revokeAdmin(groupVM.getId(), userVM.getId()).start(new CommandCallback<Void>() {
+                        @Override
+                        public void onResult(Void res) {
+
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+
+                        }
+                    });
+                }
+            });
+        }
+        alertListBuilder.build(activity)
+                .show()
+                .setCanceledOnTouchOutside(true);
     }
 }

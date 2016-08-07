@@ -136,16 +136,17 @@ public class GroupTypeFragment extends BaseFragment {
             if (isPublic) {
                 String nShortName = publicShortName.getText().toString().trim();
                 if (nShortName.length() == 0) {
-                    finishActivity();
+                    Toast.makeText(getActivity(), R.string.group_edit_change_short_name_error, Toast.LENGTH_SHORT).show();
                     return true;
                 }
                 if (nShortName.equals(groupVM.getShortName().get())) {
+                    finishActivity();
                     return true;
                 }
                 execute(messenger().editGroupShortName(groupVM.getId(), nShortName).then(r -> {
                     finishActivity();
                 }).failure(e -> {
-                    Toast.makeText(getActivity(), "Unable to change group short name", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), R.string.group_edit_change_short_name_error, Toast.LENGTH_SHORT).show();
                 }));
             } else {
                 if (groupVM.getShortName().get() == null) {
@@ -155,7 +156,7 @@ public class GroupTypeFragment extends BaseFragment {
                     execute(messenger().editGroupShortName(groupVM.getId(), null).then(r -> {
                         finishActivity();
                     }).failure(e -> {
-                        Toast.makeText(getActivity(), "Unable to change group short name", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), R.string.group_edit_change_short_name_error, Toast.LENGTH_SHORT).show();
                     }));
                 }
             }
