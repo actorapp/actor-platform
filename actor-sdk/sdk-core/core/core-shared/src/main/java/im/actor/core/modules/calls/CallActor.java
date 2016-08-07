@@ -66,7 +66,8 @@ public class CallActor extends AbsCallActor {
                 callBus.joinMasterBus(responseDoCall.getEventBusId(), responseDoCall.getDeviceId());
                 callBus.changeVideoEnabled(isVideoInitiallyEnabled);
                 callBus.startOwn();
-                callVM = callViewModels.spawnNewOutgoingVM(responseDoCall.getCallId(), peer, isVideoInitiallyEnabled);
+                callVM = callViewModels.spawnNewOutgoingVM(responseDoCall.getCallId(), peer, isVideoInitiallyEnabled,
+                        isVideoInitiallyEnabled);
             }).failure(e -> self().send(PoisonPill.INSTANCE));
         } else {
             api(new RequestGetCallInfo(callId)).then(responseGetCallInfo -> {
@@ -76,7 +77,8 @@ public class CallActor extends AbsCallActor {
                     isVideoInitiallyEnabled = responseGetCallInfo.isVideoPreferred();
                     callBus.changeVideoEnabled(isVideoInitiallyEnabled);
                 }
-                callVM = callViewModels.spawnNewIncomingVM(callId, peer, isVideoInitiallyEnabled, CallState.RINGING);
+                callVM = callViewModels.spawnNewIncomingVM(callId, peer, isVideoInitiallyEnabled,
+                        isVideoInitiallyEnabled, CallState.RINGING);
             }).failure(e -> self().send(PoisonPill.INSTANCE));
         }
     }

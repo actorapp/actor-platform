@@ -22,11 +22,11 @@ public class AAAudioManager: NSObject, AVAudioPlayerDelegate {
     private var isVisible = false
     
     private var isEnabled: Bool = false
+    private var isVideoPreferred = false
     private var openedConnections: Int = 0
     
     public override init() {
-        super.init()
-        
+        super.init()   
     }
     
     public func appVisible() {
@@ -38,6 +38,8 @@ public class AAAudioManager: NSObject, AVAudioPlayerDelegate {
     }
     
     public func callStart(call: ACCallVM) {
+        isVideoPreferred = call.isVideoPreferred
+        
         if !call.isOutgoing {
             isRinging = true
             if isVisible {
@@ -46,7 +48,7 @@ public class AAAudioManager: NSObject, AVAudioPlayerDelegate {
                     audioRouter.category = AVAudioSessionCategoryPlayAndRecord
                     audioRouter.mode = AVAudioSessionModeDefault
                     audioRouter.currentRoute = .Speaker
-                    audioRouter.isEnabled = isEnabled
+                    audioRouter.isEnabled = true
                 }
                 ringtoneStart()
             } else {
@@ -55,28 +57,42 @@ public class AAAudioManager: NSObject, AVAudioPlayerDelegate {
             vibrate()
         } else {
             isEnabled = true
-            audioRouter.category = AVAudioSessionCategoryPlayAndRecord
-            audioRouter.mode =  AVAudioSessionModeVoiceChat
-            audioRouter.currentRoute = .Receiver
-            audioRouter.isEnabled = isEnabled
+            audioRouter.batchedUpdate {
+                audioRouter.category = AVAudioSessionCategoryPlayAndRecord
+                audioRouter.mode =  AVAudioSessionModeVoiceChat
+                if isVideoPreferred {
+                    audioRouter.currentRoute = .Speaker
+                } else {
+                    audioRouter.currentRoute = .Receiver
+                }
+                audioRouter.isEnabled = true
+            }
         }
     }
     
     public func callAnswered(call: ACCallVM) {
         ringtoneEnd()
         isRinging = false
-        audioRouter.mode = AVAudioSessionModeVoiceChat
-        audioRouter.currentRoute = .Receiver
+        audioRouter.batchedUpdate {
+            audioRouter.mode = AVAudioSessionModeVoiceChat
+            if isVideoPreferred {
+                audioRouter.currentRoute = .Speaker
+            } else {
+                audioRouter.currentRoute = .Receiver
+            }
+        }
     }
     
     public func callEnd(call: ACCallVM) {
         ringtoneEnd()
         isRinging = false
         isEnabled = false
-        audioRouter.category = AVAudioSessionCategorySoloAmbient
-        audioRouter.mode = AVAudioSessionModeDefault
-        audioRouter.currentRoute = .Receiver
-        audioRouter.isEnabled = isEnabled
+        audioRouter.batchedUpdate {
+            audioRouter.category = AVAudioSessionCategorySoloAmbient
+            audioRouter.mode = AVAudioSessionModeDefault
+            audioRouter.currentRoute = .Receiver
+            audioRouter.isEnabled = false
+        }
     }
     
     public func peerConnectionStarted() {
