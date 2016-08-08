@@ -278,12 +278,10 @@ public abstract class GlobalSearchBaseFragment extends BaseFragment {
                 int peerId = item.getPeer().getPeerId();
                 switch (item.getPeer().getPeerType()) {
                     case PRIVATE:
-                        messenger().addContact(peerId);
                         startActivity(Intents.openPrivateDialog(peerId, true, getActivity()));
                         break;
 
                     case GROUP:
-                        messenger().joinGroup(peerId);
                         startActivity(Intents.openGroupDialog(peerId, false, getActivity()));
                         break;
                 }

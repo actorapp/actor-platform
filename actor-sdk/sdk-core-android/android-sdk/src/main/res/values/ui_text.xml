@@ -183,7 +183,7 @@
     <string name="settings_home_page">Home page</string>
     <string name="settings_notifications">Notifications</string>
     <string name="settings_chat">Chat Settings</string>
-    <string name="settings_security">Security</string>
+    <string name="settings_security">Security and Privacy</string>
     <string name="settings_blocked_list">Blocked list</string>
     <string name="nickname_empty">Set username</string>
     <string name="nickname_change">Change username</string>
@@ -308,6 +308,7 @@
     <string name="profile_shared_media">Media</string>
     <string name="profile_settings_header">Settings</string>
     <string name="profile_settings_notifications">Notifications</string>
+    <string name="profile_settings_notifications_picker">Notifications sound</string>
     <string name="profile_settings_block">Block user</string>
     <string name="profile_settings_unblock">Unblock user</string>
     <string name="profile_settings_block_confirm">Block {user}?</string>
@@ -488,8 +489,7 @@
     <string name="not_title">Notifications</string>
     <string name="not_conv_tones">Conversation tones</string>
     <string name="not_conv_tones_subtitle">Play sounds for incoming and outgoing messages.</string>
-    <string name="not_sound">Sound</string>
-    <string name="not_sound_subtitle">Enable notification sounds</string>
+
     <string name="not_vibration">Vibration</string>
     <string name="not_vibration_subtitle">Enable vibration in notifications</string>
     <string name="not_group">Group</string>
@@ -498,6 +498,10 @@
     <string name="not_group_mentions_subtitle">Enable group notifications only for mentions</string>
     <string name="not_show_text">Show names and messages</string>
     <string name="not_show_text_subtitle">Show message text and sender name in notification panel</string>
+    <string name="not_sound">Sound</string>
+    <string name="not_sound_subtitle">Enable notification sounds</string>
+    <string name="not_sound_picker">Set sound</string>
+    <string name="not_sound_picker_subtitle">Set notification sound</string>
     <string name="notification_multiple_canversations_after_msg_count">" messages in "</string>
     <string name="notifications_multiple_canversations_after_coversations_count">" chats"</string>
     <string name="notifications_single_conversation_аfter_messages_count">" messages"</string>
@@ -517,7 +521,7 @@
     <string name="settings_chat_markdown_subtitle">Is markdown enabled</string>
 
     <!-- Security -->
-    <string name="security_title">Security</string>
+    <string name="security_title">Security and Privacy</string>
     <string name="security_terminate_title">Terminate all sessions</string>
     <string name="security_terminate_subtitle">Sign Out on all devices</string>
     <string name="security_terminate_message">Are you sure you want to log out on all other devices? All app data will be lost on these devices.</string>
@@ -527,6 +531,13 @@
     <string name="security_toast_unable_remove_auth">Unable to remove auth</string>
     <string name="security_this_title">(This) </string>
     <string name="security_toast_unable_to_load">Unable to load. Please try again.</string>
+
+    <!-- Last Seen -->
+    <string name="security_last_seen_title">Last seen</string>
+    <string name="security_last_seen_subtitle">Change who can see your Last Seen time.</string>
+    <string name="security_last_seen_everybody">Everybody</string>
+    <string name="security_last_seen_contacts">My Contacts</string>
+    <string name="security_last_seen_nobody">Nobody</string>
 
     <!-- Blocked list -->
     <string name="blocked_title">Blocked list</string>

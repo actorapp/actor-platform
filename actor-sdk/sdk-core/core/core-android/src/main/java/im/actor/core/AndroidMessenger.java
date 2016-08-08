@@ -52,6 +52,7 @@ import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.runtime.mvvm.Value;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.core.utils.GalleryScannerActor;
+import im.actor.sdk.ActorSDK;
 import me.leolin.shortcutbadger.ShortcutBadger;
 
 import static im.actor.runtime.actors.ActorSystem.system;
@@ -348,7 +349,9 @@ public class AndroidMessenger extends im.actor.core.Messenger {
                 }
                 String externalPath = externalFile.getAbsolutePath();
 
-                File dest = new File(externalPath + "/Actor/");
+                File dest = new File(externalPath + "/" +
+                        ActorSDK.sharedActor().getAppName() +
+                        "/");
                 dest.mkdirs();
 
                 boolean isGif = picturePath != null && picturePath.endsWith(".gif");
