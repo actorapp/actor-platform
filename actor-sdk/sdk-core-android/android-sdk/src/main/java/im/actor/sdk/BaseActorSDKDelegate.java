@@ -1,7 +1,5 @@
 package im.actor.sdk;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
@@ -10,7 +8,6 @@ import android.view.ViewGroup;
 import org.jetbrains.annotations.Nullable;
 
 import im.actor.core.entity.Peer;
-import im.actor.runtime.android.AndroidContext;
 import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.sdk.controllers.conversation.ChatFragment;
 import im.actor.sdk.controllers.conversation.attach.AbsAttachFragment;
@@ -21,6 +18,8 @@ import im.actor.sdk.controllers.conversation.messages.content.MessageHolder;
 import im.actor.sdk.controllers.conversation.quote.QuoteFragment;
 import im.actor.sdk.intents.ActorIntent;
 import im.actor.sdk.intents.ActorIntentFragmentActivity;
+
+import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
 /**
  * Base Implementation of Actor SDK Delegate. This class is recommended to subclass instead
@@ -125,9 +124,8 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
     }
 
     public Uri getNotificationSoundForPeer(Peer peer) {
-        SharedPreferences sharedPreferences = AndroidContext.getContext().getSharedPreferences("notifications", Context.MODE_PRIVATE);
 
-        String globalSound = sharedPreferences.getString("userSound_" + peer.getPeerId(), null);
+        String globalSound = messenger().getPreferences().getString("userNotificationSound_" + peer.getPeerId());
         if (globalSound != null) {
             if (globalSound.equals("none")) {
                 return null;
@@ -144,9 +142,7 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
     }
 
     public Uri getNotificationSound() {
-        SharedPreferences sharedPreferences = AndroidContext.getContext().getSharedPreferences("notifications", Context.MODE_PRIVATE);
-
-        String globalSound = sharedPreferences.getString("globalSound", null);
+        String globalSound = messenger().getPreferences().getString("globalNotificationSound");
         if (globalSound != null) {
             if (globalSound.equals("none")) {
                 return null;

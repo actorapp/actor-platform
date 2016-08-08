@@ -5,7 +5,6 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -55,9 +54,6 @@ import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 import static im.actor.sdk.util.ActorSDKMessenger.users;
 
 public class ProfileFragment extends BaseFragment {
-
-    private SharedPreferences notificationPreferences;
-    private SharedPreferences.Editor notificationPreferencesEditor;
 
     public static int SOUND_PICKER_REQUEST_CODE = 122;
 
@@ -442,9 +438,6 @@ public class ProfileFragment extends BaseFragment {
             DrawableCompat.setTint(drawable, style.getSettingsIconColor());
             iconView.setImageDrawable(drawable);
 
-            notificationPreferences = getActivity().getSharedPreferences("notifications", Context.MODE_PRIVATE);
-            notificationPreferencesEditor = notificationPreferences.edit();
-
             ((TextView) notificationPickerContainer.findViewById(R.id.settings_notifications_picker_title)).setTextColor(style.getTextPrimaryColor());
             notificationPickerContainer.setOnClickListener(view -> {
                 Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
@@ -459,7 +452,10 @@ public class ProfileFragment extends BaseFragment {
                     defaultPath = defaultUri.getPath();
                 }
 
-                String path = notificationPreferences.getString("userSound_" + uid, defaultPath);
+                String path = messenger().getPreferences().getString("userNotificationSound_" + uid);
+                if (path == null) {
+                    path = defaultPath;
+                }
                 if (path != null && !path.equals("none")) {
                     if (path.equals(defaultPath)) {
                         currentSound = defaultUri;
@@ -520,11 +516,10 @@ public class ProfileFragment extends BaseFragment {
             Uri ringtone = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
 
             if (ringtone != null) {
-                notificationPreferencesEditor.putString("userSound_" + uid, ringtone.toString());
+                messenger().getPreferences().putString("userNotificationSound_" + uid, ringtone.toString());
             } else {
-                notificationPreferencesEditor.putString("userSound" + uid, "none");
+                messenger().getPreferences().putString("userNotificationSound_" + uid, "none");
             }
-            notificationPreferencesEditor.commit();
         }
     }
 

@@ -1,9 +1,7 @@
 package im.actor.sdk.controllers.settings;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,9 +21,6 @@ import im.actor.sdk.util.ViewUtils;
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
 public class NotificationsFragment extends BaseFragment {
-
-    private SharedPreferences notificationPreferences;
-    private SharedPreferences.Editor notificationPreferencesEditor;
 
     public static int SOUND_PICKER_REQUEST_CODE = 122;
 
@@ -124,8 +119,6 @@ public class NotificationsFragment extends BaseFragment {
         ((TextView) res.findViewById(R.id.settings_sound_hint)).setTextColor(style.getTextSecondaryColor());
 
         // Sound picker
-        notificationPreferences = getActivity().getSharedPreferences("notifications", Context.MODE_PRIVATE);
-        notificationPreferencesEditor = notificationPreferences.edit();
         View.OnClickListener soundPickerListener = v -> {
             Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
             intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
@@ -139,7 +132,10 @@ public class NotificationsFragment extends BaseFragment {
                 defaultPath = defaultUri.getPath();
             }
 
-            String path = notificationPreferences.getString("globalSound", defaultPath);
+            String path = messenger().getPreferences().getString("globalNotificationSound");
+            if (path == null) {
+                path = defaultPath;
+            }
             if (path != null && !path.equals("none")) {
                 if (path.equals(defaultPath)) {
                     currentSound = defaultUri;
@@ -162,11 +158,10 @@ public class NotificationsFragment extends BaseFragment {
             Uri ringtone = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
 
             if (ringtone != null) {
-                notificationPreferencesEditor.putString("globalSound", ringtone.toString());
+                messenger().getPreferences().putString("globalNotificationSound", ringtone.toString());
             } else {
-                notificationPreferencesEditor.putString("globalSound", "none");
+                messenger().getPreferences().putString("globalNotificationSound", "none");
             }
-            notificationPreferencesEditor.commit();
         }
     }
 }
