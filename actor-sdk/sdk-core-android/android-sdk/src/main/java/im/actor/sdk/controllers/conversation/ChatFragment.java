@@ -198,6 +198,13 @@ public class ChatFragment extends BaseFragment implements InputBarCallback, Mess
                     inputOverlayText.setEnabled(true);
                     showView(inputOverlayContainer, false);
                     goneView(inputContainer, false);
+                } else if (groupVM.getIsCanJoin().get()) {
+                    inputOverlayText.setText(getString(R.string.join));
+                    inputOverlayText.setTextColor(style.getListActionColor());
+                    inputOverlayText.setClickable(true);
+                    inputOverlayText.setEnabled(true);
+                    showView(inputOverlayContainer, false);
+                    goneView(inputContainer, false);
                 } else {
                     inputOverlayText.setText(R.string.chat_not_member);
                     inputOverlayText.setTextColor(style.getListActionColor());
@@ -230,6 +237,8 @@ public class ChatFragment extends BaseFragment implements InputBarCallback, Mess
                     messenger().changeNotificationsEnabled(peer, true);
                     inputOverlayText.setText(getString(R.string.chat_mute));
                 }
+            } else if (groupVM.getIsCanJoin().get()) {
+                messenger().joinGroup(groupVM.getId());
             } else {
                 // TODO: Rejoin
             }
