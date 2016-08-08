@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -32,6 +33,7 @@ import static im.actor.sdk.util.ActorSDKMessenger.users;
 public class MembersFragment extends BaseFragment {
 
     protected CircularProgressBar progressView;
+    private LinearLayout footer;
 
     public static MembersFragment create(int groupId) {
         MembersFragment res = new MembersFragment();
@@ -101,6 +103,18 @@ public class MembersFragment extends BaseFragment {
             }
         }
 
+        footer = new LinearLayout(getActivity());
+        list.addFooterView(footer);
+        CircularProgressBar botProgressView = new CircularProgressBar(getActivity());
+        int padding = Screen.dp(16);
+        botProgressView.setPadding(padding, padding, padding, padding);
+        botProgressView.setIndeterminate(true);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(Screen.dp(72), Screen.dp(72));
+        params.gravity = Gravity.CENTER;
+        FrameLayout cont = new FrameLayout(getActivity());
+        cont.addView(botProgressView, params);
+        footer.addView(cont, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
         list.setAdapter(adapter);
         list.setOnItemClickListener((parent, view, position, id) -> {
             Object item = parent.getItemAtPosition(position);
@@ -142,7 +156,17 @@ public class MembersFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        adapter.initLoad(() -> hideView(progressView));
+        adapter.initLoad(new MembersAdapter.LoadedCallback() {
+            @Override
+            public void onLoaded() {
+                hideView(progressView);
+            }
+
+            @Override
+            public void onLoadedToEnd() {
+                footer.setVisibility(View.INVISIBLE);
+            }
+        });
     }
 
     @Override
