@@ -46,13 +46,14 @@ public class InviteHandler {
                                 JSONObject data = new JSONObject(new String(httpResponse.getContent(), "UTF-8"));
                                 JSONObject group = data.getJSONObject("group");
                                 String title = group.getString("title");
-                                if (group.has("id")) {
+                                if (group.has("id") && group.has("isPublic")) {
                                     int gid = group.getInt("id");
+                                    boolean isPublic = group.getBoolean("isPublic");
                                     //Check if we have this group
                                     try {
                                         GroupVM groupVM = groups().get(gid);
-                                        if (groupVM.isMember().get()) {
-                                            //Have this group, is member, just open it
+                                        if (groupVM.isMember().get() || isPublic) {
+                                            //Have this group, is member or group is public, just open it
                                             activity.startActivity(Intents.openDialog(Peer.group(gid), false, activity));
                                         } else {
                                             //Have this group, but not member, join it
@@ -60,7 +61,11 @@ public class InviteHandler {
                                         }
                                     } catch (Exception e) {
                                         //Do not have this group, join it
-                                        joinViaToken(token, title, activity);
+                                        if (isPublic) {
+                                            messenger().findPublicGroupById(gid).then(peer -> activity.startActivity(Intents.openDialog(peer, false, activity)));
+                                        } else {
+                                            joinViaToken(token, title, activity);
+                                        }
                                     }
                                 } else {
                                     joinViaToken(token, title, activity);
