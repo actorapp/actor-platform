@@ -1108,6 +1108,17 @@ public class Messenger {
     }
 
     /**
+     * Finding public by id
+     *
+     * @param gid group id
+     * @return found peer promise
+     */
+    @ObjectiveCName("findPublicGroupByIdWithGid:")
+    public Promise<Peer> findPublicGroupById(int gid) {
+        return modules.getSearchModule().findPublicGroupById(gid);
+    }
+
+    /**
      * Finding suitable mentions
      *
      * @param gid   gid of group
