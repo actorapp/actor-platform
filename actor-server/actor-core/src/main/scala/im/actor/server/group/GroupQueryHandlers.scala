@@ -185,9 +185,9 @@ trait GroupQueryHandlers {
 
   /**
    * Return group members, and number of members.
-   * If `clientUserId` is not a group member, return empty members list and 0
-   * For `General` and `Public` groups return all members and their number.
-   * For `Channel` return members list only if `clientUserId` is group admin. Otherwise return empty members list and real members count
+   * If `clientUserId` is not a group member, return empty members list and 0 members count
+   * If group is group with async members - return list with single client user and real members count
+   * If group is regular group - return all group members and real members count
    */
   private def membersAndCount(group: GroupState, clientUserId: Int): (Vector[ApiMember], Int) = {
     def apiMembers = group.members.toVector map {
@@ -196,15 +196,11 @@ trait GroupQueryHandlers {
     }
 
     if (state.isMember(clientUserId)) {
-      state.groupType match {
-        case General ⇒
-          apiMembers → group.membersCount
-        case Channel ⇒
-          if (state.isAdmin(clientUserId))
-            apiMembers → group.membersCount
-          else
-            apiMembers.find(_.userId == clientUserId).toVector → group.membersCount
-        case Unrecognized(v) ⇒ throw IncorrectGroupType(v)
+      if (state.isAsyncMembers) {
+        // compatibility with old clients
+        apiMembers.find(_.userId == clientUserId).toVector → group.membersCount
+      } else {
+        apiMembers → group.membersCount
       }
     } else {
       Vector.empty[ApiMember] → 0

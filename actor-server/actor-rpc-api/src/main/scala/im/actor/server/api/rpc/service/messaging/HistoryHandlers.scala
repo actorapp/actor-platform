@@ -5,10 +5,12 @@ import java.time.Instant
 import akka.http.scaladsl.util.FastFuture
 import im.actor.api.rpc.PeerHelpers._
 import im.actor.api.rpc._
+import im.actor.api.rpc.groups.ApiGroup
 import im.actor.api.rpc.messaging.{ ApiEmptyMessage, _ }
 import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
 import im.actor.api.rpc.peers.{ ApiGroupOutPeer, ApiOutPeer, ApiPeerType, ApiUserOutPeer }
 import im.actor.api.rpc.sequence.ApiUpdateOptimization
+import im.actor.api.rpc.users.ApiUser
 import im.actor.server.dialog.HistoryUtils
 import im.actor.server.group.{ CanSendMessageInfo, GroupUtils }
 import im.actor.server.model.Peer
@@ -87,7 +89,7 @@ trait HistoryHandlers {
     authorized(clientData) { implicit client ⇒
       for {
         (dialogs, nextOffset) ← dialogExt.fetchArchivedApiDialogs(client.userId, offset, limit)
-        (users, groups) ← db.run(getDialogsUsersGroups(dialogs.toSeq))
+        (users, groups) ← getDialogsUsersGroups(dialogs.toSeq)
       } yield {
         val stripEntities = optimizations.contains(ApiUpdateOptimization.STRIP_ENTITIES)
         Ok(ResponseLoadArchived(
@@ -110,7 +112,7 @@ trait HistoryHandlers {
     authorized(clientData) { implicit client ⇒
       for {
         dialogs ← dialogExt.fetchApiDialogs(client.userId, Instant.ofEpochMilli(endDate), limit)
-        (users, groups) ← db.run(getDialogsUsersGroups(dialogs.toSeq))
+        (users, groups) ← getDialogsUsersGroups(dialogs.toSeq)
       } yield {
         val stripEntities = optimizations.contains(ApiUpdateOptimization.STRIP_ENTITIES)
 
@@ -314,7 +316,7 @@ trait HistoryHandlers {
     } yield (new DateTime(info.lastReceivedDate.toEpochMilli), new DateTime(info.lastReadDate.toEpochMilli)))
   }
 
-  private def getDialogsUsersGroups(dialogs: Seq[ApiDialog])(implicit client: AuthorizedClientData) = {
+  private def getDialogsUsersGroups(dialogs: Seq[ApiDialog])(implicit client: AuthorizedClientData): Future[(Set[ApiUser], Set[ApiGroup])] = {
     val (userIds, groupIds) = dialogs.foldLeft((Set.empty[Int], Set.empty[Int])) {
       case ((uacc, gacc), dialog) ⇒
         if (dialog.peer.`type` == ApiPeerType.Private) {
@@ -325,9 +327,9 @@ trait HistoryHandlers {
     }
 
     for {
-      groups ← DBIO.from(Future.sequence(groupIds map (groupExt.getApiStruct(_, client.userId))))
+      groups ← Future.sequence(groupIds map (groupExt.getApiStruct(_, client.userId)))
       groupUserIds = groups.flatMap(g ⇒ g.members.flatMap(m ⇒ Seq(m.userId, m.inviterUserId)) :+ g.creatorUserId)
-      users ← DBIO.from(Future.sequence((userIds ++ groupUserIds).filterNot(_ == 0) map (UserUtils.safeGetUser(_, client.userId, client.authId)))) map (_.flatten)
+      users ← Future.sequence((userIds ++ groupUserIds).filterNot(_ == 0) map (UserUtils.safeGetUser(_, client.userId, client.authId))) map (_.flatten)
     } yield (users, groups)
   }
 

@@ -41,6 +41,8 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
   import IdUtils._
   import ImageUtils._
 
+  case object NoSeqStateDate extends RuntimeException("No SeqStateDate in response from group found")
+
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
   private val db: Database = DbExtension(actorSystem).db
@@ -78,9 +80,11 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
     authorized(clientData) { implicit client ⇒
       withGroupOutPeer(groupPeer) {
         withUserOutPeer(userPeer) {
-          for {
-            (_, SeqStateDate(seq, state, date)) ← groupExt.makeUserAdmin(groupPeer.groupId, client.userId, client.authId, userPeer.userId)
-          } yield Ok(ResponseSeqDate(seq, state.toByteArray, date))
+          (for {
+            _ ← fromFutureBoolean(GroupRpcErrors.CantGrantToBot)(userExt.getUser(userPeer.userId) map (!_.isBot))
+            resp ← fromFuture(groupExt.makeUserAdmin(groupPeer.groupId, client.userId, client.authId, userPeer.userId))
+            (_, SeqStateDate(seq, state, date)) = resp
+          } yield ResponseSeqDate(seq, state.toByteArray, date)).value
         }
       }
     }
@@ -90,9 +94,10 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
     authorized(clientData) { implicit client ⇒
       withGroupOutPeer(groupPeer) {
         withUserOutPeer(userPeer) {
-          for {
-            SeqState(seq, state) ← groupExt.dismissUserAdmin(groupPeer.groupId, client.userId, client.authId, userPeer.userId)
-          } yield Ok(ResponseSeq(seq, state.toByteArray))
+          (for {
+            _ ← fromFutureBoolean(GroupRpcErrors.CantGrantToBot)(userExt.getUser(userPeer.userId) map (!_.isBot))
+            seqState ← fromFuture(groupExt.dismissUserAdmin(groupPeer.groupId, client.userId, client.authId, userPeer.userId))
+          } yield ResponseSeq(seqState.seq, seqState.state.toByteArray)).value
         }
       }
     }
@@ -147,21 +152,22 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
    * @param groupPeer Group's peer
    * @param newOwner  New group's owner
    */
-  //TODO: figure out what date should be
   override protected def doHandleTransferOwnership(groupPeer: ApiGroupOutPeer, newOwner: ApiUserOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] =
     authorized(clientData) { implicit client ⇒
       withGroupOutPeer(groupPeer) {
         withUserOutPeer(newOwner) {
-          for {
-            SeqState(seq, state) ← groupExt.transferOwnership(groupPeer.groupId, client.userId, client.authId, newOwner.userId)
-          } yield Ok(ResponseSeqDate(seq, state.toByteArray, Instant.now.toEpochMilli))
+          (for {
+            _ ← fromFutureBoolean(GroupRpcErrors.CantGrantToBot)(userExt.getUser(newOwner.userId) map (!_.isBot))
+            seqState ← fromFuture(groupExt.transferOwnership(groupPeer.groupId, client.userId, client.authId, newOwner.userId))
+          } yield ResponseSeqDate(
+            seq = seqState.seq,
+            state = seqState.state.toByteArray,
+            date = Instant.now.toEpochMilli
+          )).value
         }
       }
     }
 
-  case object NoSeqStateDate extends RuntimeException("No SeqStateDate in response from group found")
-
-  // TODO: rewrite from DBIO to Future, and add access hash check
   override def doHandleEditGroupAvatar(
     groupPeer:     ApiGroupOutPeer,
     randomId:      Long,
@@ -170,25 +176,26 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
     clientData:    ClientData
   ): Future[HandlerResult[ResponseEditGroupAvatar]] =
     authorized(clientData) { implicit client ⇒
-      addOptimizations(optimizations)
-      val action = withFileLocation(fileLocation, AvatarSizeLimit) {
-        scaleAvatar(fileLocation.fileId) flatMap {
-          case Right(avatar) ⇒
-            for {
-              UpdateAvatarAck(avatar, seqStateDate) ← DBIO.from(groupExt.updateAvatar(groupPeer.groupId, client.userId, client.authId, Some(avatar), randomId))
-              SeqStateDate(seq, state, date) = seqStateDate.getOrElse(throw NoSeqStateDate)
-            } yield Ok(ResponseEditGroupAvatar(
-              avatar.get,
-              seq,
-              state.toByteArray,
-              date
-            ))
-          case Left(e) ⇒
-            throw FileErrors.LocationInvalid
+      withGroupOutPeer(groupPeer) {
+        addOptimizations(optimizations)
+        val action = withFileLocation(fileLocation, AvatarSizeLimit) {
+          scaleAvatar(fileLocation.fileId) flatMap {
+            case Right(avatar) ⇒
+              for {
+                UpdateAvatarAck(avatar, seqStateDate) ← DBIO.from(groupExt.updateAvatar(groupPeer.groupId, client.userId, client.authId, Some(avatar), randomId))
+                SeqStateDate(seq, state, date) = seqStateDate.getOrElse(throw NoSeqStateDate)
+              } yield Ok(ResponseEditGroupAvatar(
+                avatar.get,
+                seq,
+                state.toByteArray,
+                date
+              ))
+            case Left(e) ⇒
+              throw FileErrors.LocationInvalid
+          }
         }
+        db.run(action)
       }
-
-      db.run(action)
     }
 
   override def doHandleRemoveGroupAvatar(
@@ -455,9 +462,6 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
       }
     }
 
-  /**
-   * all members of group can edit group topic
-   */
   override def doHandleEditGroupTopic(
     groupPeer:     ApiGroupOutPeer,
     randomId:      Long,
@@ -475,9 +479,6 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
     }
   }
 
-  /**
-   * only admin can change group's about
-   */
   override def doHandleEditGroupAbout(
     groupPeer:     ApiGroupOutPeer,
     randomId:      Long,

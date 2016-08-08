@@ -51,6 +51,7 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
     }
   }
 
+  // TODO: duplicate isBot check
   protected def makeUserAdmin(cmd: MakeUserAdmin): Unit = {
     if (!state.permissions.canEditAdmins(cmd.clientUserId)) {
       sender() ! noPermission
@@ -136,6 +137,7 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
     }
   }
 
+  // TODO: duplicate isBot check
   protected def dismissUserAdmin(cmd: DismissUserAdmin): Unit = {
     if (!state.permissions.canEditAdmins(cmd.clientUserId)) {
       sender() ! noPermission
@@ -223,6 +225,7 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
     }
   }
 
+  // TODO: duplicate isBot check
   protected def transferOwnership(cmd: TransferOwnership): Unit = {
     if (!state.isOwner(cmd.clientUserId)) {
       sender() ! Status.Failure(CommonErrors.Forbidden)
@@ -259,7 +262,7 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
 
   protected def updateAdminSettings(cmd: UpdateAdminSettings): Unit = {
     if (!state.permissions.canEditAdminSettings(cmd.clientUserId)) {
-      sender() ! Status.Failure(NotAdmin)
+      sender() ! noPermission
     } else if (AdminSettings.fromBitMask(cmd.settingsBitMask) == state.adminSettings) {
       sender() ! UpdateAdminSettingsAck()
     } else {
@@ -320,8 +323,6 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
       persist(GroupDeleted(Instant.now, cmd.clientUserId)) { evt ⇒
         commit(evt)
 
-        val dateMillis = evt.ts.toEpochMilli
-        val randomId = ACLUtils.randomLong()
         val ZeroPermissions = 0L
 
         val deleteGroupMembersUpdates: Vector[Update] =

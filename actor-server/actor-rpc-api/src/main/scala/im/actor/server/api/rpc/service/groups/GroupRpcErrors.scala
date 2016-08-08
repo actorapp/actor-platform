@@ -24,5 +24,6 @@ object GroupRpcErrors {
     "Invalid group short name. Valid short name should contain from 5 to 32 characters, and may consist of latin characters, numbers and underscores", false, None)
   val ShortNameTaken        = RpcError(400, "GROUP_SHORT_NAME_TAKEN", "This short name already belongs to other user or group, we are sorry!", false, None)
   val NoPermission          = CommonRpcErrors.forbidden("You have no permission to execute this action")
+  val CantGrantToBot        = RpcError(400, "CANT_GRANT_TO_BOT",      "Can't grant this permissions to bot",                                 false, None)
 }
 // format: ON
