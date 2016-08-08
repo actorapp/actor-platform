@@ -13,12 +13,13 @@ import im.actor.sdk.controllers.conversation.ChatFragment;
 import im.actor.sdk.controllers.conversation.attach.AbsAttachFragment;
 import im.actor.sdk.controllers.conversation.inputbar.InputBarFragment;
 import im.actor.sdk.controllers.conversation.mentions.AutocompleteFragment;
-import im.actor.sdk.controllers.conversation.messages.content.MessageHolder;
 import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
+import im.actor.sdk.controllers.conversation.messages.content.MessageHolder;
 import im.actor.sdk.controllers.conversation.quote.QuoteFragment;
-import im.actor.sdk.controllers.settings.BaseGroupInfoActivity;
 import im.actor.sdk.intents.ActorIntent;
 import im.actor.sdk.intents.ActorIntentFragmentActivity;
+
+import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
 /**
  * Base Implementation of Actor SDK Delegate. This class is recommended to subclass instead
@@ -96,7 +97,7 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
     public ActorIntentFragmentActivity getSettingsIntent() {
         return null;
     }
-    
+
     @Override
     public ActorIntentFragmentActivity getChatSettingsIntent() {
         return null;
@@ -123,6 +124,16 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
     }
 
     public Uri getNotificationSoundForPeer(Peer peer) {
+
+        String globalSound = messenger().getPreferences().getString("userNotificationSound_" + peer.getPeerId());
+        if (globalSound != null) {
+            if (globalSound.equals("none")) {
+                return null;
+            } else {
+                return Uri.parse(globalSound);
+            }
+        }
+
         return getNotificationSound();
     }
 
@@ -131,6 +142,15 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
     }
 
     public Uri getNotificationSound() {
+        String globalSound = messenger().getPreferences().getString("globalNotificationSound");
+        if (globalSound != null) {
+            if (globalSound.equals("none")) {
+                return null;
+            } else {
+                return Uri.parse(globalSound);
+            }
+        }
+
         return Settings.System.DEFAULT_NOTIFICATION_URI;
     }
 

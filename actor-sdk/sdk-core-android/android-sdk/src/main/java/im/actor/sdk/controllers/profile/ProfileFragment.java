@@ -1,5 +1,6 @@
 package im.actor.sdk.controllers.profile;
 
+import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -7,8 +8,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.design.widget.Snackbar;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.ActionBar;
@@ -32,24 +35,27 @@ import com.google.i18n.phonenumbers.Phonenumber;
 
 import java.util.ArrayList;
 
+import im.actor.core.entity.Peer;
 import im.actor.core.viewmodel.UserEmail;
+import im.actor.core.viewmodel.UserPhone;
+import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.mvvm.Value;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
+import im.actor.sdk.controllers.BaseFragment;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.fragment.preview.ViewAvatarActivity;
-import im.actor.sdk.controllers.BaseFragment;
 import im.actor.sdk.util.Screen;
+import im.actor.sdk.util.ViewUtils;
 import im.actor.sdk.view.avatar.AvatarView;
-import im.actor.core.entity.Peer;
-import im.actor.core.viewmodel.UserPhone;
-import im.actor.core.viewmodel.UserVM;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 import static im.actor.sdk.util.ActorSDKMessenger.users;
 
 public class ProfileFragment extends BaseFragment {
+
+    public static int SOUND_PICKER_REQUEST_CODE = 122;
 
     public static final String EXTRA_UID = "uid";
 
@@ -406,15 +412,60 @@ public class ProfileFragment extends BaseFragment {
             // Notifications
             //
             View notificationContainer = res.findViewById(R.id.notificationsCont);
+            View notificationPickerContainer = res.findViewById(R.id.notificationsPickerCont);
+
             ((TextView) notificationContainer.findViewById(R.id.settings_notifications_title)).setTextColor(style.getTextPrimaryColor());
             final SwitchCompat notificationEnable = (SwitchCompat) res.findViewById(R.id.enableNotifications);
-            notificationEnable.setChecked(messenger().isNotificationsEnabled(Peer.user(user.getId())));
-            notificationEnable.setOnCheckedChangeListener((buttonView, isChecked) -> messenger().changeNotificationsEnabled(Peer.user(user.getId()), isChecked));
+            Peer peer = Peer.user(user.getId());
+            notificationEnable.setChecked(messenger().isNotificationsEnabled(peer));
+            if (messenger().isNotificationsEnabled(peer)) {
+                ViewUtils.showView(notificationPickerContainer, false);
+            } else {
+                ViewUtils.goneView(notificationPickerContainer, false);
+            }
+            notificationEnable.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                messenger().changeNotificationsEnabled(Peer.user(user.getId()), isChecked);
+
+                if (isChecked) {
+                    ViewUtils.showView(notificationPickerContainer, false);
+                } else {
+                    ViewUtils.goneView(notificationPickerContainer, false);
+                }
+            });
             notificationContainer.setOnClickListener(v -> notificationEnable.setChecked(!notificationEnable.isChecked()));
             ImageView iconView = (ImageView) res.findViewById(R.id.settings_notification_icon);
             Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_list_black_24dp));
             DrawableCompat.setTint(drawable, style.getSettingsIconColor());
             iconView.setImageDrawable(drawable);
+
+            ((TextView) notificationPickerContainer.findViewById(R.id.settings_notifications_picker_title)).setTextColor(style.getTextPrimaryColor());
+            notificationPickerContainer.setOnClickListener(view -> {
+                Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true);
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_DEFAULT_URI, RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
+
+                Uri currentSound = null;
+                String defaultPath = null;
+                Uri defaultUri = Settings.System.DEFAULT_NOTIFICATION_URI;
+                if (defaultUri != null) {
+                    defaultPath = defaultUri.getPath();
+                }
+
+                String path = messenger().getPreferences().getString("userNotificationSound_" + uid);
+                if (path == null) {
+                    path = defaultPath;
+                }
+                if (path != null && !path.equals("none")) {
+                    if (path.equals(defaultPath)) {
+                        currentSound = defaultUri;
+                    } else {
+                        currentSound = Uri.parse(path);
+                    }
+                }
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, currentSound);
+                startActivityForResult(intent, SOUND_PICKER_REQUEST_CODE);
+            });
 
             //
             // Block
@@ -457,6 +508,19 @@ public class ProfileFragment extends BaseFragment {
         updateBar(scrollView.getScrollY());
 
         return res;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK && requestCode == SOUND_PICKER_REQUEST_CODE) {
+            Uri ringtone = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+
+            if (ringtone != null) {
+                messenger().getPreferences().putString("userNotificationSound_" + uid, ringtone.toString());
+            } else {
+                messenger().getPreferences().putString("userNotificationSound_" + uid, "none");
+            }
+        }
     }
 
     @Override

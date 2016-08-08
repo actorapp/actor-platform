@@ -184,6 +184,30 @@
                 android:layout_height="wrap_content" />
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/notificationsPickerCont"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/selector"
+            android:paddingRight="8dp">
+
+            <View
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="32dp"
+                android:layout_marginTop="12dp" />
+
+            <TextView
+                android:id="@+id/settings_notifications_picker_title"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="@string/profile_settings_notifications_picker"
+                android:textSize="16sp" />
+        </LinearLayout>
+
         <im.actor.sdk.view.DividerView
             android:id="@+id/divider"
             android:layout_width="match_parent"
