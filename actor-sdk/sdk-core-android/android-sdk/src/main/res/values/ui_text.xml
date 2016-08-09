@@ -216,6 +216,11 @@
     <string name="dialogs_menu_group_leave">Exit group</string>
     <string name="dialogs_menu_group_delete">Delete group</string>
 
+    <string name="dialogs_menu_channel_view">View channel info</string>
+    <string name="dialogs_menu_channel_rename">Rename channel</string>
+    <string name="dialogs_menu_channel_leave">Exit channel</string>
+    <string name="dialogs_menu_channel_delete">Delete channel</string>
+
     <!-- Contacts -->
     <string name="contacts_title">Contacts</string>
     <string name="contacts_empty_short">No contacts here yet</string>
@@ -585,9 +590,11 @@
 
     <!-- Dialogs -->
     <string name="alert_leave_group_message">Are you sure you want to exit group "%1$s"?</string>
+    <string name="alert_leave_channel_message">Are you sure you want to exit channel "%1$s"?</string>
     <string name="alert_leave_group_yes">Exit</string>
 
     <string name="alert_delete_group_title">Delete "%1$s" group?</string>
+    <string name="alert_delete_channel_title">Delete "%1$s" channel?</string>
     <string name="alert_delete_group_yes">Delete</string>
 
     <string name="alert_delete_chat_message">Delete chat with "%1$s"?</string>

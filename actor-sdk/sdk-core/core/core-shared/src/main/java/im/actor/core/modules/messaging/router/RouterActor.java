@@ -557,7 +557,7 @@ public class RouterActor extends ModuleActor {
 
         updateChatState(peer);
 
-        return getDialogsRouter().onChatDelete(peer);
+        return getDialogsRouter().onChatDelete(peer).chain(aVoid -> onChatDropCache(peer));
     }
 
 
