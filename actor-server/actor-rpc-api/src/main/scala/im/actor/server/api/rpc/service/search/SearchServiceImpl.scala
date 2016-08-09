@@ -76,29 +76,31 @@ class SearchServiceImpl(implicit system: ActorSystem) extends SearchService {
     text:          Option[String],
     optimizations: IndexedSeq[ApiUpdateOptimization.Value]
   )(implicit client: AuthorizedClientData): Future[HandlerResult[ResponsePeerSearch]] = {
+    val stripEntities = optimizations.contains(ApiUpdateOptimization.STRIP_ENTITIES)
+    val loadGroupMembers = !optimizations.contains(ApiUpdateOptimization.GROUPS_V2)
+
     for {
       results ← FutureExt.ftraverse(pts)(search(_, text)).map(_.reduce(_ ++ _))
-      (groupIds, userIds, searchResults) = (results foldLeft (Vector.empty[Int], Vector.empty[Int], Vector.empty[ApiPeerSearchResult])) {
+      (groupIds, userIds, searchResults) = (results foldLeft (Set.empty[Int], Set.empty[Int], Vector.empty[ApiPeerSearchResult])) {
         case (acc @ (gids, uids, rslts), found @ ApiPeerSearchResult(peer, _)) ⇒
           if (rslts.exists(_.peer == peer)) {
             acc
           } else {
             peer.`type` match {
-              case ApiPeerType.Private ⇒ (gids, uids :+ peer.id, rslts :+ found)
-              case ApiPeerType.Group   ⇒ (gids :+ peer.id, uids, rslts :+ found)
+              case ApiPeerType.Private ⇒ (gids, uids + peer.id, rslts :+ found)
+              case ApiPeerType.Group   ⇒ (gids + peer.id, uids, rslts :+ found)
             }
           }
       }
-      //      TODO: make like here: im.actor.server.api.rpc.service.groups.GroupsServiceImpl.usersOrPeers
-      (groups, users) ← GroupUtils.getGroupsUsers(groupIds, userIds, client.userId, client.authId)
+      ((users, userPeers), (groups, groupPeers)) ← EntitiesHelpers.usersAndGroupsByIds(groupIds, userIds, stripEntities, loadGroupMembers)
     } yield {
-      val stripEntities = optimizations.contains(ApiUpdateOptimization.STRIP_ENTITIES)
+
       Ok(ResponsePeerSearch(
         searchResults = searchResults,
-        users = if (stripEntities) Vector.empty else users.toVector,
-        groups = if (stripEntities) Vector.empty else groups.toVector,
-        userPeers = users.toVector map (u ⇒ ApiUserOutPeer(u.id, u.accessHash)),
-        groupPeers = groups.toVector map (g ⇒ ApiGroupOutPeer(g.id, g.accessHash))
+        users = users,
+        groups = groups,
+        userPeers = userPeers,
+        groupPeers = groupPeers
       ))
     }
   }

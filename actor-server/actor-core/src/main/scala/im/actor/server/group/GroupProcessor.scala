@@ -169,20 +169,20 @@ private[group] final class GroupProcessor
   }
 
   protected def handleQuery: PartialFunction[Any, Future[Any]] = {
-    case _: GroupQuery if state.isNotCreated      ⇒ FastFuture.failed(GroupNotFound(groupId))
+    case _: GroupQuery if state.isNotCreated          ⇒ FastFuture.failed(GroupNotFound(groupId))
     //    case _: GroupQuery if state.isDeleted         ⇒ FastFuture.failed(GroupAlreadyDeleted(groupId)) // TODO: figure out how to propperly handle group deletion
-    case GetAccessHash()                          ⇒ getAccessHash
-    case GetTitle()                               ⇒ getTitle
-    case GetIntegrationToken(optClient)           ⇒ getIntegrationToken(optClient)
-    case GetMembers()                             ⇒ getMembers
-    case LoadMembers(clientUserId, limit, offset) ⇒ loadMembers(clientUserId, limit, offset)
-    case IsChannel()                              ⇒ isChannel
-    case IsHistoryShared()                        ⇒ isHistoryShared
-    case GetApiStruct(clientUserId)               ⇒ getApiStruct(clientUserId)
-    case GetApiFullStruct(clientUserId)           ⇒ getApiFullStruct(clientUserId)
-    case CheckAccessHash(accessHash)              ⇒ checkAccessHash(accessHash)
-    case CanSendMessage(clientUserId)             ⇒ canSendMessage(clientUserId)
-    case LoadAdminSettings(clientUserId)          ⇒ loadAdminSettings(clientUserId)
+    case GetAccessHash()                              ⇒ getAccessHash
+    case GetTitle()                                   ⇒ getTitle
+    case GetIntegrationToken(optClient)               ⇒ getIntegrationToken(optClient)
+    case GetMembers()                                 ⇒ getMembers
+    case LoadMembers(clientUserId, limit, offset)     ⇒ loadMembers(clientUserId, limit, offset)
+    case IsChannel()                                  ⇒ isChannel
+    case IsHistoryShared()                            ⇒ isHistoryShared
+    case GetApiStruct(clientUserId, loadGroupMembers) ⇒ getApiStruct(clientUserId, loadGroupMembers)
+    case GetApiFullStruct(clientUserId)               ⇒ getApiFullStruct(clientUserId)
+    case CheckAccessHash(accessHash)                  ⇒ checkAccessHash(accessHash)
+    case CanSendMessage(clientUserId)                 ⇒ canSendMessage(clientUserId)
+    case LoadAdminSettings(clientUserId)              ⇒ loadAdminSettings(clientUserId)
   }
 
   override def afterCommit(e: Event) = {

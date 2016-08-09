@@ -236,6 +236,7 @@ message GroupQueries {
         option (scalapb.message).extends = "GroupQuery";
 
         int32 client_user_id = 1;
+        bool load_group_members = 2;
     }
 
     message GetApiStructResponse {
