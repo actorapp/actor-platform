@@ -40,8 +40,6 @@ final class RichMessageWorker(config: RichMessageConfig) extends Actor with Acto
 
   override val log = Logging(system, this)
 
-  private val previewMaker = PreviewMaker(config, "previewMaker")
-
   private val privateSubscribe = Subscribe(pubSubExt.privateMessagesTopic, groupId, self)
   private val publicSubscribe = Subscribe(pubSubExt.groupMessagesTopic, None, self)
 
@@ -94,7 +92,7 @@ final class RichMessageWorker(config: RichMessageConfig) extends Actor with Acto
         updated = ApiDocumentMessage(
           fileId = location.fileId,
           accessHash = location.accessHash,
-          fileSize = imageBytes.size,
+          fileSize = imageBytes.length,
           name = fullName,
           mimeType = mimeType,
           thumb = Some(ApiFastThumb(thumb.width, thumb.height, thumbBytes)),
@@ -104,6 +102,11 @@ final class RichMessageWorker(config: RichMessageConfig) extends Actor with Acto
       } yield ()
     case PreviewFailure(mess, randomId) ⇒
       log.debug("failed to make preview for message with randomId: {}, cause: {} ", randomId, mess)
+  }
+
+  private def previewMaker: ActorRef = {
+    val name = "preview-maker"
+    context.child(name).getOrElse(context.actorOf(PreviewMaker.props(config), name))
   }
 
 }
