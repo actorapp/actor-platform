@@ -32,6 +32,7 @@ import im.actor.core.modules.Modules;
 import im.actor.core.modules.search.sources.GlobalSearchSource;
 import im.actor.runtime.Storage;
 import im.actor.runtime.actors.ActorRef;
+import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.collections.ManagedList;
 import im.actor.runtime.mvvm.SearchValueModel;
 import im.actor.runtime.promise.Promise;
@@ -41,6 +42,9 @@ import static im.actor.core.entity.EntityConverter.convert;
 import static im.actor.runtime.actors.ActorSystem.system;
 
 public class SearchModule extends AbsModule {
+
+    // j2objc workaround
+    private static final Void DUMB = null;
 
     private ListEngine<SearchEntity> searchList;
     private ActorRef actorRef;
