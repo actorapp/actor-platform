@@ -229,6 +229,12 @@
     <string name="dialogs_menu_group_leave">Выйти из группы</string>
     <string name="dialogs_menu_group_delete">Удалить группу</string>
 
+    <string name="dialogs_menu_channel_view">Информация о канале</string>
+    <string name="dialogs_menu_channel_rename">Переименовать канал</string>
+    <string name="dialogs_menu_channel_leave">Выйти из канала</string>
+    <string name="dialogs_menu_channel_delete">Удалить канал</string>
+
+
     <!-- Contacts -->
     <string name="contacts_title">Контакты</string>
     <string name="contacts_empty_short">Еще нет контактов</string>
@@ -585,9 +591,11 @@
 
     <!-- Dialogs -->
     <string name="alert_leave_group_message">Вы уверены, что хотите выйти из группы "%1$s"?</string>
+    <string name="alert_leave_channel_message">Вы уверены, что хотите выйти из канала "%1$s"?</string>
     <string name="alert_leave_group_yes">Выйти</string>
 
     <string name="alert_delete_group_title">Вы уверены, что хотите удалить группу "%1$s"?</string>
+    <string name="alert_delete_channel_title">Вы уверены, что хотите удалить канал "%1$s"?</string>
     <string name="alert_delete_group_yes">Удалить</string>
 
     <string name="alert_delete_chat_message">Вы уверены, что хотите удалить чат с "%1$s"?</string>
