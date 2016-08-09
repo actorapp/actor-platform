@@ -1,16 +1,18 @@
 package im.actor.server.group
 
 import java.time.Instant
+import java.util.concurrent.TimeUnit
 
 import akka.actor.{ ActorRef, ActorSystem, Props, ReceiveTimeout, Status }
 import akka.cluster.sharding.ShardRegion
 import akka.http.scaladsl.util.FastFuture
+import com.github.benmanes.caffeine.cache.{ Cache, Caffeine }
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.concurrent.ActorFutures
 import im.actor.serialization.ActorSerializer
 import im.actor.server.cqrs.{ Event, Processor, TaggedEvent }
 import im.actor.server.db.DbExtension
-import im.actor.server.dialog.{ DialogEnvelope, DialogExtension }
+import im.actor.server.dialog._
 import im.actor.server.group.GroupErrors._
 import im.actor.server.group.GroupCommands._
 import im.actor.server.group.GroupQueries._
@@ -118,6 +120,13 @@ private[group] final class GroupProcessor
 
   protected var integrationStorage: IntegrationTokensWriteOps = _
   protected val globalNamesStorage = new GlobalNamesStorageKeyValueStorage
+
+  // short living cache to store member's names when user loads group members
+  protected implicit val memberNamesCache: Cache[java.lang.Integer, Future[String]] =
+    Caffeine.newBuilder()
+      .expireAfterAccess(3, TimeUnit.MINUTES)
+      .maximumSize(Long.MaxValue)
+      .build[java.lang.Integer, Future[String]]
 
   protected val groupId = self.path.name.toInt
   protected val apiGroupPeer = ApiPeer(ApiPeerType.Group, groupId)

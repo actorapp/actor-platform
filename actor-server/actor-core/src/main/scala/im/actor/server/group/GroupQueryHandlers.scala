@@ -9,6 +9,7 @@ import im.actor.api.rpc.groups._
 import im.actor.server.group.GroupErrors.{ IncorrectGroupType, NoPermission, NotOwner }
 import im.actor.server.group.GroupQueries._
 import im.actor.server.group.GroupType.{ Channel, General, Unrecognized }
+import im.actor.util.cache.CacheHelpers.withCachedFuture
 
 import scala.concurrent.Future
 
@@ -52,7 +53,12 @@ trait GroupQueryHandlers {
 
       for {
         (members, nextOffset) ← Source(state.members)
-          .mapAsync(1)(member ⇒ userExt.getName(member._1, clientUserId) map (member._2 → _))
+          .mapAsync(1) {
+            case (userId, member) ⇒
+              withCachedFuture[java.lang.Integer, String](userId) {
+                userExt.getName(userId, clientUserId)
+              } map { name ⇒ member → name }
+          }
           .runFold(Vector.empty[(Member, String)])(_ :+ _) map { users ⇒
             val tail = users.sortBy(_._2).map(_._1).drop(offset)
             val nextOffset = if (tail.length > limit) Some(Int32Value(offset + limit).toByteArray) else None
