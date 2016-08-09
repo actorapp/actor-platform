@@ -43,11 +43,7 @@ public class GroupAdminFragment extends BaseFragment {
     public void onCreate(Bundle saveInstance) {
         super.onCreate(saveInstance);
         groupVM = messenger().getGroup(getArguments().getInt("groupId"));
-        if (groupVM.getGroupType() == GroupType.CHANNEL) {
-            setTitle(R.string.channel_admin_title);
-        } else {
-            setTitle(R.string.group_admin_title);
-        }
+        setTitle(groupVM.getGroupType() == GroupType.CHANNEL ? R.string.channel_admin_title : R.string.group_admin_title);
     }
 
     @Nullable
@@ -71,9 +67,9 @@ public class GroupAdminFragment extends BaseFragment {
             @Override
             public void onChanged(String val, Value<String> valueModel) {
                 if (val == null) {
-                    groupTypeValue.setText(R.string.group_type_private);
+                    groupTypeValue.setText(groupVM.getGroupType() == GroupType.CHANNEL ? R.string.channel_type_private : R.string.group_type_private);
                 } else {
-                    groupTypeValue.setText(R.string.group_type_pubic);
+                    groupTypeValue.setText(groupVM.getGroupType() == GroupType.CHANNEL ? R.string.channel_type_pubic : R.string.group_type_pubic);
                 }
             }
         });
