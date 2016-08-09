@@ -121,6 +121,8 @@ public class GroupInfoFragment extends BaseFragment {
         TextView shortLinkView = (TextView) header.findViewById(R.id.shortNameLink);
 
         TextView addMember = (TextView) header.findViewById(R.id.addMemberAction);
+        addMember.setText(groupVM.getGroupType() == GroupType.CHANNEL ? R.string.channel_add_member : R.string.group_add_member);
+
         TextView members = (TextView) header.findViewById(R.id.viewMembersAction);
         TextView leaveAction = (TextView) header.findViewById(R.id.leaveAction);
         TextView administrationAction = (TextView) header.findViewById(R.id.administrationAction);

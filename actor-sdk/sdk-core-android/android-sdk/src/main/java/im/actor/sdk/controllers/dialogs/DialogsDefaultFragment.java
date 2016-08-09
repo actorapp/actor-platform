@@ -71,10 +71,10 @@ public class DialogsDefaultFragment extends BaseDialogFragment {
         } else if (dialog.getPeer().getPeerType() == PeerType.GROUP) {
             GroupVM groupVM = groups().get(dialog.getPeer().getPeerId());
             CharSequence[] items;
-            int dialogs_menu_view = groupVM.getGroupType().equals(GroupType.GROUP) ? R.string.dialogs_menu_group_view : R.string.dialogs_menu_channel_view;
-            int dialogs_menu_rename = groupVM.getGroupType().equals(GroupType.GROUP) ? R.string.dialogs_menu_group_rename : R.string.dialogs_menu_channel_rename;
-            int dialogs_menu_leave = groupVM.getGroupType().equals(GroupType.GROUP) ? R.string.dialogs_menu_group_leave : R.string.dialogs_menu_channel_leave;
-            int dialogs_menu_delete = groupVM.getGroupType().equals(GroupType.GROUP) ? R.string.dialogs_menu_group_delete : R.string.dialogs_menu_channel_delete;
+            int dialogs_menu_view = groupVM.getGroupType() == GroupType.CHANNEL ? R.string.dialogs_menu_channel_view : R.string.dialogs_menu_group_view;
+            int dialogs_menu_rename = groupVM.getGroupType() == GroupType.CHANNEL ? R.string.dialogs_menu_channel_rename : R.string.dialogs_menu_group_rename;
+            int dialogs_menu_leave = groupVM.getGroupType() == GroupType.CHANNEL ? R.string.dialogs_menu_channel_leave : R.string.dialogs_menu_group_leave;
+            int dialogs_menu_delete = groupVM.getGroupType() == GroupType.CHANNEL ? R.string.dialogs_menu_channel_delete : R.string.dialogs_menu_group_delete;
             items = new CharSequence[]{
                     getString(dialogs_menu_view),
                     getString(dialogs_menu_rename),
@@ -89,8 +89,8 @@ public class DialogsDefaultFragment extends BaseDialogFragment {
                         } else if (which == 1) {
                             startActivity(Intents.editGroupTitle(dialog.getPeer().getPeerId(), getActivity()));
                         } else if (which == 2) {
-                            int alert_delete_title = groupVM.getGroupType().equals(GroupType.GROUP) ? R.string.alert_delete_group_title : R.string.alert_delete_channel_title;
-                            int alert_leave_message = groupVM.getGroupType().equals(GroupType.GROUP) ? R.string.alert_leave_group_message : R.string.alert_leave_channel_message;
+                            int alert_delete_title = groupVM.getGroupType() == GroupType.CHANNEL ? R.string.alert_delete_channel_title : R.string.alert_delete_group_title;
+                            int alert_leave_message = groupVM.getGroupType() == GroupType.CHANNEL ? R.string.alert_leave_channel_message : R.string.alert_leave_group_message;
                             new AlertDialog.Builder(getActivity())
                                     .setMessage(getString(groupVM.getIsCanLeave().get() ? alert_delete_title :
                                             groupVM.getIsCanDelete().get() ? alert_delete_title :

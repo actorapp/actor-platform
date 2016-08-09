@@ -342,6 +342,7 @@
 
     <!-- Group -->
     <string name="group_title">Информация о группе</string>
+    <string name="channel_title">Информация о канале</string>
 
     <string name="group_members_header">Участники</string>
     <string name="group_members_count">{0} из {1}</string>
@@ -367,6 +368,7 @@
     <string name="group_shared_files">Документы</string>
 
     <string name="group_add_member">Добавить в группу</string>
+    <string name="channel_add_member">Добавить в канал</string>
     <string name="group_leave">Покинуть группу</string>
     <string name="group_leave_channel">Покинуть канал</string>
 
@@ -393,11 +395,19 @@
     <string name="group_private_group_title">Приватная группа</string>
     <string name="group_public_group_text">Публичные группы доступны для поиска, кто угодно можнет вступить в такую группу</string>
     <string name="group_public_group_title">Публичная группа</string>
+
+    <string name="group_private_channel_text">В приватый канал можно попасть только по личному приглашению</string>
+    <string name="group_private_channel_title">Приватый канал</string>
+    <string name="group_public_channel_text">Публичные каналы доступны для поиска, кто угодно можнет вступить в такой канал</string>
+    <string name="group_public_channel_title">Публичный канал</string>
+
     <string name="group_share_history">Поделиться историей</string>
     <string name="group_share_history_hint">Все сообщения будут доступны всем участникам</string>
     <string name="group_type">Тип группы</string>
     <string name="group_type_private">Приватная</string>
+    <string name="channel_type_private">Приватный</string>
     <string name="group_type_pubic">Публичная</string>
+    <string name="channel_type_pubic">Публичный</string>
 
     <!-- Channel-->
     <string name="channel_admin_title">Администрирование канала</string>

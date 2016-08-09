@@ -337,6 +337,7 @@
 
     <!-- Group -->
     <string name="group_title">Group Info</string>
+    <string name="channel_title">Channel Info</string>
     <string name="group_members_header">Members</string>
     <string name="group_members_count">{0} of {1}</string>
 
@@ -362,6 +363,7 @@
     <string name="group_shared_files">Documents</string>
 
     <string name="group_add_member">Add a member</string>
+    <string name="channel_add_member">Add a member</string>
     <string name="group_leave">Leave group</string>
     <string name="group_leave_channel">Leave channel</string>
     <string name="group_administration">Administration</string>
@@ -378,7 +380,9 @@
     <string name="group_type">Group Type</string>
     <string name="channel_type">Channel Type</string>
     <string name="group_type_pubic">Public</string>
+    <string name="channel_type_pubic">Public</string>
     <string name="group_type_private">Private</string>
+    <string name="channel_type_private">Private</string>
     <string name="group_delete">Delete Group</string>
     <string name="group_delete_hint">You will lose all messages in this group.</string>
     <string name="channel_delete">Delete Channel</string>
@@ -394,7 +398,12 @@
     <string name="group_public_group_title">Public Group</string>
     <string name="group_public_group_text">Public groups can be found in search, anyone can join them.</string>
     <string name="group_private_group_title">Private Group</string>
-    <string name="group_private_group_text">Private Group can only be joined via personal invitation.</string>
+    <string name="group_private_group_text">Private group can only be joined via personal invitation.</string>
+
+    <string name="group_public_channel_title">Public Channel</string>
+    <string name="group_public_channel_text">Public channels can be found in search, anyone can join them.</string>
+    <string name="group_private_channel_title">Private channel</string>
+    <string name="group_private_channel_text">Private channel can only be joined via personal invitation.</string>
 
 
     <string name="group_not_member">You are not a member of this group</string>

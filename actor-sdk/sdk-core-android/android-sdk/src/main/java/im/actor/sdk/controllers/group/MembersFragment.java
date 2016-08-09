@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import fr.castorflex.android.circularprogressbar.CircularProgressBar;
 import im.actor.core.entity.GroupMember;
+import im.actor.core.entity.GroupType;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.sdk.ActorSDK;
@@ -75,7 +76,7 @@ public class MembersFragment extends BaseFragment {
                 addMmemberTV.setTextSize(16);
                 addMmemberTV.setPadding(Screen.dp(72), 0, 0, 0);
                 addMmemberTV.setGravity(Gravity.CENTER_VERTICAL);
-                addMmemberTV.setText(R.string.group_add_member);
+                addMmemberTV.setText(groupVM.getGroupType() == GroupType.CHANNEL ? R.string.channel_add_member : R.string.group_add_member);
                 addMmemberTV.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
                 addMmemberTV.setOnClickListener(view -> {
                     startActivity(new Intent(getActivity(), AddMemberActivity.class)
@@ -104,6 +105,7 @@ public class MembersFragment extends BaseFragment {
         }
 
         footer = new LinearLayout(getActivity());
+        footer.setVisibility(View.INVISIBLE);
         list.addFooterView(footer);
         CircularProgressBar botProgressView = new CircularProgressBar(getActivity());
         int padding = Screen.dp(16);
@@ -160,11 +162,12 @@ public class MembersFragment extends BaseFragment {
             @Override
             public void onLoaded() {
                 hideView(progressView);
+                showView(footer);
             }
 
             @Override
             public void onLoadedToEnd() {
-                footer.setVisibility(View.INVISIBLE);
+                hideView(footer);
             }
         });
     }
