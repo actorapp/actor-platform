@@ -35,6 +35,7 @@ import scala.concurrent.{ ExecutionContext, Future }
 
 final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit actorSystem: ActorSystem) extends GroupsService {
 
+  import EntitiesHelpers._
   import FileHelpers._
   import FutureResultRpc._
   import GroupCommands._
@@ -286,6 +287,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
       addOptimizations(optimizations)
       withUserOutPeers(users) {
         val stripEntities = optimizations.contains(ApiUpdateOptimization.STRIP_ENTITIES)
+
         val groupId = nextIntId()
         val typ = groupType map {
           case ApiGroupType.GROUP   ⇒ GroupType.General
@@ -305,13 +307,13 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
           SeqStateDate(seq, state, date) = seqStateDate.getOrElse(throw NoSeqStateDate)
           group ← groupExt.getApiStruct(groupId, client.userId)
           memberIds = GroupUtils.getUserIds(group)
-          (apiUsers, apiPeers) ← usersOrPeers(memberIds.toVector, stripEntities)
+          (users, userPeers) ← usersOrPeers(memberIds.toVector, stripEntities)
         } yield Ok(ResponseCreateGroup(
           seq = seq,
           state = state.toByteArray,
           group = group,
-          users = apiUsers,
-          userPeers = apiPeers,
+          users = users,
+          userPeers = userPeers,
           date = date
         ))
 
@@ -410,16 +412,17 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
           invitingUserId = optInviter
         ))
         ((SeqStateDate(seq, state, date), userIds, randomId)) = joinResp
-        usersPeers ← fromFuture(usersOrPeers(userIds, stripEntities))
+        up ← fromFuture(usersOrPeers(userIds, stripEntities))
+        (users, userPeers) = up
         groupStruct ← fromFuture(groupExt.getApiStruct(groupId, client.userId))
       } yield ResponseJoinGroup(
         groupStruct,
         seq,
         state.toByteArray,
         date,
-        usersPeers._1,
+        users,
         randomId,
-        usersPeers._2
+        userPeers
       )
 
       action.value
@@ -521,21 +524,6 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
           SeqState(seq, state) ← groupExt.makeHistoryShared(groupPeer.groupId, client.userId, client.authId)
         } yield Ok(ResponseSeq(seq, state.toByteArray))
       }
-    }
-
-  private def usersOrPeers(userIds: Vector[Int], stripEntities: Boolean)(implicit client: AuthorizedClientData): Future[(Vector[ApiUser], Vector[ApiUserOutPeer])] =
-    if (stripEntities) {
-      val users = Vector.empty[ApiUser]
-      val peers = Future.sequence(userIds map { userId ⇒
-        userExt.getAccessHash(userId, client.authId) map (hash ⇒ ApiUserOutPeer(userId, hash))
-      })
-      peers map (users → _)
-    } else {
-      val users = Future.sequence(userIds map { userId ⇒
-        userExt.getApiStruct(userId, client.userId, client.authId)
-      })
-      val peers = Vector.empty[ApiUserOutPeer]
-      users map (_ → peers)
     }
 
   private val inviteUriBase = s"${groupInviteConfig.baseUrl}/join/"

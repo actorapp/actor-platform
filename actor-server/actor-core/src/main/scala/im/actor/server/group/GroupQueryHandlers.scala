@@ -89,7 +89,7 @@ trait GroupQueryHandlers {
 
   //TODO: add ext!
   //TODO: what if state changes during request?
-  protected def getApiStruct(clientUserId: Int) = {
+  protected def getApiStruct(clientUserId: Int, loadGroupMembers: Boolean) = {
     val isMember = state.isMember(clientUserId)
     val (members, count) = membersAndCount(state, clientUserId)
 
@@ -102,7 +102,7 @@ trait GroupQueryHandlers {
           avatar = state.avatar,
           isMember = Some(isMember),
           creatorUserId = state.creatorUserId,
-          members = members,
+          members = if (loadGroupMembers) members else Vector.empty,
           createDate = extractCreatedAtMillis(state),
           isAdmin = Some(state.isAdmin(clientUserId)),
           theme = state.topic,

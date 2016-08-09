@@ -148,10 +148,10 @@ private[group] sealed trait Queries {
       GroupEnvelope(groupId)
       .withGetIntegrationToken(GetIntegrationToken(clientUserId = None))).mapTo[GetIntegrationTokenResponse] map (_.token)
 
-  def getApiStruct(groupId: Int, clientUserId: Int): Future[ApiGroup] =
+  def getApiStruct(groupId: Int, clientUserId: Int, loadGroupMembers: Boolean = true): Future[ApiGroup] =
     (viewRegion.ref ?
       GroupEnvelope(groupId)
-      .withGetApiStruct(GetApiStruct(clientUserId))).mapTo[GetApiStructResponse] map (_.struct)
+      .withGetApiStruct(GetApiStruct(clientUserId, loadGroupMembers))).mapTo[GetApiStructResponse] map (_.struct)
 
   def getApiFullStruct(groupId: Int, clientUserId: Int): Future[ApiGroupFull] =
     (viewRegion.ref ?
