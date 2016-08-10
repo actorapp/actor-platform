@@ -30,7 +30,10 @@ public class SearchHolder extends BindedViewHolder {
 
     public SearchHolder(Context context, final OnItemClickedListener<SearchEntity> clickedListener) {
         super(new FrameLayout(context));
+        init(context, clickedListener);
+    }
 
+    protected void init(Context context, final OnItemClickedListener<SearchEntity> clickedListener) {
         itemView.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
 
