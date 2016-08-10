@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.entity.content.AbsContent;
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.dialogs.DialogsFragment;
@@ -139,7 +140,7 @@ public class ShareFragment extends BaseFragment implements DialogsFragmentDelega
                         messenger().sendMessage(peer, shareAction.getText());
                     } else if (shareAction.getUris().size() > 0) {
                         for (String sendUri : shareAction.getUris()) {
-                            executeSilent(messenger().sendUri(peer, Uri.parse(sendUri)));
+                            executeSilent(messenger().sendUri(peer, Uri.parse(sendUri), ActorSDK.sharedActor().getAppName()));
                         }
                     } else if (shareAction.getUserId() != null) {
                         String userName = users().get(shareAction.getUserId()).getName().get();

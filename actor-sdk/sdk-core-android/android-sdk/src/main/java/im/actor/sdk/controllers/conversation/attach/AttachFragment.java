@@ -331,12 +331,12 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
 
     @Override
     public void onUriPicked(Uri uri) {
-        execute(messenger().sendUri(getPeer(), uri));
+        execute(messenger().sendUri(getPeer(), uri, ActorSDK.sharedActor().getAppName()));
     }
 
     protected void onUrisPicked(List<Uri> uris) {
         for (Uri s : uris) {
-            execute(messenger().sendUri(getPeer(), s));
+            execute(messenger().sendUri(getPeer(), s, ActorSDK.sharedActor().getAppName()));
         }
     }
 
