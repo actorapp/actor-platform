@@ -8,6 +8,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.ChatLinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -273,6 +274,14 @@ public abstract class GlobalSearchBaseFragment extends BaseFragment {
         recyclerAdapter.addHeaderView(header);
 
         searchList.setAdapter(recyclerAdapter);
+
+        RecyclerView.ItemAnimator animator = searchList.getItemAnimator();
+
+        if (animator instanceof SimpleItemAnimator) {
+            ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+        }
+
+
         searchDisplay.addListener(searchListener);
         showView(searchHintView, false);
         goneView(searchEmptyView, false);
@@ -303,6 +312,7 @@ public abstract class GlobalSearchBaseFragment extends BaseFragment {
         }
         searchAdapter = null;
         searchList.setAdapter(null);
+        searchQuery = null;
 
         goneView(searchContainer, false);
         if (searchMenu != null) {
