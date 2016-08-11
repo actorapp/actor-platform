@@ -227,8 +227,13 @@ public class AndroidNotifications implements NotificationProvider {
             builder.setContentTitle(ActorSDK.sharedActor().getAppName());
             builder.setContentText(messagesCount + context.getString(R.string.notification_multiple_canversations_after_msg_count) + conversationsCount + context.getString(R.string.notifications_multiple_canversations_after_coversations_count));
             visiblePeer = null;
+            
+            intent = ActorSDK.sharedActor().getDelegate().getNotificationIntent();
 
-            intent = new Intent(context, RootActivity.class);
+            if(intent == null){
+                intent = new Intent(context, RootActivity.class);
+            }
+
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             builder.setContentIntent(PendingIntent.getActivity(context, 0,
                     intent,

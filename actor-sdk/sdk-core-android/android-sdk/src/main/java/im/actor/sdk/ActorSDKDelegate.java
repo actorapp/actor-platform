@@ -1,5 +1,6 @@
 package im.actor.sdk;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.view.ViewGroup;
@@ -218,6 +219,13 @@ public interface ActorSDKDelegate {
      * @return notification sound color
      */
     int getNotificationColor();
+
+    /**
+     * Override change notification Intent
+     *
+     * @return Intent
+     */
+    Intent getNotificationIntent();
 
 
 }

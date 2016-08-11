@@ -1,5 +1,6 @@
 package im.actor.sdk;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
@@ -136,5 +137,10 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
 
     public int getNotificationColor() {
         return ActorSDK.sharedActor().style.getMainColor();
+    }
+
+    @Override
+    public Intent getNotificationIntent() {
+        return null;
     }
 }
