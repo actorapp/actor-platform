@@ -86,9 +86,12 @@ public class SearchHolder extends BindedViewHolder {
     }
 
     public void bind(SearchEntity entity, String query, boolean isLast) {
+        boolean needRebind = this.entity == null || !entity.getPeer().equals(this.entity.getPeer());
         this.entity = entity;
 
-        avatar.bind(entity.getAvatar(), entity.getTitle(), entity.getPeer().getPeerId());
+        if (needRebind) {
+            avatar.bind(entity.getAvatar(), entity.getTitle(), entity.getPeer().getPeerId());
+        }
         if (query != null) {
             title.setText(SearchHighlight.highlightQuery(entity.getTitle(), query, highlightColor));
         } else {
