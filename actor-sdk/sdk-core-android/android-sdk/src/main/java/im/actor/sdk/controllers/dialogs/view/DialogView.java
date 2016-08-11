@@ -106,9 +106,7 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
         GenericDraweeHierarchy hierarchy = new GenericDraweeHierarchyBuilder(getResources())
                 .setFadeDuration(0)
                 .setRoundingParams(new RoundingParams()
-                        .setRoundAsCircle(true)
-                        .setRoundingMethod(RoundingParams.RoundingMethod.OVERLAY_COLOR)
-                        .setOverlayColor(ActorSDK.sharedActor().style.getMainBackgroundColor()))
+                        .setRoundAsCircle(true))
                 .build();
         draweeHolder = DraweeHolder.create(hierarchy, getContext());
         draweeHolder.getTopLevelDrawable().setCallback(this);
