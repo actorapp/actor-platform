@@ -307,6 +307,10 @@ public class AndroidMessenger extends im.actor.core.Messenger {
         }
     }
 
+    public Command<Boolean> sendUri(final Peer peer, final Uri uri) {
+        return sendUri(peer, uri, "Actor");
+    }
+
     public Command<Boolean> sendUri(final Peer peer, final Uri uri, String appName) {
         return callback -> fileDownloader.execute(() -> {
             String[] filePathColumn = {MediaStore.Images.Media.DATA, MediaStore.Video.Media.MIME_TYPE,
