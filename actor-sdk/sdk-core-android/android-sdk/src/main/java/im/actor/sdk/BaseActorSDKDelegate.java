@@ -17,6 +17,7 @@ import im.actor.sdk.controllers.conversation.mentions.AutocompleteFragment;
 import im.actor.sdk.controllers.conversation.messages.content.MessageHolder;
 import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
 import im.actor.sdk.controllers.conversation.quote.QuoteFragment;
+import im.actor.sdk.controllers.root.RootActivity;
 import im.actor.sdk.controllers.settings.BaseGroupInfoActivity;
 import im.actor.sdk.intents.ActorIntent;
 import im.actor.sdk.intents.ActorIntentFragmentActivity;
@@ -140,7 +141,9 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
     }
 
     @Override
-    public Intent getNotificationIntent() {
-        return null;
+    public Class getNotificationIntentClass() {
+        return RootActivity.class;
     }
+
+
 }

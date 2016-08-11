@@ -220,12 +220,9 @@ public interface ActorSDKDelegate {
      */
     int getNotificationColor();
 
-    /**
-     * Override change notification Intent
-     *
-     * @return Intent
-     */
-    Intent getNotificationIntent();
+
+
+    Class getNotificationIntentClass();
 
 
 }
