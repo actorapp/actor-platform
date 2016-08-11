@@ -63,6 +63,15 @@ public interface ActorSDKDelegate {
     Fragment fragmentForProfile(int uid);
 
     /**
+     * If not null returned, overrides call fragment
+     *
+     * @param callId call id
+     * @return Fragment
+     */
+    @Nullable
+    Fragment fragmentForCall(long callId);
+
+    /**
      * If not null returned, overrides group info fragment
      *
      * @return Actor Intent

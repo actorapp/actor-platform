@@ -54,6 +54,12 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
         return null;
     }
 
+    @Nullable
+    @Override
+    public Fragment fragmentForCall(long callId) {
+        return null;
+    }
+
     @Override
     public Fragment fragmentForGroupInfo(int gid) {
         return null;
