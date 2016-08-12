@@ -155,7 +155,11 @@ public class CallFragment extends BaseFragment {
     }
 
     public CallFragment() {
-        manager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         this.callId = getArguments().getLong("call_id");
         this.call = messenger().getCall(callId);
         if (call == null) {
@@ -163,11 +167,6 @@ public class CallFragment extends BaseFragment {
         } else {
             this.peer = call.getPeer();
         }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
 
         manager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
 
