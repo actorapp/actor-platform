@@ -187,7 +187,8 @@ public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
                     answerCallButtonText.under(answerCallButton.frame, offset: 5)
                 }
                 if !declineCallButton.hidden {
-                    declineCallButton.frame = CGRectMake((self.view.width - 72) / 2, self.view.height - 72 - 49, 72, 72)
+                    // declineCallButton.frame = CGRectMake((self.view.width - 72) / 2, self.view.height - 72 - 49, 72, 72)
+                    declineCallButton.frame = CGRectMake(self.view.width - 72 - 25, self.view.height - 72 - 49, 72, 72)
                     declineCallButtonText.under(declineCallButton.frame, offset: 5)
                 }
             }
