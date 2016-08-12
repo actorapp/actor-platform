@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="picker_empty">Nada aquí</string>
+    <string name="picker_loading">Cargando</string>
+    <string name="picker_internalerror">Ocurrió un error</string>
+    <string name="picker_search">Buscar</string>
+
+    <string name="picker_pick">Escoger</string>
+    <string name="picker_cancel">Cancelar</string>
+
+    <!-- Files -->
+    <string name="picker_file_activity_title">Seleccionar Archivo</string>
+    <string name="picker_file_memory_phone">Memoria Interna</string>
+    <string name="picker_file_memory_external">Memoria Externa</string>
+    <string name="picker_file_memory_external_error">Tarjeta no insertada</string>
+    <string name="picker_file_recent">Elementos seleccionados recientemente</string>
+    <string name="picker_file_recent_empty">No tienes archivos recientes</string>
+    <string name="picker_file_denied">Acceso restringido</string>
+    <string name="picker_file_directory_empty">Sin archivos por aquí</string>
+    <string name="picker_file_search_activity_title">Buscar</string>
+    <string name="picker_file_search_query_text">Buscar</string>
+    <string name="picker_file_sort_name">Ordenar por nombre</string>
+    <string name="picker_file_sort_date">Ordenar por fecha</string>
+    <string name="picker_file_camera">Cámara</string>
+    <string name="picker_file_header_recent">Archivos recientes</string>
+    <string name="picker_file_header_main">Carpeta Principal</string>
+
+    <!-- Images -->
+    <string name="picker_pictures_activity_title">Seleccionar fotos</string>
+    <string name="picker_pictures_empty_folder">Esta carpeta no contiene fotos.</string>
+    <string name="picker_pictures_empty">Sin fotos en este dispositivo</string>
+    <string name="picker_pictures_camera">Cámara</string>
+
+
+    <!-- Map -->
+    <string name="picker_map_activity_title">Selecciona un lugar</string>
+    <string name="picker_map_sory_notdefined">Tenemos que saber tu ubicación para los lugares cercanos.</string>
+    <string name="picker_map_pick_my">Envíar mi ubicación actual</string>
+    <string name="picker_map_pick_my_fetching">Estableciendo…</string>
+    <string name="picker_map_pick_my_accuracy">A %d metros de precisión</string>
+    <string name="picker_map_pick_my_wait">Espera hasta que te ubiquemos</string>
+    <string name="picker_map_nearby_header">o selecciona lo más cercanos</string>
+    <string name="picker_map_nearby_empty">Sin lugares cercanos</string>
+
+
+    <!-- Metrics -->
+    <plurals name="picker_time_minutes_ago">
+        <item quantity="one">hace %d minuto</item>
+        <item quantity="two">hace %d minutos</item>
+        <item quantity="few">hace %d minutos</item>
+        <item quantity="many">hace %d minutos</item>
+        <item quantity="other">%d canciones encontradas.</item>
+    </plurals>
+
+
+    <string name="picker_time_yesterday_at">ayer a las %s</string>
+    <string name="picker_time_today_at">hoy a las %s</string>
+    <string name="picker_time_hour_ago">hace una hora</string>
+    <string name="picker_time_minute_ago">hace un minuto</string>
+    <string name="picker_time_at">%1$s a las %2$s</string>
+
+    <string name="picker_bytes">%d bytes</string>
+    <string name="picker_kbytes">KB</string>
+    <string name="picker_mbytes">MB</string>
+    <string name="picker_gbytes">GB</string>
+</resources>
