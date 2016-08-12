@@ -179,11 +179,11 @@ public class AABubbleCell: UICollectionViewCell {
         
         contentView.transform = CGAffineTransformMake(1, 0, 0, -1, 0, 0)
         
-        contentView.addSubview(bubble)
-        contentView.addSubview(bubbleBorder)
         if appStyle.bubbleShadowEnabled {
             contentView.addSubview(bubbleShadow)
         }
+        contentView.addSubview(bubble)
+        contentView.addSubview(bubbleBorder)
         contentView.addSubview(newMessage)
         contentView.addSubview(dateBg)
         contentView.addSubview(dateText)
