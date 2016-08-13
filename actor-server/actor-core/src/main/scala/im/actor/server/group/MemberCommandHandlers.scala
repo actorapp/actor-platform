@@ -174,10 +174,11 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
           )
 
           // push "User added" to all group members except for `inviterUserId`
+          userName ← userExt.getName(cmd.inviteeUserId)
           _ ← seqUpdExt.broadcastPeopleUpdate(
             (memberIds - cmd.inviteeUserId) - cmd.inviterUserId, // is it right?
             membersUpdateObsolete,
-            pushRules = seqUpdExt.pushRules(isFat = true, Some(PushTexts.Added)),
+            pushRules = seqUpdExt.pushRules(isFat = true, Some(PushTexts.added(state.groupType, userName))),
             deliveryId = s"useradded_obsolete_${groupId}_${cmd.randomId}"
           )
 
@@ -534,12 +535,13 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
           // Groups V1 API updates //
           ///////////////////////////
 
+          userName ← userExt.getName(cmd.userId)
           _ ← seqUpdExt.broadcastClientUpdate(
             userId = cmd.userId,
             authId = cmd.authId,
             bcastUserIds = state.memberIds + cmd.userId, // push this to other user's devices too. actually cmd.userId is still in state.memberIds
             update = updateObsolete,
-            pushRules = seqUpdExt.pushRules(isFat = false, Some(PushTexts.Left), Seq(cmd.authId))
+            pushRules = seqUpdExt.pushRules(isFat = false, Some(PushTexts.left(state.groupType, userName)), Seq(cmd.authId))
           )
 
           ///////////////////////////
@@ -669,12 +671,13 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
           // Groups V1 API updates //
           ///////////////////////////
 
+          userName ← userExt.getName(cmd.kickedUserId)
           _ ← seqUpdExt.broadcastClientUpdate(
             userId = cmd.kickerUserId,
             authId = cmd.kickerAuthId,
             bcastUserIds = newState.memberIds,
             update = updateObsolete,
-            pushRules = seqUpdExt.pushRules(isFat = false, Some(PushTexts.Kicked), Seq(cmd.kickerAuthId))
+            pushRules = seqUpdExt.pushRules(isFat = false, Some(PushTexts.kicked(state.groupType, userName)), Seq(cmd.kickerAuthId))
           )
 
           ///////////////////////////

@@ -16,7 +16,7 @@ trait PushText {
   type PushText = String
   type CensoredPushText = String
 
-  private val CensoredText = "New message"
+  private val CensoredText = "Nuevo mensaje"
 
   protected def getPushText(peer: Peer, outUser: Int, clientName: String, message: ApiMessage): Future[(PushText, CensoredPushText)] = {
     message match {
@@ -25,11 +25,11 @@ trait PushText {
       case dm: ApiDocumentMessage ⇒
         dm.ext match {
           case Some(_: ApiDocumentExPhoto) ⇒
-            formatAuthored(peer, outUser, clientName, "Photo")
+            formatAuthored(peer, outUser, clientName, "Foto")
           case Some(_: ApiDocumentExVideo) ⇒
-            formatAuthored(peer, outUser, clientName, "Video")
+            formatAuthored(peer, outUser, clientName, "Vídeo")
           case _ ⇒
-            formatAuthored(peer, outUser, clientName, dm.name)
+            formatAuthored(peer, outUser, clientName, "")
         }
       case unsupported ⇒ FastFuture.successful(("", ""))
     }
