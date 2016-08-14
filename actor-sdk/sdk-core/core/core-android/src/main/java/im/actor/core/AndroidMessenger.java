@@ -33,6 +33,7 @@ import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.SearchEntity;
 import im.actor.core.entity.content.FastThumb;
+import im.actor.core.modules.ModuleContext;
 import im.actor.core.network.NetworkState;
 import im.actor.core.utils.AppStateActor;
 import im.actor.core.utils.IOUtils;
@@ -526,6 +527,10 @@ public class AndroidMessenger extends im.actor.core.Messenger {
 
     public EventBus getEvents() {
         return modules.getEvents();
+    }
+
+    public ModuleContext getModules(){
+        return getModuleContext();
     }
 
 }
