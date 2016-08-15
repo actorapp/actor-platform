@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import org.jetbrains.annotations.Nullable;
 
+import im.actor.core.RawUpdatesHandler;
 import im.actor.core.entity.Peer;
 import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.sdk.controllers.conversation.ChatFragment;
@@ -162,5 +163,10 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
 
     public int getNotificationColor() {
         return ActorSDK.sharedActor().style.getMainColor();
+    }
+
+    @Override
+    public RawUpdatesHandler getRawUpdatesHandler() {
+        return null;
     }
 }

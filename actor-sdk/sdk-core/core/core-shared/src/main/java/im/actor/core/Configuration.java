@@ -10,6 +10,7 @@ import im.actor.core.network.TrustedKey;
 import im.actor.core.providers.NotificationProvider;
 import im.actor.core.providers.PhoneBookProvider;
 import im.actor.core.providers.CallsProvider;
+import im.actor.core.providers.RawUpdatesHandlerProvider;
 import im.actor.runtime.mtproto.ConnectionEndpoint;
 import im.actor.runtime.webrtc.WebRTCIceServer;
 
@@ -59,6 +60,8 @@ public class Configuration {
     @Property("readonly, nonatomic")
     private final CallsProvider callsProvider;
     @Property("readonly, nonatomic")
+    private final RawUpdatesHandlerProvider rawUpdatesHandlerProvider;
+    @Property("readonly, nonatomic")
     private final boolean isEnabledGroupedChatList;
     @Property("readonly, nonatomic")
     private final String[] autoJoinGroups;
@@ -83,6 +86,7 @@ public class Configuration {
                   TrustedKey[] trustedKeys,
                   boolean enablePhoneBookImport,
                   CallsProvider callsProvider,
+                  RawUpdatesHandlerProvider rawUpdatesHandlerProvider,
                   boolean voiceCallsEnabled,
                   boolean videoCallsEnabled,
                   boolean isEnabledGroupedChatList,
@@ -106,6 +110,7 @@ public class Configuration {
         this.trustedKeys = trustedKeys;
         this.enablePhoneBookImport = enablePhoneBookImport;
         this.callsProvider = callsProvider;
+        this.rawUpdatesHandlerProvider = rawUpdatesHandlerProvider;
         this.voiceCallsEnabled = voiceCallsEnabled;
         this.videoCallsEnabled = videoCallsEnabled;
         this.isEnabledGroupedChatList = isEnabledGroupedChatList;
@@ -138,6 +143,15 @@ public class Configuration {
      */
     public CallsProvider getCallsProvider() {
         return callsProvider;
+    }
+
+    /**
+     * Getting RawUpdatesHandler provider if set
+     *
+     * @return RawUpdatesHandler provider
+     */
+    public RawUpdatesHandlerProvider getRawUpdatesHandlerProvider() {
+        return rawUpdatesHandlerProvider;
     }
 
     /**

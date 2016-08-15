@@ -44,6 +44,7 @@ import im.actor.sdk.core.AndroidCallProvider;
 import im.actor.sdk.core.AndroidNotifications;
 import im.actor.sdk.core.AndroidPhoneBook;
 import im.actor.sdk.core.ActorPushManager;
+import im.actor.sdk.core.AndroidRawUpdateHandlerProvider;
 import im.actor.sdk.intents.ActorIntent;
 import im.actor.sdk.intents.ActorIntentActivity;
 import im.actor.sdk.intents.ActorIntentFragmentActivity;
@@ -297,6 +298,11 @@ public class ActorSDK {
             // Calls Support
             //
             builder.setCallsProvider(new AndroidCallProvider());
+
+            //
+            // Handle raw updates
+            //
+            builder.setRawUpdatesHandlerProvider(new AndroidRawUpdateHandlerProvider());
 
             //
             // Auto Join

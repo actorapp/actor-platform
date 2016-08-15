@@ -15,6 +15,7 @@ import im.actor.core.network.TrustedKey;
 import im.actor.core.providers.NotificationProvider;
 import im.actor.core.providers.PhoneBookProvider;
 import im.actor.core.providers.CallsProvider;
+import im.actor.core.providers.RawUpdatesHandlerProvider;
 import im.actor.core.util.StringMatch;
 import im.actor.runtime.Crypto;
 import im.actor.runtime.Log;
@@ -59,6 +60,7 @@ public class ConfigurationBuilder {
     private boolean isPhoneBookImportEnabled = true;
 
     private CallsProvider callsProvider;
+    private RawUpdatesHandlerProvider rawUpdatesHandlerProvider;
 
     private boolean isEnabledGroupedChatList = true;
 
@@ -137,6 +139,19 @@ public class ConfigurationBuilder {
     @ObjectiveCName("setCallsProvider:")
     public ConfigurationBuilder setCallsProvider(CallsProvider callsProvider) {
         this.callsProvider = callsProvider;
+        return this;
+    }
+
+    /**
+     * Setting raw updates handler provider
+     *
+     * @param rawUpdatesHandlerProvider raw updates handler provider
+     * @return this
+     */
+    @NotNull
+    @ObjectiveCName("setRawUpdatesHandlerProvider:")
+    public ConfigurationBuilder setRawUpdatesHandlerProvider(RawUpdatesHandlerProvider rawUpdatesHandlerProvider) {
+        this.rawUpdatesHandlerProvider = rawUpdatesHandlerProvider;
         return this;
     }
 
@@ -446,6 +461,7 @@ public class ConfigurationBuilder {
                 trustedKeys.toArray(new TrustedKey[trustedKeys.size()]),
                 isPhoneBookImportEnabled,
                 callsProvider,
+                rawUpdatesHandlerProvider,
                 voiceCallsEnabled,
                 videoCallsEnabled,
                 isEnabledGroupedChatList,
