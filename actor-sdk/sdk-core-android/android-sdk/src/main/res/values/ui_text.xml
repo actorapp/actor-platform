@@ -393,7 +393,16 @@
     <string name="group_share_history_hint">All members will see all messages</string>
 
     <string name="group_can_edit_info_members">All members can edit group info</string>
-    <string name="channel_can_edit_info_members">All members can edit group info</string>
+    <string name="group_can_edit_info_admins">Admins can edit group info</string>
+    <string name="group_can_invite_members">All members can invite to group</string>
+    <string name="group_show_leave_join">Show member leave/join messages</string>
+    <string name="group_show_admin_to_members">Admin label is visible to all members</string>
+
+    <string name="channel_can_edit_info_members">All members can edit channel info</string>
+    <string name="channel_can_edit_info_admins">Admins can edit channel info</string>
+    <string name="channel_can_invite_members">All members can invite to channel</string>
+    <string name="channel_show_leave_join">Show member leave/join messages</string>
+    <string name="channel_show_admin_to_members">Admin label is visible to all members</string>
 
     <string name="group_public_group_title">Public Group</string>
     <string name="group_public_group_text">Public groups can be found in search, anyone can join them.</string>
