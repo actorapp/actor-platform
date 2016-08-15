@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.TextView;
 
 import fr.castorflex.android.circularprogressbar.CircularProgressBar;
 import im.actor.core.entity.GroupPermissions;
@@ -34,7 +35,23 @@ public class GroupPermissionsFragment extends BaseFragment {
 
     private CircularProgressBar progress;
     private View scrollContainer;
+
+    private TextView canEditInfoTV;
     private CheckBox canEditInfo;
+
+    private TextView canAdminsEditInfoTV;
+    private CheckBox canAdminsEditInfo;
+
+    private TextView canSendInvintationsTV;
+    private CheckBox canSendInvintations;
+
+    private TextView showLeaveJoinTV;
+    private CheckBox showLeaveJoin;
+
+    private TextView showAdminsToMembersTV;
+    private CheckBox showAdminsToMembers;
+
+    boolean isChannel = false;
 
     public GroupPermissionsFragment() {
         setRootFragment(true);
@@ -48,6 +65,7 @@ public class GroupPermissionsFragment extends BaseFragment {
         groupId = getArguments().getInt("groupId");
         if (messenger().getGroup(groupId).getGroupType() == GroupType.CHANNEL) {
             setTitle(R.string.channel_admin_title);
+            isChannel = true;
         } else {
             setTitle(R.string.group_admin_title);
         }
@@ -59,7 +77,27 @@ public class GroupPermissionsFragment extends BaseFragment {
         View res = inflater.inflate(R.layout.fragment_edit_permissions, container, false);
         View rootContainer = res.findViewById(R.id.rootContainer);
         rootContainer.setBackgroundColor(style.getBackyardBackgroundColor());
+
         canEditInfo = (CheckBox) res.findViewById(R.id.canEditValue);
+        canEditInfoTV = (TextView) res.findViewById(R.id.canEditTitle);
+        canEditInfoTV.setText(isChannel ? R.string.channel_can_edit_info_members : R.string.group_can_edit_info_members);
+
+        canAdminsEditInfo = (CheckBox) res.findViewById(R.id.canAdminsEditValue);
+        canAdminsEditInfoTV = (TextView) res.findViewById(R.id.canAdminsEditTitle);
+        canAdminsEditInfoTV.setText(isChannel ? R.string.channel_can_edit_info_admins : R.string.group_can_edit_info_admins);
+
+        canSendInvintations = (CheckBox) res.findViewById(R.id.canMembersInviteValue);
+        canSendInvintationsTV = (TextView) res.findViewById(R.id.canMembersInviteTitle);
+        canSendInvintationsTV.setText(isChannel ? R.string.group_can_invite_members : R.string.channel_can_invite_members);
+
+        showLeaveJoin = (CheckBox) res.findViewById(R.id.showJoinLeaveValue);
+        showLeaveJoinTV = (TextView) res.findViewById(R.id.showJoinLeaveTitle);
+        showLeaveJoinTV.setText(isChannel ? R.string.channel_show_leave_join : R.string.group_show_leave_join);
+
+        showAdminsToMembers = (CheckBox) res.findViewById(R.id.showAdminsToMembersValue);
+        showAdminsToMembersTV = (TextView) res.findViewById(R.id.showAdminsToMembersTitle);
+        showAdminsToMembersTV.setText(isChannel ? R.string.channel_show_admin_to_members : R.string.group_show_admin_to_members);
+
         scrollContainer = res.findViewById(R.id.scrollContainer);
         progress = (CircularProgressBar) res.findViewById(R.id.progress);
         progress.setIndeterminate(true);
@@ -90,6 +128,10 @@ public class GroupPermissionsFragment extends BaseFragment {
             activity.invalidateOptionsMenu();
         }
         canEditInfo.setChecked(permissions.isMembersCanEditInfo());
+        canAdminsEditInfo.setChecked(permissions.isAdminsCanEditGroupInfo());
+        canSendInvintations.setChecked(permissions.isMembersCanInvite());
+        showLeaveJoin.setChecked(permissions.isShowJoinLeaveMessages());
+        showAdminsToMembers.setChecked(permissions.isShowAdminsToMembers());
     }
 
     @Override
@@ -103,8 +145,15 @@ public class GroupPermissionsFragment extends BaseFragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.next) {
-            if (permissions.isMembersCanEditInfo() != canEditInfo.isChecked()) {
+            if (permissions.isMembersCanEditInfo() != canEditInfo.isChecked() ||
+                    permissions.isAdminsCanEditGroupInfo() != canAdminsEditInfo.isChecked() ||
+                    permissions.isMembersCanInvite() != canSendInvintations.isChecked() ||
+                    permissions.isShowJoinLeaveMessages() != showLeaveJoin.isChecked() ||
+                    permissions.isShowAdminsToMembers() != showAdminsToMembers.isChecked()) {
                 permissions.setMembersCanEditInfo(canEditInfo.isChecked());
+                permissions.setAdminsCanEditGroupInfo(canAdminsEditInfo.isChecked());
+                permissions.setShowJoinLeaveMessages(showLeaveJoin.isChecked());
+                permissions.setShowAdminsToMembers(showAdminsToMembers.isChecked());
                 execute(messenger().saveGroupPermissions(groupId, permissions).then(r -> {
                     finishActivity();
                 }));
