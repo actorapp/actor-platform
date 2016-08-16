@@ -24,6 +24,23 @@ public class AAComposeController: AAContactsListContentController, AAContactsLis
     }
     
     public func willAddContacts(controller: AAContactsListContentController, section: AAManagedSection) {
+        
+        if ActorSDK.sharedActor().enableSecretChats {
+            section.custom { (r:AACustomRow<AAContactActionCell>) -> () in
+                
+                r.height = 56
+                
+                r.closure = { (cell) -> () in
+                    cell.bind("ic_secret", actionTitle: AALocalized("CreateSecret"))
+                }
+                
+                r.selectAction = { () -> Bool in
+                    self.navigateNext(AAComposeSecretController(), removeCurrent: true)
+                    return false
+                }
+            }
+        }
+        
         section.custom { (r:AACustomRow<AAContactActionCell>) -> () in
             
             r.height = 56
@@ -54,10 +71,11 @@ public class AAComposeController: AAContactsListContentController, AAContactsLis
     }
     
     public func contactDidTap(controller: AAContactsListContentController, contact: ACContact) -> Bool {
-        if let customController = ActorSDK.sharedActor().delegate.actorControllerForConversation(ACPeer_userWithInt_(contact.uid)) {
+        let peer = ACPeer_userWithInt_(contact.uid)
+        if let customController = ActorSDK.sharedActor().delegate.actorControllerForConversation(peer) {
             navigateDetail(customController)
         } else {
-            navigateDetail(ConversationViewController(peer: ACPeer_userWithInt_(contact.uid)))
+            navigateDetail(ConversationViewController(peer: peer))
         }
         return false
     }

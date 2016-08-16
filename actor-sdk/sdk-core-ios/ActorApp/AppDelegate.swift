@@ -23,6 +23,8 @@ import ActorSDK
         
         ActorSDK.sharedActor().enableVideoCalls = true
         
+        ActorSDK.sharedActor().enableSecretChats = true
+        
         // Setting Development Push Id
         ActorSDK.sharedActor().apiPushId = 868547
         

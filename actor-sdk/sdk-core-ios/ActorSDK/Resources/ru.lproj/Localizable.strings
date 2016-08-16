@@ -422,9 +422,12 @@
 
 "ComposeTitle" = "Новое сообщение";
 
+
 "CreateGroup" = "Новая группа";
 
 "CreateChannel" = "Новый канал";
+
+"CreateSecret" = "Новый секретный чат";
 
 
 "CreateGroupTitle" = "Новая группа";

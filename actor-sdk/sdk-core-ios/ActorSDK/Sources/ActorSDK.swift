@@ -132,6 +132,9 @@ import DZNWebViewController
     /// Enable video calls feature
     public var enableVideoCalls: Bool = false
     
+    /// Enable secret chats feature
+    public var enableSecretChats: Bool = false
+    
     /// Enable custom sound on Groups and Chats
     public var enableChatGroupSound: Bool = false
     

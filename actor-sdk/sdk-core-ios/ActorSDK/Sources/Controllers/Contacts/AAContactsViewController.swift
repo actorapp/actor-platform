@@ -47,6 +47,22 @@ public class AAContactsViewController: AAContactsListContentController, AAContac
     
     public func willAddContacts(controller: AAContactsListContentController, section: AAManagedSection) {
         
+        if ActorSDK.sharedActor().enableSecretChats {
+            section.custom { (r:AACustomRow<AAContactActionCell>) -> () in
+                
+                r.height = 56
+                
+                r.closure = { (cell) -> () in
+                    cell.bind("ic_secret", actionTitle: AALocalized("CreateSecret"))
+                }
+                
+                r.selectAction = { () -> Bool in
+                    self.navigateNext(AAComposeSecretController(), removeCurrent: false)
+                    return false
+                }
+            }
+        }
+        
         section.custom { (r: AACustomRow<AAContactActionCell>) -> () in
             
             r.height = 56

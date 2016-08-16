@@ -15,6 +15,7 @@
 		060135081C95ED4C00A18C4E /* YYTransaction.m in Sources */ = {isa = PBXBuildFile; fileRef = 060135021C95ED4C00A18C4E /* YYTransaction.m */; };
 		0601BBB21CA4C7DE00AEFA81 /* ElegantPresentations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0601BBB11CA4C7DE00AEFA81 /* ElegantPresentations.swift */; };
 		0601BBB41CA4C80D00AEFA81 /* ElegantPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0601BBB31CA4C80D00AEFA81 /* ElegantPresentationController.swift */; };
+		060DD6EE1D636675001A8333 /* AAComposeSecretController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060DD6ED1D636675001A8333 /* AAComposeSecretController.swift */; };
 		06129AA61C8359FB0099286B /* CocoaLifecycleRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06129AA51C8359FB0099286B /* CocoaLifecycleRuntime.swift */; };
 		06129AA91C8394700099286B /* AAAudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06129AA81C8394700099286B /* AAAudioManager.swift */; };
 		06129AAB1C83B80B0099286B /* AAAudioRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06129AAA1C83B80A0099286B /* AAAudioRouter.swift */; };
@@ -387,6 +388,7 @@
 		060135021C95ED4C00A18C4E /* YYTransaction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYTransaction.m; sourceTree = "<group>"; };
 		0601BBB11CA4C7DE00AEFA81 /* ElegantPresentations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElegantPresentations.swift; sourceTree = "<group>"; };
 		0601BBB31CA4C80D00AEFA81 /* ElegantPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElegantPresentationController.swift; sourceTree = "<group>"; };
+		060DD6ED1D636675001A8333 /* AAComposeSecretController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAComposeSecretController.swift; sourceTree = "<group>"; };
 		06129AA51C8359FB0099286B /* CocoaLifecycleRuntime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaLifecycleRuntime.swift; sourceTree = "<group>"; };
 		06129AA81C8394700099286B /* AAAudioManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAudioManager.swift; sourceTree = "<group>"; };
 		06129AAA1C83B80A0099286B /* AAAudioRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAudioRouter.swift; sourceTree = "<group>"; };
@@ -1288,6 +1290,7 @@
 			isa = PBXGroup;
 			children = (
 				066A52FA1BC52FA8000E606E /* AAComposeController.swift */,
+				060DD6ED1D636675001A8333 /* AAComposeSecretController.swift */,
 				066A52FB1BC52FA8000E606E /* AAGroupCreateViewController.swift */,
 				066A52FC1BC52FA8000E606E /* AAGroupMembersController.swift */,
 			);
@@ -2132,6 +2135,7 @@
 				065974A71BC62B3600B8C7DF /* ViewExtensions.swift in Sources */,
 				066A52F11BC52B02000E606E /* AASettingsNotificationsViewController.swift in Sources */,
 				061850FF1C95CBF000C522D5 /* YYTextAsyncLayer.m in Sources */,
+				060DD6EE1D636675001A8333 /* AAComposeSecretController.swift in Sources */,
 				065A06B61C6CEFE00012EA09 /* CocoaWebRTCRuntime.swift in Sources */,
 				15D35F5A1C20187E00E3717A /* AATimer.m in Sources */,
 				066A52381BC4EEBA000E606E /* AAHeaderCell.swift in Sources */,
