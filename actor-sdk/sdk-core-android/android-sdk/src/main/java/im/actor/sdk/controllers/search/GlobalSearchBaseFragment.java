@@ -8,6 +8,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.ChatLinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,9 +16,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.core.entity.Avatar;
@@ -30,10 +31,10 @@ import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.runtime.generic.mvvm.DisplayList;
+import im.actor.runtime.generic.mvvm.alg.Modifications;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.BaseFragment;
-import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.adapters.HeaderViewRecyclerAdapter;
 import im.actor.sdk.view.adapters.OnItemClickedListener;
@@ -57,9 +58,9 @@ public abstract class GlobalSearchBaseFragment extends BaseFragment {
     private BindedDisplayList<SearchEntity> searchDisplay;
     private final DisplayList.Listener searchListener = () -> onSearchChanged();
 
-    SearchHolder footerSearchHolder;
     private String searchQuery;
-    private LinearLayout footer;
+    private boolean scrolledToEnd = true;
+    private ArrayList<SearchEntity> globalSearchResults = new ArrayList<>();
 
     public GlobalSearchBaseFragment() {
         setHasOptionsMenu(true);
@@ -159,20 +160,25 @@ public abstract class GlobalSearchBaseFragment extends BaseFragment {
                     if (s.trim().length() > 0) {
                         String activeSearchQuery = searchQuery;
                         searchDisplay.initSearch(s.trim().toLowerCase(), false);
+                        scrolledToEnd = false;
                         searchAdapter.setQuery(s.trim().toLowerCase());
+                        globalSearchResults.clear();
                         messenger().findPeers(s).start(new CommandCallback<List<PeerSearchEntity>>() {
                             @Override
                             public void onResult(List<PeerSearchEntity> res) {
-                                int footerVisability = footer.getVisibility();
                                 if (searchQuery.equals(activeSearchQuery)) {
-                                    boolean showResult = false;
-                                    Peer peer = null;
-                                    String name = null;
-                                    Avatar avatar = null;
-                                    if (res.size() > 0) {
-                                        PeerSearchEntity peerSearchEntity = res.get(0);
-                                        peer = peerSearchEntity.getPeer();
+                                    int order = 0;
+                                    outer:
+                                    for (PeerSearchEntity pse : res) {
+                                        for (int i = 0; i < searchDisplay.getSize(); i++) {
+                                            if (searchDisplay.getItem(i).getPeer().equals(pse.getPeer())) {
+                                                continue outer;
+                                            }
+                                        }
 
+                                        Avatar avatar;
+                                        Peer peer = pse.getPeer();
+                                        String name;
                                         if (peer.getPeerType() == PeerType.PRIVATE) {
                                             UserVM userVM = users().get(peer.getPeerId());
                                             name = userVM.getName().get();
@@ -182,29 +188,19 @@ public abstract class GlobalSearchBaseFragment extends BaseFragment {
                                             name = groupVM.getName().get();
                                             avatar = groupVM.getAvatar().get();
                                         } else {
-                                            return;
+                                            continue;
                                         }
-                                        showResult = true;
-                                        for (int i = 0; i < searchDisplay.getSize(); i++) {
-                                            if (searchDisplay.getItem(i).getPeer().equals(peer))
-                                                showResult = false;
-                                            break;
-                                        }
-
-                                        if (peerSearchEntity.getOptMatchString() != null) {
-                                            name = peerSearchEntity.getOptMatchString();
-                                        }
+                                        String optMatchString = pse.getOptMatchString();
+                                        globalSearchResults.add(new SearchEntity(pse.getPeer(), order++, avatar, optMatchString == null ? name : optMatchString));
                                     }
-                                    if (showResult) {
-                                        footerSearchHolder.bind(new SearchEntity(peer, 0, avatar, name), activeSearchQuery, true);
-                                        showView(footer);
-                                    } else {
-                                        goneView(footer);
+                                    if (globalSearchResults.size() > 0) {
+                                        globalSearchResults.add(new SearchEntityHeader(order++));
                                     }
-                                }
-                                if (footerVisability != footer.getVisibility()) {
+                                    checkGlobalSearch();
                                     onSearchChanged();
+
                                 }
+
                             }
 
                             @Override
@@ -215,8 +211,6 @@ public abstract class GlobalSearchBaseFragment extends BaseFragment {
 
                     } else {
                         searchDisplay.initEmpty();
-                        goneView(footer);
-
                     }
                 }
                 return false;
@@ -225,12 +219,15 @@ public abstract class GlobalSearchBaseFragment extends BaseFragment {
     }
 
     private void onSearchChanged() {
+        if (searchDisplay == null) {
+            return;
+        }
         if (!searchDisplay.isInSearchState()) {
             showView(searchHintView);
             goneView(searchEmptyView);
         } else {
             goneView(searchHintView);
-            if (searchDisplay.getSize() == 0 && footer.getVisibility() != View.VISIBLE) {
+            if (searchDisplay.getSize() == 0) {
                 showView(searchEmptyView);
             } else {
                 goneView(searchEmptyView);
@@ -245,6 +242,18 @@ public abstract class GlobalSearchBaseFragment extends BaseFragment {
         isSearchVisible = true;
 
         searchDisplay = messenger().buildSearchDisplayList();
+        searchDisplay.setBindHook(new BindedDisplayList.BindHook<SearchEntity>() {
+            @Override
+            public void onScrolledToEnd() {
+                scrolledToEnd = true;
+                checkGlobalSearch();
+            }
+
+            @Override
+            public void onItemTouched(SearchEntity item) {
+
+            }
+        });
         searchAdapter = new SearchAdapter(getActivity(), searchDisplay, new OnItemClickedListener<SearchEntity>() {
             @Override
             public void onClicked(SearchEntity item) {
@@ -264,48 +273,15 @@ public abstract class GlobalSearchBaseFragment extends BaseFragment {
         header.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
         recyclerAdapter.addHeaderView(header);
 
-        TextView footerTitle = new TextView(getActivity());
-        footerTitle.setText(R.string.main_search_global_header);
-        footerTitle.setTextSize(16);
-        footerTitle.setPadding(Screen.dp(12), Screen.dp(8), 0, Screen.dp(8));
-        footerTitle.setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackgroundColor());
-        footerTitle.setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
-
-        footerSearchHolder = new SearchHolder(getActivity(), new OnItemClickedListener<SearchEntity>() {
-            @Override
-            public void onClicked(SearchEntity item) {
-                int peerId = item.getPeer().getPeerId();
-                switch (item.getPeer().getPeerType()) {
-                    case PRIVATE:
-                        messenger().addContact(peerId);
-                        startActivity(Intents.openPrivateDialog(peerId, true, getActivity()));
-                        break;
-
-                    case GROUP:
-                        messenger().joinGroup(peerId);
-                        startActivity(Intents.openGroupDialog(peerId, false, getActivity()));
-                        break;
-                }
-            }
-
-            @Override
-            public boolean onLongClicked(SearchEntity item) {
-                return false;
-            }
-        });
-        View footerGlobalSearchView = footerSearchHolder.itemView;
-
-        footer = new LinearLayout(getActivity());
-        footer.setOrientation(LinearLayout.VERTICAL);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(Screen.getWidth(), ViewGroup.LayoutParams.WRAP_CONTENT);
-        footer.addView(footerTitle, params);
-        footer.addView(footerGlobalSearchView, params);
-
-        footer.setVisibility(View.GONE);
-
-        recyclerAdapter.addFooterView(footer);
-
         searchList.setAdapter(recyclerAdapter);
+
+        RecyclerView.ItemAnimator animator = searchList.getItemAnimator();
+
+        if (animator instanceof SimpleItemAnimator) {
+            ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+        }
+
+
         searchDisplay.addListener(searchListener);
         showView(searchHintView, false);
         goneView(searchEmptyView, false);
@@ -315,6 +291,12 @@ public abstract class GlobalSearchBaseFragment extends BaseFragment {
         Fragment parent = getParentFragment();
         if (parent != null && parent instanceof GlobalSearchStateDelegate) {
             ((GlobalSearchStateDelegate) parent).onGlobalSearchStarted();
+        }
+    }
+
+    private void checkGlobalSearch() {
+        if ((scrolledToEnd || searchDisplay.getSize() == 0) && globalSearchResults.size() > 0) {
+            searchDisplay.editList(Modifications.addLoadMore(globalSearchResults));
         }
     }
 
@@ -330,6 +312,7 @@ public abstract class GlobalSearchBaseFragment extends BaseFragment {
         }
         searchAdapter = null;
         searchList.setAdapter(null);
+        searchQuery = null;
 
         goneView(searchContainer, false);
         if (searchMenu != null) {
@@ -342,6 +325,21 @@ public abstract class GlobalSearchBaseFragment extends BaseFragment {
         if (parent != null && parent instanceof GlobalSearchStateDelegate) {
             ((GlobalSearchStateDelegate) parent).onGlobalSearchEnded();
         }
+    }
+
+    public class SearchEntityHeader extends SearchEntity {
+
+        public SearchEntityHeader(int order) {
+            super(Peer.group(0), order, null, "");
+        }
+
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        hideSearch();
     }
 
     protected abstract void onPeerPicked(Peer peer);

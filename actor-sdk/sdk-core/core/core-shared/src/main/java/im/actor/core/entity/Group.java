@@ -469,12 +469,11 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
                 }
             }
             // Adding members
-            outer:
             for (ApiMember a : added) {
                 for (ApiMember m : nMembers) {
                     if (m.getUid() == a.getUid()) {
                         nMembers.remove(m);
-                        continue outer;
+                        break;
                     }
                 }
                 nMembers.add(a);

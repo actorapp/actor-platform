@@ -1,0 +1,14 @@
+### Release notes
+* :shipit: a lot of new group features
+* :bug: various bugfixes
+* :rocket: server dependencies updates
+
+#### New groups :tada:
+This release focused on group features, including:
+* private and public channels;
+* short names for public groups. Just like user can have nickname, group can have short names assigned by owner. Short name can be used to find group in global search, or invite people with nice invite url.
+* shared history for public groups;
+* multiple group admins;
+* ownership transfer;
+* fine grained permission settings for admins/members. Owner of group decides what members can/can't do;
+* optimized performance for big groups.

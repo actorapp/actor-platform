@@ -3,13 +3,17 @@ package im.actor.sdk.controllers.group;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import im.actor.core.entity.GroupType;
 import im.actor.core.viewmodel.GroupVM;
+import im.actor.runtime.mvvm.Value;
+import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.BaseFragment;
@@ -39,11 +43,7 @@ public class GroupAdminFragment extends BaseFragment {
     public void onCreate(Bundle saveInstance) {
         super.onCreate(saveInstance);
         groupVM = messenger().getGroup(getArguments().getInt("groupId"));
-        if (groupVM.getGroupType() == GroupType.CHANNEL) {
-            setTitle(R.string.channel_admin_title);
-        } else {
-            setTitle(R.string.group_admin_title);
-        }
+        setTitle(groupVM.getGroupType() == GroupType.CHANNEL ? R.string.channel_admin_title : R.string.group_admin_title);
     }
 
     @Nullable
@@ -62,11 +62,18 @@ public class GroupAdminFragment extends BaseFragment {
         } else {
             groupTypeTitle.setText(R.string.group_type);
         }
-        if (groupVM.getShortName().get() == null) {
-            groupTypeValue.setText(R.string.group_type_private);
-        } else {
-            groupTypeValue.setText(R.string.group_type_pubic);
-        }
+
+        bind(groupVM.getShortName(), new ValueChangedListener<String>() {
+            @Override
+            public void onChanged(String val, Value<String> valueModel) {
+                if (val == null) {
+                    groupTypeValue.setText(groupVM.getGroupType() == GroupType.CHANNEL ? R.string.channel_type_private : R.string.group_type_private);
+                } else {
+                    groupTypeValue.setText(groupVM.getGroupType() == GroupType.CHANNEL ? R.string.channel_type_pubic : R.string.group_type_pubic);
+                }
+            }
+        });
+
         if (groupVM.getIsCanEditAdministration().get()) {
             res.findViewById(R.id.groupTypeContainer).setOnClickListener(v -> {
                 startActivity(new Intent(getContext(), GroupTypeActivity.class)
@@ -121,6 +128,7 @@ public class GroupAdminFragment extends BaseFragment {
         } else {
             permissions.setVisibility(View.GONE);
             permissionsDiv.setVisibility(View.GONE);
+            permissionsHint.setVisibility(View.GONE);
         }
 
         // Group Deletion
@@ -136,22 +144,43 @@ public class GroupAdminFragment extends BaseFragment {
             delete.setText(R.string.group_delete);
             deleteHint.setText(R.string.group_delete_hint);
         }
-        bind(groupVM.getIsCanDelete(), canDelete -> {
-            if (canDelete) {
+
+        bind(groupVM.getIsCanLeave(), groupVM.getIsCanDelete(), (canLeave, canDelete) -> {
+            if (canDelete || canDelete) {
                 deleteContainer.setVisibility(View.VISIBLE);
                 delete.setOnClickListener(v -> {
-                    execute(messenger().deleteGroup(groupVM.getId())).then(r -> {
-                        ActorSDK.sharedActor().startMessagingApp(getActivity());
-                        finishActivity();
-                    });
+
+                    new AlertDialog.Builder(getActivity())
+                            .setMessage(getString(groupVM.getIsCanLeave().get() ? R.string.alert_delete_group_title :
+                                    groupVM.getIsCanDelete().get() ? R.string.alert_delete_group_title :
+                                            R.string.alert_leave_group_message, groupVM.getName().get()))
+                            .setNegativeButton(R.string.dialog_cancel, null)
+                            .setPositiveButton(R.string.alert_delete_group_yes, (d1, which1) -> {
+                                if (groupVM.getIsCanLeave().get()) {
+                                    execute(messenger().leaveAndDeleteGroup(groupVM.getId()), R.string.progress_common)
+                                            .then(aVoid -> ActorSDK.returnToRoot(getActivity()))
+                                            .failure(e -> {
+                                                Toast.makeText(getActivity(), R.string.toast_unable_leave, Toast.LENGTH_LONG).show();
+                                            });
+                                } else if (groupVM.getIsCanDelete().get()) {
+                                    execute(messenger().deleteGroup(groupVM.getId()), R.string.progress_common)
+                                            .then(aVoid -> ActorSDK.returnToRoot(getActivity()))
+                                            .failure(e -> {
+                                                Toast.makeText(getActivity(), R.string.toast_unable_delete_chat, Toast.LENGTH_LONG).show();
+                                            });
+                                }
+                            })
+                            .show();
+
                 });
+
             } else {
                 deleteContainer.setVisibility(View.GONE);
                 delete.setOnClickListener(null);
                 delete.setClickable(false);
             }
-
         });
+
 
         return res;
     }

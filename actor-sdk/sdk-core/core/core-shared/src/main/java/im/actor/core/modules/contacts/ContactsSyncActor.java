@@ -147,7 +147,7 @@ public class ContactsSyncActor extends ModuleActor {
 
         isInProgress = false;
 
-        context().getAppStateModule().onContactsLoaded();
+        context().getConductor().getConductor().onContactsLoaded();
 
         if (result.isNotChanged()) {
             Log.d(TAG, "Sync: Not changed");
@@ -306,7 +306,7 @@ public class ContactsSyncActor extends ModuleActor {
     }
 
     private void notifyState() {
-        context().getAppStateModule().onContactsUpdate(context().getContactsModule().getContacts().isEmpty());
+        context().getConductor().getConductor().onContactsChanged(context().getContactsModule().getContacts().isEmpty());
     }
 
     @Override

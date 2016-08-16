@@ -150,9 +150,11 @@ public class RouterActor extends ModuleActor {
                             showInvite = r.showInvite();
                         }
                         onActiveDialogsChanged(r.getDialogs(), showArchived, showInvite);
+                        context().getConductor().getConductor().onDialogsLoaded();
                     });
         } else {
             notifyActiveDialogsVM();
+            context().getConductor().getConductor().onDialogsLoaded();
         }
     }
 
@@ -614,7 +616,7 @@ public class RouterActor extends ModuleActor {
 
         updateChatState(peer);
 
-        return Promise.success(null);
+        return getDialogsRouter().onChatDelete(peer).chain(aVoid -> onChatDropCache(peer));
     }
 
 
@@ -851,7 +853,7 @@ public class RouterActor extends ModuleActor {
             groups.add(new DialogGroup(i.getTitle(), i.getKey(), dialogSmalls));
         }
         context().getMessagesModule().getDialogGroupsVM().getGroupsValueModel().change(groups);
-        context().getAppStateModule().getGlobalStateVM().onGlobalCounterChanged(counter);
+        context().getConductor().getGlobalStateVM().onGlobalCounterChanged(counter);
     }
 
     public boolean isValidPeer(Peer peer) {

@@ -1,6 +1,9 @@
 package im.actor.sdk.controllers.group;
 
 import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -35,11 +38,13 @@ import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorSDKLauncher;
 import im.actor.sdk.ActorStyle;
 import im.actor.sdk.R;
+import im.actor.sdk.controllers.ActorBinder;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.activity.BaseActivity;
 import im.actor.sdk.controllers.BaseFragment;
 import im.actor.sdk.controllers.group.view.MembersAdapter;
 import im.actor.sdk.controllers.fragment.preview.ViewAvatarActivity;
+import im.actor.sdk.util.AlertListBuilder;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.TintImageView;
 import im.actor.sdk.view.adapters.RecyclerListView;
@@ -53,6 +58,7 @@ import static im.actor.sdk.util.ActorSDKMessenger.users;
 public class GroupInfoFragment extends BaseFragment {
 
     private static final String EXTRA_CHAT_ID = "chat_id";
+    private ActorBinder.Binding[] memberBindings;
 
     public static GroupInfoFragment create(int chatId) {
         Bundle args = new Bundle();
@@ -115,6 +121,8 @@ public class GroupInfoFragment extends BaseFragment {
         TextView shortLinkView = (TextView) header.findViewById(R.id.shortNameLink);
 
         TextView addMember = (TextView) header.findViewById(R.id.addMemberAction);
+        addMember.setText(groupVM.getGroupType() == GroupType.CHANNEL ? R.string.channel_add_member : R.string.group_add_member);
+
         TextView members = (TextView) header.findViewById(R.id.viewMembersAction);
         TextView leaveAction = (TextView) header.findViewById(R.id.leaveAction);
         TextView administrationAction = (TextView) header.findViewById(R.id.administrationAction);
@@ -188,6 +196,15 @@ public class GroupInfoFragment extends BaseFragment {
             }
             shortNameCont.setVisibility(shortName != null ? View.VISIBLE : View.GONE);
         });
+        final ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+        shortNameCont.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String link = shortLinkView.getText().toString();
+                clipboard.setPrimaryClip(ClipData.newPlainText(null, (link.contains("://") ? "" : "https://") + link));
+                Toast.makeText(getActivity(), getString(R.string.invite_link_copied), Toast.LENGTH_SHORT).show();
+            }
+        });
         bind(groupVM.getAbout(), groupVM.getShortName(), (about, shortName) -> {
             descriptionContainer.setVisibility(about != null || shortName != null
                     ? View.VISIBLE
@@ -256,7 +273,7 @@ public class GroupInfoFragment extends BaseFragment {
                             .setMessage(getString(R.string.alert_leave_group_message).replace("%1$s",
                                     groupVM.getName().get()))
                             .setPositiveButton(R.string.alert_leave_group_yes, (dialog2, which) -> {
-                                execute(messenger().leaveGroup(chatId));
+                                execute(messenger().leaveAndDeleteGroup(chatId).then(aVoid -> ActorSDK.returnToRoot(getActivity())));
                             })
                             .setNegativeButton(R.string.dialog_cancel, null)
                             .show()
@@ -275,13 +292,7 @@ public class GroupInfoFragment extends BaseFragment {
         //
 
         groupUserAdapter = new MembersAdapter(getActivity(), getArguments().getInt("groupId"));
-        bind(groupVM.getIsAsyncMembers(), groupVM.getMembers(), (isAsyncMembers, valueModel, memberList, valueModel2) -> {
-            if (isAsyncMembers) {
-                groupUserAdapter.setMembers(new ArrayList<>());
-            } else {
-                groupUserAdapter.setMembers(memberList);
-            }
-        });
+
         listView.setAdapter(groupUserAdapter);
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Object item = parent.getItemAtPosition(position);
@@ -302,7 +313,7 @@ public class GroupInfoFragment extends BaseFragment {
                 if (groupMember.getUid() != myUid()) {
                     UserVM userVM = users().get(groupMember.getUid());
                     if (userVM != null) {
-                        onMemberClicked(userVM, groupMember.getInviterUid() == myUid());
+                        groupUserAdapter.onMemberClick(groupVM, userVM, groupMember.isAdministrator(), groupMember.getInviterUid() == myUid(), (BaseActivity) getActivity());
                         return true;
                     }
                 }
@@ -352,78 +363,26 @@ public class GroupInfoFragment extends BaseFragment {
         return res;
     }
 
-    public void onMemberClicked(UserVM userVM, boolean isInvitedByMe) {
+    @Override
+    public void onResume() {
+        super.onResume();
+        memberBindings = bind(groupVM.getIsAsyncMembers(), groupVM.getMembers(), (isAsyncMembers, valueModel, memberList, valueModel2) -> {
+            if (isAsyncMembers) {
+                groupUserAdapter.setMembers(new ArrayList<>());
+            } else {
+                groupUserAdapter.setMembers(memberList);
+            }
+        });
+    }
 
-        CharSequence[] items;
-        if (groupVM.getIsCanKickAnyone().get() || (groupVM.getIsCanKickInvited().get() && isInvitedByMe)) {
-            items = new CharSequence[]{
-                    getString(R.string.group_context_message).replace("{0}", userVM.getName().get()),
-                    getString(R.string.group_context_call).replace("{0}", userVM.getName().get()),
-                    getString(R.string.group_context_view).replace("{0}", userVM.getName().get()),
-                    getString(R.string.group_context_remove).replace("{0}", userVM.getName().get()),
-            };
-        } else {
-            items = new CharSequence[]{
-                    getString(R.string.group_context_message).replace("{0}", userVM.getName().get()),
-                    getString(R.string.group_context_call).replace("{0}", userVM.getName().get()),
-                    getString(R.string.group_context_view).replace("{0}", userVM.getName().get())
-            };
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (memberBindings != null) {
+            for (ActorBinder.Binding b : memberBindings) {
+                getBINDER().unbind(b);
+            }
         }
-
-        new AlertDialog.Builder(getActivity())
-                .setItems(items, (dialog, which) -> {
-                    if (which == 0) {
-                        startActivity(Intents.openPrivateDialog(userVM.getId(), true, getActivity()));
-                    } else if (which == 1) {
-                        final ArrayList<UserPhone> phones = userVM.getPhones().get();
-                        if (phones.size() == 0) {
-                            Toast.makeText(getActivity(), "No phones available", Toast.LENGTH_SHORT).show();
-                        } else if (phones.size() == 1) {
-                            startActivity(Intents.call(phones.get(0).getPhone()));
-                        } else {
-                            CharSequence[] sequences = new CharSequence[phones.size()];
-                            for (int i = 0; i < sequences.length; i++) {
-                                try {
-                                    Phonenumber.PhoneNumber number = PhoneNumberUtil.getInstance().parse("+" + phones.get(i).getPhone(), "us");
-                                    sequences[i] = phones.get(which).getTitle() + ": " + PhoneNumberUtil.getInstance().format(number, PhoneNumberUtil.PhoneNumberFormat.INTERNATIONAL);
-                                } catch (NumberParseException e) {
-                                    e.printStackTrace();
-                                    sequences[i] = phones.get(which).getTitle() + ": +" + phones.get(i).getPhone();
-                                }
-                            }
-                            new AlertDialog.Builder(getActivity())
-                                    .setItems(sequences, (dialog1, which1) -> {
-                                        startActivity(Intents.call(phones.get(which1).getPhone()));
-                                    })
-                                    .show()
-                                    .setCanceledOnTouchOutside(true);
-                        }
-                    } else if (which == 2) {
-                        ActorSDKLauncher.startProfileActivity(getActivity(), userVM.getId());
-                    } else if (which == 3) {
-                        new AlertDialog.Builder(getActivity())
-                                .setMessage(getString(R.string.alert_group_remove_text).replace("{0}", userVM.getName().get()))
-                                .setPositiveButton(R.string.alert_group_remove_yes, (dialog2, which1) -> {
-                                    execute(messenger().kickMember(chatId, userVM.getId()),
-                                            R.string.progress_common, new CommandCallback<Void>() {
-                                                @Override
-                                                public void onResult(Void res1) {
-
-                                                }
-
-                                                @Override
-                                                public void onError(Exception e) {
-                                                    Toast.makeText(getActivity(), R.string.toast_unable_kick, Toast.LENGTH_SHORT).show();
-                                                }
-                                            });
-                                })
-                                .setNegativeButton(R.string.dialog_cancel, null)
-                                .show()
-                                .setCanceledOnTouchOutside(true);
-                    }
-                })
-                .show()
-                .setCanceledOnTouchOutside(true);
     }
 
     @Override

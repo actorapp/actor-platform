@@ -7,12 +7,11 @@ import spray.http.HttpHeaders.`Content-Disposition`
 import spray.http.HttpMethods.GET
 import spray.http._
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.Future
 
 object PreviewMaker {
 
-  def apply(config: RichMessageConfig, name: String)(implicit system: ActorSystem): ActorRef =
-    system.actorOf(Props(classOf[PreviewMaker], config), name)
+  def props(config: RichMessageConfig) = Props(classOf[PreviewMaker], config)
 
   object Failures {
     object Messages {

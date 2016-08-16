@@ -21,7 +21,7 @@ object HistoryUtils {
   private[dialog] def writeHistoryMessage(
     fromPeer:             Peer,
     toPeer:               Peer,
-    date:                 DateTime,
+    dateMillis:           Long,
     randomId:             Long,
     messageContentHeader: Int,
     messageContentData:   Array[Byte]
@@ -29,6 +29,8 @@ object HistoryUtils {
     import system.dispatcher
     requirePrivatePeer(fromPeer)
     // requireDifferentPeers(fromPeer, toPeer)
+
+    val date = new DateTime(dateMillis)
 
     if (toPeer.typ == PeerType.Private) {
       val outMessage = HistoryMessage(
@@ -79,7 +81,7 @@ object HistoryUtils {
     userId:               Int,
     toPeer:               Peer,
     senderUserId:         Int,
-    date:                 DateTime,
+    dateMillis:           Long,
     randomId:             Long,
     messageContentHeader: Int,
     messageContentData:   Array[Byte]
@@ -88,7 +90,7 @@ object HistoryUtils {
       _ ← HistoryMessageRepo.create(HistoryMessage(
         userId = userId,
         peer = toPeer,
-        date = date,
+        date = new DateTime(dateMillis),
         senderUserId = senderUserId,
         randomId = randomId,
         messageContentHeader = messageContentHeader,

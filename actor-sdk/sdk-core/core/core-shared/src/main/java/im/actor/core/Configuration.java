@@ -60,6 +60,10 @@ public class Configuration {
     private final CallsProvider callsProvider;
     @Property("readonly, nonatomic")
     private final boolean isEnabledGroupedChatList;
+    @Property("readonly, nonatomic")
+    private final String[] autoJoinGroups;
+    @Property("readonly, nonatomic")
+    private final AutoJoinType autoJoinType;
 
     Configuration(ConnectionEndpoint[] endpoints,
                   PhoneBookProvider phoneBookProvider,
@@ -81,7 +85,9 @@ public class Configuration {
                   CallsProvider callsProvider,
                   boolean voiceCallsEnabled,
                   boolean videoCallsEnabled,
-                  boolean isEnabledGroupedChatList) {
+                  boolean isEnabledGroupedChatList,
+                  String[] autoJoinGroups,
+                  AutoJoinType autoJoinType) {
         this.endpoints = endpoints;
         this.phoneBookProvider = phoneBookProvider;
         this.enableContactsLogging = enableContactsLogging;
@@ -103,6 +109,8 @@ public class Configuration {
         this.voiceCallsEnabled = voiceCallsEnabled;
         this.videoCallsEnabled = videoCallsEnabled;
         this.isEnabledGroupedChatList = isEnabledGroupedChatList;
+        this.autoJoinGroups = autoJoinGroups;
+        this.autoJoinType = autoJoinType;
     }
 
     /**
@@ -292,5 +300,23 @@ public class Configuration {
      */
     public boolean isEnabledGroupedChatList() {
         return isEnabledGroupedChatList;
+    }
+
+    /**
+     * Get Auto Join groups
+     *
+     * @return list of auto join groups
+     */
+    public String[] getAutoJoinGroups() {
+        return autoJoinGroups;
+    }
+
+    /**
+     * Get Auto Join Type
+     *
+     * @return auto join type
+     */
+    public AutoJoinType getAutoJoinType() {
+        return autoJoinType;
     }
 }

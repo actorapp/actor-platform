@@ -5,6 +5,7 @@ import java.time.Instant
 import akka.actor.Status
 import akka.pattern.pipe
 import akka.http.scaladsl.util.FastFuture
+import com.github.ghik.silencer.silent
 import im.actor.api.rpc.Update
 import im.actor.api.rpc.groups._
 import im.actor.api.rpc.messaging.UpdateChatClear
@@ -35,7 +36,7 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
         val newState = commit(evt)
 
         //TODO: remove deprecated
-        db.run(GroupBotRepo.updateToken(groupId, newToken))
+        db.run(GroupBotRepo.updateToken(groupId, newToken): @silent)
 
         val result: Future[RevokeIntegrationTokenAck] = for {
           _ ← oldToken match {
@@ -50,6 +51,7 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
     }
   }
 
+  // TODO: duplicate isBot check
   protected def makeUserAdmin(cmd: MakeUserAdmin): Unit = {
     if (!state.permissions.canEditAdmins(cmd.clientUserId)) {
       sender() ! noPermission
@@ -75,7 +77,7 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
         val updateObsolete = UpdateGroupMembersUpdateObsolete(groupId, members)
 
         //TODO: remove deprecated
-        db.run(GroupUserRepo.makeAdmin(groupId, cmd.candidateUserId))
+        db.run(GroupUserRepo.makeAdmin(groupId, cmd.candidateUserId): @silent)
 
         val adminGROUPUpdates: Future[SeqStateDate] =
           for {
@@ -135,6 +137,7 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
     }
   }
 
+  // TODO: duplicate isBot check
   protected def dismissUserAdmin(cmd: DismissUserAdmin): Unit = {
     if (!state.permissions.canEditAdmins(cmd.clientUserId)) {
       sender() ! noPermission
@@ -160,7 +163,7 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
         val updateObsolete = UpdateGroupMembersUpdateObsolete(groupId, members)
 
         //TODO: remove deprecated
-        db.run(GroupUserRepo.dismissAdmin(groupId, cmd.targetUserId))
+        db.run(GroupUserRepo.dismissAdmin(groupId, cmd.targetUserId): @silent)
 
         val adminGROUPUpdates: Future[SeqState] =
           for {
@@ -222,6 +225,7 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
     }
   }
 
+  // TODO: duplicate isBot check
   protected def transferOwnership(cmd: TransferOwnership): Unit = {
     if (!state.isOwner(cmd.clientUserId)) {
       sender() ! Status.Failure(CommonErrors.Forbidden)
@@ -258,7 +262,7 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
 
   protected def updateAdminSettings(cmd: UpdateAdminSettings): Unit = {
     if (!state.permissions.canEditAdminSettings(cmd.clientUserId)) {
-      sender() ! Status.Failure(NotAdmin)
+      sender() ! noPermission
     } else if (AdminSettings.fromBitMask(cmd.settingsBitMask) == state.adminSettings) {
       sender() ! UpdateAdminSettingsAck()
     } else {
@@ -319,8 +323,6 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
       persist(GroupDeleted(Instant.now, cmd.clientUserId)) { evt ⇒
         commit(evt)
 
-        val dateMillis = evt.ts.toEpochMilli
-        val randomId = ACLUtils.randomLong()
         val ZeroPermissions = 0L
 
         val deleteGroupMembersUpdates: Vector[Update] =
@@ -340,8 +342,8 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
         exMemberIds foreach { userId ⇒
           db.run(
             for {
-              _ ← GroupUserRepo.delete(groupId, userId)
-              _ ← GroupInviteTokenRepo.revoke(groupId, userId)
+              _ ← GroupUserRepo.delete(groupId, userId): @silent
+              _ ← GroupInviteTokenRepo.revoke(groupId, userId): @silent
             } yield ()
           )
         }

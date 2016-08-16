@@ -28,7 +28,6 @@ import im.actor.core.entity.MessageSearchEntity;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerSearchEntity;
 import im.actor.core.entity.PeerSearchType;
-import im.actor.core.entity.PeerType;
 import im.actor.core.entity.SearchResult;
 import im.actor.core.entity.Sex;
 import im.actor.core.entity.User;
@@ -401,7 +400,7 @@ public class Messenger {
     @NotNull
     @ObjectiveCName("getAppState")
     public AppStateVM getAppState() {
-        return modules.getAppStateModule().getAppStateVM();
+        return modules.getConductor().getAppStateVM();
     }
 
     /**
@@ -412,7 +411,7 @@ public class Messenger {
     @NotNull
     @ObjectiveCName("getGlobalState")
     public GlobalStateVM getGlobalState() {
-        return modules.getAppStateModule().getGlobalStateVM();
+        return modules.getConductor().getGlobalStateVM();
     }
 
     /**
@@ -989,15 +988,9 @@ public class Messenger {
      */
     @ObjectiveCName("deleteChatCommandWithPeer:")
     public Command<Void> deleteChat(Peer peer) {
-        if (peer.getPeerType() == PeerType.GROUP) {
-            return callback -> modules.getGroupsModule().leaveAndDeleteGroup(peer.getPeerId())
-                    .then(v -> callback.onResult(v))
-                    .failure(e -> callback.onError(e));
-        } else {
-            return callback -> modules.getMessagesModule().deleteChat(peer)
-                    .then(v -> callback.onResult(v))
-                    .failure(e -> callback.onError(e));
-        }
+        return callback -> modules.getMessagesModule().deleteChat(peer)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
     }
 
     /**
@@ -1126,6 +1119,17 @@ public class Messenger {
     @Deprecated
     public long loadLastMessageDate(Peer peer) {
         return getConversationVM(peer).getLastMessageDate();
+    }
+
+    /**
+     * Finding public by id
+     *
+     * @param gid group id
+     * @return found peer promise
+     */
+    @ObjectiveCName("findPublicGroupByIdWithGid:")
+    public Promise<Peer> findPublicGroupById(int gid) {
+        return modules.getSearchModule().findPublicGroupById(gid);
     }
 
     /**
@@ -1675,6 +1679,21 @@ public class Messenger {
     @ObjectiveCName("makeAdminCommandWithGid:withUid:")
     public Command<Void> makeAdmin(final int gid, final int uid) {
         return callback -> modules.getGroupsModule().makeAdmin(gid, uid)
+                .then(v -> callback.onResult(v))
+                .failure(e -> callback.onError(e));
+    }
+
+    /**
+     * Revoke member admin rights of group
+     *
+     * @param gid group's id
+     * @param uid user's id
+     * @return Command for execution
+     */
+    @NotNull
+    @ObjectiveCName("revokeAdminCommandWithGid:withUid:")
+    public Command<Void> revokeAdmin(final int gid, final int uid) {
+        return callback -> modules.getGroupsModule().revokeAdmin(gid, uid)
                 .then(v -> callback.onResult(v))
                 .failure(e -> callback.onError(e));
     }

@@ -19,6 +19,7 @@
     <string name="pick_downloading">Загрузка</string>
 
     <string name="progress_common">Загрузка…</string>
+    <string name="edit_nick_process">Смена ника…</string>
 
     <string name="toast_no_sdcard">Нет SD-карты</string>
     <string name="toast_phone_copied">Телефон скопирован в буфер обмена</string>
@@ -76,6 +77,9 @@
 
     <string name="auth_switch_to_email">Использовать email для регистрации</string>
     <string name="auth_switch_to_phone">Использовать телефон для регистрации</string>
+
+    <string name="auth_privacy_index">Политика Конфиденциальности</string>
+    <string name="auth_tos_index"> Условия Использования</string>
 
     <!-- Choose auth type-->
     <string name="choose_auth_type_title">Выбор способа авторизации</string>
@@ -145,7 +149,7 @@
 
     <!-- Main -->
     <string name="main_search_hint">Начните набирать для поиска</string>
-    <string name="main_search_global_header">Общий поиск</string>
+    <string name="main_search_global_header">Глобальный поиск</string>
     <string name="main_search_empty">Ничего не найдено</string>
     <string name="main_menu_help">Помощь</string>
     <string name="main_menu_search">Поиск</string>
@@ -179,7 +183,7 @@
     <string name="settings_notifications">Оповещения</string>
     <string name="settings_chat">Настройки чата</string>
     <string name="settings_home_page">Домашняя страница</string>
-    <string name="settings_security">Безопасность</string>
+    <string name="settings_security">Безопасность и Приватность</string>
     <string name="settings_blocked_list">Заблокированные пользователи</string>
     <string name="nickname_empty">Добавить ник</string>
     <string name="nickname_hint">Вы можете выбрать ник в {appName}. Так другие люди смогут найти вас без номера телефона.\n\nВы можете использовать латинские буквы, цифры и подчеркивание. Минимальная длина - 5 символов.</string>
@@ -189,6 +193,18 @@
     <string name="about_user_me">Обо мне</string>
     <string name="about_user">О пользователе</string>
     <string name="wallpaper">Обои</string>
+
+    <!-- Calls -->
+    <string name="call_add_user">добвить в разговор</string>
+    <string name="call_connecting">Соединяем…</string>
+    <string name="call_enable_mute">тихо</string>
+    <string name="call_enable_speaker">громкая связь</string>
+    <string name="call_enable_video">видео</string>
+    <string name="call_ended">Вызов окончен</string>
+    <string name="call_incoming">Входящий вызов</string>
+    <string name="call_notification">Вернуться к вызову</string>
+    <string name="call_outgoing">Звоним…</string>
+    <string name="call_to_messages">сообщения</string>
 
     <!-- Profile controls -->
     <string name="phone_menu_call">Позвонить {0}</string>
@@ -212,6 +228,12 @@
     <string name="dialogs_menu_group_rename">Переименовать группу</string>
     <string name="dialogs_menu_group_leave">Выйти из группы</string>
     <string name="dialogs_menu_group_delete">Удалить группу</string>
+
+    <string name="dialogs_menu_channel_view">Информация о канале</string>
+    <string name="dialogs_menu_channel_rename">Переименовать канал</string>
+    <string name="dialogs_menu_channel_leave">Выйти из канала</string>
+    <string name="dialogs_menu_channel_delete">Удалить канал</string>
+
 
     <!-- Contacts -->
     <string name="contacts_title">Контакты</string>
@@ -274,6 +296,9 @@
     <string name="edit_message_error_not_last">Вы можете редактировать только последнее сообщение</string>
     <string name="edit_message_error_slowpoke">Вы можете редактировать только недавно отправленные сообщения</string>
 
+    <string name="chat_empty_bot">СТАРТ</string>
+    <string name="chat_join">Войти</string>
+
     <!-- Share menu-->
     <string name="share_menu_gallery">Галерея</string>
     <string name="share_menu_video">Видео</string>
@@ -317,6 +342,7 @@
 
     <!-- Group -->
     <string name="group_title">Информация о группе</string>
+    <string name="channel_title">Информация о канале</string>
 
     <string name="group_members_header">Участники</string>
     <string name="group_members_count">{0} из {1}</string>
@@ -342,6 +368,7 @@
     <string name="group_shared_files">Документы</string>
 
     <string name="group_add_member">Добавить в группу</string>
+    <string name="channel_add_member">Добавить в канал</string>
     <string name="group_leave">Покинуть группу</string>
     <string name="group_leave_channel">Покинуть канал</string>
 
@@ -351,6 +378,61 @@
     <string name="about_group_empty">Добавить описание группы</string>
     <string name="theme_group">Тема группы</string>
     <string name="theme_group_empty">Добавить тему группы</string>
+
+    <string name="group_admin_title">Администрирование группы</string>
+    <string name="group_administration">Администрирование</string>
+    <string name="group_make_admin">Назначить администратором</string>
+    <string name="group_revoke_admin">Аннулировать права администратора</string>
+    <string name="group_delete">Удалить группу</string>
+    <string name="group_delete_hint">Вы потеряете все сообщения в этой группе</string>
+    <string name="group_description_hint">Описание</string>
+    <string name="group_menu_edit">Редактировать</string>
+    <string name="group_name_hint">Имя</string>
+    <string name="group_permissions">Разрешения</string>
+    <string name="group_permissions_hint">Управление правами пользователей в этой группе</string>
+    <string name="group_private_group_text">В приватную группу можно попасть только по личному приглашению</string>
+    <string name="group_private_group_title">Приватная группа</string>
+    <string name="group_public_group_text">Публичные группы доступны для поиска, кто угодно можнет вступить в такую группу</string>
+    <string name="group_public_group_title">Публичная группа</string>
+
+    <string name="group_private_channel_text">В приватый канал можно попасть только по личному приглашению</string>
+    <string name="group_private_channel_title">Приватый канал</string>
+    <string name="group_public_channel_text">Публичные каналы доступны для поиска, кто угодно можнет вступить в такой канал</string>
+    <string name="group_public_channel_title">Публичный канал</string>
+
+    <string name="group_share_history">Поделиться историей</string>
+    <string name="group_share_history_hint">Все сообщения будут доступны всем участникам</string>
+    <string name="group_type">Тип группы</string>
+    <string name="group_type_private">Приватная</string>
+    <string name="channel_type_private">Приватный</string>
+    <string name="group_type_pubic">Публичная</string>
+    <string name="channel_type_pubic">Публичный</string>
+
+    <!-- Channel-->
+    <string name="channel_admin_title">Администрирование канала</string>
+
+    <string name="group_can_edit_info_members">Все пользователи могут редактировать информацию о группе</string>
+    <string name="group_can_edit_info_admins">Администраторы могут редактировать информацию о группе</string>
+    <string name="group_can_invite_members">Все пользователи могут приглашать в группу</string>
+    <string name="group_show_leave_join">Показывать сообщения о входе/выходе из группы</string>
+    <string name="group_show_admin_to_members">Показывать информацию о том, кто является администратором пользователям</string>
+
+    <string name="channel_can_edit_info_members">Все пользователи могут редактировать иформацию о канале</string>
+    <string name="channel_can_edit_info_admins">Администраторы могут редактировать информацию о канале</string>
+    <string name="channel_can_invite_members">Все пользователи могут приглашать в канал</string>
+    <string name="channel_show_leave_join">Показывать сообщения о входе/выходе из канала</string>
+    <string name="channel_show_admin_to_members">Показывать информацию о том, кто является администратором пользователям</string>
+
+    <string name="channel_delete">Удалить канал</string>
+    <string name="channel_delete_hint">Вы потеряете все сообщения в этом канале</string>
+    <string name="channel_permissions_hint">Управление разрешениями в этом канале</string>
+    <string name="channel_type">Тип канала</string>
+
+    <string name="create_channel_hint">Введите имя канала и выбирете изображение</string>
+    <string name="create_channel_name_hint">Название канала</string>
+    <string name="create_channel_title">Создать канал</string>
+    <string name="main_fab_new_channel">Создать канал</string>
+
     <!-- Avatar -->
     <string name="avatar_title_your">Ваше фото</string>
     <string name="avatar_title_person">Фото</string>
@@ -462,6 +544,10 @@
     <string name="not_group_mentions">Только для упоминаний</string>
     <string name="not_group_mentions_subtitle">Включить оповещения в группах только для сообщений с упоминанием</string>
 
+    <string name="notification_multiple_canversations_after_msg_count">" сообщений в "</string>
+    <string name="notifications_multiple_canversations_after_coversations_count">" чатах"</string>
+    <string name="notifications_single_conversation_аfter_messages_count">" сообщений"</string>
+
     <!-- Pick user -->
     <string name="pick_user_title">Выберите человека</string>
 
@@ -478,12 +564,19 @@
 
 
     <!-- Security -->
-    <string name="security_title">Безопасность</string>
+    <string name="security_title">Безопасность и Приватность</string>
     <string name="security_terminate_title">Уничтожить все сессии</string>
     <string name="security_terminate_subtitle">Произвести выход на всех устройствах</string>
     <string name="security_terminate_message">Вы уверены, что хотите уничтожить сессии на всех устройствах? Все данные приложения на них будут удалены.</string>
     <string name="security_authorized_header">Авторизованные устройства и сервисы</string>
     <string name="security_authorized_loading">Загрузка…</string>
+
+    <!-- Last Seen -->
+    <string name="security_last_seen_title">Последняя активность</string>
+    <string name="security_last_seen_subtitle">Укажите, кто может видеть вашу последнюю активность.</string>
+    <string name="security_last_seen_everybody">Все</string>
+    <string name="security_last_seen_contacts">Контакты</string>
+    <string name="security_last_seen_nobody">Никто</string>
 
     <!-- Blocked list -->
     <string name="blocked_title">Заблокированные пользователи</string>
@@ -519,9 +612,11 @@
 
     <!-- Dialogs -->
     <string name="alert_leave_group_message">Вы уверены, что хотите выйти из группы "%1$s"?</string>
+    <string name="alert_leave_channel_message">Вы уверены, что хотите выйти из канала "%1$s"?</string>
     <string name="alert_leave_group_yes">Выйти</string>
 
     <string name="alert_delete_group_title">Вы уверены, что хотите удалить группу "%1$s"?</string>
+    <string name="alert_delete_channel_title">Вы уверены, что хотите удалить канал "%1$s"?</string>
     <string name="alert_delete_group_yes">Удалить</string>
 
     <string name="alert_delete_chat_message">Вы уверены, что хотите удалить чат с "%1$s"?</string>
@@ -541,5 +636,13 @@
     <string name="error_unknown">Невозможно произвести операцию.\n\nПожалуйста, проверьте свой телефон и выключите и включите его, если проблема не будет решена.
     </string>
     <string name="error_view_url">Неизвестный тип ссылки</string>
+
+    <string name="toast_unable_change_nick">Невозможно поменять ник</string>
+    <string name="toast_unable_clear_chat">Невозможно очистить чат</string>
+    <string name="toast_unable_create_group">Невозможно создать группу</string>
+    <string name="toast_unable_delete_chat">Невозможно удалить чат</string>
+    <string name="toast_unable_leave">Невозможно покинуть группу</string>
+
     <string name="confirm_share">Поделиться с</string>
+
 </resources>

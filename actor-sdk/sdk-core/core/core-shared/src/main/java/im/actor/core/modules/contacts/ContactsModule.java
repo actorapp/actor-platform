@@ -58,6 +58,10 @@ public class ContactsModule extends AbsModule {
         return bookImportState;
     }
 
+    public void startImport() {
+        bookImportActor.send(new BookImportActor.Start());
+    }
+
     public ListEngine<Contact> getContacts() {
         return contacts;
     }

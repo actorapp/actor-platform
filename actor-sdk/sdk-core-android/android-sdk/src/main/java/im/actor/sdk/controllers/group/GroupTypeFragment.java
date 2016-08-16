@@ -13,6 +13,7 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import im.actor.core.entity.GroupType;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
@@ -35,7 +36,6 @@ public class GroupTypeFragment extends BaseFragment {
     private boolean isPublic;
 
     public GroupTypeFragment() {
-        setTitle(R.string.group_title);
         setRootFragment(true);
         setHomeAsUp(true);
         setShowHome(true);
@@ -46,6 +46,8 @@ public class GroupTypeFragment extends BaseFragment {
         super.onCreate(saveInstance);
 
         groupVM = messenger().getGroup(getArguments().getInt("groupId"));
+        setTitle(groupVM.getGroupType() == GroupType.CHANNEL ? R.string.channel_title : R.string.group_title);
+
     }
 
     @Nullable
@@ -54,12 +56,16 @@ public class GroupTypeFragment extends BaseFragment {
         View res = inflater.inflate(R.layout.fragment_edit_type, container, false);
         res.setBackgroundColor(style.getBackyardBackgroundColor());
         TextView publicTitle = (TextView) res.findViewById(R.id.publicTitle);
+        publicTitle.setText(groupVM.getGroupType() == GroupType.CHANNEL ? R.string.group_public_channel_title : R.string.group_public_group_title);
         publicTitle.setTextColor(style.getTextPrimaryColor());
         TextView publicDescription = (TextView) res.findViewById(R.id.publicDescription);
+        publicDescription.setText(groupVM.getGroupType() == GroupType.CHANNEL ? R.string.group_public_channel_text : R.string.group_public_group_text);
         publicDescription.setTextColor(style.getTextSecondaryColor());
         TextView privateTitle = (TextView) res.findViewById(R.id.privateTitle);
+        privateTitle.setText(groupVM.getGroupType() == GroupType.CHANNEL ? R.string.group_private_channel_title : R.string.group_private_group_title);
         privateTitle.setTextColor(style.getTextPrimaryColor());
         TextView privateDescription = (TextView) res.findViewById(R.id.privateDescription);
+        privateDescription.setText(groupVM.getGroupType() == GroupType.CHANNEL ? R.string.group_private_channel_text : R.string.group_private_group_text);
         privateDescription.setTextColor(style.getTextSecondaryColor());
         TextView publicLinkPrefix = (TextView) res.findViewById(R.id.publicLinkPrefix);
         publicLinkPrefix.setTextColor(style.getTextSecondaryColor());
@@ -136,16 +142,17 @@ public class GroupTypeFragment extends BaseFragment {
             if (isPublic) {
                 String nShortName = publicShortName.getText().toString().trim();
                 if (nShortName.length() == 0) {
-                    finishActivity();
+                    Toast.makeText(getActivity(), R.string.group_edit_change_short_name_error, Toast.LENGTH_SHORT).show();
                     return true;
                 }
                 if (nShortName.equals(groupVM.getShortName().get())) {
+                    finishActivity();
                     return true;
                 }
                 execute(messenger().editGroupShortName(groupVM.getId(), nShortName).then(r -> {
                     finishActivity();
                 }).failure(e -> {
-                    Toast.makeText(getActivity(), "Unable to change group short name", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), R.string.group_edit_change_short_name_error, Toast.LENGTH_SHORT).show();
                 }));
             } else {
                 if (groupVM.getShortName().get() == null) {
@@ -155,7 +162,7 @@ public class GroupTypeFragment extends BaseFragment {
                     execute(messenger().editGroupShortName(groupVM.getId(), null).then(r -> {
                         finishActivity();
                     }).failure(e -> {
-                        Toast.makeText(getActivity(), "Unable to change group short name", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), R.string.group_edit_change_short_name_error, Toast.LENGTH_SHORT).show();
                     }));
                 }
             }

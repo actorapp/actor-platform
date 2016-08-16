@@ -49,8 +49,8 @@ public class BinderCompatFragment extends android.support.v4.app.Fragment {
         BINDER.bind(value, listener, notify);
     }
 
-    public <T1, T2> void bind(ValueModel<T1> value1, ValueModel<T2> value2, ValueDoubleChangedListener<T1, T2> listener) {
-        BINDER.bind(value1, value2, listener);
+    public <T1, T2> ActorBinder.Binding[] bind(ValueModel<T1> value1, ValueModel<T2> value2, ValueDoubleChangedListener<T1, T2> listener) {
+        return BINDER.bind(value1, value2, listener);
     }
 
     public void bind(final CoverAvatarView avatarView, final ValueModel<Avatar> avatar) {
@@ -104,6 +104,10 @@ public class BinderCompatFragment extends android.support.v4.app.Fragment {
         if (!unbindOnPause) {
             BINDER.unbindAll();
         }
+    }
+
+    protected ActorBinder getBINDER() {
+        return BINDER;
     }
 
     public void unbind(ActorBinder.Binding b) {

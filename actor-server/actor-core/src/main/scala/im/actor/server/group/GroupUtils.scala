@@ -12,7 +12,7 @@ object GroupUtils {
   def getUserIds(group: ApiGroup): Set[Int] =
     group.members.flatMap(m ⇒ Seq(m.userId, m.inviterUserId)).toSet + group.creatorUserId
 
-  def getUserIds(groups: Seq[ApiGroup]): Set[Int] =
+  private def getUserIds(groups: Seq[ApiGroup]): Set[Int] =
     groups.foldLeft(Set.empty[Int])(_ ++ getUserIds(_))
 
   def getGroupsUsers(groupIds: Seq[Int], userIds: Seq[Int], clientUserId: Int, clientAuthId: Long)(implicit system: ActorSystem): Future[(Seq[ApiGroup], Seq[ApiUser])] = {
@@ -20,7 +20,7 @@ object GroupUtils {
     for {
       groups ← Future.sequence(groupIds map (GroupExtension(system).getApiStruct(_, clientUserId)))
       memberIds = getUserIds(groups)
-      users ← Future.sequence((userIds.toSet ++ memberIds.toSet).filterNot(_ == 0) map (UserUtils.safeGetUser(_, clientUserId, clientAuthId))) map (_.flatten)
+      users ← Future.sequence((userIds.toSet ++ memberIds).filterNot(_ == 0) map (UserUtils.safeGetUser(_, clientUserId, clientAuthId))) map (_.flatten)
     } yield (groups, users.toSeq)
   }
 }

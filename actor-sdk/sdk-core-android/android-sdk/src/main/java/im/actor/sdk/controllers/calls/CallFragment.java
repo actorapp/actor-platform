@@ -76,93 +76,97 @@ import static im.actor.sdk.util.ActorSDKMessenger.users;
 
 public class CallFragment extends BaseFragment {
 
-    private static final int PERMISSIONS_REQUEST_FOR_CALL = 147;
-    private static final int NOTIFICATION_ID = 2;
-    private static final int TIMER_ID = 1;
+    protected static final int PERMISSIONS_REQUEST_FOR_CALL = 147;
+    protected static final int NOTIFICATION_ID = 2;
+    protected static final int TIMER_ID = 1;
 
-    private final ActorBinder ACTIVITY_BINDER = new ActorBinder();
+    protected final ActorBinder ACTIVITY_BINDER = new ActorBinder();
 
-    private long callId = -1;
-    private Peer peer;
+    protected long callId = -1;
+    protected Peer peer;
 
-    private Vibrator v;
-    private View answerContainer;
-    private Ringtone ringtone;
-    private CallVM call;
+    protected Vibrator v;
+    protected View answerContainer;
+    protected Ringtone ringtone;
+    protected CallVM call;
 
-    private AvatarView avatarView;
-    private TextView nameTV;
-    private ActorRef timer;
-    private TextView statusTV;
-    private View[] avatarLayers;
-    private View layer1;
-    private View layer2;
-    private View layer3;
+    protected AvatarView avatarView;
+    protected TextView nameTV;
+    protected ActorRef timer;
+    protected TextView statusTV;
+    protected View[] avatarLayers;
+    protected View layer1;
+    protected View layer2;
+    protected View layer3;
 
-    private NotificationManager manager;
-    private CallState currentState;
-    private ImageButton endCall;
-    private View endCallContainer;
-    private boolean speakerOn = false;
-    private AudioManager audioManager;
+    protected NotificationManager manager;
+    protected CallState currentState;
+    protected ImageButton endCall;
+    protected View endCallContainer;
+    protected boolean speakerOn = false;
+    protected AudioManager audioManager;
 
-    private RecyclerListView membersList;
+    protected RecyclerListView membersList;
 
-    private float dX, dY;
+    protected float dX, dY;
 
-    private TintImageView muteCall;
-    private TextView muteCallTv;
-    private TintImageView speaker;
-    private TextView speakerTV;
-    private TintImageView videoIcon;
-    private TextView videoTv;
+    protected TintImageView muteCall;
+    protected TextView muteCallTv;
+    protected TintImageView speaker;
+    protected TextView speakerTV;
+    protected TintImageView videoIcon;
+    protected TextView videoTv;
 
     //
     // Video References
     //
-    private EglBase eglContext;
+    protected EglBase eglContext;
 
-    private SurfaceViewRenderer localVideoView;
-    private VideoRenderer localRender;
-    private boolean isLocalViewConfigured;
-    private VideoTrack localTrack;
+    protected SurfaceViewRenderer localVideoView;
+    protected VideoRenderer localRender;
+    protected boolean isLocalViewConfigured;
+    protected VideoTrack localTrack;
 
-    private SurfaceViewRenderer remoteVideoView;
-    private VideoRenderer remoteRender;
-    private boolean isRemoteViewConfigured;
-    private VideoTrack remoteTrack;
+    protected SurfaceViewRenderer remoteVideoView;
+    protected VideoRenderer remoteRender;
+    protected boolean isRemoteViewConfigured;
+    protected VideoTrack remoteTrack;
 
 
     //
     // Vibrate/tone/wakelock
     //
     boolean vibrate = true;
-    private PowerManager powerManager;
-    private PowerManager.WakeLock wakeLock;
-    private int field = 0x00000020;
+    protected PowerManager powerManager;
+    protected PowerManager.WakeLock wakeLock;
+    protected int field = 0x00000020;
 
 
     //
     // Constructor
     //
 
-    public CallFragment() {
-        manager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+    static CallFragment create(long callId) {
+        CallFragment res = new CallFragment();
+        Bundle args = new Bundle();
+        args.putLong("call_id", callId);
+        res.setArguments(args);
+        return res;
     }
 
-    public CallFragment(long callId) {
-        this.callId = callId;
+    public CallFragment() {
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        this.callId = getArguments().getLong("call_id");
         this.call = messenger().getCall(callId);
         if (call == null) {
             this.peer = Peer.user(myUid());
         } else {
             this.peer = call.getPeer();
         }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
 
         manager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -389,7 +393,7 @@ public class CallFragment extends BaseFragment {
         }
     }
 
-    private void startTimer() {
+    protected void startTimer() {
 
         final DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
         formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -421,7 +425,7 @@ public class CallFragment extends BaseFragment {
         }
     }
 
-    private void initIncoming() {
+    protected void initIncoming() {
 
         getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
                 WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
@@ -449,7 +453,7 @@ public class CallFragment extends BaseFragment {
         }).start();
     }
 
-    private void onAnswer() {
+    protected void onAnswer() {
 
         endCallContainer.setVisibility(View.VISIBLE);
         answerContainer.setVisibility(View.GONE);
@@ -460,7 +464,7 @@ public class CallFragment extends BaseFragment {
         messenger().answerCall(callId);
     }
 
-    private void doEndCall() {
+    protected void doEndCall() {
         messenger().endCall(callId);
         onCallEnd();
     }
@@ -778,7 +782,7 @@ public class CallFragment extends BaseFragment {
     class CallMembersAdapter extends HolderAdapter<CallMember> {
 
 
-        private ArrayList<CallMember> members;
+        protected ArrayList<CallMember> members;
 
         protected CallMembersAdapter(Context context, final ValueModel<ArrayList<CallMember>> members) {
             super(context);
@@ -810,12 +814,12 @@ public class CallFragment extends BaseFragment {
             return new MemberHolder();
         }
 
-        private class MemberHolder extends ViewHolder<CallMember> {
+        protected class MemberHolder extends ViewHolder<CallMember> {
 
             CallMember data;
-            private TextView userName;
-            private TextView status;
-            private AvatarView avatarView;
+            protected TextView userName;
+            protected TextView status;
+            protected AvatarView avatarView;
 
             @Override
             public View init(final CallMember data, ViewGroup viewGroup, Context context) {

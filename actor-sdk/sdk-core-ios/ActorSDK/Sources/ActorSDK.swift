@@ -138,6 +138,11 @@ import DZNWebViewController
     /// Enable experimental features
     public var enableExperimentalFeatures: Bool = false
     
+    /// Auto Join Groups
+    public var autoJoinGroups = [String]()
+    
+    /// Should perform auto join only after first message or contact
+    public var autoJoinOnReady = true
     
     //
     // User Onlines
@@ -256,6 +261,16 @@ import DZNWebViewController
         log("Found time zone :\(timeZone)")
         builder.setTimeZone(timeZone)
   
+        // AutoJoin
+        for s in autoJoinGroups {
+            builder.addAutoJoinGroupWithToken(s)
+        }
+        if autoJoinOnReady {
+            builder.setAutoJoinType(ACAutoJoinType.AFTER_INIT())
+        } else {
+            builder.setAutoJoinType(ACAutoJoinType.IMMEDIATELY())
+        }
+        
         // Logs
         // builder.setEnableFilesLogging(true)
         

@@ -5,6 +5,7 @@ import java.time.Instant
 import akka.actor.Status
 import akka.http.scaladsl.util.FastFuture
 import akka.pattern.pipe
+import com.github.ghik.silencer.silent
 import im.actor.api.rpc.Update
 import im.actor.api.rpc.groups._
 import im.actor.api.rpc.users.ApiSex
@@ -103,8 +104,8 @@ private[group] trait GroupCommandHandlers
               ),
               cmd.randomId,
               isHidden = false
-            )
-            _ ← GroupUserRepo.create(groupId, cmd.creatorUserId, cmd.creatorUserId, createdAt, None, isAdmin = true)
+            ): @silent
+            _ ← GroupUserRepo.create(groupId, cmd.creatorUserId, cmd.creatorUserId, createdAt, None, isAdmin = true): @silent
           } yield ()
         )
 
@@ -151,7 +152,7 @@ private[group] trait GroupCommandHandlers
         val newState = commit(evt)
 
         //TODO: remove deprecated
-        db.run(GroupBotRepo.create(groupId, botUserId, botToken))
+        db.run(GroupBotRepo.create(groupId, botUserId, botToken): @silent)
 
         (for {
           _ ← userExt.create(botUserId, ACLUtils.nextAccessSalt(), None, "Bot", "US", ApiSex.Unknown, isBot = true)

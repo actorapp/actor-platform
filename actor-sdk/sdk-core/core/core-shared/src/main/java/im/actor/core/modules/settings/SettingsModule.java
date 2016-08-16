@@ -392,7 +392,7 @@ public class SettingsModule extends AbsModule {
         }
         settingsSync.send(new SettingsSyncActor.ChangeSettings(key, val));
         onUpdatedSetting(key, val);
-        context().getSettingsModule().onSettingsChanged();
+        notifySettingsChanged();
     }
 
     private String readValue(String key) {
@@ -403,7 +403,7 @@ public class SettingsModule extends AbsModule {
         preferences().putString(STORAGE_PREFIX + key, value);
     }
 
-    public void onSettingsChanged() {
+    public void notifySettingsChanged() {
         eventBus.post(new SettingsChanged());
     }
 

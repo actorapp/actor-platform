@@ -13,7 +13,7 @@ import im.actor.sdk.util.Strings;
 public class SearchHighlight {
 
     public static Spannable highlightQuery(String src, String query, int color) {
-        String matchString = src.toLowerCase();
+        String matchString = src.toLowerCase().replace("@", " ");
         SpannableStringBuilder builder = new SpannableStringBuilder(src);
         if (matchString.startsWith(query)) {
             builder.setSpan(new ForegroundColorSpan(color), 0, query.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);

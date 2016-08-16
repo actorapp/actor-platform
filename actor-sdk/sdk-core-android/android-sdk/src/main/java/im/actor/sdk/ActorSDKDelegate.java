@@ -8,9 +8,13 @@ import org.jetbrains.annotations.Nullable;
 
 import im.actor.core.entity.Peer;
 import im.actor.runtime.android.view.BindedViewHolder;
+import im.actor.sdk.controllers.conversation.ChatFragment;
 import im.actor.sdk.controllers.conversation.attach.AbsAttachFragment;
+import im.actor.sdk.controllers.conversation.inputbar.InputBarFragment;
+import im.actor.sdk.controllers.conversation.mentions.AutocompleteFragment;
 import im.actor.sdk.controllers.conversation.messages.content.MessageHolder;
 import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
+import im.actor.sdk.controllers.conversation.quote.QuoteFragment;
 import im.actor.sdk.controllers.settings.BaseGroupInfoActivity;
 import im.actor.sdk.intents.ActorIntent;
 import im.actor.sdk.intents.ActorIntentFragmentActivity;
@@ -59,6 +63,15 @@ public interface ActorSDKDelegate {
     Fragment fragmentForProfile(int uid);
 
     /**
+     * If not null returned, overrides call fragment
+     *
+     * @param callId call id
+     * @return Fragment
+     */
+    @Nullable
+    Fragment fragmentForCall(long callId);
+
+    /**
      * If not null returned, overrides group info fragment
      *
      * @return Actor Intent
@@ -78,6 +91,38 @@ public interface ActorSDKDelegate {
      */
     @Nullable
     AbsAttachFragment fragmentForAttachMenu(Peer peer);
+
+    /**
+     * If Not null returned, overrides chat fragment
+     *
+     * @param peer peer
+     * @return Custom chat fragment
+     */
+    @Nullable
+    ChatFragment fragmentForChat(Peer peer);
+
+    /**
+     * If Not null returned, overrides chat input fragment
+     *
+     * @return Custom chat input fragment
+     */
+    @Nullable
+    InputBarFragment fragmentForChatInput();
+
+    /**
+     * If Not null returned, overrides chat autocomplete fragment
+     *
+     * @return Custom chat autocomplete fragment
+     * @param peer peer
+     */
+    AutocompleteFragment fragmentForAutocomplete(Peer peer);
+
+    /**
+     * If Not null returned, overrides chat quote fragment
+     *
+     * @return Custom chat quote fragment
+     */
+    QuoteFragment fragmentForQuote();
 
     /**
      * If Not null returned, overrides default toolbar (no-ui) fragment
@@ -182,4 +227,6 @@ public interface ActorSDKDelegate {
      * @return notification sound color
      */
     int getNotificationColor();
+
+
 }

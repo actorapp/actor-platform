@@ -7,25 +7,34 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import fr.castorflex.android.circularprogressbar.CircularProgressBar;
+import im.actor.core.entity.GroupMember;
+import im.actor.core.entity.GroupType;
 import im.actor.core.viewmodel.GroupVM;
+import im.actor.core.viewmodel.UserVM;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.BaseFragment;
 import im.actor.sdk.controllers.Intents;
+import im.actor.sdk.controllers.activity.BaseActivity;
 import im.actor.sdk.controllers.group.view.MembersAdapter;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.DividerView;
 import im.actor.sdk.view.adapters.RecyclerListView;
 
 import static im.actor.sdk.util.ActorSDKMessenger.groups;
+import static im.actor.sdk.util.ActorSDKMessenger.myUid;
+import static im.actor.sdk.util.ActorSDKMessenger.users;
 
 public class MembersFragment extends BaseFragment {
 
     protected CircularProgressBar progressView;
+    private LinearLayout footer;
 
     public static MembersFragment create(int groupId) {
         MembersFragment res = new MembersFragment();
@@ -67,7 +76,7 @@ public class MembersFragment extends BaseFragment {
                 addMmemberTV.setTextSize(16);
                 addMmemberTV.setPadding(Screen.dp(72), 0, 0, 0);
                 addMmemberTV.setGravity(Gravity.CENTER_VERTICAL);
-                addMmemberTV.setText(R.string.group_add_member);
+                addMmemberTV.setText(groupVM.getGroupType() == GroupType.CHANNEL ? R.string.channel_add_member : R.string.group_add_member);
                 addMmemberTV.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
                 addMmemberTV.setOnClickListener(view -> {
                     startActivity(new Intent(getActivity(), AddMemberActivity.class)
@@ -95,7 +104,50 @@ public class MembersFragment extends BaseFragment {
             }
         }
 
+        footer = new LinearLayout(getActivity());
+        footer.setVisibility(View.INVISIBLE);
+        list.addFooterView(footer);
+        CircularProgressBar botProgressView = new CircularProgressBar(getActivity());
+        int padding = Screen.dp(16);
+        botProgressView.setPadding(padding, padding, padding, padding);
+        botProgressView.setIndeterminate(true);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(Screen.dp(72), Screen.dp(72));
+        params.gravity = Gravity.CENTER;
+        FrameLayout cont = new FrameLayout(getActivity());
+        cont.addView(botProgressView, params);
+        footer.addView(cont, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
         list.setAdapter(adapter);
+        list.setOnItemClickListener((parent, view, position, id) -> {
+            Object item = parent.getItemAtPosition(position);
+            if (item != null && item instanceof GroupMember) {
+                GroupMember groupMember = (GroupMember) item;
+                if (groupMember.getUid() != myUid()) {
+                    UserVM userVM = users().get(groupMember.getUid());
+                    if (userVM != null) {
+                        startActivity(Intents.openPrivateDialog(userVM.getId(), true, getActivity()));
+                    }
+                }
+            }
+        });
+
+        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Object item = adapterView.getItemAtPosition(i);
+                if (item != null && item instanceof GroupMember) {
+                    GroupMember groupMember = (GroupMember) item;
+                    if (groupMember.getUid() != myUid()) {
+                        UserVM userVM = users().get(groupMember.getUid());
+                        if (userVM != null) {
+                            adapter.onMemberClick(groupVM, userVM, groupMember.isAdministrator(), groupMember.getInviterUid() == myUid(), (BaseActivity) getActivity());
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+        });
 
         progressView = (CircularProgressBar) res.findViewById(R.id.loadingProgress);
         progressView.setIndeterminate(true);
@@ -106,7 +158,18 @@ public class MembersFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        adapter.initLoad(() -> hideView(progressView));
+        adapter.initLoad(new MembersAdapter.LoadedCallback() {
+            @Override
+            public void onLoaded() {
+                hideView(progressView);
+                showView(footer);
+            }
+
+            @Override
+            public void onLoadedToEnd() {
+                hideView(footer);
+            }
+        });
     }
 
     @Override

@@ -2,6 +2,7 @@ package im.actor.server.names
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.util.FastFuture
+import com.github.ghik.silencer.silent
 import im.actor.server.db.DbExtension
 import im.actor.server.persist.UserRepo
 import im.actor.storage.SimpleStorage
@@ -58,7 +59,7 @@ final class GlobalNamesStorageKeyValueStorage(implicit system: ActorSystem) {
           Some(GlobalNameOwner.parseFrom(bytes)) filter (_.ownerType.isUser) map (o ⇒ o.ownerId → fullName)
       }
     }
-    val compatSearch = db.run(UserRepo.findByNicknamePrefix(namePrefix)) map { users ⇒
+    val compatSearch = db.run(UserRepo.findByNicknamePrefix(namePrefix): @silent) map { users ⇒
       users flatMap { user ⇒
         user.nickname map (user.id → _)
       }
@@ -82,7 +83,7 @@ final class GlobalNamesStorageKeyValueStorage(implicit system: ActorSystem) {
 
     existsInKV flatMap {
       case true  ⇒ FastFuture.successful(true)
-      case false ⇒ db.run(UserRepo.nicknameExists(name))
+      case false ⇒ db.run(UserRepo.nicknameExists(name): @silent)
     }
   }
 
@@ -111,7 +112,7 @@ final class GlobalNamesStorageKeyValueStorage(implicit system: ActorSystem) {
 
     optOwner flatMap {
       case o @ Some(_) ⇒ FastFuture.successful(o)
-      case None        ⇒ db.run(UserRepo.findByNickname(name)) map (_.map(u ⇒ GlobalNameOwner(OwnerType.User, u.id)))
+      case None        ⇒ db.run(UserRepo.findByNickname(name): @silent) map (_.map(u ⇒ GlobalNameOwner(OwnerType.User, u.id)))
     }
   }
 
@@ -130,9 +131,9 @@ final class GlobalNamesStorageKeyValueStorage(implicit system: ActorSystem) {
       if (count == 0) {
         db.run {
           for {
-            optUser ← UserRepo.findByNickname(name)
+            optUser ← UserRepo.findByNickname(name): @silent
             _ ← optUser match {
-              case Some(u) ⇒ UserRepo.setNickname(u.id, None)
+              case Some(u) ⇒ UserRepo.setNickname(u.id, None): @silent
               case None    ⇒ DBIO.successful(0)
             }
           } yield ()

@@ -28,7 +28,7 @@ public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
     public let declineCallButtonText = UILabel()
     
     public let muteButton = AACircleButton(size: 72)
-    public let videoButton = AACircleButton(size: 72)
+    // public let videoButton = AACircleButton(size: 72)
     
     var isScheduledDispose = false
     var timer: NSTimer?
@@ -89,13 +89,13 @@ public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
             Actor.toggleCallMuteWithCallId(self.callId)
         }
         
-        videoButton.image = UIImage.bundled("ic_video_44")
-        videoButton.title = AALocalized("CallsVideo")
-        videoButton.alpha = 0
+        // videoButton.image = UIImage.bundled("ic_video_44")
+        // videoButton.title = AALocalized("CallsVideo")
+        // videoButton.alpha = 0
         
-        videoButton.button.viewDidTap = {
-            Actor.toggleVideoEnabledWithCallId(self.callId)
-        }
+        // videoButton.button.viewDidTap = {
+        //    Actor.toggleVideoEnabledWithCallId(self.callId)
+        // }
         
         
         //
@@ -140,7 +140,7 @@ public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
         self.view.addSubview(declineCallButton)
         self.view.addSubview(declineCallButtonText)
         self.view.addSubview(muteButton)
-        self.view.addSubview(videoButton)
+        // self.view.addSubview(videoButton)
         self.view.addSubview(localView)
     }
     
@@ -168,7 +168,12 @@ public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
     private func layoutButtons() {
         
         muteButton.frame = CGRectMake((self.view.width / 3 - 84) / 2, self.view.height - 72 - 49, 84, 72 + 5 + 44)
-        videoButton.frame = CGRectMake(2 * self.view.width / 3 +  (self.view.width / 3 - 84) / 2, self.view.height - 72 - 49, 84, 72 + 5 + 44)
+//        videoButton.frame = CGRectMake(2 * self.view.width / 3 +  (self.view.width / 3 - 84) / 2, self.view.height - 72 - 49, 84, 72 + 5 + 44)
+//        if call.isVideoPreferred.boolValue {
+//            videoButton.hidden = true
+//        } else {
+//            videoButton.hidden = false
+//        }
         
         if !declineCallButton.hidden || !answerCallButton.hidden {
             if !declineCallButton.hidden && !answerCallButton.hidden {
@@ -182,7 +187,8 @@ public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
                     answerCallButtonText.under(answerCallButton.frame, offset: 5)
                 }
                 if !declineCallButton.hidden {
-                    declineCallButton.frame = CGRectMake((self.view.width - 72) / 2, self.view.height - 72 - 49, 72, 72)
+                    // declineCallButton.frame = CGRectMake((self.view.width - 72) / 2, self.view.height - 72 - 49, 72, 72)
+                    declineCallButton.frame = CGRectMake(self.view.width - 72 - 25, self.view.height - 72 - 49, 72, 72)
                     declineCallButtonText.under(declineCallButton.frame, offset: 5)
                 }
             }
@@ -256,7 +262,7 @@ public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
                 if (self.call.isOutgoing) {
                     
                     self.muteButton.showViewAnimated()
-                    self.videoButton.showViewAnimated()
+                    // self.videoButton.showViewAnimated()
                     
                     self.answerCallButton.hidden = true
                     self.answerCallButtonText.hidden = true
@@ -277,7 +283,7 @@ public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
             } else if (ACCallState_Enum.CONNECTING == value.toNSEnum()) {
                 
                 self.muteButton.showViewAnimated()
-                self.videoButton.showViewAnimated()
+                // self.videoButton.showViewAnimated()
                 
                 self.answerCallButton.hidden = true
                 self.answerCallButtonText.hidden = true
@@ -291,7 +297,7 @@ public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
             } else if (ACCallState_Enum.IN_PROGRESS == value.toNSEnum()) {
                 
                 self.muteButton.showViewAnimated()
-                self.videoButton.showViewAnimated()
+                // self.videoButton.showViewAnimated()
                 
                 self.answerCallButton.hidden = true
                 self.answerCallButtonText.hidden = true
@@ -305,7 +311,7 @@ public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
             } else if (ACCallState_Enum.ENDED == value.toNSEnum()) {
                 
                 self.muteButton.hideViewAnimated()
-                self.videoButton.hideViewAnimated()
+                // self.videoButton.hideViewAnimated()
                 
                 self.answerCallButton.hidden = true
                 self.answerCallButtonText.hidden = true
@@ -359,9 +365,9 @@ public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
         if call.peer.isPrivate {
             
             // Bind Video Button
-            binder.bind(call.isVideoEnabled) { (value: JavaLangBoolean!) -> () in
-                self.videoButton.filled = value.booleanValue()
-            }
+//            binder.bind(call.isVideoEnabled) { (value: JavaLangBoolean!) -> () in
+//                self.videoButton.filled = value.booleanValue()
+//            }
             
             // Local Video can be only one, so we can just keep active track reference and handle changes
             binder.bind(call.ownVideoTracks, closure: { (videoTracks: ACArrayListMediaTrack!) in
@@ -419,8 +425,8 @@ public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
             })
 
         } else {
-            self.videoButton.filled = false
-            self.videoButton.enabled = false
+            // self.videoButton.filled = false
+            // self.videoButton.enabled = false
         }
     }
     

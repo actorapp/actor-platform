@@ -11,11 +11,9 @@ import im.actor.core.modules.api.ApiModule;
 import im.actor.core.modules.auth.Authentication;
 import im.actor.core.modules.eventbus.EventBusModule;
 import im.actor.core.modules.sequence.Updates;
-import im.actor.core.modules.misc.AppStateModule;
 import im.actor.core.modules.calls.CallsModule;
 import im.actor.core.modules.contacts.ContactsModule;
-import im.actor.core.modules.misc.DeviceInfoModule;
-import im.actor.core.modules.misc.DisplayLists;
+import im.actor.core.modules.conductor.DisplayLists;
 import im.actor.core.modules.encryption.EncryptionModule;
 import im.actor.core.modules.external.ExternalModule;
 import im.actor.core.modules.file.FilesModule;
@@ -33,6 +31,7 @@ import im.actor.core.modules.stickers.StickersModule;
 import im.actor.core.modules.storage.StorageModule;
 import im.actor.core.modules.typing.TypingModule;
 import im.actor.core.modules.users.UsersModule;
+import im.actor.core.modules.conductor.ConductorModule;
 import im.actor.core.network.ActorApi;
 import im.actor.core.util.Timing;
 import im.actor.runtime.Runtime;
@@ -63,7 +62,6 @@ public class Modules implements ModuleContext {
     private volatile Updates updates;
     private volatile UsersModule users;
     private volatile GroupsModule groups;
-    private volatile AppStateModule appStateModule;
     private volatile StickersModule stickers;
     private volatile CallsModule calls;
     private volatile MessagesModule messages;
@@ -80,7 +78,7 @@ public class Modules implements ModuleContext {
     private volatile DisplayLists displayLists;
     private volatile MentionsModule mentions;
     private volatile EncryptionModule encryptionModule;
-    private volatile DeviceInfoModule deviceInfoModule;
+    private volatile ConductorModule conductor;
     private volatile EventBusModule eventBusModule;
 
     public Modules(Messenger messenger, Configuration configuration) {
@@ -101,8 +99,8 @@ public class Modules implements ModuleContext {
         // timing.section("Events");
         this.events = new EventBus();
 
-        // timing.section("App State");
-        appStateModule = new AppStateModule(this);
+        // timing.section("Conductor");
+        this.conductor = new ConductorModule(this);
 
         // timing.section("API");
         this.api = new ApiModule(this);
@@ -127,14 +125,15 @@ public class Modules implements ModuleContext {
 
     public void onLoggedIn(boolean first) {
         Timing timing = new Timing("ACCOUNT_CREATE");
+
         timing.section("Users");
         users = new UsersModule(this);
         timing.section("Storage");
         storageModule.run(first);
         timing.section("Groups");
         groups = new GroupsModule(this);
-        timing.section("App State");
-        appStateModule.run();
+        timing.section("Conductor");
+        conductor.run();
         timing.section("Stickers");
         stickers = new StickersModule(this);
         timing.section("Calls");
@@ -167,8 +166,6 @@ public class Modules implements ModuleContext {
         encryptionModule = new EncryptionModule(this);
         timing.section("DisplayLists");
         displayLists = new DisplayLists(this);
-        timing.section("DeviceInfo");
-        deviceInfoModule = new DeviceInfoModule(this);
         timing.section("EventBus");
         eventBusModule = new EventBusModule(this);
 
@@ -180,16 +177,12 @@ public class Modules implements ModuleContext {
         groups.run();
         timing.section("Settings");
         settings.run();
-        timing.section("DeviceInfo");
-        deviceInfoModule.run();
         timing.section("Files");
         filesModule.run();
         timing.section("Search");
         search.run();
         timing.section("Notifications");
         notifications.run();
-        timing.section("AppState");
-        appStateModule.run();
         timing.section("Encryption");
         encryptionModule.run();
         timing.section("Contacts");
@@ -204,17 +197,14 @@ public class Modules implements ModuleContext {
         calls.run();
         timing.section("Stickers");
         stickers.run();
+        timing.section("Conductor:end");
+        conductor.runAfter();
         timing.end();
 
         if (Runtime.isMainThread()) {
             messenger.onLoggedIn();
         } else {
-            Runtime.postToMainThread(new Runnable() {
-                @Override
-                public void run() {
-                    messenger.onLoggedIn();
-                }
-            });
+            Runtime.postToMainThread(() -> messenger.onLoggedIn());
         }
     }
 
@@ -338,11 +328,6 @@ public class Modules implements ModuleContext {
     }
 
     @Override
-    public AppStateModule getAppStateModule() {
-        return appStateModule;
-    }
-
-    @Override
     public PushesModule getPushesModule() {
         return pushes;
     }
@@ -378,11 +363,6 @@ public class Modules implements ModuleContext {
     }
 
     @Override
-    public DeviceInfoModule getDeviceInfoModule() {
-        return deviceInfoModule;
-    }
-
-    @Override
     public EncryptionModule getEncryption() {
         return encryptionModule;
     }
@@ -390,6 +370,11 @@ public class Modules implements ModuleContext {
     @Override
     public EventBusModule getEventBus() {
         return eventBusModule;
+    }
+
+    @Override
+    public ConductorModule getConductor() {
+        return conductor;
     }
 
     @Override

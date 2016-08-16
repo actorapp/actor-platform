@@ -5,6 +5,7 @@ import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
 
 import im.actor.core.entity.Dialog;
+import im.actor.core.entity.GroupType;
 import im.actor.core.entity.PeerType;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.GroupVM;
@@ -69,50 +70,56 @@ public class DialogsDefaultFragment extends BaseDialogFragment {
             return true;
         } else if (dialog.getPeer().getPeerType() == PeerType.GROUP) {
             GroupVM groupVM = groups().get(dialog.getPeer().getPeerId());
-            final boolean isMember = groupVM.isMember().get();
-
+            CharSequence[] items;
+            int dialogs_menu_view = groupVM.getGroupType() == GroupType.CHANNEL ? R.string.dialogs_menu_channel_view : R.string.dialogs_menu_group_view;
+            int dialogs_menu_rename = groupVM.getGroupType() == GroupType.CHANNEL ? R.string.dialogs_menu_channel_rename : R.string.dialogs_menu_group_rename;
+            int dialogs_menu_leave = groupVM.getGroupType() == GroupType.CHANNEL ? R.string.dialogs_menu_channel_leave : R.string.dialogs_menu_group_leave;
+            int dialogs_menu_delete = groupVM.getGroupType() == GroupType.CHANNEL ? R.string.dialogs_menu_channel_delete : R.string.dialogs_menu_group_delete;
+            items = new CharSequence[]{
+                    getString(dialogs_menu_view),
+                    getString(dialogs_menu_rename),
+                    getString(groupVM.getIsCanLeave().get() ? dialogs_menu_leave :
+                            groupVM.getIsCanDelete().get() ? dialogs_menu_delete :
+                                    dialogs_menu_delete),
+            };
             new AlertDialog.Builder(getActivity())
-                    .setItems(new CharSequence[]{
-                            getString(R.string.dialogs_menu_group_view),
-                            getString(R.string.dialogs_menu_group_rename),
-                            isMember ? getString(R.string.dialogs_menu_group_leave)
-                                    : getString(R.string.dialogs_menu_group_delete),
-                    }, (d, which) -> {
+                    .setItems(items, (d, which) -> {
                         if (which == 0) {
                             ActorSDK.sharedActor().startGroupInfoActivity(getActivity(), dialog.getPeer().getPeerId());
                         } else if (which == 1) {
                             startActivity(Intents.editGroupTitle(dialog.getPeer().getPeerId(), getActivity()));
                         } else if (which == 2) {
-                            if (isMember) {
-                                new AlertDialog.Builder(getActivity())
-                                        .setMessage(getString(R.string.alert_leave_group_message, dialog.getDialogTitle()))
-                                        .setNegativeButton(R.string.dialog_cancel, null)
-                                        .setPositiveButton(R.string.alert_leave_group_yes, (d1, which1) -> {
-                                            execute(messenger().leaveGroup(dialog.getPeer().getPeerId()), R.string.progress_common).failure(e -> {
+                            int alert_delete_title = groupVM.getGroupType() == GroupType.CHANNEL ? R.string.alert_delete_channel_title : R.string.alert_delete_group_title;
+                            int alert_leave_message = groupVM.getGroupType() == GroupType.CHANNEL ? R.string.alert_leave_channel_message : R.string.alert_leave_group_message;
+                            new AlertDialog.Builder(getActivity())
+                                    .setMessage(getString(groupVM.getIsCanLeave().get() ? alert_delete_title :
+                                            groupVM.getIsCanDelete().get() ? alert_delete_title :
+                                                    alert_leave_message, dialog.getDialogTitle()))
+                                    .setNegativeButton(R.string.dialog_cancel, null)
+                                    .setPositiveButton(groupVM.getIsCanLeave().get() ? R.string.alert_leave_group_yes : R.string.alert_delete_group_yes, (d1, which1) -> {
+                                        if (groupVM.getIsCanLeave().get()) {
+                                            execute(messenger().leaveAndDeleteGroup(dialog.getPeer().getPeerId()), R.string.progress_common).failure(e -> {
                                                 Toast.makeText(getActivity(), R.string.toast_unable_leave, Toast.LENGTH_LONG).show();
                                             });
-                                        })
-                                        .show();
-                            } else {
-                                new AlertDialog.Builder(getActivity())
-                                        .setMessage(getString(R.string.alert_delete_group_title, groupVM.getName().get()))
-                                        .setNegativeButton(R.string.dialog_cancel, null)
-                                        .setPositiveButton(R.string.alert_delete_group_yes, (d1, which1) -> {
-                                            execute(messenger().deleteChat(dialog.getPeer()), R.string.progress_common,
-                                                    new CommandCallback<Void>() {
-                                                        @Override
-                                                        public void onResult(Void res) {
+                                        } else if (groupVM.getIsCanDelete().get()) {
+                                            execute(messenger().deleteGroup(dialog.getPeer().getPeerId()), R.string.progress_common).failure(e -> {
+                                                Toast.makeText(getActivity(), R.string.toast_unable_delete_chat, Toast.LENGTH_LONG).show();
+                                            });
+                                        } else {
+                                            execute(messenger().deleteChat(dialog.getPeer()), R.string.progress_common, new CommandCallback<Void>() {
+                                                @Override
+                                                public void onResult(Void res) {
 
-                                                        }
+                                                }
 
-                                                        @Override
-                                                        public void onError(Exception e) {
-                                                            Toast.makeText(getActivity(), R.string.toast_unable_delete_chat, Toast.LENGTH_LONG).show();
-                                                        }
-                                                    });
-                                        })
-                                        .show();
-                            }
+                                                @Override
+                                                public void onError(Exception e) {
+                                                    Toast.makeText(getActivity(), R.string.toast_unable_delete_chat, Toast.LENGTH_LONG).show();
+                                                }
+                                            });
+                                        }
+                                    })
+                                    .show();
                         }
                     }).show();
             return true;

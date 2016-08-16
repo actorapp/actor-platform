@@ -32,6 +32,7 @@ public class AppStateVM {
     private boolean isBookImported;
     private boolean isDialogsLoaded;
     private boolean isContactsLoaded;
+    private boolean isSettingsLoaded;
 
     /**
      * Constructor of View Model
@@ -47,12 +48,13 @@ public class AppStateVM {
         this.isBookImported = context.getPreferences().getBool("app.contacts.imported", false);
         this.isDialogsLoaded = context.getPreferences().getBool("app.dialogs.loaded", false);
         this.isContactsLoaded = context.getPreferences().getBool("app.contacts.loaded", false);
+        this.isSettingsLoaded = context.getPreferences().getBool("app.settings.loaded", false);
 
         this.isAppLoaded = new BooleanValueModel("app.loaded", isBookImported && isDialogsLoaded && isContactsLoaded);
     }
 
     private void updateLoaded() {
-        boolean val = isBookImported && isDialogsLoaded && isContactsLoaded;
+        boolean val = isBookImported && isDialogsLoaded && isContactsLoaded && isSettingsLoaded;
         if (isAppLoaded.get() != val) {
             this.isAppLoaded.change(val);
         }
@@ -129,6 +131,17 @@ public class AppStateVM {
     }
 
     /**
+     * Notify from Modules about contacts load completed
+     */
+    public synchronized void onSettingsLoaded() {
+        if (!isSettingsLoaded) {
+            isSettingsLoaded = true;
+            context.getPreferences().putBool("app.settings.loaded", true);
+            updateLoaded();
+        }
+    }
+
+    /**
      * Dialogs empty View Model
      *
      * @return Value Model of Boolean
@@ -164,4 +177,39 @@ public class AppStateVM {
         return isAppEmpty;
     }
 
+    /**
+     * Is Phone Book imported
+     *
+     * @return is phone book imported state
+     */
+    public boolean isBookImported() {
+        return isBookImported;
+    }
+
+    /**
+     * Is dialogs loaded
+     *
+     * @return is dialogs loaded state
+     */
+    public boolean isDialogsLoaded() {
+        return isDialogsLoaded;
+    }
+
+    /**
+     * Is contacts loaded
+     *
+     * @return is contacts loaded state
+     */
+    public boolean isContactsLoaded() {
+        return isContactsLoaded;
+    }
+
+    /**
+     * Is settings loaded
+     *
+     * @return is contacts loaded state
+     */
+    public boolean isSettingsLoaded() {
+        return isSettingsLoaded;
+    }
 }

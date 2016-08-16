@@ -7,6 +7,7 @@ package im.actor.core.modules.search;
 import java.util.ArrayList;
 import java.util.List;
 
+import im.actor.core.api.ApiGroupOutPeer;
 import im.actor.core.api.ApiSearchAndCondition;
 import im.actor.core.api.ApiSearchCondition;
 import im.actor.core.api.ApiSearchContentType;
@@ -31,6 +32,7 @@ import im.actor.core.modules.Modules;
 import im.actor.core.modules.search.sources.GlobalSearchSource;
 import im.actor.runtime.Storage;
 import im.actor.runtime.actors.ActorRef;
+import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.collections.ManagedList;
 import im.actor.runtime.mvvm.SearchValueModel;
 import im.actor.runtime.promise.Promise;
@@ -40,6 +42,9 @@ import static im.actor.core.entity.EntityConverter.convert;
 import static im.actor.runtime.actors.ActorSystem.system;
 
 public class SearchModule extends AbsModule {
+
+    // j2objc workaround
+    private static final Void DUMB = null;
 
     private ListEngine<SearchEntity> searchList;
     private ActorRef actorRef;
@@ -135,6 +140,12 @@ public class SearchModule extends AbsModule {
                 .map(responsePeerSearch1 ->
                         ManagedList.of(responsePeerSearch1.getSearchResults())
                                 .map(r -> new PeerSearchEntity(convert(r.getPeer()), r.getOptMatchString())));
+    }
+
+    public Promise<Peer> findPublicGroupById(int gid) {
+        ArrayList<ApiGroupOutPeer> groups = new ArrayList<>();
+        groups.add(new ApiGroupOutPeer(gid, 0));
+        return updates().loadRequiredPeers(new ArrayList<>(), groups).map(aVoid -> Peer.group(gid));
     }
 
     public SearchValueModel<SearchResult> buildSearchModel() {

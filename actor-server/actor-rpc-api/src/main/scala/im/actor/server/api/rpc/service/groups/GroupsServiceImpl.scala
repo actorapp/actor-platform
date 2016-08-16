@@ -5,6 +5,7 @@ import java.time.Instant
 import akka.actor.ActorSystem
 import akka.http.scaladsl.util.FastFuture
 import cats.data.Xor
+import com.github.ghik.silencer.silent
 import im.actor.api.rpc.PeerHelpers._
 import im.actor.api.rpc._
 import im.actor.api.rpc.files.ApiFileLocation
@@ -34,11 +35,14 @@ import scala.concurrent.{ ExecutionContext, Future }
 
 final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit actorSystem: ActorSystem) extends GroupsService {
 
+  import EntitiesHelpers._
   import FileHelpers._
   import FutureResultRpc._
   import GroupCommands._
   import IdUtils._
   import ImageUtils._
+
+  case object NoSeqStateDate extends RuntimeException("No SeqStateDate in response from group found")
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
@@ -77,9 +81,11 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
     authorized(clientData) { implicit client ⇒
       withGroupOutPeer(groupPeer) {
         withUserOutPeer(userPeer) {
-          for {
-            (_, SeqStateDate(seq, state, date)) ← groupExt.makeUserAdmin(groupPeer.groupId, client.userId, client.authId, userPeer.userId)
-          } yield Ok(ResponseSeqDate(seq, state.toByteArray, date))
+          (for {
+            _ ← fromFutureBoolean(GroupRpcErrors.CantGrantToBot)(userExt.getUser(userPeer.userId) map (!_.isBot))
+            resp ← fromFuture(groupExt.makeUserAdmin(groupPeer.groupId, client.userId, client.authId, userPeer.userId))
+            (_, SeqStateDate(seq, state, date)) = resp
+          } yield ResponseSeqDate(seq, state.toByteArray, date)).value
         }
       }
     }
@@ -89,9 +95,10 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
     authorized(clientData) { implicit client ⇒
       withGroupOutPeer(groupPeer) {
         withUserOutPeer(userPeer) {
-          for {
-            SeqState(seq, state) ← groupExt.dismissUserAdmin(groupPeer.groupId, client.userId, client.authId, userPeer.userId)
-          } yield Ok(ResponseSeq(seq, state.toByteArray))
+          (for {
+            _ ← fromFutureBoolean(GroupRpcErrors.CantGrantToBot)(userExt.getUser(userPeer.userId) map (!_.isBot))
+            seqState ← fromFuture(groupExt.dismissUserAdmin(groupPeer.groupId, client.userId, client.authId, userPeer.userId))
+          } yield ResponseSeq(seqState.seq, seqState.state.toByteArray)).value
         }
       }
     }
@@ -146,21 +153,22 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
    * @param groupPeer Group's peer
    * @param newOwner  New group's owner
    */
-  //TODO: figure out what date should be
   override protected def doHandleTransferOwnership(groupPeer: ApiGroupOutPeer, newOwner: ApiUserOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] =
     authorized(clientData) { implicit client ⇒
       withGroupOutPeer(groupPeer) {
         withUserOutPeer(newOwner) {
-          for {
-            SeqState(seq, state) ← groupExt.transferOwnership(groupPeer.groupId, client.userId, client.authId, newOwner.userId)
-          } yield Ok(ResponseSeqDate(seq, state.toByteArray, Instant.now.toEpochMilli))
+          (for {
+            _ ← fromFutureBoolean(GroupRpcErrors.CantGrantToBot)(userExt.getUser(newOwner.userId) map (!_.isBot))
+            seqState ← fromFuture(groupExt.transferOwnership(groupPeer.groupId, client.userId, client.authId, newOwner.userId))
+          } yield ResponseSeqDate(
+            seq = seqState.seq,
+            state = seqState.state.toByteArray,
+            date = Instant.now.toEpochMilli
+          )).value
         }
       }
     }
 
-  case object NoSeqStateDate extends RuntimeException("No SeqStateDate in response from group found")
-
-  // TODO: rewrite from DBIO to Future, and add access hash check
   override def doHandleEditGroupAvatar(
     groupPeer:     ApiGroupOutPeer,
     randomId:      Long,
@@ -169,25 +177,26 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
     clientData:    ClientData
   ): Future[HandlerResult[ResponseEditGroupAvatar]] =
     authorized(clientData) { implicit client ⇒
-      addOptimizations(optimizations)
-      val action = withFileLocation(fileLocation, AvatarSizeLimit) {
-        scaleAvatar(fileLocation.fileId) flatMap {
-          case Right(avatar) ⇒
-            for {
-              UpdateAvatarAck(avatar, seqStateDate) ← DBIO.from(groupExt.updateAvatar(groupPeer.groupId, client.userId, client.authId, Some(avatar), randomId))
-              SeqStateDate(seq, state, date) = seqStateDate.getOrElse(throw NoSeqStateDate)
-            } yield Ok(ResponseEditGroupAvatar(
-              avatar.get,
-              seq,
-              state.toByteArray,
-              date
-            ))
-          case Left(e) ⇒
-            throw FileErrors.LocationInvalid
+      withGroupOutPeer(groupPeer) {
+        addOptimizations(optimizations)
+        val action = withFileLocation(fileLocation, AvatarSizeLimit) {
+          scaleAvatar(fileLocation.fileId) flatMap {
+            case Right(avatar) ⇒
+              for {
+                UpdateAvatarAck(avatar, seqStateDate) ← DBIO.from(groupExt.updateAvatar(groupPeer.groupId, client.userId, client.authId, Some(avatar), randomId))
+                SeqStateDate(seq, state, date) = seqStateDate.getOrElse(throw NoSeqStateDate)
+              } yield Ok(ResponseEditGroupAvatar(
+                avatar.get,
+                seq,
+                state.toByteArray,
+                date
+              ))
+            case Left(e) ⇒
+              throw FileErrors.LocationInvalid
+          }
         }
+        db.run(action)
       }
-
-      db.run(action)
     }
 
   override def doHandleRemoveGroupAvatar(
@@ -278,6 +287,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
       addOptimizations(optimizations)
       withUserOutPeers(users) {
         val stripEntities = optimizations.contains(ApiUpdateOptimization.STRIP_ENTITIES)
+
         val groupId = nextIntId()
         val typ = groupType map {
           case ApiGroupType.GROUP   ⇒ GroupType.General
@@ -297,13 +307,13 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
           SeqStateDate(seq, state, date) = seqStateDate.getOrElse(throw NoSeqStateDate)
           group ← groupExt.getApiStruct(groupId, client.userId)
           memberIds = GroupUtils.getUserIds(group)
-          (apiUsers, apiPeers) ← usersOrPeers(memberIds.toVector, stripEntities)
+          (users, userPeers) ← usersOrPeers(memberIds.toVector, stripEntities)
         } yield Ok(ResponseCreateGroup(
           seq = seq,
           state = state.toByteArray,
           group = group,
-          users = apiUsers,
-          userPeers = apiPeers,
+          users = users,
+          userPeers = userPeers,
           date = date
         ))
 
@@ -349,23 +359,27 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
 
   override def doHandleGetGroupInviteUrl(groupPeer: ApiGroupOutPeer, clientData: ClientData): Future[HandlerResult[ResponseInviteUrl]] =
     authorized(clientData) { implicit client ⇒
-      groupExt.getMemberIds(groupPeer.groupId) flatMap {
-        case (memberIds, _, _) ⇒
-          if (!memberIds.contains(client.userId)) {
-            FastFuture.successful(Error(GroupRpcErrors.NotAMember))
-          } else {
-            withGroupOutPeer(groupPeer) {
-              db.run(for {
-                token ← GroupInviteTokenRepo.find(groupPeer.groupId, client.userId).headOption.flatMap {
-                  case Some(invToken) ⇒ DBIO.successful(invToken.token)
-                  case None ⇒
-                    val token = ACLUtils.accessToken(ThreadLocalSecureRandom.current())
-                    val inviteToken = GroupInviteToken(groupPeer.groupId, client.userId, token)
-                    for (_ ← GroupInviteTokenRepo.create(inviteToken)) yield token
-                }
-              } yield Ok(ResponseInviteUrl(genInviteUrl(token))))
-            }
+      groupExt.getApiFullStruct(groupPeer.groupId, client.userId) flatMap { group ⇒
+        val isMember = group.members.exists(_.userId == client.userId)
+        if (!isMember) {
+          FastFuture.successful(Error(GroupRpcErrors.NotAMember))
+        } else {
+          withGroupOutPeer(groupPeer) {
+            for {
+              inviteString ← group.shortName match {
+                case Some(name) ⇒ FastFuture.successful(name)
+                case None ⇒
+                  db.run((GroupInviteTokenRepo.find(groupPeer.groupId, client.userId): @silent).headOption flatMap {
+                    case Some(invToken) ⇒ DBIO.successful(invToken.token)
+                    case None ⇒
+                      val token = ACLUtils.accessToken()
+                      val inviteToken = GroupInviteToken(groupPeer.groupId, client.userId, token)
+                      for (_ ← GroupInviteTokenRepo.create(inviteToken): @silent) yield token
+                  })
+              }
+            } yield Ok(ResponseInviteUrl(genInviteUrl(inviteString)))
           }
+        }
       }
     }
 
@@ -383,7 +397,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
         joinInfo ← joinSting match {
           case Xor.Left(token) ⇒
             for {
-              info ← fromFutureOption(GroupRpcErrors.InvalidInviteToken)(db.run(GroupInviteTokenRepo.findByToken(token)))
+              info ← fromFutureOption(GroupRpcErrors.InvalidInviteToken)(db.run(GroupInviteTokenRepo.findByToken(token): @silent))
             } yield info.groupId → Some(info.creatorId)
           case Xor.Right(groupName) ⇒
             for {
@@ -398,16 +412,17 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
           invitingUserId = optInviter
         ))
         ((SeqStateDate(seq, state, date), userIds, randomId)) = joinResp
-        usersPeers ← fromFuture(usersOrPeers(userIds, stripEntities))
+        up ← fromFuture(usersOrPeers(userIds, stripEntities))
+        (users, userPeers) = up
         groupStruct ← fromFuture(groupExt.getApiStruct(groupId, client.userId))
       } yield ResponseJoinGroup(
         groupStruct,
         seq,
         state.toByteArray,
         date,
-        usersPeers._1,
+        users,
         randomId,
-        usersPeers._2
+        userPeers
       )
 
       action.value
@@ -441,18 +456,15 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
         val token = ACLUtils.accessToken()
         db.run(
           for {
-            _ ← GroupInviteTokenRepo.revoke(groupPeer.groupId, client.userId)
+            _ ← GroupInviteTokenRepo.revoke(groupPeer.groupId, client.userId): @silent
             _ ← GroupInviteTokenRepo.create(
               GroupInviteToken(groupPeer.groupId, client.userId, token)
-            )
+            ): @silent
           } yield Ok(ResponseInviteUrl(genInviteUrl(token)))
         )
       }
     }
 
-  /**
-   * all members of group can edit group topic
-   */
   override def doHandleEditGroupTopic(
     groupPeer:     ApiGroupOutPeer,
     randomId:      Long,
@@ -470,9 +482,6 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
     }
   }
 
-  /**
-   * only admin can change group's about
-   */
   override def doHandleEditGroupAbout(
     groupPeer:     ApiGroupOutPeer,
     randomId:      Long,
@@ -515,21 +524,6 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
           SeqState(seq, state) ← groupExt.makeHistoryShared(groupPeer.groupId, client.userId, client.authId)
         } yield Ok(ResponseSeq(seq, state.toByteArray))
       }
-    }
-
-  private def usersOrPeers(userIds: Vector[Int], stripEntities: Boolean)(implicit client: AuthorizedClientData): Future[(Vector[ApiUser], Vector[ApiUserOutPeer])] =
-    if (stripEntities) {
-      val users = Vector.empty[ApiUser]
-      val peers = Future.sequence(userIds map { userId ⇒
-        userExt.getAccessHash(userId, client.authId) map (hash ⇒ ApiUserOutPeer(userId, hash))
-      })
-      peers map (users → _)
-    } else {
-      val users = Future.sequence(userIds map { userId ⇒
-        userExt.getApiStruct(userId, client.userId, client.authId)
-      })
-      val peers = Vector.empty[ApiUserOutPeer]
-      users map (_ → peers)
     }
 
   private val inviteUriBase = s"${groupInviteConfig.baseUrl}/join/"
@@ -591,7 +585,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
           result ← if (isHistoryShared) {
             db.run(
               for {
-                member ← GroupUserRepo.find(groupPeer.groupId, client.userId)
+                member ← GroupUserRepo.find(groupPeer.groupId, client.userId): @silent
                 response ← member match {
                   case Some(_) ⇒ DBIO.successful(Error(GroupRpcErrors.AlreadyInvited))
                   case None ⇒

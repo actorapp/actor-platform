@@ -1,5 +1,6 @@
 package im.actor.sdk.controllers.root;
 
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.activity.BaseFragmentActivity;
+import im.actor.sdk.controllers.tools.InviteHandler;
 
 /**
  * Root Activity of Application
@@ -38,5 +40,13 @@ public class RootActivity extends BaseFragmentActivity {
                     .add(R.id.root, fragment)
                     .commit();
         }
+
+        InviteHandler.handleIntent(this, getIntent());
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        InviteHandler.handleIntent(this, intent);
     }
 }

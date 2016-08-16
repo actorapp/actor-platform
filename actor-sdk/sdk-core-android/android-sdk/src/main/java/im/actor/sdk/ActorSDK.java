@@ -21,6 +21,7 @@ import java.util.TimeZone;
 
 import im.actor.core.AndroidMessenger;
 import im.actor.core.ApiConfiguration;
+import im.actor.core.AutoJoinType;
 import im.actor.core.ConfigurationBuilder;
 import im.actor.core.DeviceCategory;
 import im.actor.core.PlatformType;
@@ -170,6 +171,11 @@ public class ActorSDK {
      */
     private boolean fastShareEnabled = false;
 
+    /**
+     * Auto Join Groups
+     */
+    private String[] autoJoinGroups = new String[0];
+    private AutoJoinType autoJoinType = AutoJoinType.AFTER_INIT;
 
     /**
      * Auth type - binary mask for auth type
@@ -187,6 +193,7 @@ public class ActorSDK {
      */
     private boolean callsEnabled = false;
     private boolean videoCallsEnabled = false;
+    private String inviteDataUrl = "https://api.actor.im/v1/groups/invites/";
 
     private ActorSDK() {
         endpoints = new String[]{
@@ -290,6 +297,14 @@ public class ActorSDK {
             // Calls Support
             //
             builder.setCallsProvider(new AndroidCallProvider());
+
+            //
+            // Auto Join
+            //
+            for (String s : autoJoinGroups) {
+                builder.addAutoJoinGroup(s);
+            }
+            builder.setAutoJoinType(autoJoinType);
 
             //
             // Building Messenger
@@ -787,6 +802,43 @@ public class ActorSDK {
         this.privacyText = privacyText;
     }
 
+
+    /**
+     * Get Current Auto Join group tokens
+     *
+     * @return auto join tokens
+     */
+    public String[] getAutoJoinGroups() {
+        return autoJoinGroups;
+    }
+
+    /**
+     * Set Auto Join group tokens
+     *
+     * @param autoJoinGroups auto join tokens
+     */
+    public void setAutoJoinGroups(String[] autoJoinGroups) {
+        this.autoJoinGroups = autoJoinGroups;
+    }
+
+    /**
+     * Set auto join type
+     *
+     * @return auto join type
+     */
+    public AutoJoinType getAutoJoinType() {
+        return autoJoinType;
+    }
+
+    /**
+     * Set auto join type
+     *
+     * @param autoJoinType auto join type
+     */
+    public void setAutoJoinType(AutoJoinType autoJoinType) {
+        this.autoJoinType = autoJoinType;
+    }
+
     /**
      * Setting Application Delegate. Useful for hacking various parts of SDK
      *
@@ -1001,11 +1053,31 @@ public class ActorSDK {
         this.videoCallsEnabled = videoCallsEnabled;
     }
 
+    public String getInviteDataUrl() {
+        return inviteDataUrl;
+    }
+
+    public void setInviteDataUrl(String inviteDataUrl) {
+        this.inviteDataUrl = inviteDataUrl;
+    }
+
     /**
      * Used for handling delegated ViewHolders
      */
     public interface OnDelegateViewHolder<T> {
         T onNotDelegated();
 
+    }
+
+    public static void returnToRoot(Context context) {
+        Intent i;
+        ActorIntent startIntent = ActorSDK.sharedActor().getDelegate().getStartIntent();
+        if (startIntent != null && startIntent instanceof ActorIntentActivity) {
+            i = ((ActorIntentActivity) startIntent).getIntent();
+        } else {
+            i = new Intent(context, RootActivity.class);
+        }
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        context.startActivity(i);
     }
 }

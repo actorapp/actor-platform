@@ -13,6 +13,43 @@ public class GroupPermissions {
         this.settings = settings;
     }
 
+
+    @ObjectiveCName("isShowAdminsToMembers")
+    public boolean isShowAdminsToMembers() {
+        return settings.showAdminsToMembers();
+    }
+
+    @ObjectiveCName("showAdminsToMembers:")
+    public void setShowAdminsToMembers(boolean showAdminsToMembers) {
+        SparseArray<Object> unmapped = settings.getUnmappedObjects();
+        settings = new ApiAdminSettings(
+                showAdminsToMembers,
+                settings.canMembersInvite(),
+                settings.canMembersEditGroupInfo(),
+                settings.canAdminsEditGroupInfo(),
+                settings.showJoinLeaveMessages()
+        );
+        settings.setUnmappedObjects(unmapped);
+    }
+
+    @ObjectiveCName("isMembersCanInvite")
+    public boolean isMembersCanInvite() {
+        return settings.canMembersInvite();
+    }
+
+    @ObjectiveCName("setMembersCanInvite:")
+    public void setMembersCanInvite(boolean membersCanInvite) {
+        SparseArray<Object> unmapped = settings.getUnmappedObjects();
+        settings = new ApiAdminSettings(
+                settings.showAdminsToMembers(),
+                membersCanInvite,
+                settings.canMembersEditGroupInfo(),
+                settings.canAdminsEditGroupInfo(),
+                settings.showJoinLeaveMessages()
+        );
+        settings.setUnmappedObjects(unmapped);
+    }
+
     @ObjectiveCName("isMembersCanEditInfo")
     public boolean isMembersCanEditInfo() {
         return settings.canMembersEditGroupInfo();
@@ -30,6 +67,25 @@ public class GroupPermissions {
         );
         settings.setUnmappedObjects(unmapped);
     }
+
+    @ObjectiveCName("isAdminsCanEditGroupInfo")
+    public boolean isAdminsCanEditGroupInfo() {
+        return settings.canAdminsEditGroupInfo();
+    }
+
+    @ObjectiveCName("setAdminsCanEditGroupInfo:")
+    public void setAdminsCanEditGroupInfo(boolean adminsCanEditGroupInfo) {
+        SparseArray<Object> unmapped = settings.getUnmappedObjects();
+        settings = new ApiAdminSettings(
+                settings.showAdminsToMembers(),
+                settings.canMembersInvite(),
+                settings.canMembersEditGroupInfo(),
+                adminsCanEditGroupInfo,
+                settings.showJoinLeaveMessages()
+        );
+        settings.setUnmappedObjects(unmapped);
+    }
+
 
     @ObjectiveCName("isShowJoinLeaveMessages")
     public boolean isShowJoinLeaveMessages() {

@@ -31,6 +31,8 @@ import ActorSDK
         ActorSDK.sharedActor().style.dialogAvatarSize = 58
         ActorSDK.sharedActor().style.dialogTitleSecureColor = UIColor.greenColor()
         
+        ActorSDK.sharedActor().autoJoinGroups = ["actor_news"]
+        
         // Creating Actor
         ActorSDK.sharedActor().createActor()
         

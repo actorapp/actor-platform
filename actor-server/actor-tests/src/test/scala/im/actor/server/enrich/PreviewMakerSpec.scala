@@ -35,7 +35,7 @@ class PreviewMakerSpec extends BaseRichMessageSpec {
     implicit val probe = TestProbe()
 
     val config = RichMessageConfig(5 * 1024 * 1024)
-    val previewMaker = PreviewMaker(config, "previewMaker" + new DateTime)
+    val previewMaker = system.actorOf(PreviewMaker.props(config))
 
     import PreviewMaker._
 
@@ -88,7 +88,7 @@ class PreviewMakerSpec extends BaseRichMessageSpec {
     def imageTooLarge() = {
       val image = Images.withNameHttp
       val config = RichMessageConfig(image.contentLength - 1000L)
-      val previewMaker = PreviewMaker(config, "previewMaker" + new DateTime)
+      val previewMaker = system.actorOf(PreviewMaker.props(config))
 
       sendGetPreview(previewMaker, image.url)
       probe watch previewMaker

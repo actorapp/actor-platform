@@ -353,6 +353,9 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
 
                 if (items.size() == 0) {
                     window.onForwardCompleted();
+                    if (bindHook != null) {
+                        bindHook.onScrolledToEnd();
+                    }
                     // Log.d(TAG, "isLoadMoreForwardRequested = false: sync");
                     isLoadMoreForwardRequested = false;
                 } else {

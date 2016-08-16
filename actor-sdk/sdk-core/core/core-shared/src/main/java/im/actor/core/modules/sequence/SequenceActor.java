@@ -305,11 +305,11 @@ public class SequenceActor extends ModuleActor {
     //
 
     private void onUpdateStarted() {
-        context().getAppStateModule().getGlobalStateVM().getIsSyncing().change(true);
+        context().getConductor().getGlobalStateVM().getIsSyncing().change(true);
     }
 
     private void onUpdateEnded() {
-        context().getAppStateModule().getGlobalStateVM().getIsSyncing().change(false);
+        context().getConductor().getGlobalStateVM().getIsSyncing().change(false);
     }
 
     //

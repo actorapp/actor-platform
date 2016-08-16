@@ -135,6 +135,14 @@ message DialogRootCommands {
         Peer dest = 1;
         int64 client_auth_id = 2;
     }
+
+    message Bump {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogRootCommand";
+
+        Peer dest = 1;
+    }
+
+    message BumpAck {}
 }
 
 message DialogRootQueries {
@@ -200,6 +208,7 @@ message DialogRootEnvelope {
         DialogRootCommands.Favourite favourite = 7;
         DialogRootCommands.Unfavourite unfavourite = 8;
         DialogRootCommands.Delete delete = 9;
+        DialogRootCommands.Bump bump = 12;
     }
 }
 

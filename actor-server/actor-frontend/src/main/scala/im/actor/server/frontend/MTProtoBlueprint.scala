@@ -3,6 +3,7 @@ package im.actor.server.frontend
 import java.net.InetAddress
 
 import akka.stream.FlowShape
+import com.github.ghik.silencer.silent
 import kamon.metric.instrument.{ MinMaxCounter, Histogram }
 
 import scala.util.{ Failure, Success }
@@ -32,11 +33,11 @@ object MTProtoBlueprint {
 
     val sessionClientSource = Source.fromPublisher(ActorPublisher[MTProto](sessionClient))
 
-    val mtprotoFlow = Flow.fromGraph(new PackageParseStage())
+    @silent val mtprotoFlow = Flow.fromGraph(new PackageParseStage())
       .transform(() ⇒ new PackageCheckStage)
       .via(new PackageHandleStage(protoVersions, apiMajorVersions, authManager, sessionClient))
 
-    val mapRespFlow: Flow[MTProto, ByteString, akka.NotUsed] = Flow[MTProto]
+    @silent val mapRespFlow: Flow[MTProto, ByteString, akka.NotUsed] = Flow[MTProto]
       .transform(() ⇒ mapResponse(system))
 
     val connStartTime = System.currentTimeMillis()
@@ -82,7 +83,7 @@ object MTProtoBlueprint {
     })
   }
 
-  def mapResponse(system: ActorSystem) = new PushStage[MTProto, ByteString] {
+  @silent def mapResponse(system: ActorSystem) = new PushStage[MTProto, ByteString] {
     private[this] var packageIndex: Int = -1
 
     override def onPush(elem: MTProto, ctx: Context[ByteString]) = {
