@@ -299,6 +299,11 @@ public class ActorSDK {
             builder.setCallsProvider(new AndroidCallProvider());
 
             //
+            // Handle raw updates
+            //
+            builder.setRawUpdatesHandler(getDelegate().getRawUpdatesHandler());
+
+            //
             // Auto Join
             //
             for (String s : autoJoinGroups) {

@@ -11,7 +11,6 @@ import im.actor.core.providers.NotificationProvider;
 import im.actor.core.providers.PhoneBookProvider;
 import im.actor.core.providers.CallsProvider;
 import im.actor.runtime.mtproto.ConnectionEndpoint;
-import im.actor.runtime.webrtc.WebRTCIceServer;
 
 /**
  * Configuration for Messenger
@@ -59,6 +58,8 @@ public class Configuration {
     @Property("readonly, nonatomic")
     private final CallsProvider callsProvider;
     @Property("readonly, nonatomic")
+    private final RawUpdatesHandler rawUpdatesHandler;
+    @Property("readonly, nonatomic")
     private final boolean isEnabledGroupedChatList;
     @Property("readonly, nonatomic")
     private final String[] autoJoinGroups;
@@ -83,6 +84,7 @@ public class Configuration {
                   TrustedKey[] trustedKeys,
                   boolean enablePhoneBookImport,
                   CallsProvider callsProvider,
+                  RawUpdatesHandler rawUpdatesHandler,
                   boolean voiceCallsEnabled,
                   boolean videoCallsEnabled,
                   boolean isEnabledGroupedChatList,
@@ -106,6 +108,7 @@ public class Configuration {
         this.trustedKeys = trustedKeys;
         this.enablePhoneBookImport = enablePhoneBookImport;
         this.callsProvider = callsProvider;
+        this.rawUpdatesHandler = rawUpdatesHandler;
         this.voiceCallsEnabled = voiceCallsEnabled;
         this.videoCallsEnabled = videoCallsEnabled;
         this.isEnabledGroupedChatList = isEnabledGroupedChatList;
@@ -138,6 +141,15 @@ public class Configuration {
      */
     public CallsProvider getCallsProvider() {
         return callsProvider;
+    }
+
+    /**
+     * Getting RawUpdatesHandler if set
+     *
+     * @return raw updates handler
+     */
+    public RawUpdatesHandler getRawUpdatesHandler() {
+        return rawUpdatesHandler;
     }
 
     /**
