@@ -2,17 +2,11 @@ package im.actor.core;
 
 import im.actor.core.api.updates.UpdateRawUpdate;
 import im.actor.runtime.actors.Actor;
+import im.actor.runtime.actors.messages.Void;
+import im.actor.runtime.promise.Promise;
 
-public abstract class RawUpdatesHandler extends Actor {
+public abstract class RawUpdatesHandler {
 
-    protected abstract void onRawUpdate(UpdateRawUpdate update);
+    public abstract Promise<im.actor.runtime.actors.messages.Void> onRawUpdate(UpdateRawUpdate update);
 
-    @Override
-    public void onReceive(Object message) {
-        if (message instanceof UpdateRawUpdate) {
-            onRawUpdate((UpdateRawUpdate) message);
-        } else {
-            drop(message);
-        }
-    }
 }

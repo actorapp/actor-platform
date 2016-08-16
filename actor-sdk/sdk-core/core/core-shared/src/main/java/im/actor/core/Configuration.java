@@ -10,9 +10,7 @@ import im.actor.core.network.TrustedKey;
 import im.actor.core.providers.NotificationProvider;
 import im.actor.core.providers.PhoneBookProvider;
 import im.actor.core.providers.CallsProvider;
-import im.actor.core.providers.RawUpdatesHandlerProvider;
 import im.actor.runtime.mtproto.ConnectionEndpoint;
-import im.actor.runtime.webrtc.WebRTCIceServer;
 
 /**
  * Configuration for Messenger
@@ -60,7 +58,7 @@ public class Configuration {
     @Property("readonly, nonatomic")
     private final CallsProvider callsProvider;
     @Property("readonly, nonatomic")
-    private final RawUpdatesHandlerProvider rawUpdatesHandlerProvider;
+    private final RawUpdatesHandler rawUpdatesHandler;
     @Property("readonly, nonatomic")
     private final boolean isEnabledGroupedChatList;
     @Property("readonly, nonatomic")
@@ -86,7 +84,7 @@ public class Configuration {
                   TrustedKey[] trustedKeys,
                   boolean enablePhoneBookImport,
                   CallsProvider callsProvider,
-                  RawUpdatesHandlerProvider rawUpdatesHandlerProvider,
+                  RawUpdatesHandler rawUpdatesHandler,
                   boolean voiceCallsEnabled,
                   boolean videoCallsEnabled,
                   boolean isEnabledGroupedChatList,
@@ -110,7 +108,7 @@ public class Configuration {
         this.trustedKeys = trustedKeys;
         this.enablePhoneBookImport = enablePhoneBookImport;
         this.callsProvider = callsProvider;
-        this.rawUpdatesHandlerProvider = rawUpdatesHandlerProvider;
+        this.rawUpdatesHandler = rawUpdatesHandler;
         this.voiceCallsEnabled = voiceCallsEnabled;
         this.videoCallsEnabled = videoCallsEnabled;
         this.isEnabledGroupedChatList = isEnabledGroupedChatList;
@@ -146,12 +144,12 @@ public class Configuration {
     }
 
     /**
-     * Getting RawUpdatesHandler provider if set
+     * Getting RawUpdatesHandler if set
      *
-     * @return RawUpdatesHandler provider
+     * @return raw updates handler
      */
-    public RawUpdatesHandlerProvider getRawUpdatesHandlerProvider() {
-        return rawUpdatesHandlerProvider;
+    public RawUpdatesHandler getRawUpdatesHandler() {
+        return rawUpdatesHandler;
     }
 
     /**
