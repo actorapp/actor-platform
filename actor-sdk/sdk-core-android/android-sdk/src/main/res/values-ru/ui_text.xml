@@ -410,7 +410,7 @@
 
     <!-- Channel-->
     <string name="channel_admin_title">Администрирование канала</string>
-
+    w
     <string name="group_can_edit_info_members">Все пользователи могут редактировать информацию о группе</string>
     <string name="group_can_edit_info_admins">Администраторы могут редактировать информацию о группе</string>
     <string name="group_can_invite_members">Все пользователи могут приглашать в группу</string>

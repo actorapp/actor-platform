@@ -88,7 +88,7 @@ public class GroupPermissionsFragment extends BaseFragment {
 
         canSendInvitations = (CheckBox) res.findViewById(R.id.canMembersInviteValue);
         canSendInvitationsTV = (TextView) res.findViewById(R.id.canMembersInviteTitle);
-        canSendInvitationsTV.setText(isChannel ? R.string.group_can_invite_members : R.string.channel_can_invite_members);
+        canSendInvitationsTV.setText(isChannel ? R.string.channel_can_invite_members : R.string.group_can_invite_members);
 
         if (!isChannel) {
             showLeaveJoin = (CheckBox) res.findViewById(R.id.showJoinLeaveValue);
