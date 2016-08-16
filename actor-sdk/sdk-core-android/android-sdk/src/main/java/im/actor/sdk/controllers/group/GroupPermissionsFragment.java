@@ -42,8 +42,8 @@ public class GroupPermissionsFragment extends BaseFragment {
     private TextView canAdminsEditInfoTV;
     private CheckBox canAdminsEditInfo;
 
-    private TextView canSendInvintationsTV;
-    private CheckBox canSendInvintations;
+    private TextView canSendInvitationsTV;
+    private CheckBox canSendInvitations;
 
     private TextView showLeaveJoinTV;
     private CheckBox showLeaveJoin;
@@ -86,13 +86,17 @@ public class GroupPermissionsFragment extends BaseFragment {
         canAdminsEditInfoTV = (TextView) res.findViewById(R.id.canAdminsEditTitle);
         canAdminsEditInfoTV.setText(isChannel ? R.string.channel_can_edit_info_admins : R.string.group_can_edit_info_admins);
 
-        canSendInvintations = (CheckBox) res.findViewById(R.id.canMembersInviteValue);
-        canSendInvintationsTV = (TextView) res.findViewById(R.id.canMembersInviteTitle);
-        canSendInvintationsTV.setText(isChannel ? R.string.group_can_invite_members : R.string.channel_can_invite_members);
+        canSendInvitations = (CheckBox) res.findViewById(R.id.canMembersInviteValue);
+        canSendInvitationsTV = (TextView) res.findViewById(R.id.canMembersInviteTitle);
+        canSendInvitationsTV.setText(isChannel ? R.string.group_can_invite_members : R.string.channel_can_invite_members);
 
-        showLeaveJoin = (CheckBox) res.findViewById(R.id.showJoinLeaveValue);
-        showLeaveJoinTV = (TextView) res.findViewById(R.id.showJoinLeaveTitle);
-        showLeaveJoinTV.setText(isChannel ? R.string.channel_show_leave_join : R.string.group_show_leave_join);
+        if (!isChannel) {
+            showLeaveJoin = (CheckBox) res.findViewById(R.id.showJoinLeaveValue);
+            showLeaveJoinTV = (TextView) res.findViewById(R.id.showJoinLeaveTitle);
+            showLeaveJoinTV.setText(isChannel ? R.string.channel_show_leave_join : R.string.group_show_leave_join);
+        } else {
+            res.findViewById(R.id.showJoinLeaveContainer).setVisibility(View.GONE);
+        }
 
         showAdminsToMembers = (CheckBox) res.findViewById(R.id.showAdminsToMembersValue);
         showAdminsToMembersTV = (TextView) res.findViewById(R.id.showAdminsToMembersTitle);
@@ -129,7 +133,7 @@ public class GroupPermissionsFragment extends BaseFragment {
         }
         canEditInfo.setChecked(permissions.isMembersCanEditInfo());
         canAdminsEditInfo.setChecked(permissions.isAdminsCanEditGroupInfo());
-        canSendInvintations.setChecked(permissions.isMembersCanInvite());
+        canSendInvitations.setChecked(permissions.isMembersCanInvite());
         showLeaveJoin.setChecked(permissions.isShowJoinLeaveMessages());
         showAdminsToMembers.setChecked(permissions.isShowAdminsToMembers());
     }
@@ -147,7 +151,7 @@ public class GroupPermissionsFragment extends BaseFragment {
         if (item.getItemId() == R.id.next) {
             if (permissions.isMembersCanEditInfo() != canEditInfo.isChecked() ||
                     permissions.isAdminsCanEditGroupInfo() != canAdminsEditInfo.isChecked() ||
-                    permissions.isMembersCanInvite() != canSendInvintations.isChecked() ||
+                    permissions.isMembersCanInvite() != canSendInvitations.isChecked() ||
                     permissions.isShowJoinLeaveMessages() != showLeaveJoin.isChecked() ||
                     permissions.isShowAdminsToMembers() != showAdminsToMembers.isChecked()) {
                 permissions.setMembersCanEditInfo(canEditInfo.isChecked());

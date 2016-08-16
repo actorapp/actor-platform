@@ -383,7 +383,6 @@
     <string name="group_administration">Администрирование</string>
     <string name="group_make_admin">Назначить администратором</string>
     <string name="group_revoke_admin">Аннулировать права администратора</string>
-    <string name="group_can_edit_info_members">Все пользователи могут редактировать информацию о группе</string>
     <string name="group_delete">Удалить группу</string>
     <string name="group_delete_hint">Вы потеряете все сообщения в этой группе</string>
     <string name="group_description_hint">Описание</string>
@@ -411,7 +410,19 @@
 
     <!-- Channel-->
     <string name="channel_admin_title">Администрирование канала</string>
+
+    <string name="group_can_edit_info_members">Все пользователи могут редактировать информацию о группе</string>
+    <string name="group_can_edit_info_admins">Администраторы могут редактировать информацию о группе</string>
+    <string name="group_can_invite_members">Все пользователи могут приглашать в группу</string>
+    <string name="group_show_leave_join">Показывать сообщения о входе/выходе из группы</string>
+    <string name="group_show_admin_to_members">Показывать информацию о том, кто является администратором пользователям</string>
+
     <string name="channel_can_edit_info_members">Все пользователи могут редактировать иформацию о канале</string>
+    <string name="channel_can_edit_info_admins">Администраторы могут редактировать информацию о канале</string>
+    <string name="channel_can_invite_members">Все пользователи могут приглашать в канал</string>
+    <string name="channel_show_leave_join">Показывать сообщения о входе/выходе из канала</string>
+    <string name="channel_show_admin_to_members">Показывать информацию о том, кто является администратором пользователям</string>
+
     <string name="channel_delete">Удалить канал</string>
     <string name="channel_delete_hint">Вы потеряете все сообщения в этом канале</string>
     <string name="channel_permissions_hint">Управление разрешениями в этом канале</string>
