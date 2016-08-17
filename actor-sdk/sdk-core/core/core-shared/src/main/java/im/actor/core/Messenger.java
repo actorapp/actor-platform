@@ -70,6 +70,7 @@ import im.actor.core.viewmodel.UploadFileVMCallback;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.messages.Void;
+import im.actor.runtime.mtproto.ConnectionEndpointArray;
 import im.actor.runtime.mvvm.MVVMCollection;
 import im.actor.runtime.mvvm.SearchValueModel;
 import im.actor.runtime.mvvm.ValueModel;
@@ -221,6 +222,20 @@ public class Messenger {
     @ObjectiveCName("doCompleteAuth:")
     public Promise<Boolean> doCompleteAuth(AuthRes authRes) {
         return modules.getAuthModule().doCompleteAuth(authRes);
+    }
+
+    /**
+     * Change endpoint
+     *
+     * @param endpoint endpoint to change to, null for reset to default
+     * @throws ConnectionEndpointArray.UnknownSchemeException
+     */
+    public void changeEndpoint(String endpoint) throws ConnectionEndpointArray.UnknownSchemeException {
+        if (endpoint != null && !endpoint.isEmpty()) {
+            modules.getApiModule().changeEndpoint(endpoint);
+        } else {
+            modules.getApiModule().resetToDefaultEndpoints();
+        }
     }
 
     /**
