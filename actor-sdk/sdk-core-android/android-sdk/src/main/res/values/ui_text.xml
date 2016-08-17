@@ -106,6 +106,9 @@
     <string name="auth_privacy">By signing up, you agree to the Privacy Policy.</string>
     <string name="auth_find_by_diclamer"> Others users will be able to find you via email or phone number.</string>
 
+    <string name="auth_change_endpoint">Change server endpoint</string>
+    <string name="auth_reset_default_endpoint">reset to default</string>
+
     <string name="auth_tos_index">Terms of Service</string>
     <string name="auth_privacy_index">Privacy Policy</string>
 

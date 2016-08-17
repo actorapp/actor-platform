@@ -309,7 +309,32 @@ public class CallFragment extends BaseFragment {
 
             remoteVideoView = (SurfaceViewRenderer) cont.findViewById(R.id.remote_renderer);
 
-            localVideoView = new SurfaceViewRenderer(getActivity());
+            localVideoView = new SurfaceViewRenderer(getActivity()) {
+                private boolean aspectFixed = false;
+
+                @Override
+                public void renderFrame(VideoRenderer.I420Frame frame) {
+                    if (!aspectFixed) {
+                        aspectFixed = true;
+                        int maxWH = Screen.getWidth() / 3 - Screen.dp(20);
+                        float scale = Math.min(maxWH / (float) frame.width, maxWH / (float) frame.height);
+
+                        int destW = (int) (scale * frame.width);
+                        int destH = (int) (scale * frame.height);
+
+                        boolean turned = frame.rotationDegree % 90 % 2 == 0;
+
+                        localVideoView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                localVideoView.getLayoutParams().height = turned ? destW : destH;
+                                localVideoView.getLayoutParams().width = turned ? destH : destW;
+                            }
+                        });
+                    }
+                    super.renderFrame(frame);
+                }
+            };
             localVideoView.setVisibility(View.INVISIBLE);
             localVideoView.setZOrderMediaOverlay(true);
 
