@@ -10,7 +10,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
+import im.actor.core.api.ApiDocumentEncryptionInfo;
 import im.actor.core.api.ApiFileLocation;
+import im.actor.runtime.bser.Bser;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
 
@@ -28,11 +30,15 @@ public class FileReference extends WrapperEntity<ApiFileLocation> {
     private int fileSize;
     @Property("readonly, nonatomic")
     private String fileName;
+    @Property("readonly, nonatomic")
+    private ApiDocumentEncryptionInfo encryptionInfo;
 
-    public FileReference(ApiFileLocation fileLocation, String fileName, int fileSize) {
+    public FileReference(ApiFileLocation fileLocation, String fileName, int fileSize,
+                         ApiDocumentEncryptionInfo encryptionInfo) {
         super(RECORD_ID, fileLocation);
         this.fileSize = fileSize;
         this.fileName = fileName;
+        this.encryptionInfo = encryptionInfo;
     }
 
     public FileReference(byte[] data) throws IOException {
@@ -59,6 +65,10 @@ public class FileReference extends WrapperEntity<ApiFileLocation> {
         return fileName;
     }
 
+    public ApiDocumentEncryptionInfo getEncryptionInfo() {
+        return encryptionInfo;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         // Is Old layout
@@ -73,6 +83,11 @@ public class FileReference extends WrapperEntity<ApiFileLocation> {
 
         fileSize = values.getInt(3);
         fileName = values.getString(4);
+
+        byte[] data = values.optBytes(6);
+        if (data != null) {
+            encryptionInfo = Bser.parse(new ApiDocumentEncryptionInfo(), data);
+        }
     }
 
     @Override
@@ -81,6 +96,10 @@ public class FileReference extends WrapperEntity<ApiFileLocation> {
         writer.writeBool(5, true);
         writer.writeInt(3, fileSize);
         writer.writeString(4, fileName);
+
+        if (encryptionInfo != null) {
+            writer.writeObject(6, encryptionInfo);
+        }
 
         // Write wrapper
         super.serialize(writer);

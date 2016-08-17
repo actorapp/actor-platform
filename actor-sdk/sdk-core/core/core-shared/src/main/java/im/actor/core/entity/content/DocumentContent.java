@@ -44,7 +44,8 @@ public class DocumentContent extends AbsContent {
         ApiDocumentMessage doc = ((ApiDocumentMessage) contentContainer.getMessage());
         source = new FileRemoteSource(new FileReference(
                 new ApiFileLocation(doc.getFileId(), doc.getAccessHash()), doc.getName(),
-                doc.getFileSize()));
+                doc.getFileSize(),
+                doc.getEncryptionInfo()));
         mimeType = doc.getMimeType();
         name = doc.getName();
         fastThumb = doc.getThumb() != null ? new FastThumb(doc.getThumb()) : null;

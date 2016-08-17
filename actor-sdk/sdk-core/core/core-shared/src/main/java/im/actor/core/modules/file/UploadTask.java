@@ -192,7 +192,7 @@ public class UploadTask extends ModuleActor {
                     Log.d(TAG, "Upload completed...");
                 }
                 FileReference location = new FileReference(r.getUploadedFileLocation(), fileName,
-                        finalSize);
+                        finalSize, null); // Need to pass Encryption Info?
 
                 if (isWriteToDestProvider || alreadyInTemp) {
                     FileSystemReference reference = Storage.commitTempFile(alreadyInTemp ? srcReference : destReference, location.getFileId(),

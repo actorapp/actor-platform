@@ -67,14 +67,14 @@ public class Sticker extends WrapperEntity<ApiStickerDescriptor> {
         emoji = wrapped.getEmoji();
         id = wrapped.getId();
         image128Location = wrapped.getImage128();
-        image128 = new FileReference(image128Location.getFileLocation(), "sticker.webp", image128Location.getFileSize());
+        image128 = new FileReference(image128Location.getFileLocation(), "sticker.webp", image128Location.getFileSize(), null);
         if (wrapped.getImage256() != null) {
             image256Location = wrapped.getImage256();
-            image256 = new FileReference(image256Location.getFileLocation(), "sticker.webp", image256Location.getFileSize());
+            image256 = new FileReference(image256Location.getFileLocation(), "sticker.webp", image256Location.getFileSize(), null);
         }
         if (wrapped.getImage512() != null) {
             image512Location = wrapped.getImage512();
-            image512 = new FileReference(wrapped.getImage512().getFileLocation(), "sticker.webp", wrapped.getImage512().getFileSize());
+            image512 = new FileReference(wrapped.getImage512().getFileLocation(), "sticker.webp", wrapped.getImage512().getFileSize(), null);
         }
     }
 

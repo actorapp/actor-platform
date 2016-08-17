@@ -80,7 +80,7 @@ public class AvatarImage extends WrapperEntity<ApiAvatarImage> {
         this.width = wrapped.getWidth();
         this.height = wrapped.getHeight();
         this.fileReference = new FileReference(wrapped.getFileLocation(),
-                "avatar.jpg", wrapped.getFileSize());
+                "avatar.jpg", wrapped.getFileSize(), null);
     }
 
     @Override

@@ -4,17 +4,31 @@
 
 package im.actor.core.modules.file;
 
+import org.jetbrains.annotations.NotNull;
+
 import im.actor.core.entity.FileReference;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.ModuleActor;
+import im.actor.runtime.Crypto;
 import im.actor.runtime.HTTP;
 import im.actor.runtime.Log;
 import im.actor.runtime.Storage;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorCancellable;
+import im.actor.runtime.crypto.BlockCipher;
+import im.actor.runtime.crypto.primitives.aes.AESFastEngine;
+import im.actor.runtime.crypto.primitives.modes.CBCBlockCipherStream;
+import im.actor.runtime.crypto.primitives.util.ByteStrings;
 import im.actor.runtime.files.FileSystemReference;
 import im.actor.runtime.files.OutputFile;
+import im.actor.runtime.function.Consumer;
+import im.actor.runtime.function.Supplier;
 import im.actor.runtime.http.HTTPError;
+import im.actor.runtime.http.HTTPResponse;
+import im.actor.runtime.promise.Promise;
+import im.actor.runtime.promise.PromiseFunc;
+import im.actor.runtime.promise.PromiseResolver;
+import im.actor.runtime.promise.Promises;
 
 public class DownloadTask extends ModuleActor {
 
@@ -26,6 +40,7 @@ public class DownloadTask extends ModuleActor {
     private final boolean LOG;
 
     private FileReference fileReference;
+    private BlockCipher encryptionCipher;
     private ActorRef manager;
 
     private FileSystemReference destReference;
@@ -40,9 +55,6 @@ public class DownloadTask extends ModuleActor {
     private String fileUrl;
     private int blockSize = 128 * 1024;
     private int blocksCount;
-    private int nextBlock = 0;
-    private int currentDownloads = 0;
-    private int downloaded = 0;
 
     public DownloadTask(FileReference fileReference, ActorRef manager, ModuleContext context) {
         super(context);
@@ -78,16 +90,6 @@ public class DownloadTask extends ModuleActor {
         });
     }
 
-    @Override
-    public void onReceive(Object message) {
-        if (message instanceof Retry) {
-            Retry retry = (Retry) message;
-            retryPart(retry.getBlockIndex(), retry.getFileOffset(), retry.getAttempt());
-        } else {
-            super.onReceive(message);
-        }
-    }
-
     private void requestUrl() {
         if (LOG) {
             Log.d(TAG, "Loading url...");
@@ -116,7 +118,54 @@ public class DownloadTask extends ModuleActor {
         if (LOG) {
             Log.d(TAG, "Starting downloading " + blocksCount + " blocks");
         }
-        checkQueue();
+
+        Promises.traverseParallel(SIM_BLOCKS_COUNT, partsSupplier(), new Consumer<HTTPResponse>() {
+
+            int index = 0;
+
+            @Override
+            public void apply(HTTPResponse r) {
+                reportProgress((index + 1) / (float) blocksCount);
+
+                if (fileReference.getEncryptionInfo() != null) {
+
+                    int offset = 0;
+
+                    if (index == 0) {
+                        encryptionCipher = new CBCBlockCipherStream(ByteStrings.substring(r.getContent(), 0, 16),
+                                Crypto.createAES128((ByteStrings.substring(fileReference.getEncryptionInfo().getKey(), 0, 16))));
+
+                        offset = 16;
+                    }
+
+                    byte[] dest = new byte[r.getContent().length - offset];
+                    for (int i = 0; i < dest.length / encryptionCipher.getBlockSize(); i++) {
+                        encryptionCipher.decryptBlock(r.getContent(), i * encryptionCipher.getBlockSize(),
+                                dest, 0);
+                    }
+
+                    if (index == 0) {
+                        if (!outputFile.write(index * blockSize, dest, 0, dest.length)) {
+                            throw new RuntimeException("Unable to write file");
+                        }
+                    } else {
+                        if (!outputFile.write(index * blockSize - 16, dest, 0, dest.length)) {
+                            throw new RuntimeException("Unable to write file");
+                        }
+                    }
+                } else {
+                    if (!outputFile.write(index * blockSize, r.getContent(), 0, r.getContent().length)) {
+                        throw new RuntimeException("Unable to write file");
+                    }
+                }
+
+                index++;
+            }
+        }).then(r -> {
+            completeDownload();
+        }).failure(e -> {
+            completeWithError();
+        });
     }
 
     private void completeDownload() {
@@ -145,81 +194,60 @@ public class DownloadTask extends ModuleActor {
         reportComplete(reference);
     }
 
-    private void checkQueue() {
-        if (isCompleted) {
-            return;
-        }
+    private void completeWithError() {
+        reportError();
+    }
+    // Downloading parts
 
-        if (LOG) {
-            Log.d(TAG, "checkQueue " + currentDownloads + "/" + nextBlock);
-        }
-        if (currentDownloads == 0 && nextBlock >= blocksCount) {
-            completeDownload();
-        } else if (currentDownloads < SIM_BLOCKS_COUNT && nextBlock < blocksCount) {
-            currentDownloads++;
-            int blockIndex = nextBlock++;
-            int offset = blockIndex * blockSize;
+    private Supplier<Promise<HTTPResponse>> partsSupplier() {
+        return new Supplier<Promise<HTTPResponse>>() {
+            int nextBlock = 0;
 
-            if (LOG) {
-                Log.d(TAG, "Starting part #" + blockIndex + " download");
+            @Override
+            public Promise<HTTPResponse> get() {
+                if (nextBlock >= blocksCount) {
+                    return null;
+                }
+                int blockIndex = nextBlock++;
+                int offset = blockIndex * blockSize;
+                return downloadPartPromise(blockIndex, offset, 0);
             }
-
-            downloadPart(blockIndex, offset, 0);
-
-            checkQueue();
-        } else {
-            if (LOG) {
-                Log.d(TAG, "Task queue is full");
-            }
-        }
+        };
     }
 
-    private void retryPart(int blockIndex, int fileOffset, int attempt) {
-        if (isCompleted) {
-            return;
-        }
-
-        if (LOG) {
-            Log.d(TAG, "Trying again part #" + blockIndex + " download");
-        }
-
-        downloadPart(blockIndex, fileOffset, attempt);
-    }
-
-    private void downloadPart(final int blockIndex, final int fileOffset, final int attempt) {
-        HTTP.getMethod(fileUrl, fileOffset, blockSize, fileReference.getFileSize()).then(r -> {
-            downloaded++;
-            if (LOG) {
-                Log.d(TAG, "Download part #" + blockIndex + " completed");
-            }
-            if (!outputFile.write(fileOffset, r.getContent(), 0, r.getContent().length)) {
-                reportError();
-                return;
-            }
-            currentDownloads--;
-            reportProgress(downloaded / (float) blocksCount);
-            checkQueue();
-        }).failure(e -> {
-            if ((e instanceof HTTPError)
-                    && ((((HTTPError) e).getErrorCode() >= 500
-                    && ((HTTPError) e).getErrorCode() < 600)
-                    || ((HTTPError) e).getErrorCode() == 0)) {
-                // Server on unknown error
-                int retryInSecs = DEFAULT_RETRY;
-
+    private Promise<HTTPResponse> downloadPartPromise(int blockIndex, int fileOffset, int attempt) {
+        return new Promise<>((PromiseFunc<HTTPResponse>) resolver -> {
+            HTTP.getMethod(fileUrl, fileOffset, blockSize, fileReference.getFileSize()).then(r -> {
                 if (LOG) {
-                    Log.w(TAG, "Download part #" + blockIndex + " failure #" + ((HTTPError) e).getErrorCode() + " trying again in " + retryInSecs + " sec, attempt #" + (attempt + 1));
+                    Log.d(TAG, "Download part #" + blockIndex + " completed");
                 }
+                resolver.result(r);
+            }).failure(e -> {
+                if ((e instanceof HTTPError)
+                        && ((((HTTPError) e).getErrorCode() >= 500
+                        && ((HTTPError) e).getErrorCode() < 600)
+                        || ((HTTPError) e).getErrorCode() == 0)) {
+                    // Server on unknown error
+                    int retryInSecs = DEFAULT_RETRY;
 
-                self().send(new Retry(blockIndex, fileOffset, attempt + 1));
-            } else {
-                if (LOG) {
-                    Log.d(TAG, "Download part #" + blockIndex + " failure");
+                    if (LOG) {
+                        Log.w(TAG, "Download part #" + blockIndex + " failure #" + ((HTTPError) e).getErrorCode() + " trying again in " + retryInSecs + " sec, attempt #" + (attempt + 1));
+                    }
+
+                    schedule((Runnable) () -> {
+                        downloadPartPromise(blockIndex, fileOffset, attempt + 1).pipeTo(resolver);
+                    }, retryInSecs * 1000L);
+                } else {
+                    if (LOG) {
+                        Log.d(TAG, "Download part #" + blockIndex + " failure");
+                    }
+                    resolver.error(e);
                 }
-                reportError();
-            }
+            });
         });
     }
+
+    // Reporting
 
     private void reportError() {
         if (isCompleted) {
@@ -266,30 +294,5 @@ public class DownloadTask extends ModuleActor {
         }
         isCompleted = true;
         manager.send(new DownloadManager.OnDownloaded(fileReference.getFileId(), reference));
-    }
-
-    private class Retry {
-
-        private int blockIndex;
-        private int fileOffset;
-        private int attempt;
-
-        public Retry(int blockIndex, int fileOffset, int attempt) {
-            this.blockIndex = blockIndex;
-            this.fileOffset = fileOffset;
-            this.attempt = attempt;
-        }
-
-        public int getBlockIndex() {
-            return blockIndex;
-        }
-
-        public int getFileOffset() {
-            return fileOffset;
-        }
-
-        public int getAttempt() {
-            return attempt;
-        }
     }
 }

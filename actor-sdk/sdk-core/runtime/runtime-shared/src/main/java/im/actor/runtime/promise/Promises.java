@@ -2,10 +2,15 @@ package im.actor.runtime.promise;
 
 import com.google.j2objc.annotations.ObjectiveCName;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.runtime.Log;
+import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.function.Consumer;
+import im.actor.runtime.function.Function;
 import im.actor.runtime.function.Supplier;
 import im.actor.runtime.function.Tuple2;
 import im.actor.runtime.function.Tuple3;
@@ -95,13 +100,104 @@ public class Promises {
      * @param <T>   type of promises
      * @return promise
      */
-    public static <T> Promise traverse(List<Supplier<Promise<T>>> queue) {
+    public static <T> Promise<Void> traverse(List<Supplier<Promise<T>>> queue) {
 
         if (queue.size() == 0) {
             return Promise.success(null);
         }
 
         return queue.remove(0).get()
-                .flatMap(v -> traverse(queue));
+                .flatMap(v -> traverse(queue))
+                .map(r -> null);
+    }
+
+    /**
+     * Executing promises in parallel but return results consequently
+     *
+     * @param parallelFraction number of parallel promises
+     * @param next             supplier of next promise
+     * @param consumer         Consumer of results
+     * @param <T>              type of promises
+     */
+    public static <T> Promise<Void> traverseParallel(int parallelFraction, Supplier<Promise<T>> next, Consumer<T> consumer) {
+        return new Promise<>((PromiseFunc<Void>) resolver -> {
+            TraverseHolder<T> state = new TraverseHolder<>(next, consumer, resolver);
+            for (int i = 0; i < parallelFraction; i++) {
+                state.spawn();
+            }
+        });
+    }
+
+    private static class TraverseHolder<T> {
+
+        public Supplier<Promise<T>> next;
+        public Consumer<T> consumer;
+        public Promise<T> latestPromise;
+        public PromiseResolver<Void> resolver;
+        public boolean isEnded;
+        public boolean isFetchingEnded;
+
+        public TraverseHolder(Supplier<Promise<T>> next, Consumer<T> consumer, PromiseResolver<Void> resolver) {
+            this.next = next;
+            this.consumer = consumer;
+            this.resolver = resolver;
+        }
+
+
+        public void spawn() {
+            if (isFetchingEnded || isEnded) {
+                return;
+            }
+            Promise<T> p = next.get();
+            if (p == null) {
+                isFetchingEnded = true;
+                if (latestPromise == null) {
+                    isEnded = true;
+                    resolver.result(null);
+                } else {
+                    latestPromise.then(t -> {
+                        if (!isEnded) {
+                            isEnded = true;
+                        }
+                        resolver.result(null);
+                    });
+                }
+                return;
+            }
+
+            Promise<T> chained;
+            if (latestPromise == null) {
+                chained = p;
+            } else {
+                Promise<T> forChain = latestPromise;
+                chained = p.chain(r -> forChain);
+            }
+            latestPromise = chained;
+
+
+            chained.then(t -> {
+                if (isEnded) {
+                    return;
+                }
+
+                try {
+                    consumer.apply(t);
+                } catch (Exception e) {
+                    isEnded = true;
+                    resolver.error(e);
+                    return;
+                }
+
+                spawn();
+            });
+
+            chained.failure(e -> {
+                if (isEnded) {
+                    return;
+                }
+                isEnded = true;
+                resolver.error(e);
+            });
+        }
     }
 }

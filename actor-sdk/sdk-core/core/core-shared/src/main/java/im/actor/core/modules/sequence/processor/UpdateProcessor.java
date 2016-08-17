@@ -139,7 +139,6 @@ public class UpdateProcessor extends AbsModule {
 
         pending.add(() -> messagesProcessor.onDifferenceEnd());
 
-        return Promises.traverse(pending)
-                .map(v -> null);
+        return Promises.traverse(pending);
     }
 }

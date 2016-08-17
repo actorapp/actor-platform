@@ -22,7 +22,8 @@ public class ImageLocation {
         reference = new FileReference(
                 imageLocation.getFileLocation(),
                 fileName,
-                imageLocation.getFileSize());
+                imageLocation.getFileSize(),
+                null);
     }
 
     public int getWidth() {
