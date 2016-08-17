@@ -427,8 +427,6 @@
 
 "CreateChannel" = "Новый канал";
 
-"CreateSecret" = "Новый секретный чат";
-
 
 "CreateGroupTitle" = "Новая группа";
 
@@ -691,6 +689,8 @@
 "ActionMute" = "Заглушить";
 
 "ActionUnmute" = "Включить оповещения";
+
+"ActionStartSecret" = "Новый секретный чат";
 
 "ActionDelete" = "Удалить";
 

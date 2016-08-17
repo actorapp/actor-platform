@@ -53,7 +53,7 @@ public class AAContactsViewController: AAContactsListContentController, AAContac
                 r.height = 56
                 
                 r.closure = { (cell) -> () in
-                    cell.bind("ic_secret", actionTitle: AALocalized("CreateSecret"))
+                    cell.bind("ic_secret", actionTitle: AALocalized("ActionStartSecret"))
                 }
                 
                 r.selectAction = { () -> Bool in

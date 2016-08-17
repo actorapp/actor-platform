@@ -205,7 +205,11 @@ public class ConversationViewController:
         titleView.textAlignment = NSTextAlignment.Center
         titleView.lineBreakMode = NSLineBreakMode.ByTruncatingTail
         titleView.autoresizingMask = UIViewAutoresizing.FlexibleWidth
-        titleView.textColor = appStyle.navigationTitleColor
+        if peer.isPrivateSecret {
+            titleView.textColor = appStyle.navigationTitleSecretColor
+        } else {
+            titleView.textColor = appStyle.navigationTitleColor
+        }
         
         subtitleView.font = UIFont.systemFontOfSize(13)
         subtitleView.adjustsFontSizeToFitWidth = true
@@ -234,21 +238,26 @@ public class ConversationViewController:
         }
         if (ActorSDK.sharedActor().enableCalls && !isBot && peer.isPrivate) {
             if ActorSDK.sharedActor().enableVideoCalls {
-                let callButtonView = AACallButton(image: UIImage.bundled("ic_call_outline_22")?.tintImage(ActorSDK.sharedActor().style.navigationTintColor))
+                let callButtonView = AABarButton(image: UIImage.bundled("ic_call_outline_22")?.tintImage(ActorSDK.sharedActor().style.navigationTintColor))
                 callButtonView.viewDidTap = onCallTap
                 let callButtonItem = UIBarButtonItem(customView: callButtonView)
                 
-                let videoCallButtonView = AACallButton(image: UIImage.bundled("ic_video_outline_22")?.tintImage(ActorSDK.sharedActor().style.navigationTintColor))
+                let videoCallButtonView = AABarButton(image: UIImage.bundled("ic_video_outline_22")?.tintImage(ActorSDK.sharedActor().style.navigationTintColor))
                 videoCallButtonView.viewDidTap = onVideoCallTap
                 let callVideoButtonItem = UIBarButtonItem(customView: videoCallButtonView)
                 
                 self.navigationItem.rightBarButtonItems = [barItem, callVideoButtonItem, callButtonItem]
             } else {
-                let callButtonView = AACallButton(image: UIImage.bundled("ic_call_outline_22")?.tintImage(ActorSDK.sharedActor().style.navigationTintColor))
+                let callButtonView = AABarButton(image: UIImage.bundled("ic_call_outline_22")?.tintImage(ActorSDK.sharedActor().style.navigationTintColor))
                 callButtonView.viewDidTap = onCallTap
                 let callButtonItem = UIBarButtonItem(customView: callButtonView)
                 self.navigationItem.rightBarButtonItems = [barItem, callButtonItem]
             }
+        } else if peer.isPrivateSecret {
+            let timerButtonView = AABarButton(image: UIImage.bundled("ic_timer_22")?.tintImage(ActorSDK.sharedActor().style.navigationTintColor))
+            timerButtonView.viewDidTap = onTimerTap
+            let callButtonItem = UIBarButtonItem(customView: timerButtonView)
+            self.navigationItem.rightBarButtonItems = [barItem, callButtonItem]
         } else {
             self.navigationItem.rightBarButtonItems = [barItem]
         }
@@ -306,8 +315,22 @@ public class ConversationViewController:
             let nameModel = user.getNameModel()
             // let blockStatus = user.isBlockedModel().get().booleanValue()
             
-            binder.bind(nameModel, closure: { (value: NSString?) -> () in
-                self.titleView.text = String(value!)
+            binder.bind(nameModel, closure: { (value: String!) -> () in
+                
+                if self.peer.isPrivateSecret {
+                    
+                    let attachment = NSTextAttachment()
+                    attachment.image = UIImage.bundled("ic_secret_title")?
+                        .tintImage(self.appStyle.navigationTitleSecretColor)
+                    attachment.bounds = CGRectMake(0, 0, 12, 12)
+                    
+                    let title = NSMutableAttributedString()
+                    title.appendAttributedString(NSAttributedString(attachment: attachment))
+                    title.appendAttributedString(NSAttributedString(string: " \(value)"))
+                    self.titleView.attributedText = title
+                } else {
+                    self.titleView.text = value
+                }
                 self.navigationView.sizeToFit()
             })
             binder.bind(user.getAvatarModel(), closure: { (value: ACAvatar?) -> () in
@@ -514,7 +537,7 @@ public class ConversationViewController:
     func onAvatarTap() {
         let id = Int(peer.peerId)
         var controller: AAViewController!
-        if (peer.peerType.ordinal() == ACPeerType.PRIVATE().ordinal()) {
+        if (peer.isPrivate || peer.isPrivateSecret) {
             controller = ActorSDK.sharedActor().delegate.actorControllerForUser(id)
             if controller == nil {
                 controller = AAUserViewController(uid: id)
@@ -552,6 +575,26 @@ public class ConversationViewController:
     func onVideoCallTap() {
         if (self.peer.isPrivate) {
             execute(ActorSDK.sharedActor().messenger.doVideoCallWithUid(self.peer.peerId))
+        }
+    }
+    
+    func onTimerTap() {
+        alertSheet { (a) in
+            a.action("disable", closure: { 
+               self.executePromise(Actor.setSecretChatTimerWithUid(self.peer.peerId, withTimeout: nil))
+            })
+            a.action("1 sec", closure: { 
+               self.executePromise(Actor.setSecretChatTimerWithUid(self.peer.peerId, withTimeout: JavaLangInteger(int: 1000)))
+            })
+            a.action("2 sec", closure: { 
+               self.executePromise(Actor.setSecretChatTimerWithUid(self.peer.peerId, withTimeout: JavaLangInteger(int: 2000)))
+            })
+            a.action("3 sec", closure: { 
+               self.executePromise(Actor.setSecretChatTimerWithUid(self.peer.peerId, withTimeout: JavaLangInteger(int: 3000)))
+            })
+            a.action("1 minute", closure: { 
+               self.executePromise(Actor.setSecretChatTimerWithUid(self.peer.peerId, withTimeout: JavaLangInteger(int: 60000)))
+            })
         }
     }
     
@@ -1105,7 +1148,8 @@ class AABarAvatarView : AAAvatarView {
     }
 }
 
-class AACallButton: UIImageView {
+class AABarButton: UIImageView {
+    
     override init(image: UIImage?) {
         super.init(image: image)
     }

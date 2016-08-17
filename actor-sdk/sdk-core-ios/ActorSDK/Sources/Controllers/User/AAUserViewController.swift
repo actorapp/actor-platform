@@ -64,8 +64,8 @@ class AAUserViewController: AAContentTableController {
                 }
             }
             
+            // Profile: Starting Voice Call
             if (ActorSDK.sharedActor().enableCalls && !self.isBot) {
-                // Profile: Starting Voice Call
                 s.action("CallsStartAudio") { (r) -> () in
                     r.selectAction = { () -> Bool in
                         self.execute(Actor.doCallWithUid(jint(self.uid)))
@@ -77,13 +77,30 @@ class AAUserViewController: AAContentTableController {
             // Profile: Send messages
             s.action("ProfileSendMessage") { (r) -> () in
                 r.selectAction = { () -> Bool in
-                    if let customController = ActorSDK.sharedActor().delegate.actorControllerForConversation(ACPeer.userWithInt(jint(self.uid))) {
+                    let peer = ACPeer.userWithInt(jint(self.uid))
+                    if let customController = ActorSDK.sharedActor().delegate.actorControllerForConversation(peer) {
                         self.navigateDetail(customController)
                     } else {
-                        self.navigateDetail(ConversationViewController(peer: ACPeer.userWithInt(jint(self.uid))))
+                        self.navigateDetail(ConversationViewController(peer: peer))
                     }
                     self.popover?.dismissPopoverAnimated(true)
                     return false
+                }
+            }
+            
+            // Profile: Starting Secret Chat
+            if (ActorSDK.sharedActor().enableSecretChats && !self.isBot) {
+                s.action("ActionStartSecret") { (r) -> () in
+                    r.selectAction = { () -> Bool in
+                        let peer = ACPeer.secretWithInt(jint(self.uid))
+                        if let customController = ActorSDK.sharedActor().delegate.actorControllerForConversation(peer) {
+                            self.navigateDetail(customController)
+                        } else {
+                            self.navigateDetail(ConversationViewController(peer: peer))
+                        }
+                        self.popover?.dismissPopoverAnimated(true)
+                        return false
+                    }
                 }
             }
         }

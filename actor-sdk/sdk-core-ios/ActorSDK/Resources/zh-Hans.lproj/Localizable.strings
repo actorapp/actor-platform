@@ -398,8 +398,6 @@
 
 "CreateChannel" = "Create Channel";
 
-"CreateSecret" = "Start Secret Chat";
-
 
 "CreateGroupTitle" = "创建群组";
 
@@ -675,6 +673,8 @@
 
 "ActionUnmute" = "Unmute";
 
+
+"ActionStartSecret" = "Start Secret Chat";
 
 
 "ActionDelete" = "Delete";

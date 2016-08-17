@@ -415,8 +415,6 @@
 
 "CreateChannel" = "Crear canal";
 
-"CreateSecret" = "Start Secret Chat";
-
 
 "CreateGroupTitle" = "Crear grupo";
 
@@ -687,6 +685,9 @@
 "ActionMute" = "Silenciar";
 
 "ActionUnmute" = "No silenciado";
+
+
+"ActionStartSecret" = "Start Secret Chat";
 
 
 "ActionDelete" = "Eliminar";

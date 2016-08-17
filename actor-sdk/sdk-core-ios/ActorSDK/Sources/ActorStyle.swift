@@ -56,6 +56,8 @@ public class ActorStyle {
     public var navigationTintColor: UIColor = UIColor(rgb: 0x5085CB)
     /// Navigation Bar title color
     public var navigationTitleColor: UIColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0xDE/255.0)
+    /// Navigation Bar title secret color
+    public var navigationTitleSecretColor: UIColor = UIColor(rgb: 0x32914d)
     /// Navigation Bar subtitle color, default is 0.8 alhpa of navigationTitleColor
     public var navigationSubtitleColor: UIColor {
         get { return _navigationSubtitleColor != nil ? _navigationSubtitleColor! : navigationTitleColor.alpha(0.8) }
