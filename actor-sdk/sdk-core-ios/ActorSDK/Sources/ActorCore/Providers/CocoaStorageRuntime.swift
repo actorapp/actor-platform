@@ -6,12 +6,12 @@ import Foundation
 
 @objc class CocoaStorageRuntime : NSObject, ARStorageRuntime {
     
-    let dbPath: String;
+    let dbQueue: FMDatabaseQueue
     let preferences = UDPreferencesStorage()
     
     override init() {
-        self.dbPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory,
-            .UserDomainMask, true)[0].asNS.stringByAppendingPathComponent("actor.db")
+        dbQueue = FMDatabaseQueue(path: NSSearchPathForDirectoriesInDomains(.DocumentDirectory,
+            .UserDomainMask, true)[0].asNS.stringByAppendingPathComponent("actor.db"))
     }
     
     func createPreferencesStorage() -> ARPreferencesStorage! {
@@ -19,19 +19,17 @@ import Foundation
     }
     
     func createKeyValueWithName(name: String!) -> ARKeyValueStorage! {
-        return FMDBKeyValue(databasePath: dbPath, tableName: name)
+        return FMDBKeyValue(dbQueue: dbQueue, tableName: name)
     }
     
     func createListWithName(name: String!) -> ARListStorage! {
-        return FMDBList(databasePath: dbPath, tableName: name)
+        return FMDBList(dbQueue: dbQueue, tableName: name)
     }
     
     func resetStorage() {
         preferences.clear()
-        
-        let db = FMDatabase(path: dbPath)
-        db.open()
-        db.executeStatements("select 'drop table ' || name || ';' from sqlite_master where type = 'table';")
-        db.close()
+        dbQueue.inDatabase { (db) in
+            db.executeStatements("select 'drop table ' || name || ';' from sqlite_master where type = 'table';")
+        }
     }
 }

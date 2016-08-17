@@ -6,9 +6,8 @@ import Foundation
 
 @objc class FMDBKeyValue: NSObject, ARKeyValueStorage {
 
-    var db :FMDatabase!
+    let dbQueue: FMDatabaseQueue
     
-    let databasePath: String
     let tableName: String
     
     let queryCreate: String
@@ -21,8 +20,8 @@ import Foundation
     
     var isTableChecked: Bool = false
     
-    init(databasePath: String, tableName: String) {
-        self.databasePath = databasePath
+    init(dbQueue: FMDatabaseQueue, tableName: String) {
+        self.dbQueue = dbQueue
         self.tableName = tableName
         
         // Queries
@@ -46,72 +45,76 @@ import Foundation
         }
         isTableChecked = true
         
-        self.db = FMDatabase(path: databasePath)
-        self.db.open()
-        if (!db.tableExists(tableName)) {
-            db.executeUpdate(queryCreate)
+        dbQueue.inDatabase { (db) in
+            if (!db.tableExists(self.tableName)) {
+                db.executeUpdate(self.queryCreate)
+            }
         }
     }
     
     func addOrUpdateItems(values: JavaUtilList!) {
         checkTable()
         
-        db.beginTransaction()
-        for i in 0..<values.size() {
-            let record = values.getWithInt(i) as! ARKeyValueRecord
-            db.executeUpdate(queryAdd, record.getId().toNSNumber(),record.getData().toNSData())
+        dbQueue.inTransaction { (db, rollback) in
+            for i in 0..<values.size() {
+                let record = values.getWithInt(i) as! ARKeyValueRecord
+                db.executeUpdate(self.queryAdd, record.getId().toNSNumber(),record.getData().toNSData())
+            }
         }
-        db.commit()
     }
     
     func addOrUpdateItemWithKey(key: jlong, withData data: IOSByteArray!) {
         checkTable()
         
-        db.beginTransaction()
-        db.executeUpdate(queryAdd, key.toNSNumber(), data!.toNSData())
-        db.commit()
+        dbQueue.inDatabase { (db) in
+            db.executeUpdate(self.queryAdd, key.toNSNumber(), data!.toNSData())
+        }
     }
     
     func removeItemsWithKeys(keys: IOSLongArray!) {
         checkTable()
         
-        db.beginTransaction()
-        for i in 0..<keys.length() {
-            let key = keys.longAtIndex(UInt(i));
-            db.executeUpdate(queryDelete, key.toNSNumber())
+        dbQueue.inTransaction { (db, rollback) in
+            for i in 0..<keys.length() {
+                let key = keys.longAtIndex(UInt(i));
+                db.executeUpdate(self.queryDelete, key.toNSNumber())
+            }
         }
-        db.commit()
     }
     
     func removeItemWithKey(key: jlong) {
         checkTable()
         
-        db.beginTransaction()
-        db.executeUpdate(queryDelete, key.toNSNumber())
-        db.commit()
+        dbQueue.inDatabase { (db) in
+            db.executeUpdate(self.queryDelete, key.toNSNumber())
+        }
     }
     
     func loadItemWithKey(key: jlong) -> IOSByteArray! {
         checkTable()
         
-        let result = db.dataForQuery(queryItem, key.toNSNumber())
-        if (result == nil) {
-            return nil
+        var res: IOSByteArray! = nil
+        dbQueue.inDatabase { (db) in
+            let result = db.dataForQuery(self.queryItem, key.toNSNumber())
+            if (result == nil) {
+                return
+            }
+            res = result.toJavaBytes()
         }
-        return result.toJavaBytes()
+        return res
     }
     
     func loadAllItems() -> JavaUtilList! {
         checkTable()
         
         let res = JavaUtilArrayList()
-        
-        if let result = db.executeQuery(queryAll) {
-            while(result.next()) {
-                res.addWithId(ARKeyValueRecord(key: jlong(result.longLongIntForColumn("ID")), withData: result.dataForColumn("BYTES").toJavaBytes()))
+        dbQueue.inDatabase { (db) in
+            if let result = db.executeQuery(self.queryAll) {
+                while(result.next()) {
+                    res.addWithId(ARKeyValueRecord(key: jlong(result.longLongIntForColumn("ID")), withData: result.dataForColumn("BYTES").toJavaBytes()))
+                }
             }
         }
-        
         return res
     }
     
@@ -125,22 +128,22 @@ import Foundation
         }
         
         let res = JavaUtilArrayList()
-        
-        if let result = db.executeQuery(queryItems, ids) {
-            while(result.next()) {
-                // TODO: Optimize lookup
-                res.addWithId(ARKeyValueRecord(key: jlong(result.longLongIntForColumn("ID")), withData: result.dataForColumn("BYTES").toJavaBytes()))
+        dbQueue.inDatabase { (db) in
+            if let result = db.executeQuery(self.queryItems, ids) {
+                while(result.next()) {
+                    // TODO: Optimize lookup
+                    res.addWithId(ARKeyValueRecord(key: jlong(result.longLongIntForColumn("ID")), withData: result.dataForColumn("BYTES").toJavaBytes()))
+                }
             }
         }
-        
         return res
     }
     
     func clear() {
         checkTable()
         
-        db.beginTransaction()
-        db.executeUpdate(queryDeleteAll)
-        db.commit()
+        dbQueue.inTransaction { (db, rollout) in
+            db.executeUpdate(self.queryDeleteAll)
+        }
     }
 }
