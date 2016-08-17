@@ -81,6 +81,10 @@
     <string name="auth_privacy_index">Политика Конфиденциальности</string>
     <string name="auth_tos_index"> Условия Использования</string>
 
+    <string name="auth_change_endpoint">Использовать альтернативный сервер</string>
+    <string name="auth_reset_default_endpoint">По умолчанию</string>
+
+
     <!-- Choose auth type-->
     <string name="choose_auth_type_title">Выбор способа авторизации</string>
     <string name="choose_auth_type_hint">Пожалуйста, выберите способ авторизации.</string>

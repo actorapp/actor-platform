@@ -55,7 +55,7 @@ public class ApiBroker extends Actor {
 
     private static final AtomicIntegerCompat NEXT_PROTO_ID = im.actor.runtime.Runtime.createAtomicInt(1);
 
-    private final Endpoints endpoints;
+    private Endpoints endpoints;
     private final AuthKeyStorage keyStorage;
     private final ActorApiCallback callback;
     private final boolean isEnableLog;
@@ -103,6 +103,14 @@ public class ApiBroker extends Actor {
         }
     }
 
+    public void changeEndpoints(Endpoints endpoints) {
+        if (endpoints.equals(this.endpoints)) {
+            return;
+        }
+        this.endpoints = endpoints;
+        recreateAuthId();
+    }
+
     @Override
     public void postStop() {
         if (proto != null) {
@@ -140,12 +148,16 @@ public class ApiBroker extends Actor {
 
         Log.w(TAG, "Auth id invalidated");
 
+        callback.onAuthIdInvalidated();
+
+        recreateAuthId();
+    }
+
+    private void recreateAuthId() {
         keyStorage.saveAuthKey(0);
         keyStorage.saveMasterKey(null);
         currentAuthId = 0;
         proto = null;
-
-        callback.onAuthIdInvalidated();
 
         this.keyManager.send(new AuthKeyActor.StartKeyCreation(this.endpoints), self());
     }
@@ -437,6 +449,18 @@ public class ApiBroker extends Actor {
 
     }
 
+    public static class ChangeEndpoints {
+        Endpoints endpoints;
+
+        public ChangeEndpoints(Endpoints endpoints) {
+            this.endpoints = endpoints;
+        }
+
+        public Endpoints getEndpoints() {
+            return endpoints;
+        }
+    }
+
     private class InitMTProto {
         private long authId;
         private byte[] authKey;
@@ -657,6 +681,8 @@ public class ApiBroker extends Actor {
         } else if (message instanceof AuthKeyActor.KeyCreated) {
             onKeyCreated(((AuthKeyActor.KeyCreated) message).getAuthKeyId(),
                     ((AuthKeyActor.KeyCreated) message).getAuthKey());
+        } else if (message instanceof ChangeEndpoints) {
+            changeEndpoints(((ChangeEndpoints) message).getEndpoints());
         } else {
             super.onReceive(message);
         }

@@ -25,7 +25,8 @@ public class ActorApi {
     private static final AtomicIntegerCompat NEXT_ID = im.actor.runtime.Runtime.createAtomicInt(1);
     private static final AtomicLongCompat NEXT_RPC_ID = im.actor.runtime.Runtime.createAtomicLong(1);
 
-    private final Endpoints endpoints;
+    private Endpoints endpoints;
+    private Endpoints defaultEndpoints;
     private final AuthKeyStorage keyStorage;
     private final ActorApiCallback callback;
     private final boolean isEnableLog;
@@ -47,6 +48,7 @@ public class ActorApi {
                     int maxDelay,
                     int maxFailureCount) {
         this.endpoints = endpoints;
+        this.defaultEndpoints = endpoints;
         this.keyStorage = keyStorage;
         this.callback = callback;
         this.isEnableLog = isEnableLog;
@@ -111,6 +113,22 @@ public class ActorApi {
      */
     public synchronized void forceNetworkCheck() {
         this.apiBroker.send(new ApiBroker.ForceNetworkCheck());
+    }
+
+    /**
+     * Changing endpoints
+     */
+    public synchronized void changeEndpoints(Endpoints endpoints) {
+        this.endpoints = endpoints;
+        this.apiBroker.send(new ApiBroker.ChangeEndpoints(endpoints));
+    }
+
+    /**
+     * Reset default endpoints
+     */
+    public synchronized void resetToDefaultEndpoints() {
+        this.endpoints = defaultEndpoints;
+        this.apiBroker.send(new ApiBroker.ChangeEndpoints(endpoints));
     }
 
     public AuthKeyStorage getKeyStorage() {

@@ -36,14 +36,18 @@ import im.actor.core.entity.Sex;
 import im.actor.core.entity.User;
 import im.actor.core.modules.Modules;
 import im.actor.core.modules.AbsModule;
+import im.actor.core.network.Endpoints;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
+import im.actor.core.network.TrustedKey;
 import im.actor.core.network.parser.Request;
 import im.actor.core.network.parser.Response;
 import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.runtime.*;
 import im.actor.runtime.Runtime;
+import im.actor.runtime.mtproto.ConnectionEndpoint;
+import im.actor.runtime.mtproto.ConnectionEndpointArray;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.PromiseFunc;
 

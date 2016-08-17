@@ -45,6 +45,7 @@ public class StorageModule extends AbsModule {
         AuthKeyStorage storage = context().getActorApi().getKeyStorage();
         long authKey = storage.getAuthKey();
         byte[] masterKey = storage.getAuthMasterKey();
+        byte[] endpoints = preferences().getBytes("custom_endpoints");
         AuthenticationBackupData authenticationBackupData = null;
         if (!isFirst) {
             authenticationBackupData = context().getAuthModule().performBackup();
@@ -72,6 +73,10 @@ public class StorageModule extends AbsModule {
         }
         if (authenticationBackupData != null) {
             context().getAuthModule().restoreBackup(authenticationBackupData);
+        }
+
+        if (endpoints != null) {
+            preferences().putBytes("custom_endpoints", endpoints);
         }
     }
 }

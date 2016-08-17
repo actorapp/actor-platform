@@ -183,6 +183,11 @@ public class ActorSDK {
     private int authType = AuthActivity.AUTH_TYPE_PHONE + AuthActivity.AUTH_TYPE_EMAIL;
 
     /**
+     * Alternate endpoints - allow choose alternate endpoint on auth - disabled be default
+     */
+    private boolean useAlternateEndpoints = false;
+
+    /**
      * Delegate
      */
     @NotNull
@@ -677,6 +682,24 @@ public class ActorSDK {
      */
     public void setCallsEnabled(boolean callsEnabled) {
         this.callsEnabled = callsEnabled;
+    }
+
+    /**
+     * Alternate endpoints - allow choose alternate endpoint on auth - disabled be default
+     *
+     * @return is isUseAlternateEndpointsEnabled enabled
+     */
+    public boolean isUseAlternateEndpointsEnabled() {
+        return useAlternateEndpoints;
+    }
+
+    /**
+     * Is alternate endpoints choose enabled
+     *
+     * @param useAlternateEndpoints is setUseAlternateEndpoints enabled
+     */
+    public void setUseAlternateEndpoints(boolean useAlternateEndpoints) {
+        this.useAlternateEndpoints = useAlternateEndpoints;
     }
 
     /**
