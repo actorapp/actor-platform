@@ -128,6 +128,7 @@ public class GroupAdminFragment extends BaseFragment {
         } else {
             permissions.setVisibility(View.GONE);
             permissionsDiv.setVisibility(View.GONE);
+            permissionsHint.setVisibility(View.GONE);
         }
 
         // Group Deletion

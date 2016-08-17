@@ -59,6 +59,7 @@ public class ConfigurationBuilder {
     private boolean isPhoneBookImportEnabled = true;
 
     private CallsProvider callsProvider;
+    private RawUpdatesHandler rawUpdatesHandler;
 
     private boolean isEnabledGroupedChatList = true;
 
@@ -137,6 +138,19 @@ public class ConfigurationBuilder {
     @ObjectiveCName("setCallsProvider:")
     public ConfigurationBuilder setCallsProvider(CallsProvider callsProvider) {
         this.callsProvider = callsProvider;
+        return this;
+    }
+
+    /**
+     * Setting raw updates handler
+     *
+     * @param rawUpdatesHandler raw updates handler
+     * @return this
+     */
+    @NotNull
+    @ObjectiveCName("setRawUpdatesHandler:")
+    public ConfigurationBuilder setRawUpdatesHandler(RawUpdatesHandler rawUpdatesHandler) {
+        this.rawUpdatesHandler = rawUpdatesHandler;
         return this;
     }
 
@@ -446,6 +460,7 @@ public class ConfigurationBuilder {
                 trustedKeys.toArray(new TrustedKey[trustedKeys.size()]),
                 isPhoneBookImportEnabled,
                 callsProvider,
+                rawUpdatesHandler,
                 voiceCallsEnabled,
                 videoCallsEnabled,
                 isEnabledGroupedChatList,

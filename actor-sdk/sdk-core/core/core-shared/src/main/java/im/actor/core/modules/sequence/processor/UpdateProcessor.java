@@ -23,6 +23,7 @@ import im.actor.core.modules.encryption.EncryptedProcessor;
 import im.actor.core.modules.eventbus.EventBusProcessor;
 import im.actor.core.modules.groups.GroupsProcessor;
 import im.actor.core.modules.presence.PresenceProcessor;
+import im.actor.core.modules.raw.RawProcessor;
 import im.actor.core.modules.settings.SettingsProcessor;
 import im.actor.core.modules.stickers.StickersProcessor;
 import im.actor.core.modules.typing.TypingProcessor;
@@ -65,7 +66,8 @@ public class UpdateProcessor extends AbsModule {
                 new ContactsProcessor(context),
                 new EncryptedProcessor(context),
                 new StickersProcessor(context),
-                new SettingsProcessor(context)
+                new SettingsProcessor(context),
+                new RawProcessor(context)
         };
 
         this.typingProcessor = new TypingProcessor(context);
