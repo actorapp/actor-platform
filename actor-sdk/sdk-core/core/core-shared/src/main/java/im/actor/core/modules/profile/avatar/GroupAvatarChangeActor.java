@@ -51,7 +51,7 @@ public class GroupAvatarChangeActor extends ModuleActor {
         tasksMap.put(rid, gid);
 
         context().getGroupsModule().getAvatarVM(gid).getUploadState().change(new AvatarUploadState(descriptor, true));
-        context().getFilesModule().requestUpload(rid, descriptor, "avatar.jpg", self());
+        context().getFilesModule().requestUpload(rid, descriptor, "avatar.jpg", null, self());
     }
 
     public void uploadCompleted(final long rid, FileReference fileReference) {

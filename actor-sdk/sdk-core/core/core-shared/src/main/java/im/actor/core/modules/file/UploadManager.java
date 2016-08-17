@@ -11,6 +11,7 @@ import im.actor.core.entity.FileReference;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.file.entity.Downloaded;
 import im.actor.core.modules.ModuleActor;
+import im.actor.core.modules.file.entity.EncryptionInfo;
 import im.actor.core.util.RandomUtils;
 import im.actor.core.viewmodel.UploadFileCallback;
 import im.actor.runtime.Log;
@@ -37,11 +38,12 @@ public class UploadManager extends ModuleActor {
 
     // Tasks
 
-    public void startUpload(long rid, String descriptor, String fileName, ActorRef requestActor) {
+    public void startUpload(long rid, String descriptor, String fileName,
+                            EncryptionInfo encryptionInfo, ActorRef requestActor) {
         if (LOG) {
             Log.d(TAG, "Starting upload #" + rid + " with descriptor " + descriptor);
         }
-        QueueItem queueItem = new QueueItem(rid, descriptor, fileName, requestActor);
+        QueueItem queueItem = new QueueItem(rid, descriptor, fileName, encryptionInfo, requestActor);
         queueItem.isStopped = false;
         queue.add(queueItem);
         checkQueue();
@@ -294,7 +296,7 @@ public class UploadManager extends ModuleActor {
 
         final QueueItem finalPendingQueue = pendingQueue;
         pendingQueue.taskRef = system().actorOf(Props.create(() -> new UploadTask(finalPendingQueue.rid, finalPendingQueue.fileDescriptor,
-                finalPendingQueue.fileName, self(), context())).changeDispatcher("heavy"), "actor/upload/task_" + RandomUtils.nextRid());
+                finalPendingQueue.fileName, finalPendingQueue.encryptionInfo, self(), context())).changeDispatcher("heavy"), "actor/upload/task_" + RandomUtils.nextRid());
     }
 
     private QueueItem findItem(long rid) {
@@ -312,15 +314,17 @@ public class UploadManager extends ModuleActor {
         private boolean isStopped;
         private boolean isStarted;
         private float progress;
+        private EncryptionInfo encryptionInfo;
         private ActorRef taskRef;
         private ActorRef requestActor;
         private String fileName;
 
-        private QueueItem(long rid, String fileDescriptor, String fileName, ActorRef requestActor) {
+        private QueueItem(long rid, String fileDescriptor, String fileName, EncryptionInfo encryptionInfo, ActorRef requestActor) {
             this.rid = rid;
             this.fileDescriptor = fileDescriptor;
             this.requestActor = requestActor;
             this.fileName = fileName;
+            this.encryptionInfo = encryptionInfo;
         }
     }
 
@@ -331,7 +335,7 @@ public class UploadManager extends ModuleActor {
         if (message instanceof StartUpload) {
             StartUpload startUpload = (StartUpload) message;
             startUpload(startUpload.getRid(), startUpload.getFileDescriptor(),
-                    startUpload.getFileName(), sender());
+                    startUpload.getFileName(), startUpload.getEncryptionInfo(), sender());
         } else if (message instanceof StopUpload) {
             StopUpload cancelUpload = (StopUpload) message;
             stopUpload(cancelUpload.getRid());
@@ -369,11 +373,13 @@ public class UploadManager extends ModuleActor {
         private long rid;
         private String fileDescriptor;
         private String fileName;
+        private EncryptionInfo encryptionInfo;
 
-        public StartUpload(long rid, String fileDescriptor, String fileName) {
+        public StartUpload(long rid, String fileDescriptor, String fileName, EncryptionInfo encryptionInfo) {
             this.rid = rid;
             this.fileDescriptor = fileDescriptor;
             this.fileName = fileName;
+            this.encryptionInfo = encryptionInfo;
         }
 
         public long getRid() {
@@ -386,6 +392,10 @@ public class UploadManager extends ModuleActor {
 
         public String getFileName() {
             return fileName;
+        }
+
+        public EncryptionInfo getEncryptionInfo() {
+            return encryptionInfo;
         }
     }
 

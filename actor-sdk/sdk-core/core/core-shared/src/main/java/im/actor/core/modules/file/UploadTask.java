@@ -12,17 +12,26 @@ import im.actor.core.api.rpc.ResponseGetFileUploadUrl;
 import im.actor.core.entity.FileReference;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.ModuleActor;
+import im.actor.core.modules.file.entity.EncryptionInfo;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
+import im.actor.runtime.Crypto;
 import im.actor.runtime.HTTP;
 import im.actor.runtime.Log;
 import im.actor.runtime.Storage;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorCancellable;
+import im.actor.runtime.crypto.BlockCipher;
 import im.actor.runtime.crypto.CRC32;
+import im.actor.runtime.crypto.primitives.Padding;
+import im.actor.runtime.crypto.primitives.modes.CBCBlockCipher;
+import im.actor.runtime.crypto.primitives.modes.CBCBlockCipherStream;
+import im.actor.runtime.crypto.primitives.padding.PKCS7Padding;
 import im.actor.runtime.files.FileSystemReference;
 import im.actor.runtime.files.InputFile;
 import im.actor.runtime.files.OutputFile;
+import im.actor.runtime.files.SequenceFileSystemInputFile;
+import im.actor.runtime.files.SequenceInputFile;
 import im.actor.runtime.http.HTTPError;
 import im.actor.runtime.http.HTTPResponse;
 import im.actor.runtime.promise.Promise;
@@ -35,6 +44,7 @@ public class UploadTask extends ModuleActor {
     private static final int SIM_BLOCKS_COUNT = 4;
     private static final int NOTIFY_THROTTLE = 1000;
     private static final int DEFAULT_RETRY = 15;
+    private static final int IV_SIZE = 16;
 
     private final String TAG;
     private final boolean LOG;
@@ -42,11 +52,14 @@ public class UploadTask extends ModuleActor {
     private long rid;
     private String fileName;
     private String descriptor;
+    private EncryptionInfo encryptionInfo;
+    private BlockCipher encryptionCipher;
+    private byte[] encryptionIv;
 
     private boolean isWriteToDestProvider = false;
 
     private FileSystemReference srcReference;
-    private InputFile inputFile;
+    private SequenceInputFile inputFile;
 
     private FileSystemReference destReference;
     private OutputFile outputFile;
@@ -54,6 +67,7 @@ public class UploadTask extends ModuleActor {
     private ActorRef manager;
     private boolean isCompleted = false;
 
+    private int finalSize;
     private int blockSize = 128 * 1024;
     private int blocksCount;
     private int nextBlock = 0;
@@ -68,12 +82,14 @@ public class UploadTask extends ModuleActor {
     private float currentProgress;
     private boolean alreadyInTemp;
 
-    public UploadTask(long rid, String descriptor, String fileName, ActorRef manager, ModuleContext context) {
+    public UploadTask(long rid, String descriptor, String fileName, EncryptionInfo encryptionInfo,
+                      ActorRef manager, ModuleContext context) {
         super(context);
         this.LOG = context.getConfiguration().isEnableFilesLogging();
         this.rid = rid;
         this.fileName = fileName;
         this.descriptor = descriptor;
+        this.encryptionInfo = encryptionInfo;
         this.manager = manager;
         this.TAG = "UploadTask{" + rid + "}";
     }
@@ -103,45 +119,52 @@ public class UploadTask extends ModuleActor {
             }
         }
 
-        srcReference.openRead()
-                .flatMap(f -> {
-                    inputFile = f;
-                    if (isWriteToDestProvider) {
-                        return destReference.openWrite(srcReference.getSize());
-                    } else {
-                        return Promise.success(null);
-                    }
-                })
-                .flatMap(f -> {
-                    outputFile = f;
+        srcReference.openRead().flatMap(f -> {
+            inputFile = new SequenceFileSystemInputFile(f);
+            if (isWriteToDestProvider) {
+                return destReference.openWrite(srcReference.getSize());
+            } else {
+                return Promise.success(null);
+            }
+        }).flatMap(f -> {
+            outputFile = f;
 
-                    crc32 = new CRC32();
+            // CRC
+            crc32 = new CRC32();
 
-                    blocksCount = srcReference.getSize() / blockSize;
-                    if (srcReference.getSize() % blockSize != 0) {
-                        blocksCount++;
-                    }
+            // Size & Encryption
+            if (encryptionInfo != null) {
+                encryptionIv = Crypto.randomBytes(16);
+                encryptionCipher = new CBCBlockCipherStream(encryptionIv, Crypto.createAES128(encryptionInfo.getEncryptionKey()));
+                finalSize = 16/*IV*/ + (int) (Math.ceil(srcReference.getSize() / (float) encryptionCipher.getBlockSize()));
+            } else {
+                finalSize = srcReference.getSize();
+            }
 
-                    if (LOG) {
-                        Log.d(TAG, "Starting uploading " + blocksCount + " blocks");
-                        Log.d(TAG, "Requesting upload config...");
-                    }
+            // Blocks
+            blocksCount = finalSize / blockSize;
+            if (finalSize % blockSize != 0) {
+                blocksCount++;
+            }
 
-                    return api(new RequestGetFileUploadUrl(srcReference.getSize()));
-                })
-                .then(r -> {
-                    if (LOG) {
-                        Log.d(TAG, "Upload config loaded");
-                    }
-                    uploadConfig = r.getUploadKey();
-                    checkQueue();
-                })
-                .failure(e -> {
-                    if (LOG) {
-                        Log.w(TAG, "Error during initialization of upload");
-                    }
-                    reportError();
-                });
+            if (LOG) {
+                Log.d(TAG, "Starting uploading " + blocksCount + " blocks");
+                Log.d(TAG, "Requesting upload config...");
+            }
+
+            return api(new RequestGetFileUploadUrl(finalSize));
+        }).then(r -> {
+            if (LOG) {
+                Log.d(TAG, "Upload config loaded");
+            }
+            uploadConfig = r.getUploadKey();
+            checkQueue();
+        }).failure(e -> {
+            if (LOG) {
+                Log.w(TAG, "Error during initialization of upload");
+            }
+            reportError();
+        });
     }
 
     private void checkQueue() {
@@ -164,32 +187,25 @@ public class UploadTask extends ModuleActor {
                 outputFile.close();
             }
 
-            request(new RequestCommitFileUpload(uploadConfig, fileName), new RpcCallback<ResponseCommitFileUpload>() {
-                @Override
-                public void onResult(ResponseCommitFileUpload response) {
-                    if (LOG) {
-                        Log.d(TAG, "Upload completed...");
-                    }
-
-                    FileReference location = new FileReference(response.getUploadedFileLocation(),
-                            fileName, srcReference.getSize());
-
-                    if (isWriteToDestProvider || alreadyInTemp) {
-                        FileSystemReference reference = Storage.commitTempFile(alreadyInTemp ? srcReference : destReference, location.getFileId(),
-                                location.getFileName());
-                        reportComplete(location, reference);
-                    } else {
-                        reportComplete(location, srcReference);
-                    }
+            api(new RequestCommitFileUpload(uploadConfig, fileName)).then(r -> {
+                if (LOG) {
+                    Log.d(TAG, "Upload completed...");
                 }
+                FileReference location = new FileReference(r.getUploadedFileLocation(), fileName,
+                        finalSize);
 
-                @Override
-                public void onError(RpcException e) {
-                    if (LOG) {
-                        Log.w(TAG, "Upload complete error");
-                    }
-                    reportError();
+                if (isWriteToDestProvider || alreadyInTemp) {
+                    FileSystemReference reference = Storage.commitTempFile(alreadyInTemp ? srcReference : destReference, location.getFileId(),
+                            location.getFileName());
+                    reportComplete(location, reference);
+                } else {
+                    reportComplete(location, srcReference);
                 }
+            }).failure(e -> {
+                if (LOG) {
+                    Log.w(TAG, "Upload complete error");
+                }
+                reportError();
             });
             return;
         }
@@ -202,12 +218,27 @@ public class UploadTask extends ModuleActor {
     private void loadPart(final int blockIndex) {
         int size = blockSize;
         int fileOffset = blockIndex * blockSize;
-        if ((blockIndex + 1) * blockSize > srcReference.getSize()) {
-            size = srcReference.getSize() - blockIndex * blockSize;
+
+        // Calculating appropriate read block size
+        if (encryptionInfo != null) {
+            if (blockIndex == 0) {
+                if (srcReference.getSize() - IV_SIZE > blockSize) {
+                    size = blockSize - IV_SIZE;
+                } else {
+                    size = srcReference.getSize();
+                }
+            } else {
+                if ((blockIndex + 1) * blockSize - IV_SIZE > srcReference.getSize()) {
+                    size = srcReference.getSize() - blockIndex * blockSize;
+                }
+            }
+        } else {
+            if ((blockIndex + 1) * blockSize > srcReference.getSize()) {
+                size = srcReference.getSize() - blockIndex * blockSize;
+            }
         }
 
-        // TODO: Validate file part load ordering
-        inputFile.read(fileOffset, size).then(filePart -> {
+        inputFile.readBlock(size).then(filePart -> {
             if (isCompleted) {
                 return;
             }
@@ -232,7 +263,47 @@ public class UploadTask extends ModuleActor {
             }
 
             uploadCount++;
-            uploadPart(blockIndex, filePart.getContents(), 0);
+
+            // Block Encryption
+            if (encryptionInfo != null) {
+
+                // Result Block
+                int destBlockCount = (int) Math.ceil(filePart.getContents().length /
+                        (float) encryptionCipher.getBlockSize());
+                int destBlockSize = destBlockCount * encryptionCipher.getBlockSize();
+                int destBlockOffset = 0;
+                if (blockIndex == 0) {
+                    destBlockOffset = 16;
+                }
+
+                // Block for uploading
+                byte[] res = new byte[destBlockSize + destBlockOffset];
+
+                // Appending IV if needed
+                if (blockIndex == 0) {
+                    for (int i = 0; i < IV_SIZE; i++) {
+                        res[i] = encryptionIv[i];
+                    }
+                }
+
+                // Encrypting Block
+                for (int i = 0; i < destBlockCount; i++) {
+                    if (i == destBlockCount - 1) {
+                        byte[] tmp = new byte[encryptionCipher.getBlockSize()];
+                        for (int j = 0; j < encryptionCipher.getBlockSize() && i * encryptionCipher.getBlockSize() + j < filePart.getContents().length; j++) {
+                            tmp[j] = filePart.getContents()[j];
+                        }
+                        encryptionCipher.encryptBlock(tmp, 0, res, destBlockOffset + i * encryptionCipher.getBlockSize());
+                    } else {
+                        encryptionCipher.encryptBlock(filePart.getContents(), i * encryptionCipher.getBlockSize(),
+                                res, destBlockOffset + i * encryptionCipher.getBlockSize());
+                    }
+                }
+
+                uploadPart(blockIndex, res, 0);
+            } else {
+                uploadPart(blockIndex, filePart.getContents(), 0);
+            }
             checkQueue();
         }).failure(e -> {
             if (isCompleted) {

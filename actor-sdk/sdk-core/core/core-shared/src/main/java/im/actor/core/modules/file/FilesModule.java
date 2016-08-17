@@ -10,6 +10,7 @@ import im.actor.core.entity.FileReference;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.file.entity.Downloaded;
+import im.actor.core.modules.file.entity.EncryptionInfo;
 import im.actor.core.util.BaseKeyValueEngine;
 import im.actor.core.viewmodel.FileCallback;
 import im.actor.core.viewmodel.FileEventCallback;
@@ -121,8 +122,10 @@ public class FilesModule extends AbsModule {
         uploadManager.send(new UploadManager.UnbindUpload(rid, callback));
     }
 
-    public void requestUpload(long rid, String descriptor, String fileName, ActorRef requester) {
-        uploadManager.send(new UploadManager.StartUpload(rid, descriptor, fileName), requester);
+    public void requestUpload(long rid, String descriptor, String fileName,
+                              EncryptionInfo encryptionInfo, ActorRef requester) {
+        uploadManager.send(new UploadManager.StartUpload(rid, descriptor, fileName, encryptionInfo),
+                requester);
     }
 
     public void cancelUpload(long rid) {

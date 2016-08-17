@@ -6,6 +6,7 @@ package im.actor.core.modules.messaging.actions.entity;
 
 import java.io.IOException;
 
+import im.actor.core.modules.file.entity.EncryptionInfo;
 import im.actor.runtime.bser.Bser;
 import im.actor.runtime.bser.BserObject;
 import im.actor.runtime.bser.BserValues;
@@ -24,12 +25,14 @@ public class PendingMessage extends BserObject {
     private AbsContent content;
     private boolean isError;
     private int timer;
+    private EncryptionInfo encryptionInfo;
 
-    public PendingMessage(Peer peer, long rid, AbsContent content, int timer) {
+    public PendingMessage(Peer peer, long rid, AbsContent content, int timer, EncryptionInfo encryptionInfo) {
         this.peer = peer;
         this.rid = rid;
         this.content = content;
         this.timer = timer;
+        this.encryptionInfo = encryptionInfo;
     }
 
     private PendingMessage() {
@@ -56,6 +59,10 @@ public class PendingMessage extends BserObject {
         return timer;
     }
 
+    public EncryptionInfo getEncryptionInfo() {
+        return encryptionInfo;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         peer = Peer.fromUniqueId(values.getLong(1));
@@ -63,6 +70,10 @@ public class PendingMessage extends BserObject {
         content = AbsContent.parse(values.getBytes(3));
         isError = values.getBool(4, false);
         timer = values.getInt(5, 0);
+        byte[] dt = values.getBytes(6);
+        if (dt != null) {
+            encryptionInfo = EncryptionInfo.fromBytes(dt);
+        }
     }
 
     @Override
@@ -72,5 +83,8 @@ public class PendingMessage extends BserObject {
         writer.writeBytes(3, AbsContent.serialize(content));
         writer.writeBool(4, isError);
         writer.writeInt(5, timer);
+        if (encryptionInfo != null) {
+            writer.writeObject(6, encryptionInfo);
+        }
     }
 }

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import im.actor.core.api.ApiDocumentEncryptionInfo;
 import im.actor.core.api.ApiDocumentExAnimation;
 import im.actor.core.api.ApiDocumentExVoice;
 import im.actor.core.api.ApiEncryptedContent;
@@ -59,6 +60,7 @@ import im.actor.core.entity.Sticker;
 import im.actor.core.entity.content.internal.ContentRemoteContainer;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.file.UploadManager;
+import im.actor.core.modules.file.entity.EncryptionInfo;
 import im.actor.core.modules.messaging.actions.entity.PendingMessage;
 import im.actor.core.modules.messaging.actions.entity.PendingMessagesStorage;
 import im.actor.core.modules.ModuleActor;
@@ -67,6 +69,7 @@ import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.runtime.*;
 import im.actor.runtime.Runtime;
+import im.actor.runtime.crypto.primitives.util.ByteStrings;
 import im.actor.runtime.function.Consumer;
 import im.actor.runtime.power.WakeLock;
 
@@ -107,14 +110,16 @@ public class SenderActor extends ModuleActor {
                     pending.getContent() instanceof StickerContent ||
                     pending.getContent() instanceof LocationContent ||
                     pending.getContent() instanceof ContactContent) {
-                performSendContent(pending.getPeer(), pending.getRid(), pending.getTimer(), pending.getContent());
+                performSendContent(pending.getPeer(), pending.getRid(), pending.getTimer(),
+                        pending.getEncryptionInfo(), pending.getContent());
             } else if (pending.getContent() instanceof DocumentContent) {
                 DocumentContent documentContent = (DocumentContent) pending.getContent();
                 if (documentContent.getSource() instanceof FileLocalSource) {
                     if (Storage.isFsPersistent()) {
                         performUploadFile(pending.getRid(),
                                 ((FileLocalSource) documentContent.getSource()).getFileDescriptor(),
-                                ((FileLocalSource) documentContent.getSource()).getFileName());
+                                ((FileLocalSource) documentContent.getSource()).getFileName(),
+                                pending.getEncryptionInfo());
                     } else {
                         List<Long> rids = new ArrayList<>();
                         rids.add(pending.getRid());
@@ -124,7 +129,7 @@ public class SenderActor extends ModuleActor {
                     }
                 } else {
                     performSendContent(pending.getPeer(), pending.getRid(),
-                            pending.getTimer(), pending.getContent());
+                            pending.getTimer(), pending.getEncryptionInfo(), pending.getContent());
                 }
             }
         }
@@ -177,21 +182,21 @@ public class SenderActor extends ModuleActor {
 
         TextContent content = TextContent.create(text, null, mentions);
 
-        PendingMessage pending = prepareSend(peer, content);
-        performSendContent(peer, pending.getRid(), pending.getTimer(), content);
+        PendingMessage pending = prepareSend(peer, content, false);
+        performSendContent(peer, pending.getRid(), pending.getTimer(), pending.getEncryptionInfo(), content);
     }
 
     public void doSendJson(Peer peer, JsonContent content) {
-        PendingMessage pending = prepareSend(peer, content);
-        performSendContent(peer, pending.getRid(), pending.getTimer(), content);
+        PendingMessage pending = prepareSend(peer, content, false);
+        performSendContent(peer, pending.getRid(), pending.getTimer(), pending.getEncryptionInfo(), content);
     }
 
     // Sending sticker
     public void doSendSticker(@NotNull Peer peer,
                               @NotNull Sticker sticker) {
         StickerContent content = StickerContent.create(sticker);
-        PendingMessage pending = prepareSend(peer, content);
-        performSendContent(peer, pending.getRid(), pending.getTimer(), content);
+        PendingMessage pending = prepareSend(peer, content, false);
+        performSendContent(peer, pending.getRid(), pending.getTimer(), pending.getEncryptionInfo(), content);
     }
 
     public void doSendContact(@NotNull Peer peer,
@@ -199,21 +204,21 @@ public class SenderActor extends ModuleActor {
                               @Nullable String name,
                               @Nullable String base64photo) {
         ContactContent content = ContactContent.create(name, phones, emails, base64photo);
-        PendingMessage pending = prepareSend(peer, content);
-        performSendContent(peer, pending.getRid(), pending.getTimer(), content);
+        PendingMessage pending = prepareSend(peer, content, false);
+        performSendContent(peer, pending.getRid(), pending.getTimer(), pending.getEncryptionInfo(), content);
     }
 
     public void doSendLocation(@NotNull Peer peer,
                                @NotNull Double longitude, @NotNull Double latitude,
                                @Nullable String street, @Nullable String place) {
         LocationContent content = LocationContent.create(longitude, latitude, street, place);
-        PendingMessage pending = prepareSend(peer, content);
-        performSendContent(peer, pending.getRid(), pending.getTimer(), content);
+        PendingMessage pending = prepareSend(peer, content, false);
+        performSendContent(peer, pending.getRid(), pending.getTimer(), pending.getEncryptionInfo(), content);
     }
 
     public void doForwardContent(Peer peer, AbsContent content) {
-        PendingMessage pending = prepareSend(peer, content);
-        performSendContent(peer, pending.getRid(), pending.getTimer(), content);
+        PendingMessage pending = prepareSend(peer, content, false);
+        performSendContent(peer, pending.getRid(), pending.getTimer(), pending.getEncryptionInfo(), content);
     }
 
     // Sending documents
@@ -222,41 +227,41 @@ public class SenderActor extends ModuleActor {
                                FastThumb fastThumb, String descriptor) {
         DocumentContent documentContent = DocumentContent.createLocal(fileName, fileSize,
                 descriptor, mimeType, fastThumb);
-        PendingMessage pending = prepareSend(peer, documentContent);
-        performUploadFile(pending.getRid(), descriptor, fileName);
+        PendingMessage pending = prepareSend(peer, documentContent, true);
+        performUploadFile(pending.getRid(), descriptor, fileName, pending.getEncryptionInfo());
     }
 
     public void doSendPhoto(Peer peer, FastThumb fastThumb, String descriptor, String fileName,
                             int fileSize, int w, int h) {
         PhotoContent photoContent = PhotoContent.createLocalPhoto(descriptor, fileName, fileSize, w, h, fastThumb);
-        PendingMessage pending = prepareSend(peer, photoContent);
-        performUploadFile(pending.getRid(), descriptor, fileName);
+        PendingMessage pending = prepareSend(peer, photoContent, true);
+        performUploadFile(pending.getRid(), descriptor, fileName, pending.getEncryptionInfo());
     }
 
     public void doSendAudio(Peer peer, String descriptor, String fileName,
                             int fileSize, int duration) {
         VoiceContent audioContent = VoiceContent.createLocalAudio(descriptor, fileName, fileSize, duration);
-        PendingMessage pending = prepareSend(peer, audioContent);
-        performUploadFile(pending.getRid(), descriptor, fileName);
+        PendingMessage pending = prepareSend(peer, audioContent, true);
+        performUploadFile(pending.getRid(), descriptor, fileName, pending.getEncryptionInfo());
     }
 
     public void doSendVideo(Peer peer, String fileName, int w, int h, int duration,
                             FastThumb fastThumb, String descriptor, int fileSize) {
         VideoContent videoContent = VideoContent.createLocalVideo(descriptor,
                 fileName, fileSize, w, h, duration, fastThumb);
-        PendingMessage pending = prepareSend(peer, videoContent);
-        performUploadFile(pending.getRid(), descriptor, fileName);
+        PendingMessage pending = prepareSend(peer, videoContent, true);
+        performUploadFile(pending.getRid(), descriptor, fileName, pending.getEncryptionInfo());
     }
 
     public void doSendAnimation(Peer peer, String fileName, int w, int h,
                                 FastThumb fastThumb, String descriptor, int fileSize) {
         AnimationContent animationContent = AnimationContent.createLocalAnimation(descriptor,
                 fileName, fileSize, w, h, fastThumb);
-        PendingMessage pending = prepareSend(peer, animationContent);
-        performUploadFile(pending.getRid(), descriptor, fileName);
+        PendingMessage pending = prepareSend(peer, animationContent, true);
+        performUploadFile(pending.getRid(), descriptor, fileName, pending.getEncryptionInfo());
     }
 
-    private PendingMessage prepareSend(Peer peer, AbsContent content) {
+    private PendingMessage prepareSend(Peer peer, AbsContent content, boolean isFile) {
         long rid = RandomUtils.nextRid();
         long date = createPendingDate();
         long sortDate = date + 365 * 24 * 60 * 60 * 1000L;
@@ -268,15 +273,19 @@ public class SenderActor extends ModuleActor {
         Message message = new Message(rid, sortDate, date, myUid(), MessageState.PENDING, content,
                 new ArrayList<>(), 0, timer);
         context().getMessagesModule().getRouter().onOutgoingMessage(peer, message);
-        PendingMessage pendingMessage = new PendingMessage(peer, rid, content, timer);
+        EncryptionInfo encryptionInfo = null;
+        if (peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED && isFile) {
+            encryptionInfo = new EncryptionInfo(Crypto.randomBytes(16), Crypto.randomBytes(32));
+        }
+        PendingMessage pendingMessage = new PendingMessage(peer, rid, content, timer, encryptionInfo);
         pendingMessages.getPendingMessages().add(pendingMessage);
         savePending();
         return pendingMessage;
     }
 
-    private void performUploadFile(long rid, String descriptor, String fileName) {
+    private void performUploadFile(long rid, String descriptor, String fileName, EncryptionInfo encryptionInfo) {
         fileUplaodingWakeLocks.put(rid, Runtime.makeWakeLock());
-        context().getFilesModule().requestUpload(rid, descriptor, fileName, self());
+        context().getFilesModule().requestUpload(rid, descriptor, fileName, encryptionInfo, self());
     }
 
     private void onFileUploaded(long rid, FileReference fileReference) {
@@ -311,9 +320,10 @@ public class SenderActor extends ModuleActor {
             return;
         }
 
-        pendingMessages.getPendingMessages().add(new PendingMessage(msg.getPeer(), msg.getRid(), nContent, msg.getTimer()));
+        pendingMessages.getPendingMessages().add(new PendingMessage(msg.getPeer(), msg.getRid(),
+                nContent, msg.getTimer(), msg.getEncryptionInfo()));
         context().getMessagesModule().getRouter().onContentChanged(msg.getPeer(), msg.getRid(), nContent);
-        performSendContent(msg.getPeer(), rid, msg.getTimer(), nContent);
+        performSendContent(msg.getPeer(), rid, msg.getTimer(), msg.getEncryptionInfo(), nContent);
         fileUplaodingWakeLocks.remove(rid).releaseLock();
     }
 
@@ -329,7 +339,7 @@ public class SenderActor extends ModuleActor {
 
     // Sending content
 
-    private void performSendContent(final Peer peer, final long rid, int timer, AbsContent content) {
+    private void performSendContent(final Peer peer, final long rid, int timer, EncryptionInfo encryptionInfo, AbsContent content) {
         WakeLock wakeLock = im.actor.runtime.Runtime.makeWakeLock();
 
         ApiMessage message;
@@ -341,7 +351,6 @@ public class SenderActor extends ModuleActor {
             FileRemoteSource source = (FileRemoteSource) documentContent.getSource();
 
             ApiDocumentEx documentEx = null;
-
             if (content instanceof PhotoContent) {
                 PhotoContent photoContent = (PhotoContent) content;
                 documentEx = new ApiDocumentExPhoto(photoContent.getW(), photoContent.getH());
@@ -356,7 +365,6 @@ public class SenderActor extends ModuleActor {
                 documentEx = new ApiDocumentExVoice(voiceContent.getDuration());
             }
 
-
             ApiFastThumb fastThumb = null;
             if (documentContent.getFastThumb() != null) {
                 fastThumb = new ApiFastThumb(
@@ -365,13 +373,20 @@ public class SenderActor extends ModuleActor {
                         documentContent.getFastThumb().getImage());
             }
 
+            ApiDocumentEncryptionInfo apiEncryptionInfo = null;
+            if (encryptionInfo != null) {
+                apiEncryptionInfo = new ApiDocumentEncryptionInfo(source.getSize(), "aes128-sha256",
+                        ByteStrings.merge(encryptionInfo.getEncryptionKey(),
+                                encryptionInfo.getMacKey()));
+            }
+
             message = new ApiDocumentMessage(source.getFileReference().getFileId(),
                     source.getFileReference().getAccessHash(),
                     source.getFileReference().getFileSize(),
                     source.getFileReference().getFileName(),
                     documentContent.getMimeType(),
                     fastThumb, documentEx,
-                    null);
+                    apiEncryptionInfo);
         } else if (content instanceof LocationContent) {
             message = new ApiJsonMessage(((LocationContent) content).getRawJson());
         } else if (content instanceof ContactContent) {
