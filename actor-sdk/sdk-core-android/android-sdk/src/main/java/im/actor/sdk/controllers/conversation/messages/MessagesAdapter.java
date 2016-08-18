@@ -1,20 +1,18 @@
 package im.actor.sdk.controllers.conversation.messages;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
-import im.actor.core.entity.GroupType;
 import im.actor.core.entity.Message;
-import im.actor.core.entity.PeerType;
+import im.actor.core.entity.Peer;
 import im.actor.core.entity.content.AbsContent;
 import im.actor.core.entity.content.AnimationContent;
 import im.actor.core.entity.content.ContactContent;
 import im.actor.core.entity.content.DocumentContent;
-import im.actor.core.entity.content.JsonContent;
 import im.actor.core.entity.content.LocationContent;
 import im.actor.core.entity.content.PhotoContent;
 import im.actor.core.entity.content.ServiceContent;
@@ -24,8 +22,6 @@ import im.actor.core.entity.content.VideoContent;
 import im.actor.core.entity.content.VoiceContent;
 import im.actor.core.viewmodel.ConversationVM;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
-import im.actor.runtime.json.JSONException;
-import im.actor.runtime.json.JSONObject;
 import im.actor.runtime.mvvm.Value;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.sdk.ActorSDK;
@@ -35,43 +31,98 @@ import im.actor.sdk.controllers.conversation.messages.content.AudioHolder;
 import im.actor.sdk.controllers.conversation.messages.content.ContactHolder;
 import im.actor.sdk.controllers.conversation.messages.content.DocHolder;
 import im.actor.sdk.controllers.conversation.messages.content.LocationHolder;
-import im.actor.sdk.controllers.conversation.messages.content.MessageHolder;
+import im.actor.sdk.controllers.conversation.messages.content.AbsMessageViewHolder;
 import im.actor.sdk.controllers.conversation.messages.content.PhotoHolder;
 import im.actor.sdk.controllers.conversation.messages.content.preprocessor.PreprocessedList;
 import im.actor.sdk.controllers.conversation.messages.content.ServiceHolder;
 import im.actor.sdk.controllers.conversation.messages.content.StickerHolder;
 import im.actor.sdk.controllers.conversation.messages.content.TextHolder;
-import im.actor.sdk.controllers.conversation.messages.content.UnsupportedHolder;
 import im.actor.sdk.controllers.ActorBinder;
+import im.actor.sdk.util.ViewUtils;
 
-import static im.actor.sdk.util.ActorSDKMessenger.groups;
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
-public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
+public class MessagesAdapter extends BindedListAdapter<Message, AbsMessageViewHolder> {
+
+    public static final int TEXT_CONTENT = 0;
+    public static final int SERVICE_CONTENT = 1;
+    public static final int PHOTO_CONTENT = 2;
+    public static final int VOICE_CONTENT = 4;
+    public static final int DOCUMENT_CONTENT = 3;
+    public static final int CONTACT_CONTENT = 5;
+    public static final int LOCATION_CONTENT = 6;
+    public static final int STICKER_CONTENT = 7;
 
     private MessagesFragment messagesFragment;
     private ActorBinder BINDER = new ActorBinder();
 
     private Context context;
-    private long firstUnread = -1;
+    private long firstUnread = -SERVICE_CONTENT;
     private long readDate;
     private long receiveDate;
-    private boolean isChannel;
+    private Peer peer;
+    private ViewHolderMatcher matcher;
 
     private HashMap<Long, Message> selected = new HashMap<>();
+
+    private static ArrayList<HolderMapEntry> holderMap;
+
+    static {
+        holderMap = new ArrayList<>();
+        holderMap.add(new HolderMapEntry(TextContent.class, TEXT_CONTENT));
+        holderMap.add(new HolderMapEntry(ServiceContent.class, SERVICE_CONTENT));
+        holderMap.add(new HolderMapEntry(PhotoContent.class, PHOTO_CONTENT));
+        holderMap.add(new HolderMapEntry(VideoContent.class, PHOTO_CONTENT));
+        holderMap.add(new HolderMapEntry(AnimationContent.class, PHOTO_CONTENT));
+        holderMap.add(new HolderMapEntry(VoiceContent.class, VOICE_CONTENT));
+        holderMap.add(new HolderMapEntry(DocumentContent.class, DOCUMENT_CONTENT));
+        holderMap.add(new HolderMapEntry(ContactContent.class, CONTACT_CONTENT));
+        holderMap.add(new HolderMapEntry(LocationContent.class, LOCATION_CONTENT));
+        holderMap.add(new HolderMapEntry(StickerContent.class, STICKER_CONTENT));
+    }
+
+    private static class HolderMapEntry {
+        Class aClass;
+        int id;
+
+        public HolderMapEntry(Class aClass, int id) {
+            this.aClass = aClass;
+            this.id = id;
+        }
+
+        public Class getaClass() {
+            return aClass;
+        }
+
+        public int getId() {
+            return id;
+        }
+    }
+
 
     public MessagesAdapter(final BindedDisplayList<Message> displayList,
                            MessagesFragment messagesFragment, Context context) {
         super(displayList);
 
+        matcher = new ViewHolderMatcher();
+
+        matcher.add(new DefaultLayouter(TEXT_CONTENT, R.layout.adapter_dialog_text, TextHolder::new));
+        matcher.add(new DefaultLayouter(SERVICE_CONTENT, R.layout.adapter_dialog_service, ServiceHolder::new));
+        matcher.add(new DefaultLayouter(PHOTO_CONTENT, R.layout.adapter_dialog_photo, PhotoHolder::new));
+        matcher.add(new DefaultLayouter(VOICE_CONTENT, R.layout.adapter_dialog_audio, AudioHolder::new));
+        matcher.add(new DefaultLayouter(DOCUMENT_CONTENT, R.layout.adapter_dialog_doc, DocHolder::new));
+        matcher.add(new DefaultLayouter(CONTACT_CONTENT, R.layout.adapter_dialog_contact, ContactHolder::new));
+        matcher.add(new DefaultLayouter(LOCATION_CONTENT, R.layout.adapter_dialog_locaton, LocationHolder::new));
+        matcher.add(new DefaultLayouter(STICKER_CONTENT, R.layout.adapter_dialog_sticker, StickerHolder::new));
+
+        ActorSDK.sharedActor().getDelegate().configureChatViewHolders(matcher.getLayouters());
+
+
         this.messagesFragment = messagesFragment;
         this.context = context;
         ConversationVM conversationVM = messenger().getConversationVM(messagesFragment.getPeer());
 
-        isChannel = false;
-        if (messagesFragment.getPeer().getPeerType() == PeerType.GROUP) {
-            isChannel = groups().get(messagesFragment.getPeer().getPeerId()).getGroupType() == GroupType.CHANNEL;
-        }
+        peer = messagesFragment.getPeer();
 
         readDate = conversationVM.getReadDate().get();
         receiveDate = conversationVM.getReceiveDate().get();
@@ -161,136 +212,68 @@ public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
     @Override
     public int getItemViewType(int position) {
         AbsContent content = getItem(position).getContent();
+        return matcher.getMatchId(content);
 
-        if (content instanceof TextContent) {
-            return 0;
-        } else if (content instanceof ServiceContent) {
-            return 1;
-        } else if (content instanceof PhotoContent) {
-            return 2;
-        } else if (content instanceof AnimationContent) {
-            return 2;
-        } else if (content instanceof VideoContent) {
-            return 2;
-        } else if (content instanceof VoiceContent) {
-            return 4;
-        } else if (content instanceof DocumentContent) {
-            return 3;
-        } else if (content instanceof ContactContent) {
-            return 5;
-        } else if (content instanceof LocationContent) {
-            return 6;
-        } else if (content instanceof StickerContent) {
-            return 7;
-        } else if (content instanceof JsonContent) {
-            try {
-                String dataType = new JSONObject(((JsonContent) content).getRawJson()).getString("dataType");
-                return dataType.hashCode();
-            } catch (JSONException e) {
-                return -1;
-            }
-        }
-        return -1;
     }
 
-    protected View inflate(int id, ViewGroup viewGroup) {
-        return LayoutInflater
-                .from(context)
-                .inflate(id, viewGroup, false);
+
+    @Override
+    public AbsMessageViewHolder onCreateViewHolder(final ViewGroup viewGroup, int viewType) {
+        return matcher.onCreateViewHolder(viewType, this, viewGroup, peer);
     }
 
     @Override
-    public MessageHolder onCreateViewHolder(final ViewGroup viewGroup, int viewType) {
-        switch (viewType) {
-            case 0:
-                return ActorSDK.sharedActor().getDelegatedViewHolder(TextHolder.class, new ActorSDK.OnDelegateViewHolder<TextHolder>() {
-                    @Override
-                    public TextHolder onNotDelegated() {
-                        return new TextHolder(MessagesAdapter.this, inflate(R.layout.adapter_dialog_text, viewGroup));
-                    }
-                }, MessagesAdapter.this, inflate(R.layout.adapter_dialog_text, viewGroup));
-            case 1:
-                return ActorSDK.sharedActor().getDelegatedViewHolder(ServiceHolder.class, new ActorSDK.OnDelegateViewHolder<ServiceHolder>() {
-                    @Override
-                    public ServiceHolder onNotDelegated() {
-                        return new ServiceHolder(MessagesAdapter.this, isChannel, inflate(R.layout.adapter_dialog_service, viewGroup));
-                    }
-                }, MessagesAdapter.this, inflate(R.layout.adapter_dialog_service, viewGroup));
-            case 2:
-                return ActorSDK.sharedActor().getDelegatedViewHolder(PhotoHolder.class, new ActorSDK.OnDelegateViewHolder<PhotoHolder>() {
-                    @Override
-                    public PhotoHolder onNotDelegated() {
-                        return new PhotoHolder(MessagesAdapter.this, inflate(R.layout.adapter_dialog_photo, viewGroup));
-                    }
-                }, MessagesAdapter.this, inflate(R.layout.adapter_dialog_photo, viewGroup));
-            case 3:
-                return ActorSDK.sharedActor().getDelegatedViewHolder(DocHolder.class, new ActorSDK.OnDelegateViewHolder<DocHolder>() {
-                    @Override
-                    public DocHolder onNotDelegated() {
-                        return new DocHolder(MessagesAdapter.this, inflate(R.layout.adapter_dialog_doc, viewGroup));
-                    }
-                }, MessagesAdapter.this, inflate(R.layout.adapter_dialog_doc, viewGroup));
-            case 4:
-                return ActorSDK.sharedActor().getDelegatedViewHolder(AudioHolder.class, new ActorSDK.OnDelegateViewHolder<AudioHolder>() {
-                    @Override
-                    public AudioHolder onNotDelegated() {
-                        return new AudioHolder(MessagesAdapter.this, inflate(R.layout.adapter_dialog_audio, viewGroup));
-                    }
-                }, MessagesAdapter.this, inflate(R.layout.adapter_dialog_audio, viewGroup));
-            case 5:
-                return ActorSDK.sharedActor().getDelegatedViewHolder(ContactHolder.class, new ActorSDK.OnDelegateViewHolder<ContactHolder>() {
-                    @Override
-                    public ContactHolder onNotDelegated() {
-                        return new ContactHolder(MessagesAdapter.this, inflate(R.layout.adapter_dialog_contact, viewGroup));
-                    }
-                }, MessagesAdapter.this, inflate(R.layout.adapter_dialog_contact, viewGroup));
-            case 6:
-                return ActorSDK.sharedActor().getDelegatedViewHolder(LocationHolder.class, new ActorSDK.OnDelegateViewHolder<LocationHolder>() {
-                    @Override
-                    public LocationHolder onNotDelegated() {
-                        return new LocationHolder(MessagesAdapter.this, inflate(R.layout.adapter_dialog_locaton, viewGroup));
-                    }
-                }, MessagesAdapter.this, inflate(R.layout.adapter_dialog_locaton, viewGroup));
-            case 7:
-                return ActorSDK.sharedActor().getDelegatedViewHolder(StickerHolder.class, new ActorSDK.OnDelegateViewHolder<StickerHolder>() {
-                    @Override
-                    public StickerHolder onNotDelegated() {
-                        return new StickerHolder(MessagesAdapter.this, inflate(R.layout.adapter_dialog_sticker, viewGroup));
-                    }
-                }, MessagesAdapter.this, inflate(R.layout.adapter_dialog_sticker, viewGroup));
-            case -1:
-                return new UnsupportedHolder(MessagesAdapter.this, inflate(R.layout.adapter_dialog_text, viewGroup));
-            default:
-                return ActorSDK.sharedActor().getDelegatedCustomMessageViewHolder(viewType, new ActorSDK.OnDelegateViewHolder<MessageHolder>() {
-                    @Override
-                    public MessageHolder onNotDelegated() {
-                        return new UnsupportedHolder(MessagesAdapter.this, inflate(R.layout.adapter_dialog_text, viewGroup));
-                    }
-                }, MessagesAdapter.this, viewGroup);
-
-        }
-    }
-
-    @Override
-    public void onBindViewHolder(MessageHolder dialogHolder, int index, Message item) {
+    public void onBindViewHolder(AbsMessageViewHolder dialogHolder, int index, Message item) {
         Message prev = null;
         Message next = null;
-        if (index > 1) {
-            next = getItem(index - 1);
+        if (index > SERVICE_CONTENT) {
+            next = getItem(index - SERVICE_CONTENT);
         }
-        if (index < getItemCount() - 1) {
-            prev = getItem(index + 1);
+        if (index < getItemCount() - SERVICE_CONTENT) {
+            prev = getItem(index + SERVICE_CONTENT);
         }
         PreprocessedList list = ((PreprocessedList) getPreprocessedList());
         dialogHolder.bindData(item, prev, next, readDate, receiveDate, list.getPreprocessedData()[index]);
     }
 
     @Override
-    public void onViewRecycled(MessageHolder holder) {
+    public void onViewRecycled(AbsMessageViewHolder holder) {
         holder.unbind();
     }
 
     public ActorBinder getBinder() {
         return BINDER;
     }
+
+    private class DefaultLayouter implements BubbleLayouter {
+        int id;
+        int layoutId;
+        HolderCreator holderCreator;
+
+        public DefaultLayouter(int id, int layoutId, HolderCreator holderCreator) {
+            this.id = id;
+            this.layoutId = layoutId;
+            this.holderCreator = holderCreator;
+        }
+
+        @Override
+        public boolean isMatch(AbsContent content) {
+            for (HolderMapEntry e : holderMap) {
+                if (e.getaClass().isAssignableFrom(content.getClass())) {
+                    return e.getId() == id;
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public AbsMessageViewHolder onCreateViewHolder(MessagesAdapter adapter, ViewGroup root, Peer peer) {
+            return holderCreator.createHolder(adapter, ViewUtils.inflate(layoutId, root), peer);
+        }
+    }
+
+    private interface HolderCreator {
+        AbsMessageViewHolder createHolder(MessagesAdapter adapter, View view, Peer peer);
+    }
+
 }

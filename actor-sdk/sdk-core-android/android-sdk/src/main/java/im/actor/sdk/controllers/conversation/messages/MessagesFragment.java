@@ -18,15 +18,11 @@ import fr.castorflex.android.circularprogressbar.CircularProgressBar;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
 import im.actor.core.viewmodel.ConversationVM;
-import im.actor.runtime.mvvm.Value;
-import im.actor.runtime.mvvm.ValueChangedListener;
-import im.actor.runtime.mvvm.ValueDoubleChangedListener;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
-import im.actor.sdk.controllers.conversation.ChatActivity;
 import im.actor.sdk.controllers.conversation.messages.content.AudioHolder;
+import im.actor.sdk.controllers.conversation.messages.content.AbsMessageViewHolder;
 import im.actor.sdk.controllers.conversation.messages.content.preprocessor.ChatListProcessor;
-import im.actor.sdk.controllers.conversation.messages.content.MessageHolder;
 import im.actor.sdk.controllers.DisplayListFragment;
 import im.actor.sdk.controllers.settings.BaseActorSettingsFragment;
 import im.actor.sdk.util.Screen;
@@ -35,7 +31,7 @@ import im.actor.runtime.generic.mvvm.BindedDisplayList;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
-public abstract class MessagesFragment extends DisplayListFragment<Message, MessageHolder> {
+public abstract class MessagesFragment extends DisplayListFragment<Message, AbsMessageViewHolder> {
 
     private final boolean isPrimaryMode;
 
@@ -149,7 +145,7 @@ public abstract class MessagesFragment extends DisplayListFragment<Message, Mess
     // Configure RecyclerView
     //
     @Override
-    protected BindedListAdapter<Message, MessageHolder> onCreateAdapter(BindedDisplayList<Message> displayList, Activity activity) {
+    protected BindedListAdapter<Message, AbsMessageViewHolder> onCreateAdapter(BindedDisplayList<Message> displayList, Activity activity) {
         messagesAdapter = new MessagesAdapter(displayList, this, activity);
         if (firstUnread != -1 && messagesAdapter.getFirstUnread() == -1) {
             messagesAdapter.setFirstUnread(firstUnread);

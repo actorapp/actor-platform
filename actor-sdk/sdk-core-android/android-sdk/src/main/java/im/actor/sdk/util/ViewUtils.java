@@ -1,6 +1,9 @@
 package im.actor.sdk.util;
 
+import android.support.annotation.LayoutRes;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
@@ -15,6 +18,12 @@ public class ViewUtils {
 
     public static void goneView(final View view, boolean isAnimated) {
         goneView(view, isAnimated, true);
+    }
+
+    public static View inflate(@LayoutRes int id, ViewGroup viewGroup) {
+        return LayoutInflater
+                .from(viewGroup.getContext())
+                .inflate(id, viewGroup, false);
     }
 
     public static void goneView(final View view, boolean isAnimated, boolean isSlow) {

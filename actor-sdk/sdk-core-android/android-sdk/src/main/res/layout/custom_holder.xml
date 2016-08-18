@@ -8,20 +8,9 @@
     android:layout_height="wrap_content"
     android:clickable="true">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:id="@+id/bubbleContainer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:duplicateParentState="true">
-
-        <FrameLayout
-            android:id="@+id/custom_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-
-    </LinearLayout>
-
+    <FrameLayout
+        android:id="@+id/custom_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </im.actor.sdk.controllers.conversation.view.BubbleContainer>

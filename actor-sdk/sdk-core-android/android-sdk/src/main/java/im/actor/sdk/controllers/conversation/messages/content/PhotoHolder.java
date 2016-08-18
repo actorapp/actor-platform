@@ -29,6 +29,7 @@ import java.io.File;
 
 import im.actor.core.entity.FileReference;
 import im.actor.core.entity.Message;
+import im.actor.core.entity.Peer;
 import im.actor.core.entity.content.AnimationContent;
 import im.actor.core.entity.content.DocumentContent;
 import im.actor.core.entity.content.FileLocalSource;
@@ -101,7 +102,7 @@ public class PhotoHolder extends MessageHolder {
     private final ControllerListener animationController;
     private Animatable anim;
 
-    public PhotoHolder(MessagesAdapter fragment, View itemView) {
+    public PhotoHolder(MessagesAdapter fragment, View itemView, Peer peer) {
         super(fragment, itemView, false);
         this.context = fragment.getMessagesFragment().getActivity();
 
