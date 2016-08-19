@@ -69,25 +69,27 @@ public class MessagesAdapter extends BindedListAdapter<Message, AbsMessageViewHo
 
     static {
         holderMap = new ArrayList<>();
-        holderMap.add(new HolderMapEntry(TextContent.class, TEXT_CONTENT));
-        holderMap.add(new HolderMapEntry(ServiceContent.class, SERVICE_CONTENT));
-        holderMap.add(new HolderMapEntry(PhotoContent.class, PHOTO_CONTENT));
-        holderMap.add(new HolderMapEntry(VideoContent.class, PHOTO_CONTENT));
-        holderMap.add(new HolderMapEntry(AnimationContent.class, PHOTO_CONTENT));
-        holderMap.add(new HolderMapEntry(VoiceContent.class, VOICE_CONTENT));
-        holderMap.add(new HolderMapEntry(DocumentContent.class, DOCUMENT_CONTENT));
-        holderMap.add(new HolderMapEntry(ContactContent.class, CONTACT_CONTENT));
-        holderMap.add(new HolderMapEntry(LocationContent.class, LOCATION_CONTENT));
-        holderMap.add(new HolderMapEntry(StickerContent.class, STICKER_CONTENT));
+        holderMap.add(new HolderMapEntry(TextContent.class, TEXT_CONTENT, R.layout.adapter_dialog_text));
+        holderMap.add(new HolderMapEntry(ServiceContent.class, SERVICE_CONTENT, R.layout.adapter_dialog_service));
+        holderMap.add(new HolderMapEntry(PhotoContent.class, PHOTO_CONTENT, R.layout.adapter_dialog_photo));
+        holderMap.add(new HolderMapEntry(VideoContent.class, PHOTO_CONTENT, R.layout.adapter_dialog_photo));
+        holderMap.add(new HolderMapEntry(AnimationContent.class, PHOTO_CONTENT, R.layout.adapter_dialog_photo));
+        holderMap.add(new HolderMapEntry(VoiceContent.class, R.layout.adapter_dialog_audio, VOICE_CONTENT));
+        holderMap.add(new HolderMapEntry(DocumentContent.class, R.layout.adapter_dialog_doc, DOCUMENT_CONTENT));
+        holderMap.add(new HolderMapEntry(ContactContent.class, R.layout.adapter_dialog_contact, CONTACT_CONTENT));
+        holderMap.add(new HolderMapEntry(LocationContent.class, R.layout.adapter_dialog_locaton, LOCATION_CONTENT));
+        holderMap.add(new HolderMapEntry(StickerContent.class, R.layout.adapter_dialog_sticker, STICKER_CONTENT));
     }
 
     private static class HolderMapEntry {
         Class aClass;
         int id;
+        int layoutId;
 
-        public HolderMapEntry(Class aClass, int id) {
+        public HolderMapEntry(Class aClass, int id, int layoutId) {
             this.aClass = aClass;
             this.id = id;
+            this.layoutId = layoutId;
         }
 
         public Class getaClass() {

@@ -924,6 +924,10 @@ public class ActorStyle {
         return Color.argb(Color.alpha(color), (int) Math.round(Color.red(color) * percent), (int) Math.round(Color.green(color) * percent), (int) Math.round(Color.blue(color) * percent));
     }
 
+    public static int adjustColorAlpha(int color, int alpha) {
+        return (alpha << 24) | (color & 0x00ffffff);
+    }
+
     /**
      * Get color with fallback to default - if color is 0, returns fallback color
      *
