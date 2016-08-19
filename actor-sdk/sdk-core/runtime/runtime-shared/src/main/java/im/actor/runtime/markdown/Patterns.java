@@ -63,7 +63,7 @@ public class Patterns {
     public static final String WEB_URL_START_CHAR = "^" + WEB_URL_CHAR;
 
     /**
-     *  Regular expression pattern to match most part of RFC 3987
+     *  Regular expression pattern to isMatch most part of RFC 3987
      *  Internationalized URLs, aka IRIs.  Commonly used Unicode characters are
      *  added.
      */
@@ -130,7 +130,7 @@ public class Patterns {
      *                     be extracted
      *
      * @return             A String comprising all of the digits and plus in
-     *                     the match
+     *                     the isMatch
      */
     public static final String digitsAndPlusOnly(MatcherCompat matcher) {
         StringBuilder buffer = new StringBuilder();

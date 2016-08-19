@@ -12,10 +12,12 @@ import android.widget.Toast;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.core.entity.Peer;
 import im.actor.develop.R;
+import im.actor.holders.BubbleTextHolderLayouter;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorSDKApplication;
 import im.actor.sdk.ActorStyle;
@@ -23,6 +25,7 @@ import im.actor.sdk.BaseActorSDKDelegate;
 import im.actor.sdk.controllers.conversation.attach.ShareMenuField;
 import im.actor.sdk.controllers.conversation.attach.AbsAttachFragment;
 import im.actor.sdk.controllers.conversation.attach.AttachFragment;
+import im.actor.sdk.controllers.conversation.messages.BubbleLayouter;
 import im.actor.sdk.controllers.root.RootFragment;
 import im.actor.sdk.controllers.settings.ActorSettingsCategories;
 import im.actor.sdk.controllers.settings.ActorSettingsCategory;
@@ -86,6 +89,11 @@ public class Application extends ActorSDKApplication {
     }
 
     private class ActorSDKDelegate extends BaseActorSDKDelegate {
+
+        @Override
+        public void configureChatViewHolders(ArrayList<BubbleLayouter> layouters) {
+            layouters.add(0, new BubbleTextHolderLayouter());
+        }
 
         @Nullable
         @Override

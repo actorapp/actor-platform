@@ -9,6 +9,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import im.actor.core.entity.Message;
+import im.actor.core.entity.Peer;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
@@ -33,7 +34,7 @@ public class TextHolder extends MessageHolder {
     private int readColor;
     private int errorColor;
 
-    public TextHolder(MessagesAdapter fragment, final View itemView) {
+    public TextHolder(MessagesAdapter fragment, final View itemView, Peer peer) {
         super(fragment, itemView, false);
 
         mainContainer = (ViewGroup) itemView.findViewById(R.id.mainContainer);

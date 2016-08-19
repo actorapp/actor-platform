@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.droidkit.progress.CircularView;
 
 import im.actor.core.entity.Message;
+import im.actor.core.entity.Peer;
 import im.actor.core.entity.content.DocumentContent;
 import im.actor.core.entity.content.FileLocalSource;
 import im.actor.core.entity.content.FileRemoteSource;
@@ -70,7 +71,7 @@ public class AudioHolder extends MessageHolder {
     protected boolean treckingTouch;
     protected Handler mainThread;
 
-    public AudioHolder(MessagesAdapter fragment, final View itemView) {
+    public AudioHolder(MessagesAdapter fragment, final View itemView, Peer peer) {
         super(fragment, itemView, false);
         context = fragment.getMessagesFragment().getContext();
         mainThread = new Handler(context.getMainLooper());
