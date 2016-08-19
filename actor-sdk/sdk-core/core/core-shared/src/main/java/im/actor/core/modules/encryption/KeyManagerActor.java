@@ -367,7 +367,7 @@ public class KeyManagerActor extends ModuleActor {
 
                                         if (!Curve25519.verifySignature(keysGroup.getT1().getIdentityKey().getPublicKey(),
                                                 keyHash, sig.getSignature())) {
-                                            throw new RuntimeException("Key signature does not match");
+                                            throw new RuntimeException("Key signature does not isMatch");
                                         }
 
                                         PublicKey pkey = new PublicKey(keyId, key.getKeyAlg(), key.getKeyMaterial());
@@ -417,7 +417,7 @@ public class KeyManagerActor extends ModuleActor {
 
                                         if (!Curve25519.verifySignature(keyGroups.getT1().getIdentityKey().getPublicKey(),
                                                 keyHash, sig.getSignature())) {
-                                            throw new RuntimeException("Key signature does not match");
+                                            throw new RuntimeException("Key signature does not isMatch");
                                         }
 
                                         return new PublicKey(key.getKeyId(), key.getKeyAlg(), key.getKeyMaterial());

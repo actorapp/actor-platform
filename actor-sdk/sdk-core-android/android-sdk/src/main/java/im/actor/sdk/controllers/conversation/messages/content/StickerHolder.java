@@ -8,6 +8,7 @@ import android.widget.TextView;
 import im.actor.core.entity.FileReference;
 import im.actor.core.entity.ImageLocation;
 import im.actor.core.entity.Message;
+import im.actor.core.entity.Peer;
 import im.actor.core.entity.content.StickerContent;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
@@ -40,7 +41,7 @@ public class StickerHolder extends MessageHolder {
     // Content Views
     private StickerView sticker;
 
-    public StickerHolder(MessagesAdapter fragment, View itemView) {
+    public StickerHolder(MessagesAdapter fragment, View itemView, Peer peer) {
 
         super(fragment, itemView, false);
         this.context = fragment.getMessagesFragment().getActivity();

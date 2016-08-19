@@ -6,6 +6,7 @@ package im.actor.sdk.controllers.conversation.messages.content;
 
 import android.view.View;
 
+import im.actor.core.entity.Peer;
 import im.actor.sdk.R;
 import im.actor.core.entity.Message;
 import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
@@ -15,8 +16,8 @@ public class UnsupportedHolder extends TextHolder {
 
     protected String text;
 
-    public UnsupportedHolder(MessagesAdapter fragment, View itemView) {
-        super(fragment, itemView);
+    public UnsupportedHolder(MessagesAdapter fragment, View itemView, Peer peer) {
+        super(fragment, itemView, peer);
 
         text = fragment.getMessagesFragment().getResources().getString(R.string.chat_unsupported);
         onConfigureViewHolder();

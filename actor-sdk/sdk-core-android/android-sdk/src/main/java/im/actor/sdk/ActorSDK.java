@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.ViewGroup;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
@@ -29,13 +28,10 @@ import im.actor.core.entity.Peer;
 import im.actor.runtime.Log;
 import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.ActorSystem;
-import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.runtime.threading.ThreadDispatcher;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.root.RootActivity;
 import im.actor.sdk.controllers.conversation.ChatActivity;
-import im.actor.sdk.controllers.conversation.messages.content.MessageHolder;
-import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
 import im.actor.sdk.controllers.auth.AuthActivity;
 import im.actor.sdk.controllers.group.GroupInfoActivity;
 import im.actor.sdk.controllers.settings.MyProfileActivity;
@@ -1049,29 +1045,6 @@ public class ActorSDK {
 
     }
 
-    /**
-     * Method is used internally for getting delegated list ViewHolder for default messages types
-     */
-    public <T extends BindedViewHolder> T getDelegatedViewHolder(Class<T> base, OnDelegateViewHolder<T> callback, Object... args) {
-        T delegated = delegate.getViewHolder(base, args);
-        if (delegated != null) {
-            return delegated;
-        } else {
-            return callback.onNotDelegated();
-        }
-    }
-
-    /**
-     * Method is used internally for getting delegated list ViewHolder for custom messages types
-     */
-    public MessageHolder getDelegatedCustomMessageViewHolder(int dataTypeHash, OnDelegateViewHolder<MessageHolder> callback, MessagesAdapter messagesAdapter, ViewGroup viewGroup) {
-        MessageHolder delegated = delegate.getCustomMessageViewHolder(dataTypeHash, messagesAdapter, viewGroup);
-        if (delegated != null) {
-            return delegated;
-        } else {
-            return callback.onNotDelegated();
-        }
-    }
 
     public boolean isVideoCallsEnabled() {
         return videoCallsEnabled;
@@ -1089,13 +1062,6 @@ public class ActorSDK {
         this.inviteDataUrl = inviteDataUrl;
     }
 
-    /**
-     * Used for handling delegated ViewHolders
-     */
-    public interface OnDelegateViewHolder<T> {
-        T onNotDelegated();
-
-    }
 
     public static void returnToRoot(Context context) {
         Intent i;

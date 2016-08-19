@@ -29,6 +29,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import im.actor.core.entity.Message;
+import im.actor.core.entity.Peer;
 import im.actor.core.entity.content.LocationContent;
 import im.actor.core.viewmodel.FileVM;
 import im.actor.core.viewmodel.UploadFileVM;
@@ -66,7 +67,7 @@ public class LocationHolder extends MessageHolder {
     protected UploadFileVM uploadFileVM;
     protected boolean isPhoto;
 
-    public LocationHolder(MessagesAdapter fragment, View itemView) {
+    public LocationHolder(MessagesAdapter fragment, View itemView, Peer peer) {
         super(fragment, itemView, false);
         this.context = fragment.getMessagesFragment().getActivity();
 
