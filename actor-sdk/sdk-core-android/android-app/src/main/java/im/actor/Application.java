@@ -1,10 +1,7 @@
 package im.actor;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.multidex.MultiDex;
 import android.support.v4.app.Fragment;
@@ -12,7 +9,6 @@ import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
@@ -26,7 +22,6 @@ import im.actor.core.entity.Peer;
 import im.actor.core.entity.content.JsonContent;
 import im.actor.core.entity.content.PhotoContent;
 import im.actor.develop.R;
-import im.actor.holders.BubbleTextHolderLayouter;
 import im.actor.runtime.json.JSONException;
 import im.actor.runtime.json.JSONObject;
 import im.actor.sdk.ActorSDK;
@@ -37,6 +32,7 @@ import im.actor.sdk.controllers.conversation.attach.ShareMenuField;
 import im.actor.sdk.controllers.conversation.attach.AbsAttachFragment;
 import im.actor.sdk.controllers.conversation.attach.AttachFragment;
 import im.actor.sdk.controllers.conversation.messages.BubbleLayouter;
+import im.actor.sdk.controllers.conversation.messages.DefaultLayouter;
 import im.actor.sdk.controllers.conversation.messages.JsonXmlBubbleLayouter;
 import im.actor.sdk.controllers.conversation.messages.XmlBubbleLayouter;
 import im.actor.sdk.controllers.conversation.messages.content.PhotoHolder;
@@ -109,6 +105,7 @@ public class Application extends ActorSDKApplication {
         @Override
         public void configureChatViewHolders(ArrayList<BubbleLayouter> layouters) {
 //            layouters.add(0, new BubbleTextHolderLayouter());
+            layouters.add(0, new DefaultLayouter(DefaultLayouter.TEXT_CONTENT, CensoredTextHolderEx::new));
             layouters.add(0, new XmlBubbleLayouter(content -> content instanceof PhotoContent, R.layout.adapter_dialog_photo, (adapter1, root1, peer1) -> new PhotoHolder(adapter1, root1, peer1) {
                 @Override
                 protected void onConfigureViewHolder() {

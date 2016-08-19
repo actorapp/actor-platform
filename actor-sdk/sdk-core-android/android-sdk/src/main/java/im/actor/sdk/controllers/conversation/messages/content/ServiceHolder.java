@@ -21,8 +21,8 @@ public class ServiceHolder extends MessageHolder {
     private TextView messageText;
     private boolean isChannel;
 
-    public ServiceHolder(MessagesAdapter fragment, View itemView, Peer peer) {
-        super(fragment, itemView, true);
+    public ServiceHolder(MessagesAdapter adapter, View itemView, Peer peer) {
+        super(adapter, itemView, true);
 
         isChannel = peer.getPeerType() == PeerType.GROUP && groups().get(peer.getPeerId()).getGroupType() == GroupType.CHANNEL;
 

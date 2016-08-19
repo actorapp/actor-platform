@@ -69,8 +69,8 @@ public class DocHolder extends MessageHolder {
     protected UploadFileVM uploadFileVM;
     protected DocumentContent document;
 
-    public DocHolder(final MessagesAdapter fragment, View itemView, Peer peer) {
-        this(fragment, itemView, false, peer);
+    public DocHolder(final MessagesAdapter adapter, View itemView, Peer peer) {
+        this(adapter, itemView, false, peer);
     }
 
     public DocHolder(final MessagesAdapter fragment, View itemView, boolean isFullSize, Peer peer) {

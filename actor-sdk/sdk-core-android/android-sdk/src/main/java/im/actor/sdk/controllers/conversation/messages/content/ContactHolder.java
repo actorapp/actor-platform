@@ -48,8 +48,8 @@ public class ContactHolder extends MessageHolder {
     private ImageView contactAvatar;
 
 
-    public ContactHolder(MessagesAdapter fragment, final View itemView, Peer peer) {
-        super(fragment, itemView, false);
+    public ContactHolder(MessagesAdapter adapter, final View itemView, Peer peer) {
+        super(adapter, itemView, false);
         waitColor = ActorSDK.sharedActor().style.getConvStatePendingColor();
         sentColor = ActorSDK.sharedActor().style.getConvStateSentColor();
         deliveredColor = ActorSDK.sharedActor().style.getConvStateDeliveredColor();
