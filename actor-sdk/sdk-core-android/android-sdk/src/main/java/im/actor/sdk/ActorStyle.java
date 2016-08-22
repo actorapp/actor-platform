@@ -2,8 +2,6 @@ package im.actor.sdk;
 
 import android.graphics.Color;
 
-import im.actor.sdk.util.Screen;
-
 /**
  * Actor Styling class
  */
@@ -948,14 +946,14 @@ public class ActorStyle {
     //////////////////////////
 
     // DialogsFragment layout settings
-    private int dialogsPaddingTop = Screen.dp(8);
+    private int dialogsPaddingTopDp = 8;
 
-    public int getDialogsPaddingTop() {
-        return dialogsPaddingTop;
+    public int getDialogsPaddingTopDp() {
+        return dialogsPaddingTopDp;
     }
 
-    public void setDialogsPaddingTop(int dialogsPaddingTop) {
-        this.dialogsPaddingTop = dialogsPaddingTop;
+    public void setDialogsPaddingTopDp(int dialogsPaddingTopDp) {
+        this.dialogsPaddingTopDp = dialogsPaddingTopDp;
     }
 
     // ContactsFragment layout settings
