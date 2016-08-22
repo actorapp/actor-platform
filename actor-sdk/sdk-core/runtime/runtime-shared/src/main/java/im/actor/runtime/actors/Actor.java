@@ -93,7 +93,9 @@ public class Actor {
         if (stashedMessages == null || stashedMessages.size() == 0) {
             return;
         }
-        for (StashedMessage stashedMessage : stashedMessages) {
+        StashedMessage stashedMessage;
+        for (int i = stashedMessages.size() - 1; i >= 0; i--) {
+            stashedMessage = stashedMessages.get(i);
             self().sendFirst(stashedMessage.getMessage(), stashedMessage.getSender());
         }
         stashedMessages.clear();
