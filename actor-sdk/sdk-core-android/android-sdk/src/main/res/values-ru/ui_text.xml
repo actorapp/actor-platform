@@ -373,6 +373,7 @@
 
     <string name="group_add_member">Добавить в группу</string>
     <string name="channel_add_member">Добавить в канал</string>
+    <string name="channel_add_members">Добавить в канал</string>
     <string name="group_leave">Покинуть группу</string>
     <string name="group_leave_channel">Покинуть канал</string>
 

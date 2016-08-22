@@ -21,9 +21,13 @@ public class ViewUtils {
     }
 
     public static View inflate(@LayoutRes int id, ViewGroup viewGroup) {
+        return inflate(id, viewGroup, false);
+    }
+
+    public static View inflate(@LayoutRes int id, ViewGroup viewGroup, boolean attach) {
         return LayoutInflater
                 .from(viewGroup.getContext())
-                .inflate(id, viewGroup, false);
+                .inflate(id, viewGroup, attach);
     }
 
     public static void goneView(final View view, boolean isAnimated, boolean isSlow) {

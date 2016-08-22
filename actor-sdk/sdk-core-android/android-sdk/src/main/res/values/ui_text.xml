@@ -367,6 +367,7 @@
 
     <string name="group_add_member">Add a member</string>
     <string name="channel_add_member">Add a member</string>
+    <string name="channel_add_members">Add members</string>
     <string name="group_leave">Leave group</string>
     <string name="group_leave_channel">Leave channel</string>
     <string name="group_administration">Administration</string>

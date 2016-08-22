@@ -16,10 +16,10 @@ public class UnsupportedHolder extends TextHolder {
 
     protected String text;
 
-    public UnsupportedHolder(MessagesAdapter fragment, View itemView, Peer peer) {
-        super(fragment, itemView, peer);
+    public UnsupportedHolder(MessagesAdapter fragmeadaptert, View itemView, Peer peer) {
+        super(fragmeadaptert, itemView, peer);
 
-        text = fragment.getMessagesFragment().getResources().getString(R.string.chat_unsupported);
+        text = fragmeadaptert.getMessagesFragment().getResources().getString(R.string.chat_unsupported);
         onConfigureViewHolder();
     }
 

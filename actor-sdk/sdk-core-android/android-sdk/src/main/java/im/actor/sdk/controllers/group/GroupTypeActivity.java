@@ -13,7 +13,7 @@ public class GroupTypeActivity extends BaseFragmentActivity {
 
         if (savedInstanceState == null) {
             showFragment(GroupTypeFragment.create(
-                    getIntent().getIntExtra(Intents.EXTRA_GROUP_ID, 0)), false);
+                    getIntent().getIntExtra(Intents.EXTRA_GROUP_ID, 0), false), false);
         }
     }
 }

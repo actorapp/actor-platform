@@ -1,5 +1,7 @@
 package im.actor;
 
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.multidex.MultiDex;
 import android.support.v4.app.Fragment;
@@ -15,9 +17,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
+import im.actor.core.entity.content.JsonContent;
+import im.actor.core.entity.content.PhotoContent;
 import im.actor.develop.R;
-import im.actor.holders.BubbleTextHolderLayouter;
+import im.actor.runtime.json.JSONException;
+import im.actor.runtime.json.JSONObject;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorSDKApplication;
 import im.actor.sdk.ActorStyle;
@@ -26,6 +32,12 @@ import im.actor.sdk.controllers.conversation.attach.ShareMenuField;
 import im.actor.sdk.controllers.conversation.attach.AbsAttachFragment;
 import im.actor.sdk.controllers.conversation.attach.AttachFragment;
 import im.actor.sdk.controllers.conversation.messages.BubbleLayouter;
+import im.actor.sdk.controllers.conversation.messages.DefaultLayouter;
+import im.actor.sdk.controllers.conversation.messages.JsonXmlBubbleLayouter;
+import im.actor.sdk.controllers.conversation.messages.XmlBubbleLayouter;
+import im.actor.sdk.controllers.conversation.messages.content.PhotoHolder;
+import im.actor.sdk.controllers.conversation.messages.content.TextHolder;
+import im.actor.sdk.controllers.conversation.messages.content.preprocessor.PreprocessedData;
 import im.actor.sdk.controllers.root.RootFragment;
 import im.actor.sdk.controllers.settings.ActorSettingsCategories;
 import im.actor.sdk.controllers.settings.ActorSettingsCategory;
@@ -92,7 +104,30 @@ public class Application extends ActorSDKApplication {
 
         @Override
         public void configureChatViewHolders(ArrayList<BubbleLayouter> layouters) {
-            layouters.add(0, new BubbleTextHolderLayouter());
+//            layouters.add(0, new BubbleTextHolderLayouter());
+            layouters.add(0, new DefaultLayouter(DefaultLayouter.TEXT_CONTENT, CensoredTextHolderEx::new));
+            layouters.add(0, new XmlBubbleLayouter(content -> content instanceof PhotoContent, R.layout.adapter_dialog_photo, (adapter1, root1, peer1) -> new PhotoHolder(adapter1, root1, peer1) {
+                @Override
+                protected void onConfigureViewHolder() {
+                    previewView.setColorFilter(ActorStyle.adjustColorAlpha(Color.CYAN, 20), PorterDuff.Mode.ADD);
+                }
+            }));
+            layouters.add(0, new JsonXmlBubbleLayouter(null, R.layout.adapter_dialog_text, (adapter, root, peer) -> new TextHolder(adapter, root, peer) {
+                @Override
+                protected void bindData(Message message, long readDate, long receiveDate, boolean isUpdated, PreprocessedData preprocessedData) {
+                    String jsonString = "can't read json";
+                    try {
+                        JSONObject jsonObject = new JSONObject(((JsonContent) message.getContent()).getRawJson());
+                        String dataType = jsonObject.getString("dataType");
+                        JSONObject data = jsonObject.getJSONObject("data");
+                        jsonString = dataType + "\n\n";
+                        jsonString += data.toString(3);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    bindRawText(jsonString, readDate, receiveDate, reactions, message, false);
+                }
+            }));
         }
 
         @Nullable

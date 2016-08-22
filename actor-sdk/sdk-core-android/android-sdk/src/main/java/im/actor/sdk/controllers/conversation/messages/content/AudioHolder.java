@@ -71,9 +71,9 @@ public class AudioHolder extends MessageHolder {
     protected boolean treckingTouch;
     protected Handler mainThread;
 
-    public AudioHolder(MessagesAdapter fragment, final View itemView, Peer peer) {
-        super(fragment, itemView, false);
-        context = fragment.getMessagesFragment().getContext();
+    public AudioHolder(MessagesAdapter adapter, final View itemView, Peer peer) {
+        super(adapter, itemView, false);
+        context = adapter.getMessagesFragment().getContext();
         mainThread = new Handler(context.getMainLooper());
         waitColor = ActorSDK.sharedActor().style.getConvStatePendingColor();
         sentColor = ActorSDK.sharedActor().style.getConvStateSentColor();

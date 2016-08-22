@@ -41,10 +41,10 @@ public class StickerHolder extends MessageHolder {
     // Content Views
     private StickerView sticker;
 
-    public StickerHolder(MessagesAdapter fragment, View itemView, Peer peer) {
+    public StickerHolder(MessagesAdapter adapter, View itemView, Peer peer) {
 
-        super(fragment, itemView, false);
-        this.context = fragment.getMessagesFragment().getActivity();
+        super(adapter, itemView, false);
+        this.context = adapter.getMessagesFragment().getActivity();
 
         COLOR_PENDING = ActorSDK.sharedActor().style.getConvMediaStatePendingColor();
         COLOR_SENT = ActorSDK.sharedActor().style.getConvMediaStateSentColor();

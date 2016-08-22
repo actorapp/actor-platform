@@ -34,8 +34,8 @@ public class TextHolder extends MessageHolder {
     private int readColor;
     private int errorColor;
 
-    public TextHolder(MessagesAdapter fragment, final View itemView, Peer peer) {
-        super(fragment, itemView, false);
+    public TextHolder(MessagesAdapter adapter, final View itemView, Peer peer) {
+        super(adapter, itemView, false);
 
         mainContainer = (ViewGroup) itemView.findViewById(R.id.mainContainer);
         messageBubble = (FrameLayout) itemView.findViewById(R.id.fl_bubble);

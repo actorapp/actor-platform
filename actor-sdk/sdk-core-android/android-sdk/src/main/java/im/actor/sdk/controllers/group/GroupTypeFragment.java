@@ -18,14 +18,17 @@ import im.actor.core.viewmodel.GroupVM;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.BaseFragment;
+import im.actor.sdk.controllers.compose.CreateGroupActivity;
+import im.actor.sdk.controllers.compose.GroupUsersFragment;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
 public class GroupTypeFragment extends BaseFragment {
 
-    public static GroupTypeFragment create(int groupId) {
+    public static GroupTypeFragment create(int groupId, boolean isCreate) {
         Bundle bundle = new Bundle();
         bundle.putInt("groupId", groupId);
+        bundle.putBoolean("isCreate", isCreate);
         GroupTypeFragment editFragment = new GroupTypeFragment();
         editFragment.setArguments(bundle);
         return editFragment;
@@ -34,6 +37,7 @@ public class GroupTypeFragment extends BaseFragment {
     private EditText publicShortName;
     private GroupVM groupVM;
     private boolean isPublic;
+    private boolean isCreate;
 
     public GroupTypeFragment() {
         setRootFragment(true);
@@ -44,7 +48,7 @@ public class GroupTypeFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle saveInstance) {
         super.onCreate(saveInstance);
-
+        isCreate = getArguments().getBoolean("isCreate", false);
         groupVM = messenger().getGroup(getArguments().getInt("groupId"));
         setTitle(groupVM.getGroupType() == GroupType.CHANNEL ? R.string.channel_title : R.string.group_title);
 
@@ -146,21 +150,21 @@ public class GroupTypeFragment extends BaseFragment {
                     return true;
                 }
                 if (nShortName.equals(groupVM.getShortName().get())) {
-                    finishActivity();
+                    onEditShortNameSuccess();
                     return true;
                 }
                 execute(messenger().editGroupShortName(groupVM.getId(), nShortName).then(r -> {
-                    finishActivity();
+                    onEditShortNameSuccess();
                 }).failure(e -> {
                     Toast.makeText(getActivity(), R.string.group_edit_change_short_name_error, Toast.LENGTH_SHORT).show();
                 }));
             } else {
                 if (groupVM.getShortName().get() == null) {
-                    finishActivity();
+                    onEditShortNameSuccess();
                     return true;
                 } else {
                     execute(messenger().editGroupShortName(groupVM.getId(), null).then(r -> {
-                        finishActivity();
+                        onEditShortNameSuccess();
                     }).failure(e -> {
                         Toast.makeText(getActivity(), R.string.group_edit_change_short_name_error, Toast.LENGTH_SHORT).show();
                     }));
@@ -169,5 +173,14 @@ public class GroupTypeFragment extends BaseFragment {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    protected void onEditShortNameSuccess() {
+        if (isCreate) {
+            ((CreateGroupActivity) getActivity()).showNextFragment(
+                    GroupUsersFragment.createChannel(getArguments().getInt("groupId")), false);
+        } else {
+            finishActivity();
+        }
     }
 }
