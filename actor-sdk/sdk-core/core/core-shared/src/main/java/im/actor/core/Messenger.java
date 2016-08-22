@@ -1630,6 +1630,19 @@ public class Messenger {
     }
 
     /**
+     * Adding member to group
+     *
+     * @param gid group's id
+     * @param uid user's id
+     * @return promise of adding member to group
+     */
+    @NotNull
+    @ObjectiveCName("inviteMemberPromiseWithGid:withUid:")
+    public Promise<Void> inviteMemberPromise(int gid, int uid) {
+        return modules.getGroupsModule().addMember(gid, uid);
+    }
+
+    /**
      * Kick member from group
      *
      * @param gid group's id
