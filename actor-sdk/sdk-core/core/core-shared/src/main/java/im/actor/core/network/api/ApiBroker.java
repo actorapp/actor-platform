@@ -14,10 +14,8 @@ import im.actor.core.network.parser.ApiParserConfig;
 import im.actor.core.network.parser.ParsingExtension;
 import im.actor.runtime.*;
 import im.actor.runtime.Runtime;
-import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorRef;
-import im.actor.runtime.actors.ActorSystem;
-import im.actor.runtime.actors.Props;
+import im.actor.runtime.actors.AskcableActor;
 import im.actor.core.util.RandomUtils;
 import im.actor.core.network.mtp.MTProto;
 import im.actor.core.network.mtp.MTProtoCallback;
@@ -32,23 +30,18 @@ import im.actor.core.network.mtp.entity.rpc.RpcRequest;
 import im.actor.core.network.parser.Request;
 import im.actor.core.network.parser.Response;
 import im.actor.core.network.parser.RpcScope;
+import im.actor.runtime.promise.Promise;
 import im.actor.runtime.threading.AtomicIntegerCompat;
 import im.actor.runtime.threading.CommonTimer;
 
-public class ApiBroker extends Actor {
+public class ApiBroker extends AskcableActor {
 
-    public static ActorRef get(final Endpoints endpoints, final AuthKeyStorage keyStorage, final ActorApiCallback callback,
+    public static ApiBrokerInt get(final Endpoints endpoints, final AuthKeyStorage keyStorage, final ActorApiCallback callback,
                                final boolean isEnableLog, int id, final int minDelay,
                                final int maxDelay,
                                final int maxFailureCount) {
-        return ActorSystem.system().actorOf(Props.create(() ->
-                new ApiBroker(endpoints,
-                        keyStorage,
-                        callback,
-                        isEnableLog,
-                        minDelay,
-                        maxDelay,
-                        maxFailureCount)), "api/broker#" + id);
+
+        return new ApiBrokerInt(endpoints, keyStorage, callback, isEnableLog, id, minDelay, maxDelay, maxFailureCount);
     }
 
     private static final String TAG = "ApiBroker";
@@ -381,6 +374,10 @@ public class ApiBroker extends Actor {
         callback.onConnectionsChanged(count);
     }
 
+    private Promise<Boolean> checkIsCurrentAuthId(long authId) {
+        return new Promise<>(resolver -> resolver.result(authId == currentAuthId));
+    }
+
     public static class PerformRequest {
 
         private Request message;
@@ -643,6 +640,14 @@ public class ApiBroker extends Actor {
         public void onConnectionsCountChanged(int count) {
             self().send(new ConnectionsCountChanged(count));
         }
+    }
+
+    @Override
+    public Promise onAsk(Object message) throws Exception {
+        if (message instanceof CheckIsCurrentAuthId) {
+            return checkIsCurrentAuthId(((CheckIsCurrentAuthId) message).getAuthId());
+        }
+        return super.onAsk(message);
     }
 
     @Override

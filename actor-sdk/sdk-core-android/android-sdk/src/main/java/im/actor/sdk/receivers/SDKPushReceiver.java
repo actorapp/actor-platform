@@ -16,8 +16,9 @@ public class SDKPushReceiver extends ActorPushReceiver {
                 ActorSDK.sharedActor().waitForReady();
                 if (data.has("seq")) {
                     int seq = data.getInt("seq");
+                    int authId = data.optInt("authId");
                     Log.d("SDKPushReceiver", "Seq Received: " + seq);
-                    ActorSDK.sharedActor().getMessenger().onPushReceived(seq);
+                    ActorSDK.sharedActor().getMessenger().onPushReceived(seq, authId);
                 } else if (data.has("callId")) {
                     Long callId = Long.parseLong(data.getString("callId"));
                     int attempt = 0;

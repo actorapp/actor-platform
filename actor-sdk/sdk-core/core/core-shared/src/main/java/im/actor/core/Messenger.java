@@ -690,12 +690,13 @@ public class Messenger {
     /**
      * MUST be called when external push received
      *
-     * @param seq sequence number of update
+     * @param seq    sequence number of update
+     * @param authId auth id
      */
     @ObjectiveCName("onPushReceivedWithSeq:")
-    public void onPushReceived(int seq) {
+    public void onPushReceived(int seq, long authId) {
         if (modules.getUpdatesModule() != null) {
-            modules.getUpdatesModule().onPushReceived(seq);
+            modules.getUpdatesModule().onPushReceived(seq, authId);
         }
     }
 
