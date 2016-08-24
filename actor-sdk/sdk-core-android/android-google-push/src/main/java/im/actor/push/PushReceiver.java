@@ -25,8 +25,9 @@ public class PushReceiver extends WakefulBroadcastReceiver {
                 ActorSDK.sharedActor().waitForReady();
                 if (extras.containsKey("seq")) {
                     int seq = Integer.parseInt(extras.getString("seq"));
+                    int authId = Integer.parseInt(extras.getString("authId", "0"));
                     Log.d(TAG, "Push received #" + seq);
-                    ActorSDK.sharedActor().getMessenger().onPushReceived(seq);
+                    ActorSDK.sharedActor().getMessenger().onPushReceived(seq, authId);
                     setResultCode(Activity.RESULT_OK);
                 } else if (extras.containsKey("callId")) {
                     long callId = Long.parseLong(extras.getString("callId"));

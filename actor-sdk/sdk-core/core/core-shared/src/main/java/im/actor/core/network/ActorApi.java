@@ -5,11 +5,12 @@
 package im.actor.core.network;
 
 import im.actor.core.api.ApiVersion;
-import im.actor.core.network.parser.ApiParserConfig;
+import im.actor.core.network.api.ApiBrokerInt;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.core.network.api.ApiBroker;
 import im.actor.core.network.parser.Request;
 import im.actor.core.network.parser.Response;
+import im.actor.runtime.promise.Promise;
 import im.actor.runtime.threading.AtomicIntegerCompat;
 import im.actor.runtime.threading.AtomicLongCompat;
 
@@ -35,6 +36,7 @@ public class ActorApi {
     private final int maxFailureCount;
 
     private ActorRef apiBroker;
+    private ApiBrokerInt apiBrokerInt;
 
     /**
      * Create API
@@ -55,8 +57,9 @@ public class ActorApi {
         this.minDelay = minDelay;
         this.maxDelay = maxDelay;
         this.maxFailureCount = maxFailureCount;
-        this.apiBroker = ApiBroker.get(endpoints, keyStorage, callback, isEnableLog,
+        this.apiBrokerInt = ApiBroker.get(endpoints, keyStorage, callback, isEnableLog,
                 NEXT_ID.get(), minDelay, maxDelay, maxFailureCount);
+        this.apiBroker = apiBrokerInt.getDest();
     }
 
     /**
@@ -133,5 +136,9 @@ public class ActorApi {
 
     public AuthKeyStorage getKeyStorage() {
         return keyStorage;
+    }
+
+    public Promise<Boolean> checkIsCurrentAuthId(long authId) {
+        return apiBrokerInt.checkIsCurrentAuthId(authId);
     }
 }

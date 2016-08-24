@@ -12,13 +12,13 @@ import im.actor.core.network.ActorApiCallback;
 import im.actor.core.network.AuthKeyStorage;
 import im.actor.core.network.Endpoints;
 import im.actor.core.network.TrustedKey;
-import im.actor.core.network.api.ApiBroker;
 import im.actor.core.network.parser.Request;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.eventbus.BusSubscriber;
 import im.actor.runtime.eventbus.Event;
 import im.actor.runtime.mtproto.ConnectionEndpoint;
 import im.actor.runtime.mtproto.ConnectionEndpointArray;
+import im.actor.runtime.promise.Promise;
 
 import static im.actor.runtime.actors.ActorSystem.system;
 
@@ -122,6 +122,10 @@ public class ApiModule extends AbsModule implements BusSubscriber {
     public synchronized void resetToDefaultEndpoints() {
         context().getPreferences().putBytes("custom_endpoints", null);
         actorApi.resetToDefaultEndpoints();
+    }
+
+    public Promise<Boolean> checkIsCurrentAuthId(long authId) {
+        return actorApi.checkIsCurrentAuthId(authId);
     }
 
     @Override

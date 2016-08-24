@@ -101,15 +101,21 @@ public class SequenceActor extends ModuleActor {
         handler.onWeakUpdate(update, date);
     }
 
-    private void onPushSeqReceived(int seq) {
-        if (PROCESS_EXTERNAL_PUSH_SEQ) {
-            if (seq <= this.seq) {
-                Log.d(TAG, "Ignored PushSeq {seq:" + seq + "}");
-            } else {
-                Log.w(TAG, "External Out of sequence: starting timer for invalidation");
-                startInvalidationTimer();
-            }
+    private void onPushSeqReceived(int seq, long authId) {
+        if (context().getApiModule() == null) {
+            return;
         }
+        context().getApiModule().checkIsCurrentAuthId(authId).then(same -> {
+            if (same) {
+                if (seq <= this.seq) {
+                    Log.d(TAG, "Ignored PushSeq {seq:" + seq + "}");
+                } else {
+                    Log.w(TAG, "External Out of sequence: starting timer for invalidation");
+                    startInvalidationTimer();
+                }
+            }
+        });
+
     }
 
     @Deprecated
@@ -416,7 +422,7 @@ public class SequenceActor extends ModuleActor {
                 stash();
                 return;
             }
-            onPushSeqReceived(((PushSeq) message).seq);
+            onPushSeqReceived(((PushSeq) message).seq, ((PushSeq) message).authId);
         } else if (message instanceof WeakUpdate) {
             WeakUpdate weakUpdate = (WeakUpdate) message;
             onWeakUpdateReceived(weakUpdate.getUpdateHeader(), weakUpdate.getUpdate(),
@@ -435,9 +441,11 @@ public class SequenceActor extends ModuleActor {
     }
 
     public static class PushSeq {
+        private long authId;
         private int seq;
 
-        public PushSeq(int seq) {
+        public PushSeq(int seq, long authId) {
+            this.authId = authId;
             this.seq = seq;
         }
     }
