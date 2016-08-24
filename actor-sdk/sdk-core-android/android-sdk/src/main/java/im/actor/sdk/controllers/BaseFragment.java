@@ -341,6 +341,7 @@ public class BaseFragment extends BinderCompatFragment implements MediaPickerCal
         if (resourceId != 0 && showIcon) {
             ImageView iconView = (ImageView) recordView.findViewById(R.id.recordIcon);
             Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(resourceId));
+            drawable.mutate();
             DrawableCompat.setTint(drawable, style.getSettingsIconColor());
             iconView.setImageDrawable(drawable);
         }
@@ -365,6 +366,7 @@ public class BaseFragment extends BinderCompatFragment implements MediaPickerCal
         if (resourceId != 0 && showIcon) {
             ImageView iconView = (ImageView) recordView.findViewById(R.id.recordIcon);
             Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(resourceId));
+            drawable.mutate();
             DrawableCompat.setTint(drawable, style.getSettingsIconColor());
             iconView.setImageDrawable(drawable);
         }
@@ -389,6 +391,7 @@ public class BaseFragment extends BinderCompatFragment implements MediaPickerCal
         if (resourceId != 0 && showIcon) {
             ImageView iconView = (ImageView) recordView.findViewById(R.id.recordIcon);
             Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(resourceId));
+            drawable.mutate();
             DrawableCompat.setTint(drawable, style.getGroupActionAddIconColor());
             iconView.setImageDrawable(drawable);
         }

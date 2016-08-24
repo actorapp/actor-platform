@@ -146,6 +146,7 @@ public class ProfileFragment extends BaseFragment {
                 addContactTitle.setText(getString(R.string.profile_contacts_added));
                 addContactTitle.setTextColor(style.getProfileContactIconColor());
                 Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_check_circle_black_24dp));
+                drawable.mutate();
                 DrawableCompat.setTint(drawable, style.getProfileContactIconColor());
                 addContactIcon.setImageDrawable(drawable);
                 addContact.setOnClickListener(v -> {
@@ -155,6 +156,7 @@ public class ProfileFragment extends BaseFragment {
                 addContactTitle.setText(getString(R.string.profile_contacts_available));
                 addContactTitle.setTextColor(style.getProfileContactIconColor());
                 Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_person_add_white_24dp));
+                drawable = drawable.mutate();
                 DrawableCompat.setTint(drawable, style.getProfileContactIconColor());
                 addContactIcon.setImageDrawable(drawable);
                 addContact.setOnClickListener(v -> {
@@ -173,6 +175,7 @@ public class ProfileFragment extends BaseFragment {
         TextView newMessageTitle = (TextView) newMessageView.findViewById(R.id.newMessageText);
         {
             Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_chat_black_24dp));
+            drawable.mutate();
             DrawableCompat.setTint(drawable, style.getListActionColor());
             newMessageIcon.setImageDrawable(drawable);
             newMessageTitle.setTextColor(style.getListActionColor());
@@ -435,6 +438,7 @@ public class ProfileFragment extends BaseFragment {
             notificationContainer.setOnClickListener(v -> notificationEnable.setChecked(!notificationEnable.isChecked()));
             ImageView iconView = (ImageView) res.findViewById(R.id.settings_notification_icon);
             Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_list_black_24dp));
+            drawable.mutate();
             DrawableCompat.setTint(drawable, style.getSettingsIconColor());
             iconView.setImageDrawable(drawable);
 
@@ -495,6 +499,7 @@ public class ProfileFragment extends BaseFragment {
             });
             ImageView blockIconView = (ImageView) res.findViewById(R.id.settings_block_icon);
             Drawable blockDrawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_block_white_24dp));
+            drawable.mutate();
             DrawableCompat.setTint(blockDrawable, style.getSettingsIconColor());
             blockIconView.setImageDrawable(blockDrawable);
         }
