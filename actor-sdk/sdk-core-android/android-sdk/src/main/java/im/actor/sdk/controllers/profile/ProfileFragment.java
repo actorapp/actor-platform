@@ -5,6 +5,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -12,12 +13,14 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
+import android.util.StateSet;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -45,6 +48,7 @@ import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.BaseFragment;
 import im.actor.sdk.controllers.Intents;
+import im.actor.sdk.controllers.compose.ComposeActivity;
 import im.actor.sdk.controllers.fragment.preview.ViewAvatarActivity;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.util.ViewUtils;
@@ -102,6 +106,7 @@ public class ProfileFragment extends BaseFragment {
 
         res.findViewById(R.id.container).setBackgroundColor(style.getMainBackgroundColor());
         res.findViewById(R.id.avatarContainer).setBackgroundColor(style.getToolBarColor());
+        res.findViewById(R.id.after_actions_divider).setBackgroundColor(style.getBackyardBackgroundColor());
 
 
         //
@@ -133,6 +138,22 @@ public class ProfileFragment extends BaseFragment {
         lastSeen.setTextColor(style.getProfileSubtitleColor());
         bind(lastSeen, user);
 
+        //
+        // Fab
+        //
+
+        FloatingActionButton fab = (FloatingActionButton) res.findViewById(R.id.fab);
+
+        fab.setBackgroundTintList(new ColorStateList(new int[][]{
+                new int[]{android.R.attr.state_pressed},
+                StateSet.WILD_CARD,
+
+        }, new int[]{
+                ActorSDK.sharedActor().style.getFabPressedColor(),
+                ActorSDK.sharedActor().style.getFabColor(),
+        }));
+        fab.setRippleColor(ActorSDK.sharedActor().style.getFabPressedColor());
+        fab.setOnClickListener(v -> startActivity(new Intent(getActivity(), ComposeActivity.class)));
 
         //
         // Add/Remove Contact
@@ -143,6 +164,7 @@ public class ProfileFragment extends BaseFragment {
         final TextView addContactTitle = (TextView) addContact.findViewById(R.id.addContactTitle);
         bind(user.isContact(), (isContact, valueModel) -> {
             if (isContact) {
+                //add to contacts btn
                 addContactTitle.setText(getString(R.string.profile_contacts_added));
                 addContactTitle.setTextColor(style.getProfileContactIconColor());
                 Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_check_circle_black_24dp));
@@ -152,7 +174,12 @@ public class ProfileFragment extends BaseFragment {
                 addContact.setOnClickListener(v -> {
                     execute(ActorSDK.sharedActor().getMessenger().removeContact(user.getId()));
                 });
+
+                //fab
+                fab.setImageResource(R.drawable.ic_message_white_24dp);
+                fab.setOnClickListener(view -> startActivity(Intents.openPrivateDialog(user.getId(), true, getActivity())));
             } else {
+                //add to contacts btn
                 addContactTitle.setText(getString(R.string.profile_contacts_available));
                 addContactTitle.setTextColor(style.getProfileContactIconColor());
                 Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_person_add_white_24dp));
@@ -162,6 +189,10 @@ public class ProfileFragment extends BaseFragment {
                 addContact.setOnClickListener(v -> {
                     execute(ActorSDK.sharedActor().getMessenger().addContact(user.getId()));
                 });
+
+                //fab
+                fab.setImageResource(R.drawable.ic_person_add_white_24dp);
+                fab.setOnClickListener(view -> execute(ActorSDK.sharedActor().getMessenger().addContact(user.getId())));
             }
         });
 
@@ -190,28 +221,42 @@ public class ProfileFragment extends BaseFragment {
         //
 
         View voiceCallView = res.findViewById(R.id.voiceCall);
-        if (ActorSDK.sharedActor().isCallsEnabled()) {
+        if (ActorSDK.sharedActor().isCallsEnabled() && !user.isBot()) {
             ImageView voiceViewIcon = (ImageView) voiceCallView.findViewById(R.id.actionIcon);
             TextView voiceViewTitle = (TextView) voiceCallView.findViewById(R.id.actionText);
-            if (!user.isBot()) {
-                Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_phone_white_24dp));
-                drawable = drawable.mutate();
-                DrawableCompat.setTint(drawable, style.getListActionColor());
-                voiceViewIcon.setImageDrawable(drawable);
-                voiceViewTitle.setTextColor(style.getListActionColor());
+            Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_phone_white_24dp));
+            drawable = drawable.mutate();
+            DrawableCompat.setTint(drawable, style.getListActionColor());
+            voiceViewIcon.setImageDrawable(drawable);
+            voiceViewTitle.setTextColor(style.getListActionColor());
 
-                voiceCallView.setOnClickListener(v -> {
-                    execute(ActorSDK.sharedActor().getMessenger().doCall(user.getId()));
-                });
-            } else {
-                Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_phone_white_24dp));
-                drawable = drawable.mutate();
-                DrawableCompat.setTint(drawable, style.getTextHintColor());
-                voiceViewIcon.setImageDrawable(drawable);
-                voiceViewTitle.setTextColor(style.getTextHintColor());
-            }
+            voiceCallView.setOnClickListener(v -> {
+                execute(ActorSDK.sharedActor().getMessenger().doCall(user.getId()));
+            });
         } else {
             voiceCallView.setVisibility(View.GONE);
+        }
+
+        //
+        // Video Call
+        //
+
+
+        View videoCallView = res.findViewById(R.id.videoCall);
+        if (ActorSDK.sharedActor().isCallsEnabled() && !user.isBot()) {
+            ImageView voiceViewIcon = (ImageView) videoCallView.findViewById(R.id.videoCallIcon);
+            TextView voiceViewTitle = (TextView) videoCallView.findViewById(R.id.videoCallText);
+            Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_videocam_white_24dp));
+            drawable = drawable.mutate();
+            DrawableCompat.setTint(drawable, style.getListActionColor());
+            voiceViewIcon.setImageDrawable(drawable);
+            voiceViewTitle.setTextColor(style.getListActionColor());
+
+            videoCallView.setOnClickListener(v -> {
+                execute(ActorSDK.sharedActor().getMessenger().doVideoCall(user.getId()));
+            });
+        } else {
+            videoCallView.setVisibility(View.GONE);
         }
 
 

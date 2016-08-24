@@ -324,6 +324,7 @@
     <string name="profile_contacts_added">In Contacts</string>
     <string name="profile_contacts_available">Add to Contacts</string>
     <string name="profile_call">Voice Call</string>
+    <string name="profile_video_call">Video Call</string>
     <string name="profile_compose">New Message</string>
 
     <string name="settings_mobile_phone">Mobile phone</string>

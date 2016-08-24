@@ -332,6 +332,7 @@
     <string name="profile_contacts_added">В Контактах</string>
     <string name="profile_contacts_available">Добавить в контакты</string>
     <string name="profile_call">Звонок</string>
+    <string name="profile_video_call">Видео звонок</string>
     <string name="profile_compose">Новое сообщение</string>
 
     <string name="profile_adding">Добавление в Контакты…</string>
