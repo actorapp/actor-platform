@@ -10,7 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 
-import im.actor.core.util.ExponentialBackoff;
+import im.actor.runtime.util.ExponentialBackoff;
 import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.ThreadPriority;
 import im.actor.runtime.android.threading.AndroidDispatcher;
