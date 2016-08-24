@@ -4,8 +4,6 @@
 
 package im.actor.core.modules.file;
 
-import org.jetbrains.annotations.NotNull;
-
 import im.actor.core.entity.FileReference;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.ModuleActor;
@@ -15,8 +13,8 @@ import im.actor.runtime.Log;
 import im.actor.runtime.Storage;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorCancellable;
+import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.crypto.BlockCipher;
-import im.actor.runtime.crypto.primitives.aes.AESFastEngine;
 import im.actor.runtime.crypto.primitives.modes.CBCBlockCipherStream;
 import im.actor.runtime.crypto.primitives.util.ByteStrings;
 import im.actor.runtime.files.FileSystemReference;
@@ -27,10 +25,12 @@ import im.actor.runtime.http.HTTPError;
 import im.actor.runtime.http.HTTPResponse;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.PromiseFunc;
-import im.actor.runtime.promise.PromiseResolver;
 import im.actor.runtime.promise.Promises;
 
 public class DownloadTask extends ModuleActor {
+
+    // j2objc workaround
+    private static final Void DUMB = null;
 
     private static final int SIM_BLOCKS_COUNT = 4;
     private static final int NOTIFY_THROTTLE = 1000;
@@ -132,16 +132,18 @@ public class DownloadTask extends ModuleActor {
                     int offset = 0;
 
                     if (index == 0) {
-                        encryptionCipher = new CBCBlockCipherStream(ByteStrings.substring(r.getContent(), 0, 16),
-                                Crypto.createAES128((ByteStrings.substring(fileReference.getEncryptionInfo().getKey(), 0, 16))));
-
+                        byte[] iv = ByteStrings.substring(r.getContent(), 0, 16);
+                        byte[] key = ByteStrings.substring(fileReference.getEncryptionInfo().getKey(), 0, 16);
+                        Log.d(TAG, "File IV: " + Crypto.hex(iv));
+                        Log.d(TAG, "File Key: " + Crypto.hex(key));
+                        encryptionCipher = new CBCBlockCipherStream(iv, Crypto.createAES128(key));
                         offset = 16;
                     }
 
                     byte[] dest = new byte[r.getContent().length - offset];
-                    for (int i = 0; i < dest.length / encryptionCipher.getBlockSize(); i++) {
-                        encryptionCipher.decryptBlock(r.getContent(), i * encryptionCipher.getBlockSize(),
-                                dest, 0);
+                    for (int i = 0; i < (dest.length - offset) / encryptionCipher.getBlockSize(); i++) {
+                        encryptionCipher.decryptBlock(r.getContent(), offset + i * encryptionCipher.getBlockSize(),
+                                dest, i * encryptionCipher.getBlockSize());
                     }
 
                     if (index == 0) {
@@ -197,6 +199,7 @@ public class DownloadTask extends ModuleActor {
     private void completeWithError() {
         reportError();
     }
+
     // Downloading parts
 
     private Supplier<Promise<HTTPResponse>> partsSupplier() {

@@ -21,6 +21,9 @@ import im.actor.runtime.function.Tuple4;
  */
 public class Promises {
 
+    // j2objc workaround
+    private static final Void DUMB = null;
+
     @ObjectiveCName("logWithTag:withResolver:withFunc:")
     public static <T> Promise<T> log(final String TAG, final PromiseResolver<T> resolver, final PromiseFunc<T> func) {
         return new Promise<T>(r -> func.exec(r)).then(t -> {

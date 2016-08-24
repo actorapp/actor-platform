@@ -27,6 +27,7 @@ import im.actor.runtime.crypto.primitives.Padding;
 import im.actor.runtime.crypto.primitives.modes.CBCBlockCipher;
 import im.actor.runtime.crypto.primitives.modes.CBCBlockCipherStream;
 import im.actor.runtime.crypto.primitives.padding.PKCS7Padding;
+import im.actor.runtime.crypto.primitives.util.ByteStrings;
 import im.actor.runtime.files.FileSystemReference;
 import im.actor.runtime.files.InputFile;
 import im.actor.runtime.files.OutputFile;
@@ -136,6 +137,10 @@ public class UploadTask extends ModuleActor {
             if (encryptionInfo != null) {
                 encryptionIv = Crypto.randomBytes(16);
                 encryptionCipher = new CBCBlockCipherStream(encryptionIv, Crypto.createAES128(encryptionInfo.getEncryptionKey()));
+
+                Log.d(TAG, "File IV: " + Crypto.hex(encryptionIv));
+                Log.d(TAG, "File Key: " + Crypto.hex(encryptionInfo.getEncryptionKey()));
+
                 finalSize = 16/*IV*/ + (int) (Math.ceil(srcReference.getSize() / (float) encryptionCipher.getBlockSize()));
             } else {
                 finalSize = srcReference.getSize();

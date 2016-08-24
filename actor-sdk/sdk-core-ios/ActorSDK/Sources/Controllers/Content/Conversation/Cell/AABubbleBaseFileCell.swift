@@ -90,7 +90,7 @@ public class AABubbleBaseFileCell: AABubbleCell {
                 self.fileStateChanged(reference, progress: nil, isPaused: false, isUploading: false, selfGeneration: selfGeneration)
             })
             
-            Actor.bindRawFileWithReference(ACFileReference(ARApiFileLocation: file.reference.getFileLocation(), withNSString: file.reference.fileName, withInt: file.reference.fileSize), autoStart: autoDownload, withCallback: bindedDownloadCallback)
+            Actor.bindRawFileWithReference(file.reference, autoStart: autoDownload, withCallback: bindedDownloadCallback)
         } else {
             fatalError("Unsupported message type")
         }
