@@ -4,6 +4,7 @@
 
 package im.actor.core.modules.file;
 
+import im.actor.core.api.ApiDocumentEncryptionInfo;
 import im.actor.core.api.rpc.RequestCommitFileUpload;
 import im.actor.core.api.rpc.RequestGetFileUploadPartUrl;
 import im.actor.core.api.rpc.RequestGetFileUploadUrl;

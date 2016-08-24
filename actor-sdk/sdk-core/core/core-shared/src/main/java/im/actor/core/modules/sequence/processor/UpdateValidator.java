@@ -11,6 +11,7 @@ import im.actor.core.api.updates.UpdateChatGroupsChanged;
 import im.actor.core.api.updates.UpdateContactRegistered;
 import im.actor.core.api.updates.UpdateContactsAdded;
 import im.actor.core.api.updates.UpdateContactsRemoved;
+import im.actor.core.api.updates.UpdateEncryptedPackage;
 import im.actor.core.api.updates.UpdateGroupExtChanged;
 import im.actor.core.api.updates.UpdateGroupFullExtChanged;
 import im.actor.core.api.updates.UpdateGroupMemberAdminChanged;
@@ -104,7 +105,11 @@ public class UpdateValidator extends AbsModule {
         } else if (update instanceof UpdateGroupExtChanged) {
             UpdateGroupExtChanged extChanged = (UpdateGroupExtChanged) update;
             groups.add(extChanged.getGroupId());
+        } else if (update instanceof UpdateEncryptedPackage) {
+            UpdateEncryptedPackage updateEncryptedPackage = (UpdateEncryptedPackage) update;
+            users.add(updateEncryptedPackage.getSenderId());
         }
+
         if (!hasUsers(users)) {
             return true;
         }
