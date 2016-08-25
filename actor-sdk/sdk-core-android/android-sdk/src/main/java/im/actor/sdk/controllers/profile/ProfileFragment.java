@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
@@ -167,9 +168,8 @@ public class ProfileFragment extends BaseFragment {
                 //add to contacts btn
                 addContactTitle.setText(getString(R.string.profile_contacts_added));
                 addContactTitle.setTextColor(style.getProfileContactIconColor());
-                Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_check_circle_black_24dp));
-                drawable.mutate();
-                DrawableCompat.setTint(drawable, style.getProfileContactIconColor());
+                Drawable drawable = getResources().getDrawable(R.drawable.ic_check_circle_black_24dp);
+                drawable.mutate().setColorFilter(style.getProfileContactIconColor(), PorterDuff.Mode.SRC_IN);
                 addContactIcon.setImageDrawable(drawable);
                 addContact.setOnClickListener(v -> {
                     execute(ActorSDK.sharedActor().getMessenger().removeContact(user.getId()));
@@ -182,9 +182,8 @@ public class ProfileFragment extends BaseFragment {
                 //add to contacts btn
                 addContactTitle.setText(getString(R.string.profile_contacts_available));
                 addContactTitle.setTextColor(style.getProfileContactIconColor());
-                Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_person_add_white_24dp));
-                drawable = drawable.mutate();
-                DrawableCompat.setTint(drawable, style.getProfileContactIconColor());
+                Drawable drawable = getResources().getDrawable(R.drawable.ic_person_add_white_24dp);
+                drawable.mutate().setColorFilter(style.getProfileContactIconColor(), PorterDuff.Mode.SRC_IN);
                 addContactIcon.setImageDrawable(drawable);
                 addContact.setOnClickListener(v -> {
                     execute(ActorSDK.sharedActor().getMessenger().addContact(user.getId()));
@@ -205,9 +204,8 @@ public class ProfileFragment extends BaseFragment {
         ImageView newMessageIcon = (ImageView) newMessageView.findViewById(R.id.newMessageIcon);
         TextView newMessageTitle = (TextView) newMessageView.findViewById(R.id.newMessageText);
         {
-            Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_chat_black_24dp));
-            drawable.mutate();
-            DrawableCompat.setTint(drawable, style.getListActionColor());
+            Drawable drawable = getResources().getDrawable(R.drawable.ic_chat_black_24dp);
+            drawable.mutate().setColorFilter(style.getProfileContactIconColor(), PorterDuff.Mode.SRC_IN);
             newMessageIcon.setImageDrawable(drawable);
             newMessageTitle.setTextColor(style.getListActionColor());
         }
@@ -224,9 +222,8 @@ public class ProfileFragment extends BaseFragment {
         if (ActorSDK.sharedActor().isCallsEnabled() && !user.isBot()) {
             ImageView voiceViewIcon = (ImageView) voiceCallView.findViewById(R.id.actionIcon);
             TextView voiceViewTitle = (TextView) voiceCallView.findViewById(R.id.actionText);
-            Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_phone_white_24dp));
-            drawable = drawable.mutate();
-            DrawableCompat.setTint(drawable, style.getListActionColor());
+            Drawable drawable = getResources().getDrawable(R.drawable.ic_phone_white_24dp);
+            drawable.mutate().setColorFilter(style.getProfileContactIconColor(), PorterDuff.Mode.SRC_IN);
             voiceViewIcon.setImageDrawable(drawable);
             voiceViewTitle.setTextColor(style.getListActionColor());
 
@@ -246,9 +243,8 @@ public class ProfileFragment extends BaseFragment {
         if (ActorSDK.sharedActor().isCallsEnabled() && !user.isBot()) {
             ImageView voiceViewIcon = (ImageView) videoCallView.findViewById(R.id.videoCallIcon);
             TextView voiceViewTitle = (TextView) videoCallView.findViewById(R.id.videoCallText);
-            Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_videocam_white_24dp));
-            drawable = drawable.mutate();
-            DrawableCompat.setTint(drawable, style.getListActionColor());
+            Drawable drawable = getResources().getDrawable(R.drawable.ic_videocam_white_24dp);
+            drawable.mutate().setColorFilter(style.getProfileContactIconColor(), PorterDuff.Mode.SRC_IN);
             voiceViewIcon.setImageDrawable(drawable);
             voiceViewTitle.setTextColor(style.getListActionColor());
 
