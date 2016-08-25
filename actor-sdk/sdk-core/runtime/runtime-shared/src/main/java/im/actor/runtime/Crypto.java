@@ -106,6 +106,11 @@ public class Crypto {
      * @return padded length
      */
     public static int paddedLength(int sourceLength, int blockSize) {
-        return sourceLength + (blockSize - sourceLength % blockSize - 1);
+        if (sourceLength % blockSize != 0) {
+            return sourceLength + (blockSize - sourceLength % blockSize);
+        } else {
+            return sourceLength;
+        }
+
     }
 }

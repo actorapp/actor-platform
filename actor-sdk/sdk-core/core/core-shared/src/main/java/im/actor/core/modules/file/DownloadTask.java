@@ -79,7 +79,11 @@ public class DownloadTask extends ModuleActor {
             return;
         }
 
-        destReference.openWrite(fileReference.getFileSize()).then(r -> {
+        int destSize = fileReference.getFileSize();
+        if (fileReference.getEncryptionInfo() != null) {
+            destSize = fileReference.getFileSize();
+        }
+        destReference.openWrite(destSize).then(r -> {
             outputFile = r;
             requestUrl();
         }).failure(e -> {
@@ -130,14 +134,21 @@ public class DownloadTask extends ModuleActor {
                 if (fileReference.getEncryptionInfo() != null) {
 
                     int offset = 0;
+                    int padding = 0;
 
                     if (index == 0) {
                         byte[] iv = ByteStrings.substring(r.getContent(), 0, 16);
                         byte[] key = ByteStrings.substring(fileReference.getEncryptionInfo().getKey(), 0, 32);
                         Log.d(TAG, "File IV: " + Crypto.hex(iv));
                         Log.d(TAG, "File Key: " + Crypto.hex(key));
+                        Log.d(TAG, "File Size: " + fileReference.getFileSize());
+                        Log.d(TAG, "File Real Size: " + fileReference.getEncryptionInfo().getRealFileSize());
                         encryptionCipher = new CBCBlockCipherStream(iv, Crypto.createAES256(key));
                         offset = 16;
+                    }
+
+                    if (index == blocksCount - 1) {
+                        padding = (fileReference.getFileSize() - 16 - fileReference.getEncryptionInfo().getRealFileSize());
                     }
 
                     byte[] dest = new byte[r.getContent().length - offset];
@@ -147,11 +158,11 @@ public class DownloadTask extends ModuleActor {
                     }
 
                     if (index == 0) {
-                        if (!outputFile.write(index * blockSize, dest, 0, dest.length)) {
+                        if (!outputFile.write(index * blockSize, dest, 0, dest.length - padding)) {
                             throw new RuntimeException("Unable to write file");
                         }
                     } else {
-                        if (!outputFile.write(index * blockSize - 16, dest, 0, dest.length)) {
+                        if (!outputFile.write(index * blockSize - 16, dest, 0, dest.length - padding)) {
                             throw new RuntimeException("Unable to write file");
                         }
                     }

@@ -382,7 +382,7 @@ public class DownloadManager extends ModuleActor {
 
         int fileSize = queueItem.fileReference.getFileSize();
         if (queueItem.fileReference.getEncryptionInfo() != null) {
-            fileSize = queueItem.fileReference.getFileSize();
+            fileSize = queueItem.fileReference.getEncryptionInfo().getRealFileSize();
         }
         downloaded.addOrUpdateItem(new Downloaded(queueItem.fileReference.getFileId(), fileSize,
                 reference.getDescriptor()));
