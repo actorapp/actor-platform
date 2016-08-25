@@ -74,6 +74,8 @@ import im.actor.core.modules.messaging.router.entity.RouterOutgoingMessage;
 import im.actor.core.modules.messaging.router.entity.RouterOutgoingSent;
 import im.actor.core.modules.messaging.router.entity.RouterPeersChanged;
 import im.actor.core.modules.messaging.router.entity.RouterResetChat;
+import im.actor.core.modules.messaging.router.entity.RouterSecretChatCleared;
+import im.actor.core.modules.messaging.router.entity.RouterSecretChatDeleted;
 import im.actor.core.network.parser.Update;
 import im.actor.core.util.JavaUtil;
 import im.actor.core.viewmodel.DialogGroup;
@@ -1136,6 +1138,12 @@ public class RouterActor extends ModuleActor {
         } else if (message instanceof RouterMessagesSelfDestructed) {
             RouterMessagesSelfDestructed selfDestructed = (RouterMessagesSelfDestructed) message;
             return onMessageDestructed(selfDestructed.getPeer(), selfDestructed.getRids());
+        } else if (message instanceof RouterSecretChatDeleted) {
+            RouterSecretChatDeleted chatDeleted = (RouterSecretChatDeleted) message;
+            return onChatDelete(chatDeleted.getPeer());
+        } else if (message instanceof RouterSecretChatCleared) {
+            RouterSecretChatCleared chatCleared = (RouterSecretChatCleared) message;
+            return onChatClear(chatCleared.getPeer());
         } else {
             return super.onAsk(message);
         }
