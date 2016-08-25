@@ -63,6 +63,7 @@ public class ProfileFragment extends BaseFragment {
     public static int SOUND_PICKER_REQUEST_CODE = 122;
 
     public static final String EXTRA_UID = "uid";
+    private View recordFieldWithIcon;
 
     public static ProfileFragment create(int uid) {
         Bundle bundle = new Bundle();
@@ -107,7 +108,6 @@ public class ProfileFragment extends BaseFragment {
 
         res.findViewById(R.id.container).setBackgroundColor(style.getMainBackgroundColor());
         res.findViewById(R.id.avatarContainer).setBackgroundColor(style.getToolBarColor());
-        res.findViewById(R.id.after_actions_divider).setBackgroundColor(style.getBackyardBackgroundColor());
 
 
         //
@@ -157,37 +157,26 @@ public class ProfileFragment extends BaseFragment {
         fab.setOnClickListener(v -> startActivity(new Intent(getActivity(), ComposeActivity.class)));
 
         //
-        // Add/Remove Contact
+        // Remove Contact
         //
 
-        final View addContact = res.findViewById(R.id.addContact);
-        final ImageView addContactIcon = (ImageView) addContact.findViewById(R.id.addContactIcon);
-        final TextView addContactTitle = (TextView) addContact.findViewById(R.id.addContactTitle);
+        final View removeContact = res.findViewById(R.id.addContact);
+        final TextView addContactTitle = (TextView) removeContact.findViewById(R.id.addContactTitle);
+        addContactTitle.setText(getString(R.string.profile_contacts_added));
+        addContactTitle.setTextColor(style.getTextPrimaryColor());
+        removeContact.setOnClickListener(v -> {
+            execute(ActorSDK.sharedActor().getMessenger().removeContact(user.getId()));
+        });
+
         bind(user.isContact(), (isContact, valueModel) -> {
             if (isContact) {
-                //add to contacts btn
-                addContactTitle.setText(getString(R.string.profile_contacts_added));
-                addContactTitle.setTextColor(style.getProfileContactIconColor());
-                Drawable drawable = getResources().getDrawable(R.drawable.ic_check_circle_black_24dp);
-                drawable.mutate().setColorFilter(style.getProfileContactIconColor(), PorterDuff.Mode.SRC_IN);
-                addContactIcon.setImageDrawable(drawable);
-                addContact.setOnClickListener(v -> {
-                    execute(ActorSDK.sharedActor().getMessenger().removeContact(user.getId()));
-                });
+                removeContact.setVisibility(View.VISIBLE);
 
                 //fab
                 fab.setImageResource(R.drawable.ic_message_white_24dp);
                 fab.setOnClickListener(view -> startActivity(Intents.openPrivateDialog(user.getId(), true, getActivity())));
             } else {
-                //add to contacts btn
-                addContactTitle.setText(getString(R.string.profile_contacts_available));
-                addContactTitle.setTextColor(style.getProfileContactIconColor());
-                Drawable drawable = getResources().getDrawable(R.drawable.ic_person_add_white_24dp);
-                drawable.mutate().setColorFilter(style.getProfileContactIconColor(), PorterDuff.Mode.SRC_IN);
-                addContactIcon.setImageDrawable(drawable);
-                addContact.setOnClickListener(v -> {
-                    execute(ActorSDK.sharedActor().getMessenger().addContact(user.getId()));
-                });
+                removeContact.setVisibility(View.GONE);
 
                 //fab
                 fab.setImageResource(R.drawable.ic_person_add_white_24dp);
@@ -205,9 +194,9 @@ public class ProfileFragment extends BaseFragment {
         TextView newMessageTitle = (TextView) newMessageView.findViewById(R.id.newMessageText);
         {
             Drawable drawable = getResources().getDrawable(R.drawable.ic_chat_black_24dp);
-            drawable.mutate().setColorFilter(style.getProfileContactIconColor(), PorterDuff.Mode.SRC_IN);
+            drawable.mutate().setColorFilter(style.getSettingsIconColor(), PorterDuff.Mode.SRC_IN);
             newMessageIcon.setImageDrawable(drawable);
-            newMessageTitle.setTextColor(style.getListActionColor());
+            newMessageTitle.setTextColor(style.getTextPrimaryColor());
         }
         newMessageView.setOnClickListener(v -> {
             startActivity(Intents.openPrivateDialog(user.getId(), true, getActivity()));
@@ -223,9 +212,9 @@ public class ProfileFragment extends BaseFragment {
             ImageView voiceViewIcon = (ImageView) voiceCallView.findViewById(R.id.actionIcon);
             TextView voiceViewTitle = (TextView) voiceCallView.findViewById(R.id.actionText);
             Drawable drawable = getResources().getDrawable(R.drawable.ic_phone_white_24dp);
-            drawable.mutate().setColorFilter(style.getProfileContactIconColor(), PorterDuff.Mode.SRC_IN);
+            drawable.mutate().setColorFilter(style.getSettingsIconColor(), PorterDuff.Mode.SRC_IN);
             voiceViewIcon.setImageDrawable(drawable);
-            voiceViewTitle.setTextColor(style.getListActionColor());
+            voiceViewTitle.setTextColor(style.getTextPrimaryColor());
 
             voiceCallView.setOnClickListener(v -> {
                 execute(ActorSDK.sharedActor().getMessenger().doCall(user.getId()));
@@ -244,9 +233,9 @@ public class ProfileFragment extends BaseFragment {
             ImageView voiceViewIcon = (ImageView) videoCallView.findViewById(R.id.videoCallIcon);
             TextView voiceViewTitle = (TextView) videoCallView.findViewById(R.id.videoCallText);
             Drawable drawable = getResources().getDrawable(R.drawable.ic_videocam_white_24dp);
-            drawable.mutate().setColorFilter(style.getProfileContactIconColor(), PorterDuff.Mode.SRC_IN);
+            drawable.mutate().setColorFilter(style.getSettingsIconColor(), PorterDuff.Mode.SRC_IN);
             voiceViewIcon.setImageDrawable(drawable);
-            voiceViewTitle.setTextColor(style.getListActionColor());
+            voiceViewTitle.setTextColor(style.getTextPrimaryColor());
 
             videoCallView.setOnClickListener(v -> {
                 execute(ActorSDK.sharedActor().getMessenger().doVideoCall(user.getId()));
@@ -262,7 +251,8 @@ public class ProfileFragment extends BaseFragment {
 
         final LinearLayout contactsContainer = (LinearLayout) res.findViewById(R.id.contactsContainer);
 
-        boolean isFirstContact = true;
+        String aboutString = user.getAbout().get();
+        boolean isFirstContact = aboutString == null || aboutString.isEmpty();
 
         //
         // About
@@ -282,6 +272,9 @@ public class ProfileFragment extends BaseFragment {
                                 inflater, contactsContainer);
                     } else {
                         ((TextView) userAboutRecord.findViewById(R.id.value)).setText(newUserAbout);
+                    }
+                    if (recordFieldWithIcon != null) {
+                        recordFieldWithIcon.findViewById(R.id.recordIcon).setVisibility(View.INVISIBLE);
                     }
                 }
             }
@@ -314,14 +307,15 @@ public class ProfileFragment extends BaseFragment {
                 phoneTitle = getString(R.string.settings_mobile_phone);
             }
 
-
             View view = buildRecord(phoneTitle,
                     phoneNumber,
                     R.drawable.ic_import_contacts_black_24dp,
                     isFirstContact,
                     emails.size() == 0 && i == phones.size() - 1,
                     inflater, contactsContainer);
-
+            if (isFirstContact) {
+                recordFieldWithIcon = view;
+            }
 
             view.setOnClickListener(v -> {
                 new AlertDialog.Builder(getActivity())
@@ -381,6 +375,9 @@ public class ProfileFragment extends BaseFragment {
                     isFirstContact,
                     i == emails.size() - 1,
                     inflater, contactsContainer);
+            if (isFirstContact) {
+                recordFieldWithIcon = view;
+            }
 
             view.setOnClickListener(v -> {
                 new AlertDialog.Builder(getActivity())
@@ -443,6 +440,10 @@ public class ProfileFragment extends BaseFragment {
                                 .show();
                         return true;
                     });
+
+                    if (finalIsFirstContact) {
+                        recordFieldWithIcon = userNameRecord;
+                    }
                 }
             }
         });
@@ -554,6 +555,10 @@ public class ProfileFragment extends BaseFragment {
         updateBar(scrollView.getScrollY());
 
         return res;
+    }
+
+    private void checkInfiIcon() {
+
     }
 
     @Override
