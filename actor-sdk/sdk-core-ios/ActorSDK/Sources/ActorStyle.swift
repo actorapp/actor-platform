@@ -44,6 +44,8 @@ public class ActorStyle {
     public var vcBgColor = UIColor.whiteColor()
     /// View Controller background color for settings
     public var vcBackyardColor = UIColor(rgb: 0xf0eff5)
+    /// App's secret chats color
+    public var vcSecretColor: UIColor = UIColor(rgb: 0x32914d)
     
     //
     // UINavigationBar
@@ -57,7 +59,12 @@ public class ActorStyle {
     /// Navigation Bar title color
     public var navigationTitleColor: UIColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0xDE/255.0)
     /// Navigation Bar title secret color
-    public var navigationTitleSecretColor: UIColor = UIColor(rgb: 0x32914d)
+    private var _navigationTitleSecretColor: UIColor?
+    public var navigationTitleSecretColor: UIColor {
+        get { return _navigationTitleSecretColor != nil ? _navigationTitleSecretColor! : vcSecretColor }
+        set(v) { _navigationTitleSecretColor = v }
+    }
+
     /// Navigation Bar subtitle color, default is 0.8 alhpa of navigationTitleColor
     public var navigationSubtitleColor: UIColor {
         get { return _navigationSubtitleColor != nil ? _navigationSubtitleColor! : navigationTitleColor.alpha(0.8) }
@@ -543,7 +550,7 @@ public class ActorStyle {
     
     private var _dialogTitleSecureColor: UIColor?
     public var dialogTitleSecureColor: UIColor {
-        get { return _dialogTitleSecureColor != nil ? _dialogTitleSecureColor! : dialogTitleColor }
+        get { return _dialogTitleSecureColor != nil ? _dialogTitleSecureColor! : vcSecretColor }
         set(v) { _dialogTitleSecureColor = v }
     }
     

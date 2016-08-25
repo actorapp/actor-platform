@@ -31,7 +31,6 @@ import ActorSDK
         ActorSDK.sharedActor().authStrategy = .PhoneEmail
         
         ActorSDK.sharedActor().style.dialogAvatarSize = 58
-        ActorSDK.sharedActor().style.dialogTitleSecureColor = UIColor.greenColor()
         
         ActorSDK.sharedActor().autoJoinGroups = ["actor_news"]
         
