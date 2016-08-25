@@ -2,6 +2,7 @@ package im.actor.sdk.controllers;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -341,6 +342,7 @@ public class BaseFragment extends BinderCompatFragment implements MediaPickerCal
         if (resourceId != 0 && showIcon) {
             ImageView iconView = (ImageView) recordView.findViewById(R.id.recordIcon);
             Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(resourceId));
+            drawable.mutate();
             DrawableCompat.setTint(drawable, style.getSettingsIconColor());
             iconView.setImageDrawable(drawable);
         }
@@ -364,8 +366,8 @@ public class BaseFragment extends BinderCompatFragment implements MediaPickerCal
 
         if (resourceId != 0 && showIcon) {
             ImageView iconView = (ImageView) recordView.findViewById(R.id.recordIcon);
-            Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(resourceId));
-            DrawableCompat.setTint(drawable, style.getSettingsIconColor());
+            Drawable drawable = getResources().getDrawable(resourceId);
+            drawable.mutate().setColorFilter(style.getSettingsIconColor(), PorterDuff.Mode.SRC_IN);
             iconView.setImageDrawable(drawable);
         }
 
@@ -389,6 +391,7 @@ public class BaseFragment extends BinderCompatFragment implements MediaPickerCal
         if (resourceId != 0 && showIcon) {
             ImageView iconView = (ImageView) recordView.findViewById(R.id.recordIcon);
             Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(resourceId));
+            drawable.mutate();
             DrawableCompat.setTint(drawable, style.getGroupActionAddIconColor());
             iconView.setImageDrawable(drawable);
         }

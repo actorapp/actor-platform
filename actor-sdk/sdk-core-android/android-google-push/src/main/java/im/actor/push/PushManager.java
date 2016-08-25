@@ -6,7 +6,7 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.io.IOException;
 
-import im.actor.core.util.ExponentialBackoff;
+import im.actor.runtime.util.ExponentialBackoff;
 import im.actor.runtime.Log;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.core.ActorPushManager;
