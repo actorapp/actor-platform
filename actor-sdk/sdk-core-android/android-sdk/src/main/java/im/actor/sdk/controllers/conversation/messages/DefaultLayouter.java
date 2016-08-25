@@ -80,7 +80,7 @@ public class DefaultLayouter extends LambdaBubbleLayouter {
         holderMap.add(new HolderMapEntry(DocumentContent.class, DOCUMENT_CONTENT, R.layout.adapter_dialog_doc));
         holderMap.add(new HolderMapEntry(ContactContent.class, CONTACT_CONTENT, R.layout.adapter_dialog_contact));
         holderMap.add(new HolderMapEntry(LocationContent.class, LOCATION_CONTENT, R.layout.adapter_dialog_locaton));
-        holderMap.add(new HolderMapEntry(StickerContent.class, STICKER_CONTENT, R.layout.adapter_dialog_locaton));
+        holderMap.add(new HolderMapEntry(StickerContent.class, STICKER_CONTENT, R.layout.adapter_dialog_sticker));
     }
 
     private static class HolderMapEntry {
