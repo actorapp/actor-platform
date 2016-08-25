@@ -26,8 +26,8 @@ public class Crypto {
         return runtime.SHA256();
     }
 
-    public static BlockCipher createAES128(byte[] key) {
-        return runtime.AES128(key);
+    public static BlockCipher createAES256(byte[] key) {
+        return runtime.AES256(key);
     }
 
     public static byte[] MD5(byte[] data) {
@@ -96,5 +96,16 @@ public class Crypto {
 
     public static byte[] fromHex(String hex) {
         return Hex.fromHex(hex);
+    }
+
+    /**
+     * Calculating padded length
+     *
+     * @param sourceLength source length
+     * @param blockSize    block size
+     * @return padded length
+     */
+    public static int paddedLength(int sourceLength, int blockSize) {
+        return sourceLength + (blockSize - sourceLength % blockSize - 1);
     }
 }

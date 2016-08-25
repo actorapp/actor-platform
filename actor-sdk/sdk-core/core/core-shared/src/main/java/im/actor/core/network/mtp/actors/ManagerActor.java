@@ -85,7 +85,7 @@ public class ManagerActor extends Actor {
         if (this.authKey != null) {
             this.authProtoKey = new ActorProtoKey(this.authKey);
             this.serverUSDecryptor = new CBCHmacBox(
-                    Crypto.createAES128(this.authProtoKey.getServerKey()),
+                    Crypto.createAES256(this.authProtoKey.getServerKey()),
                     Crypto.createSHA256(),
                     this.authProtoKey.getServerMacKey());
             this.serverRUDecryptor = new CBCHmacBox(
@@ -93,7 +93,7 @@ public class ManagerActor extends Actor {
                     new Streebog256(),
                     this.authProtoKey.getServerMacRussianKey());
             this.clientUSEncryptor = new CBCHmacBox(
-                    Crypto.createAES128(this.authProtoKey.getClientKey()),
+                    Crypto.createAES256(this.authProtoKey.getClientKey()),
                     Crypto.createSHA256(),
                     this.authProtoKey.getClientMacKey());
             this.clientRUEncryptor = new CBCHmacBox(

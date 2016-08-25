@@ -47,7 +47,7 @@ public class PhotoContent extends DocumentContent {
                                         fastThumb.getImage()) :
                                 null,
                         new ApiDocumentExPhoto(w, h),
-                        null)));
+                        reference.getEncryptionInfo())));
     }
 
     private int w;

@@ -39,7 +39,7 @@ public class AnimationContent extends DocumentContent {
                                         fastThumb.getImage()) :
                                 null,
                         new ApiDocumentExAnimation(w, h),
-                        null)));
+                        reference.getEncryptionInfo())));
     }
 
     private int w;

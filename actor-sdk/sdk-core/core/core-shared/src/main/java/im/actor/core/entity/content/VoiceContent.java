@@ -42,7 +42,7 @@ public class VoiceContent extends DocumentContent {
                         "audio/mp3",
                         null,
                         new ApiDocumentExVoice(duration),
-                        null)));
+                        reference.getEncryptionInfo())));
     }
 
     private int duration;

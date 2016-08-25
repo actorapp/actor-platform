@@ -13,7 +13,7 @@ public abstract class DefaultCryptoRuntime implements CryptoRuntime {
     }
 
     @Override
-    public BlockCipher AES128(byte[] key) {
+    public BlockCipher AES256(byte[] key) {
         return new AESFastEngine(key);
     }
 }

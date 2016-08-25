@@ -133,10 +133,10 @@ public class DownloadTask extends ModuleActor {
 
                     if (index == 0) {
                         byte[] iv = ByteStrings.substring(r.getContent(), 0, 16);
-                        byte[] key = ByteStrings.substring(fileReference.getEncryptionInfo().getKey(), 0, 16);
+                        byte[] key = ByteStrings.substring(fileReference.getEncryptionInfo().getKey(), 0, 32);
                         Log.d(TAG, "File IV: " + Crypto.hex(iv));
                         Log.d(TAG, "File Key: " + Crypto.hex(key));
-                        encryptionCipher = new CBCBlockCipherStream(iv, Crypto.createAES128(key));
+                        encryptionCipher = new CBCBlockCipherStream(iv, Crypto.createAES256(key));
                         offset = 16;
                     }
 

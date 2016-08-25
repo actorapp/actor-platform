@@ -49,4 +49,12 @@ public class Hex {
         }
         return res;
     }
+
+    public static byte[] fromHexReverse(String hex) {
+        byte[] res = new byte[hex.length() / 2];
+        for (int i = 0; i < res.length; i++) {
+            res[res.length - i - 1] = (byte) ((fromHexShort(hex.charAt(i * 2)) << 4) + fromHexShort(hex.charAt(i * 2 + 1)));
+        }
+        return res;
+    }
 }

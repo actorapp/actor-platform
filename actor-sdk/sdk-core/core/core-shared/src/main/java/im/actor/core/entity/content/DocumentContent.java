@@ -31,7 +31,7 @@ public class DocumentContent extends AbsContent {
                         "image/jpeg",
                         fastThumb != null ? new ApiFastThumb(fastThumb.getW(), fastThumb.getH(), fastThumb.getImage()) : null,
                         null,
-                        null)));
+                        reference.getEncryptionInfo())));
     }
 
     protected FileSource source;

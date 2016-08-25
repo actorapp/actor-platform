@@ -30,10 +30,10 @@ public class CocoaCryptoProvider extends GenericCryptoProvider {
     }
 
     @Override
-    public BlockCipher AES128(byte[] key) {
+    public BlockCipher AES256(byte[] key) {
         if (proxyProvider != null) {
-            return proxyProvider.createAES128(key);
+            return proxyProvider.createAES256(key);
         }
-        return super.AES128(key);
+        return super.AES256(key);
     }
 }

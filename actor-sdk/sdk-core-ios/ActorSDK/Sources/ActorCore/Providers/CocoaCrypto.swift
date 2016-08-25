@@ -11,8 +11,8 @@ class CocoaCrypto: NSObject, ARCocoaCryptoProxyProvider {
         return SHA256Digest()
     }
     
-    func createAES128WithKey(key: IOSByteArray!) -> ARBlockCipher! {
-        return AES128(key: key)
+    func createAES256WithKey(key: IOSByteArray!) -> ARBlockCipher! {
+        return AES256(key: key)
     }
 }
 
@@ -55,7 +55,7 @@ class SHA256Digest: NSObject, ARDigest {
     }
 }
 
-class AES128: NSObject, ARBlockCipher {
+class AES256: NSObject, ARBlockCipher {
     
     var encryptor = UnsafeMutablePointer<CCCryptorRef>.alloc(1)
     var decryptor = UnsafeMutablePointer<CCCryptorRef>.alloc(1)
@@ -91,7 +91,7 @@ class AES128: NSObject, ARBlockCipher {
             .advancedBy(Int(destOffset))
         var bytesOut: Int = 0
         
-        CCCryptorUpdate(encryptor.memory, src, 16, dst, 32, &bytesOut)
+        CCCryptorUpdate(encryptor.memory, src, 16, dst, 16, &bytesOut)
     }
     
     func decryptBlock(data: IOSByteArray!, withOffset offset: jint, toDest dest: IOSByteArray!, withOffset destOffset: jint) {
@@ -102,7 +102,7 @@ class AES128: NSObject, ARBlockCipher {
             .advancedBy(Int(destOffset))
         var bytesOut: Int = 0
         
-        CCCryptorUpdate(decryptor.memory, src, 16, dst, 32, &bytesOut)
+        CCCryptorUpdate(decryptor.memory, src, 16, dst, 16, &bytesOut)
     }
     
     func getBlockSize() -> jint {

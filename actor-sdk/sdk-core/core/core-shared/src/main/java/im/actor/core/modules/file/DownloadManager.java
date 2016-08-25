@@ -58,6 +58,7 @@ public class DownloadManager extends ModuleActor {
             FileSystemReference reference = Storage.fileFromDescriptor(downloaded1.getDescriptor());
             boolean isExist = reference.isExist();
             int fileSize = reference.getSize();
+
             if (isExist && fileSize == downloaded1.getFileSize()) {
                 if (LOG) {
                     Log.d(TAG, "- Downloaded");
@@ -379,8 +380,12 @@ public class DownloadManager extends ModuleActor {
             return;
         }
 
-        downloaded.addOrUpdateItem(new Downloaded(queueItem.fileReference.getFileId(),
-                queueItem.fileReference.getFileSize(), reference.getDescriptor()));
+        int fileSize = queueItem.fileReference.getFileSize();
+        if (queueItem.fileReference.getEncryptionInfo() != null) {
+            fileSize = queueItem.fileReference.getFileSize();
+        }
+        downloaded.addOrUpdateItem(new Downloaded(queueItem.fileReference.getFileId(), fileSize,
+                reference.getDescriptor()));
 
         queue.remove(queueItem);
         queueItem.taskRef.send(PoisonPill.INSTANCE);

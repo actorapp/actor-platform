@@ -285,7 +285,7 @@ import DZNWebViewController
         builder.setVoiceCallsEnabled(jboolean(enableCalls))
         builder.setVideoCallsEnabled(jboolean(enableCalls))
         builder.setIsEnabledGroupedChatList(false)
-        // builder.setEnableFilesLogging(true)
+        builder.setEnableFilesLogging(true)
         
         // Creating messenger
         messenger = ACCocoaMessenger(configuration: builder.build())

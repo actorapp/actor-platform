@@ -27,18 +27,19 @@ public class CBCBlockCipherStream implements BlockCipher {
     @Override
     public void encryptBlock(byte[] data, int offset, byte[] dest, int destOffset) {
 
-        // DATA = SRC_DATA ^ IV
-        for (int j = 0; j < blockSize; j++) {
-            workingSet[j] = (byte) ((data[offset + j] & 0xFF) ^ (iv[j] & 0xFF));
-        }
+//        // DATA = SRC_DATA ^ IV
+//        for (int j = 0; j < blockSize; j++) {
+//            workingSet[j] = (byte) ((data[offset + j] & 0xFF) ^ (iv[j] & 0xFF));
+//        }
 
         // DEST = encrypt(DATA)
-        baseCipher.encryptBlock(workingSet, 0, dest, destOffset);
+        // baseCipher.encryptBlock(workingSet, 0, dest, destOffset);
+        baseCipher.encryptBlock(data, offset, dest, destOffset);
 
-        // IV = DEST
-        for (int j = 0; j < blockSize; j++) {
-            iv[j] = dest[destOffset + j];
-        }
+//        // IV = DEST
+//        for (int j = 0; j < blockSize; j++) {
+//            iv[j] = dest[destOffset + j];
+//        }
     }
 
     @Override
@@ -47,15 +48,15 @@ public class CBCBlockCipherStream implements BlockCipher {
         // DEST = decrypt(DATA)
         baseCipher.decryptBlock(data, offset, dest, destOffset);
 
-        // DEST_RES = DEST ^ IV
-        for (int j = 0; j < blockSize; j++) {
-            dest[destOffset + j] = (byte) ((dest[destOffset + j] & 0xFF) ^ (iv[j] & 0xFF));
-        }
+//        // DEST_RES = DEST ^ IV
+//        for (int j = 0; j < blockSize; j++) {
+//            dest[destOffset + j] = (byte) ((dest[destOffset + j] & 0xFF) ^ (iv[j] & 0xFF));
+//        }
 
-        // IV = DATA
-        for (int j = 0; j < blockSize; j++) {
-            iv[j] = data[offset + j];
-        }
+//        // IV = DATA
+//        for (int j = 0; j < blockSize; j++) {
+//            iv[j] = data[offset + j];
+//        }
     }
 
     @Override

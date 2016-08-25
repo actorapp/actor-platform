@@ -42,7 +42,7 @@ public class VideoContent extends DocumentContent {
                                         fastThumb.getImage()) :
                                 null,
                         new ApiDocumentExVideo(w, h, duration),
-                        null)));
+                        reference.getEncryptionInfo())));
     }
 
     private int duration;

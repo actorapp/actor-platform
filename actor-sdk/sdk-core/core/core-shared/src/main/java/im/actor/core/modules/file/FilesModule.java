@@ -122,10 +122,9 @@ public class FilesModule extends AbsModule {
         uploadManager.send(new UploadManager.UnbindUpload(rid, callback));
     }
 
-    public void requestUpload(long rid, String descriptor, String fileName,
-                              EncryptionInfo encryptionInfo, ActorRef requester) {
-        uploadManager.send(new UploadManager.StartUpload(rid, descriptor, fileName, encryptionInfo),
-                requester);
+    public void requestUpload(long rid, String descriptor, String fileName, boolean encrypt,
+                              ActorRef requester) {
+        uploadManager.send(new UploadManager.StartUpload(rid, descriptor, fileName, encrypt), requester);
     }
 
     public void cancelUpload(long rid) {

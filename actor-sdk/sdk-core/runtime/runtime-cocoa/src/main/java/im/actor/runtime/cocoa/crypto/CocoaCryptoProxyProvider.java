@@ -10,6 +10,6 @@ public interface CocoaCryptoProxyProvider {
     @ObjectiveCName("createSHA256")
     Digest createSHA256();
 
-    @ObjectiveCName("createAES128WithKey:")
-    BlockCipher createAES128(byte[] key);
+    @ObjectiveCName("createAES256WithKey:")
+    BlockCipher createAES256(byte[] key);
 }

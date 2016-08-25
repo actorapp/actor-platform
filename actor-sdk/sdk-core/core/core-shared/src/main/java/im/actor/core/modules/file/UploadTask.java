@@ -8,14 +8,9 @@ import im.actor.core.api.ApiDocumentEncryptionInfo;
 import im.actor.core.api.rpc.RequestCommitFileUpload;
 import im.actor.core.api.rpc.RequestGetFileUploadPartUrl;
 import im.actor.core.api.rpc.RequestGetFileUploadUrl;
-import im.actor.core.api.rpc.ResponseCommitFileUpload;
-import im.actor.core.api.rpc.ResponseGetFileUploadUrl;
 import im.actor.core.entity.FileReference;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.ModuleActor;
-import im.actor.core.modules.file.entity.EncryptionInfo;
-import im.actor.core.network.RpcCallback;
-import im.actor.core.network.RpcException;
 import im.actor.runtime.Crypto;
 import im.actor.runtime.HTTP;
 import im.actor.runtime.Log;
@@ -24,19 +19,16 @@ import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorCancellable;
 import im.actor.runtime.crypto.BlockCipher;
 import im.actor.runtime.crypto.CRC32;
-import im.actor.runtime.crypto.primitives.Padding;
-import im.actor.runtime.crypto.primitives.modes.CBCBlockCipher;
 import im.actor.runtime.crypto.primitives.modes.CBCBlockCipherStream;
-import im.actor.runtime.crypto.primitives.padding.PKCS7Padding;
 import im.actor.runtime.crypto.primitives.util.ByteStrings;
 import im.actor.runtime.files.FileSystemReference;
-import im.actor.runtime.files.InputFile;
 import im.actor.runtime.files.OutputFile;
 import im.actor.runtime.files.SequenceFileSystemInputFile;
 import im.actor.runtime.files.SequenceInputFile;
 import im.actor.runtime.http.HTTPError;
 import im.actor.runtime.http.HTTPResponse;
 import im.actor.runtime.promise.Promise;
+import im.actor.runtime.util.Hex;
 
 public class UploadTask extends ModuleActor {
 
@@ -51,11 +43,12 @@ public class UploadTask extends ModuleActor {
     private final String TAG;
     private final boolean LOG;
 
-    private long rid;
-    private String fileName;
-    private String descriptor;
-    private EncryptionInfo encryptionInfo;
+    private final long rid;
+    private final String fileName;
+    private final String descriptor;
+    private final boolean isEncrypted;
     private BlockCipher encryptionCipher;
+    private byte[] encryptionKey;
     private byte[] encryptionIv;
 
     private boolean isWriteToDestProvider = false;
@@ -84,14 +77,14 @@ public class UploadTask extends ModuleActor {
     private float currentProgress;
     private boolean alreadyInTemp;
 
-    public UploadTask(long rid, String descriptor, String fileName, EncryptionInfo encryptionInfo,
+    public UploadTask(long rid, String descriptor, String fileName, boolean isEncrypted,
                       ActorRef manager, ModuleContext context) {
         super(context);
         this.LOG = context.getConfiguration().isEnableFilesLogging();
         this.rid = rid;
         this.fileName = fileName;
         this.descriptor = descriptor;
-        this.encryptionInfo = encryptionInfo;
+        this.isEncrypted = isEncrypted;
         this.manager = manager;
         this.TAG = "UploadTask{" + rid + "}";
     }
@@ -134,17 +127,21 @@ public class UploadTask extends ModuleActor {
             // CRC
             crc32 = new CRC32();
 
-            // Size & Encryption
-            if (encryptionInfo != null) {
+            // File Size
+            finalSize = srcReference.getSize();
+
+            // Encryption
+            if (isEncrypted) {
+                encryptionKey = Crypto.randomBytes(32);
                 encryptionIv = Crypto.randomBytes(16);
-                encryptionCipher = new CBCBlockCipherStream(encryptionIv, Crypto.createAES128(encryptionInfo.getEncryptionKey()));
 
                 Log.d(TAG, "File IV: " + Crypto.hex(encryptionIv));
-                Log.d(TAG, "File Key: " + Crypto.hex(encryptionInfo.getEncryptionKey()));
+                Log.d(TAG, "File Key: " + Crypto.hex(encryptionKey));
 
-                finalSize = 16/*IV*/ + (int) (Math.ceil(srcReference.getSize() / (float) encryptionCipher.getBlockSize()));
-            } else {
-                finalSize = srcReference.getSize();
+                encryptionCipher = new CBCBlockCipherStream(encryptionIv, Crypto.createAES256(encryptionKey));
+
+                // Overwrite file size
+                finalSize = 16/*IV*/ + Crypto.paddedLength(srcReference.getSize(), encryptionCipher.getBlockSize());
             }
 
             // Blocks
@@ -197,8 +194,17 @@ public class UploadTask extends ModuleActor {
                 if (LOG) {
                     Log.d(TAG, "Upload completed...");
                 }
+
+                ApiDocumentEncryptionInfo encryptionInfo;
+                if (isEncrypted) {
+                    encryptionInfo = new ApiDocumentEncryptionInfo(srcReference.getSize(),
+                            "aes128-hmac", encryptionKey);
+                } else {
+                    encryptionInfo = null;
+                }
+
                 FileReference location = new FileReference(r.getUploadedFileLocation(), fileName,
-                        finalSize, null); // Need to pass Encryption Info?
+                        finalSize, encryptionInfo);
 
                 if (isWriteToDestProvider || alreadyInTemp) {
                     FileSystemReference reference = Storage.commitTempFile(alreadyInTemp ? srcReference : destReference, location.getFileId(),
@@ -226,7 +232,7 @@ public class UploadTask extends ModuleActor {
         int fileOffset = blockIndex * blockSize;
 
         // Calculating appropriate read block size
-        if (encryptionInfo != null) {
+        if (isEncrypted) {
             if (blockIndex == 0) {
                 if (srcReference.getSize() - IV_SIZE > blockSize) {
                     size = blockSize - IV_SIZE;
@@ -271,8 +277,7 @@ public class UploadTask extends ModuleActor {
             uploadCount++;
 
             // Block Encryption
-            if (encryptionInfo != null) {
-
+            if (isEncrypted) {
                 // Result Block
                 int destBlockCount = (int) Math.ceil(filePart.getContents().length /
                         (float) encryptionCipher.getBlockSize());

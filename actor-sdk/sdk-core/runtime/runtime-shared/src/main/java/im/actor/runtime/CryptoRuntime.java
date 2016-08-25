@@ -14,7 +14,7 @@ public interface CryptoRuntime {
 
     Digest SHA256();
 
-    BlockCipher AES128(byte[] key);
+    BlockCipher AES256(byte[] key);
 
     void waitForCryptoLoaded();
 }
