@@ -268,7 +268,7 @@ public class ProfileFragment extends BaseFragment {
                         userAboutRecord = buildRecordBig(newUserAbout,
                                 R.drawable.ic_info_outline_black_24dp,
                                 true,
-                                true,
+                                false,
                                 inflater, contactsContainer);
                     } else {
                         ((TextView) userAboutRecord.findViewById(R.id.value)).setText(newUserAbout);
@@ -311,7 +311,7 @@ public class ProfileFragment extends BaseFragment {
                     phoneNumber,
                     R.drawable.ic_import_contacts_black_24dp,
                     isFirstContact,
-                    emails.size() == 0 && i == phones.size() - 1,
+                    false,
                     inflater, contactsContainer);
             if (isFirstContact) {
                 recordFieldWithIcon = view;
@@ -373,7 +373,7 @@ public class ProfileFragment extends BaseFragment {
                     userEmail.getEmail(),
                     R.drawable.ic_import_contacts_black_24dp,
                     isFirstContact,
-                    i == emails.size() - 1,
+                    false,
                     inflater, contactsContainer);
             if (isFirstContact) {
                 recordFieldWithIcon = view;
@@ -425,7 +425,7 @@ public class ProfileFragment extends BaseFragment {
                         userNameRecord = buildRecord(getString(R.string.nickname), "@" + newUserName,
                                 R.drawable.ic_import_contacts_black_24dp,
                                 finalIsFirstContact,
-                                true,
+                                false,
                                 inflater, contactsContainer);
                     } else {
                         ((TextView) userNameRecord.findViewById(R.id.value)).setText(newUserName);

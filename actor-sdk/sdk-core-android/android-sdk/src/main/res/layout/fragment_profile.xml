@@ -70,6 +70,14 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical" />
 
+            <im.actor.sdk.view.DividerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="72dp"
+                android:layout_marginTop="8dp" />
+
             <LinearLayout
                 android:id="@+id/newMessage"
                 android:layout_width="match_parent"
