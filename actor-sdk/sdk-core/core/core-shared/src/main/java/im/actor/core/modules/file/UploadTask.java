@@ -202,9 +202,9 @@ public class UploadTask extends ModuleActor {
                 } else {
                     encryptionInfo = null;
                 }
-
+                
                 FileReference location = new FileReference(r.getUploadedFileLocation(), fileName,
-                        finalSize, encryptionInfo);
+                        srcReference.getSize(), encryptionInfo);
 
                 if (isWriteToDestProvider || alreadyInTemp) {
                     FileSystemReference reference = Storage.commitTempFile(alreadyInTemp ? srcReference : destReference, location.getFileId(),
