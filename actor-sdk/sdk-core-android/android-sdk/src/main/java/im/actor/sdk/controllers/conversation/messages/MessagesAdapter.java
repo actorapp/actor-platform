@@ -1,7 +1,6 @@
 package im.actor.sdk.controllers.conversation.messages;
 
 import android.content.Context;
-import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.HashMap;
@@ -35,7 +34,7 @@ public class MessagesAdapter extends BindedListAdapter<Message, AbsMessageViewHo
     private ActorBinder BINDER = new ActorBinder();
 
     private Context context;
-    private long firstUnread = -DefaultLayouter.SERVICE_CONTENT;
+    private long firstUnread = -DefaultLayouter.SERVICE_HOLDER;
     private long readDate;
     private long receiveDate;
     private Peer peer;
@@ -51,14 +50,14 @@ public class MessagesAdapter extends BindedListAdapter<Message, AbsMessageViewHo
 
         matcher = new ViewHolderMatcher();
 
-        matcher.add(new DefaultLayouter(DefaultLayouter.TEXT_CONTENT, TextHolder::new));
-        matcher.add(new DefaultLayouter(DefaultLayouter.SERVICE_CONTENT, ServiceHolder::new));
-        matcher.add(new DefaultLayouter(DefaultLayouter.PHOTO_CONTENT, PhotoHolder::new));
-        matcher.add(new DefaultLayouter(DefaultLayouter.VOICE_CONTENT, AudioHolder::new));
-        matcher.add(new DefaultLayouter(DefaultLayouter.DOCUMENT_CONTENT, DocHolder::new));
-        matcher.add(new DefaultLayouter(DefaultLayouter.CONTACT_CONTENT, ContactHolder::new));
-        matcher.add(new DefaultLayouter(DefaultLayouter.LOCATION_CONTENT, LocationHolder::new));
-        matcher.add(new DefaultLayouter(DefaultLayouter.STICKER_CONTENT, StickerHolder::new));
+        matcher.add(new DefaultLayouter(DefaultLayouter.TEXT_HOLDER, TextHolder::new));
+        matcher.add(new DefaultLayouter(DefaultLayouter.SERVICE_HOLDER, ServiceHolder::new));
+        matcher.add(new DefaultLayouter(DefaultLayouter.PHOTO_HOLDER, PhotoHolder::new));
+        matcher.add(new DefaultLayouter(DefaultLayouter.VOICE_HOLDER, AudioHolder::new));
+        matcher.add(new DefaultLayouter(DefaultLayouter.DOCUMENT_HOLDER, DocHolder::new));
+        matcher.add(new DefaultLayouter(DefaultLayouter.CONTACT_HOLDER, ContactHolder::new));
+        matcher.add(new DefaultLayouter(DefaultLayouter.LOCATION_HOLDER, LocationHolder::new));
+        matcher.add(new DefaultLayouter(DefaultLayouter.STICKER_HOLDER, StickerHolder::new));
 
         ActorSDK.sharedActor().getDelegate().configureChatViewHolders(matcher.getLayouters());
 
@@ -171,11 +170,11 @@ public class MessagesAdapter extends BindedListAdapter<Message, AbsMessageViewHo
     public void onBindViewHolder(AbsMessageViewHolder dialogHolder, int index, Message item) {
         Message prev = null;
         Message next = null;
-        if (index > DefaultLayouter.SERVICE_CONTENT) {
-            next = getItem(index - DefaultLayouter.SERVICE_CONTENT);
+        if (index > 1) {
+            next = getItem(index - 1);
         }
-        if (index < getItemCount() - DefaultLayouter.SERVICE_CONTENT) {
-            prev = getItem(index + DefaultLayouter.SERVICE_CONTENT);
+        if (index < getItemCount() - 1) {
+            prev = getItem(index + 1);
         }
         PreprocessedList list = ((PreprocessedList) getPreprocessedList());
         dialogHolder.bindData(item, prev, next, readDate, receiveDate, list.getPreprocessedData()[index]);
