@@ -80,7 +80,7 @@ public class DialogsDefaultFragment extends BaseDialogFragment {
                     getString(dialogs_menu_rename),
                     getString(groupVM.getIsCanLeave().get() ? dialogs_menu_leave :
                             groupVM.getIsCanDelete().get() ? dialogs_menu_delete :
-                                    dialogs_menu_delete),
+                                    dialogs_menu_leave),
             };
             new AlertDialog.Builder(getActivity())
                     .setItems(items, (d, which) -> {
@@ -92,7 +92,7 @@ public class DialogsDefaultFragment extends BaseDialogFragment {
                             int alert_delete_title = groupVM.getGroupType() == GroupType.CHANNEL ? R.string.alert_delete_channel_title : R.string.alert_delete_group_title;
                             int alert_leave_message = groupVM.getGroupType() == GroupType.CHANNEL ? R.string.alert_leave_channel_message : R.string.alert_leave_group_message;
                             new AlertDialog.Builder(getActivity())
-                                    .setMessage(getString(groupVM.getIsCanLeave().get() ? alert_delete_title :
+                                    .setMessage(getString(groupVM.getIsCanLeave().get() ? alert_leave_message :
                                             groupVM.getIsCanDelete().get() ? alert_delete_title :
                                                     alert_leave_message, dialog.getDialogTitle()))
                                     .setNegativeButton(R.string.dialog_cancel, null)

@@ -5,7 +5,6 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.multidex.MultiDex;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,22 +14,21 @@ import android.widget.Toast;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.content.JsonContent;
 import im.actor.core.entity.content.PhotoContent;
 import im.actor.develop.R;
+import im.actor.fragments.AttachFragmentEx;
+import im.actor.fragments.RootFragmentEx;
 import im.actor.runtime.json.JSONException;
 import im.actor.runtime.json.JSONObject;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorSDKApplication;
 import im.actor.sdk.ActorStyle;
 import im.actor.sdk.BaseActorSDKDelegate;
-import im.actor.sdk.controllers.conversation.attach.ShareMenuField;
 import im.actor.sdk.controllers.conversation.attach.AbsAttachFragment;
-import im.actor.sdk.controllers.conversation.attach.AttachFragment;
 import im.actor.sdk.controllers.conversation.messages.BubbleLayouter;
 import im.actor.sdk.controllers.conversation.messages.DefaultLayouter;
 import im.actor.sdk.controllers.conversation.messages.JsonXmlBubbleLayouter;
@@ -38,7 +36,6 @@ import im.actor.sdk.controllers.conversation.messages.XmlBubbleLayouter;
 import im.actor.sdk.controllers.conversation.messages.content.PhotoHolder;
 import im.actor.sdk.controllers.conversation.messages.content.TextHolder;
 import im.actor.sdk.controllers.conversation.messages.content.preprocessor.PreprocessedData;
-import im.actor.sdk.controllers.root.RootFragment;
 import im.actor.sdk.controllers.settings.ActorSettingsCategories;
 import im.actor.sdk.controllers.settings.ActorSettingsCategory;
 import im.actor.sdk.controllers.settings.ActorSettingsField;
@@ -105,7 +102,7 @@ public class Application extends ActorSDKApplication {
         @Override
         public void configureChatViewHolders(ArrayList<BubbleLayouter> layouters) {
 //            layouters.add(0, new BubbleTextHolderLayouter());
-            layouters.add(0, new DefaultLayouter(DefaultLayouter.TEXT_CONTENT, CensoredTextHolderEx::new));
+            layouters.add(0, new DefaultLayouter(DefaultLayouter.TEXT_HOLDER, CensoredTextHolderEx::new));
             layouters.add(0, new XmlBubbleLayouter(content -> content instanceof PhotoContent, R.layout.adapter_dialog_photo, (adapter1, root1, peer1) -> new PhotoHolder(adapter1, root1, peer1) {
                 @Override
                 protected void onConfigureViewHolder() {
@@ -133,36 +130,13 @@ public class Application extends ActorSDKApplication {
         @Nullable
         @Override
         public Fragment fragmentForRoot() {
-            return new RootFragment() {
-                @Override
-                public void onConfigureActionBar(ActionBar actionBar) {
-                    super.onConfigureActionBar(actionBar);
-                    actionBar.setDisplayShowHomeEnabled(true);
-                    actionBar.setIcon(R.drawable.ic_app_notify);
-                }
-            };
+            return new RootFragmentEx();
         }
 
         @Nullable
         @Override
         public AbsAttachFragment fragmentForAttachMenu(Peer peer) {
-            return new AttachFragment(peer) {
-
-                @Override
-                protected List<ShareMenuField> onCreateFields() {
-                    List<ShareMenuField> res = super.onCreateFields();
-                    res.add(new ShareMenuField(R.id.share_test, R.drawable.ic_edit_white_24dp, ActorSDK.sharedActor().style.getAccentColor(), "lol"));
-                    return res;
-                }
-
-                @Override
-                protected void onItemClicked(int id) {
-                    super.onItemClicked(id);
-                    if (id == R.id.share_test) {
-                        Toast.makeText(getContext(), "Hey", Toast.LENGTH_LONG).show();
-                    }
-                }
-            };
+            return new AttachFragmentEx();
         }
 
 //        @Override

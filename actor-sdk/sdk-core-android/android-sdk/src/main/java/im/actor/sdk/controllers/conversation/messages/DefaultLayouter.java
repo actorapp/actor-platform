@@ -1,6 +1,5 @@
 package im.actor.sdk.controllers.conversation.messages;
 
-import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -27,21 +26,21 @@ import im.actor.sdk.util.ViewUtils;
 
 public class DefaultLayouter extends LambdaBubbleLayouter {
 
-    public static final int TEXT_CONTENT = 0;
-    public static final int SERVICE_CONTENT = 1;
-    public static final int PHOTO_CONTENT = 2;
-    public static final int VOICE_CONTENT = 4;
-    public static final int DOCUMENT_CONTENT = 3;
-    public static final int CONTACT_CONTENT = 5;
-    public static final int LOCATION_CONTENT = 6;
-    public static final int STICKER_CONTENT = 7;
+    public static final int TEXT_HOLDER = 0;
+    public static final int SERVICE_HOLDER = 1;
+    public static final int PHOTO_HOLDER = 2;
+    public static final int VOICE_HOLDER = 4;
+    public static final int DOCUMENT_HOLDER = 3;
+    public static final int CONTACT_HOLDER = 5;
+    public static final int LOCATION_HOLDER = 6;
+    public static final int STICKER_HOLDER = 7;
 
     int id;
     int layoutId;
 
-    public DefaultLayouter(int id, @NotNull ViewHolderCreator creator) {
+    public DefaultLayouter(int holderId, @NotNull ViewHolderCreator creator) {
         super(content -> false, creator);
-        this.id = id;
+        this.id = holderId;
     }
 
 
@@ -71,16 +70,16 @@ public class DefaultLayouter extends LambdaBubbleLayouter {
 
     static {
         holderMap = new ArrayList<>();
-        holderMap.add(new HolderMapEntry(TextContent.class, TEXT_CONTENT, R.layout.adapter_dialog_text));
-        holderMap.add(new HolderMapEntry(ServiceContent.class, SERVICE_CONTENT, R.layout.adapter_dialog_service));
-        holderMap.add(new HolderMapEntry(PhotoContent.class, PHOTO_CONTENT, R.layout.adapter_dialog_photo));
-        holderMap.add(new HolderMapEntry(VideoContent.class, PHOTO_CONTENT, R.layout.adapter_dialog_photo));
-        holderMap.add(new HolderMapEntry(AnimationContent.class, PHOTO_CONTENT, R.layout.adapter_dialog_photo));
-        holderMap.add(new HolderMapEntry(VoiceContent.class, VOICE_CONTENT, R.layout.adapter_dialog_audio));
-        holderMap.add(new HolderMapEntry(DocumentContent.class, DOCUMENT_CONTENT, R.layout.adapter_dialog_doc));
-        holderMap.add(new HolderMapEntry(ContactContent.class, CONTACT_CONTENT, R.layout.adapter_dialog_contact));
-        holderMap.add(new HolderMapEntry(LocationContent.class, LOCATION_CONTENT, R.layout.adapter_dialog_locaton));
-        holderMap.add(new HolderMapEntry(StickerContent.class, STICKER_CONTENT, R.layout.adapter_dialog_sticker));
+        holderMap.add(new HolderMapEntry(TextContent.class, TEXT_HOLDER, R.layout.adapter_dialog_text));
+        holderMap.add(new HolderMapEntry(ServiceContent.class, SERVICE_HOLDER, R.layout.adapter_dialog_service));
+        holderMap.add(new HolderMapEntry(PhotoContent.class, PHOTO_HOLDER, R.layout.adapter_dialog_photo));
+        holderMap.add(new HolderMapEntry(VideoContent.class, PHOTO_HOLDER, R.layout.adapter_dialog_photo));
+        holderMap.add(new HolderMapEntry(AnimationContent.class, PHOTO_HOLDER, R.layout.adapter_dialog_photo));
+        holderMap.add(new HolderMapEntry(VoiceContent.class, VOICE_HOLDER, R.layout.adapter_dialog_audio));
+        holderMap.add(new HolderMapEntry(DocumentContent.class, DOCUMENT_HOLDER, R.layout.adapter_dialog_doc));
+        holderMap.add(new HolderMapEntry(ContactContent.class, CONTACT_HOLDER, R.layout.adapter_dialog_contact));
+        holderMap.add(new HolderMapEntry(LocationContent.class, LOCATION_HOLDER, R.layout.adapter_dialog_locaton));
+        holderMap.add(new HolderMapEntry(StickerContent.class, STICKER_HOLDER, R.layout.adapter_dialog_sticker));
     }
 
     private static class HolderMapEntry {

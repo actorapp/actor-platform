@@ -88,10 +88,8 @@
 
                 <ImageView
                     android:id="@+id/newMessageIcon"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="32dp"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
                     android:scaleType="center" />
 
                 <TextView
@@ -123,10 +121,8 @@
 
                 <ImageView
                     android:id="@+id/videoCallIcon"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="32dp"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
                     android:scaleType="center" />
 
                 <TextView
@@ -158,10 +154,8 @@
 
                 <ImageView
                     android:id="@+id/actionIcon"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="32dp"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
                     android:scaleType="center" />
 
                 <TextView
@@ -192,11 +186,8 @@
 
                 <ImageView
                     android:id="@+id/settings_notification_icon"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="32dp"
-                    android:layout_marginTop="12dp"
+                    android:layout_width="72dp"
+                    android:layout_height="48dp"
                     android:scaleType="center" />
 
                 <TextView
@@ -222,11 +213,8 @@
                 android:paddingRight="8dp">
 
                 <View
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="32dp"
-                    android:layout_marginTop="12dp" />
+                    android:layout_width="72dp"
+                    android:layout_height="48dp" />
 
                 <TextView
                     android:id="@+id/settings_notifications_picker_title"
@@ -256,11 +244,8 @@
 
                 <ImageView
                     android:id="@+id/settings_block_icon"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="32dp"
-                    android:layout_marginTop="12dp"
+                    android:layout_width="72dp"
+                    android:layout_height="48dp"
                     android:scaleType="center" />
 
                 <TextView
@@ -284,10 +269,8 @@
 
                 <ImageView
                     android:id="@+id/addContactIcon"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="32dp"
+                    android:layout_width="72dp"
+                    android:layout_height="48dp"
                     android:scaleType="center" />
 
                 <TextView
