@@ -70,6 +70,7 @@ import im.actor.core.viewmodel.UploadFileVMCallback;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.actors.messages.Void;
+import im.actor.runtime.mtproto.ConnectionEndpointArray;
 import im.actor.runtime.mvvm.MVVMCollection;
 import im.actor.runtime.mvvm.SearchValueModel;
 import im.actor.runtime.mvvm.ValueModel;
@@ -221,6 +222,20 @@ public class Messenger {
     @ObjectiveCName("doCompleteAuth:")
     public Promise<Boolean> doCompleteAuth(AuthRes authRes) {
         return modules.getAuthModule().doCompleteAuth(authRes);
+    }
+
+    /**
+     * Change endpoint
+     *
+     * @param endpoint endpoint to change to, null for reset to default
+     * @throws ConnectionEndpointArray.UnknownSchemeException
+     */
+    public void changeEndpoint(String endpoint) throws ConnectionEndpointArray.UnknownSchemeException {
+        if (endpoint != null && !endpoint.isEmpty()) {
+            modules.getApiModule().changeEndpoint(endpoint);
+        } else {
+            modules.getApiModule().resetToDefaultEndpoints();
+        }
     }
 
     /**
@@ -675,12 +690,13 @@ public class Messenger {
     /**
      * MUST be called when external push received
      *
-     * @param seq sequence number of update
+     * @param seq    sequence number of update
+     * @param authId auth id
      */
     @ObjectiveCName("onPushReceivedWithSeq:")
-    public void onPushReceived(int seq) {
+    public void onPushReceived(int seq, long authId) {
         if (modules.getUpdatesModule() != null) {
-            modules.getUpdatesModule().onPushReceived(seq);
+            modules.getUpdatesModule().onPushReceived(seq, authId);
         }
     }
 
@@ -1105,6 +1121,17 @@ public class Messenger {
     @Deprecated
     public long loadLastMessageDate(Peer peer) {
         return getConversationVM(peer).getLastMessageDate();
+    }
+
+    /**
+     * Finding public by id
+     *
+     * @param gid group id
+     * @return found peer promise
+     */
+    @ObjectiveCName("findPublicGroupByIdWithGid:")
+    public Promise<Peer> findPublicGroupById(int gid) {
+        return modules.getSearchModule().findPublicGroupById(gid);
     }
 
     /**
@@ -1601,6 +1628,19 @@ public class Messenger {
         return callback -> modules.getGroupsModule().addMember(gid, uid)
                 .then(v -> callback.onResult(v))
                 .failure(e -> callback.onError(e));
+    }
+
+    /**
+     * Adding member to group
+     *
+     * @param gid group's id
+     * @param uid user's id
+     * @return promise of adding member to group
+     */
+    @NotNull
+    @ObjectiveCName("inviteMemberPromiseWithGid:withUid:")
+    public Promise<Void> inviteMemberPromise(int gid, int uid) {
+        return modules.getGroupsModule().addMember(gid, uid);
     }
 
     /**

@@ -81,6 +81,10 @@
     <string name="auth_privacy_index">Политика Конфиденциальности</string>
     <string name="auth_tos_index"> Условия Использования</string>
 
+    <string name="auth_change_endpoint">Использовать альтернативный сервер</string>
+    <string name="auth_reset_default_endpoint">По умолчанию</string>
+
+
     <!-- Choose auth type-->
     <string name="choose_auth_type_title">Выбор способа авторизации</string>
     <string name="choose_auth_type_hint">Пожалуйста, выберите способ авторизации.</string>
@@ -149,7 +153,7 @@
 
     <!-- Main -->
     <string name="main_search_hint">Начните набирать для поиска</string>
-    <string name="main_search_global_header">Общий поиск</string>
+    <string name="main_search_global_header">Глобальный поиск</string>
     <string name="main_search_empty">Ничего не найдено</string>
     <string name="main_menu_help">Помощь</string>
     <string name="main_menu_search">Поиск</string>
@@ -183,7 +187,7 @@
     <string name="settings_notifications">Оповещения</string>
     <string name="settings_chat">Настройки чата</string>
     <string name="settings_home_page">Домашняя страница</string>
-    <string name="settings_security">Безопасность</string>
+    <string name="settings_security">Безопасность и Приватность</string>
     <string name="settings_blocked_list">Заблокированные пользователи</string>
     <string name="nickname_empty">Добавить ник</string>
     <string name="nickname_hint">Вы можете выбрать ник в {appName}. Так другие люди смогут найти вас без номера телефона.\n\nВы можете использовать латинские буквы, цифры и подчеркивание. Минимальная длина - 5 символов.</string>
@@ -228,6 +232,12 @@
     <string name="dialogs_menu_group_rename">Переименовать группу</string>
     <string name="dialogs_menu_group_leave">Выйти из группы</string>
     <string name="dialogs_menu_group_delete">Удалить группу</string>
+
+    <string name="dialogs_menu_channel_view">Информация о канале</string>
+    <string name="dialogs_menu_channel_rename">Переименовать канал</string>
+    <string name="dialogs_menu_channel_leave">Выйти из канала</string>
+    <string name="dialogs_menu_channel_delete">Удалить канал</string>
+
 
     <!-- Contacts -->
     <string name="contacts_title">Контакты</string>
@@ -319,9 +329,10 @@
     <string name="profile_settings_block">Заблокировать пользователя</string>
     <string name="profile_settings_unblock">Разблокировать пользователя</string>
     <string name="profile_settings_block_confirm">Заблокировать {user}?</string>
-    <string name="profile_contacts_added">В Контактах</string>
+    <string name="profile_contacts_added">Убрать из контактов</string>
     <string name="profile_contacts_available">Добавить в контакты</string>
     <string name="profile_call">Звонок</string>
+    <string name="profile_video_call">Видео звонок</string>
     <string name="profile_compose">Новое сообщение</string>
 
     <string name="profile_adding">Добавление в Контакты…</string>
@@ -336,6 +347,7 @@
 
     <!-- Group -->
     <string name="group_title">Информация о группе</string>
+    <string name="channel_title">Информация о канале</string>
 
     <string name="group_members_header">Участники</string>
     <string name="group_members_count">{0} из {1}</string>
@@ -361,6 +373,8 @@
     <string name="group_shared_files">Документы</string>
 
     <string name="group_add_member">Добавить в группу</string>
+    <string name="channel_add_member">Добавить в канал</string>
+    <string name="channel_add_members">Добавить в канал</string>
     <string name="group_leave">Покинуть группу</string>
     <string name="group_leave_channel">Покинуть канал</string>
 
@@ -375,7 +389,6 @@
     <string name="group_administration">Администрирование</string>
     <string name="group_make_admin">Назначить администратором</string>
     <string name="group_revoke_admin">Аннулировать права администратора</string>
-    <string name="group_can_edit_info_members">Все пользователи могут редактировать информацию о группе</string>
     <string name="group_delete">Удалить группу</string>
     <string name="group_delete_hint">Вы потеряете все сообщения в этой группе</string>
     <string name="group_description_hint">Описание</string>
@@ -387,15 +400,35 @@
     <string name="group_private_group_title">Приватная группа</string>
     <string name="group_public_group_text">Публичные группы доступны для поиска, кто угодно можнет вступить в такую группу</string>
     <string name="group_public_group_title">Публичная группа</string>
+
+    <string name="group_private_channel_text">В приватый канал можно попасть только по личному приглашению</string>
+    <string name="group_private_channel_title">Приватый канал</string>
+    <string name="group_public_channel_text">Публичные каналы доступны для поиска, кто угодно можнет вступить в такой канал</string>
+    <string name="group_public_channel_title">Публичный канал</string>
+
     <string name="group_share_history">Поделиться историей</string>
     <string name="group_share_history_hint">Все сообщения будут доступны всем участникам</string>
     <string name="group_type">Тип группы</string>
     <string name="group_type_private">Приватная</string>
+    <string name="channel_type_private">Приватный</string>
     <string name="group_type_pubic">Публичная</string>
+    <string name="channel_type_pubic">Публичный</string>
 
     <!-- Channel-->
     <string name="channel_admin_title">Администрирование канала</string>
+    w
+    <string name="group_can_edit_info_members">Все пользователи могут редактировать информацию о группе</string>
+    <string name="group_can_edit_info_admins">Администраторы могут редактировать информацию о группе</string>
+    <string name="group_can_invite_members">Все пользователи могут приглашать в группу</string>
+    <string name="group_show_leave_join">Показывать сообщения о входе/выходе из группы</string>
+    <string name="group_show_admin_to_members">Показывать информацию о том, кто является администратором пользователям</string>
+
     <string name="channel_can_edit_info_members">Все пользователи могут редактировать иформацию о канале</string>
+    <string name="channel_can_edit_info_admins">Администраторы могут редактировать информацию о канале</string>
+    <string name="channel_can_invite_members">Все пользователи могут приглашать в канал</string>
+    <string name="channel_show_leave_join">Показывать сообщения о входе/выходе из канала</string>
+    <string name="channel_show_admin_to_members">Показывать информацию о том, кто является администратором пользователям</string>
+
     <string name="channel_delete">Удалить канал</string>
     <string name="channel_delete_hint">Вы потеряете все сообщения в этом канале</string>
     <string name="channel_permissions_hint">Управление разрешениями в этом канале</string>
@@ -537,12 +570,19 @@
 
 
     <!-- Security -->
-    <string name="security_title">Безопасность</string>
+    <string name="security_title">Безопасность и Приватность</string>
     <string name="security_terminate_title">Уничтожить все сессии</string>
     <string name="security_terminate_subtitle">Произвести выход на всех устройствах</string>
     <string name="security_terminate_message">Вы уверены, что хотите уничтожить сессии на всех устройствах? Все данные приложения на них будут удалены.</string>
     <string name="security_authorized_header">Авторизованные устройства и сервисы</string>
     <string name="security_authorized_loading">Загрузка…</string>
+
+    <!-- Last Seen -->
+    <string name="security_last_seen_title">Последняя активность</string>
+    <string name="security_last_seen_subtitle">Укажите, кто может видеть вашу последнюю активность.</string>
+    <string name="security_last_seen_everybody">Все</string>
+    <string name="security_last_seen_contacts">Контакты</string>
+    <string name="security_last_seen_nobody">Никто</string>
 
     <!-- Blocked list -->
     <string name="blocked_title">Заблокированные пользователи</string>
@@ -578,9 +618,11 @@
 
     <!-- Dialogs -->
     <string name="alert_leave_group_message">Вы уверены, что хотите выйти из группы "%1$s"?</string>
+    <string name="alert_leave_channel_message">Вы уверены, что хотите выйти из канала "%1$s"?</string>
     <string name="alert_leave_group_yes">Выйти</string>
 
     <string name="alert_delete_group_title">Вы уверены, что хотите удалить группу "%1$s"?</string>
+    <string name="alert_delete_channel_title">Вы уверены, что хотите удалить канал "%1$s"?</string>
     <string name="alert_delete_group_yes">Удалить</string>
 
     <string name="alert_delete_chat_message">Вы уверены, что хотите удалить чат с "%1$s"?</string>

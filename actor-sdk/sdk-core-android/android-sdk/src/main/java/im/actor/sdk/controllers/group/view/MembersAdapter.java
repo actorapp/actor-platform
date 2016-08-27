@@ -105,6 +105,8 @@ public class MembersAdapter extends HolderAdapter<GroupMember> {
 
     public interface LoadedCallback {
         void onLoaded();
+
+        void onLoadedToEnd();
     }
 
     private void loadMore() {
@@ -119,6 +121,9 @@ public class MembersAdapter extends HolderAdapter<GroupMember> {
                 }
                 nextMembers = groupMembersSlice.getNext();
                 loaddedToEnd = nextMembers == null;
+                if (loaddedToEnd && callback != null) {
+                    callback.onLoadedToEnd();
+                }
                 loadInProgress = false;
                 setMembers(groupMembersSlice.getMembers(), false, false);
             });
@@ -258,7 +263,7 @@ public class MembersAdapter extends HolderAdapter<GroupMember> {
                         .setCanceledOnTouchOutside(true);
             });
         }
-        if (groupVM.getIsCanEditAdministration().get() && !userVM.isBot()) {
+        if (groupVM.getIsCanEditAdmins().get() && !userVM.isBot()) {
             alertListBuilder.addItem(!isAdministrator ? activity.getResources().getString(R.string.group_make_admin) : activity.getResources().getString(R.string.group_revoke_admin), () -> {
                 if (!isAdministrator) {
                     messenger().makeAdmin(groupVM.getId(), userVM.getId()).start(new CommandCallback<Void>() {

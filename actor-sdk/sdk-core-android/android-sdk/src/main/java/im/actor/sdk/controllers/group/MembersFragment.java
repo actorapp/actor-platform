@@ -8,11 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import fr.castorflex.android.circularprogressbar.CircularProgressBar;
 import im.actor.core.entity.GroupMember;
+import im.actor.core.entity.GroupType;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.sdk.ActorSDK;
@@ -32,6 +34,7 @@ import static im.actor.sdk.util.ActorSDKMessenger.users;
 public class MembersFragment extends BaseFragment {
 
     protected CircularProgressBar progressView;
+    private LinearLayout footer;
 
     public static MembersFragment create(int groupId) {
         MembersFragment res = new MembersFragment();
@@ -73,7 +76,7 @@ public class MembersFragment extends BaseFragment {
                 addMmemberTV.setTextSize(16);
                 addMmemberTV.setPadding(Screen.dp(72), 0, 0, 0);
                 addMmemberTV.setGravity(Gravity.CENTER_VERTICAL);
-                addMmemberTV.setText(R.string.group_add_member);
+                addMmemberTV.setText(groupVM.getGroupType() == GroupType.CHANNEL ? R.string.channel_add_member : R.string.group_add_member);
                 addMmemberTV.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
                 addMmemberTV.setOnClickListener(view -> {
                     startActivity(new Intent(getActivity(), AddMemberActivity.class)
@@ -100,6 +103,19 @@ public class MembersFragment extends BaseFragment {
                 header.addView(shareLinkTV, ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(58));
             }
         }
+
+        footer = new LinearLayout(getActivity());
+        footer.setVisibility(View.INVISIBLE);
+        list.addFooterView(footer);
+        CircularProgressBar botProgressView = new CircularProgressBar(getActivity());
+        int padding = Screen.dp(16);
+        botProgressView.setPadding(padding, padding, padding, padding);
+        botProgressView.setIndeterminate(true);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(Screen.dp(72), Screen.dp(72));
+        params.gravity = Gravity.CENTER;
+        FrameLayout cont = new FrameLayout(getActivity());
+        cont.addView(botProgressView, params);
+        footer.addView(cont, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
         list.setAdapter(adapter);
         list.setOnItemClickListener((parent, view, position, id) -> {
@@ -142,7 +158,18 @@ public class MembersFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        adapter.initLoad(() -> hideView(progressView));
+        adapter.initLoad(new MembersAdapter.LoadedCallback() {
+            @Override
+            public void onLoaded() {
+                hideView(progressView);
+                showView(footer);
+            }
+
+            @Override
+            public void onLoadedToEnd() {
+                hideView(footer);
+            }
+        });
     }
 
     @Override

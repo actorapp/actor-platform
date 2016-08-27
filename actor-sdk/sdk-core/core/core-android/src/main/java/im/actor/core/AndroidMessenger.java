@@ -39,7 +39,6 @@ import im.actor.core.utils.AppStateActor;
 import im.actor.core.utils.IOUtils;
 import im.actor.core.utils.ImageHelper;
 import im.actor.core.viewmodel.Command;
-import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.GalleryVM;
 import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.Actor;
@@ -50,8 +49,6 @@ import im.actor.runtime.actors.Props;
 import im.actor.runtime.android.AndroidContext;
 import im.actor.runtime.eventbus.EventBus;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
-import im.actor.runtime.mvvm.Value;
-import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.core.utils.GalleryScannerActor;
 import me.leolin.shortcutbadger.ShortcutBadger;
 
@@ -312,6 +309,10 @@ public class AndroidMessenger extends im.actor.core.Messenger {
     }
 
     public Command<Boolean> sendUri(final Peer peer, final Uri uri) {
+        return sendUri(peer, uri, "Actor");
+    }
+
+    public Command<Boolean> sendUri(final Peer peer, final Uri uri, String appName) {
         return callback -> fileDownloader.execute(() -> {
             String[] filePathColumn = {MediaStore.Images.Media.DATA, MediaStore.Video.Media.MIME_TYPE,
                     MediaStore.Video.Media.TITLE};
@@ -349,7 +350,9 @@ public class AndroidMessenger extends im.actor.core.Messenger {
                 }
                 String externalPath = externalFile.getAbsolutePath();
 
-                File dest = new File(externalPath + "/Actor/");
+                File dest = new File(externalPath + "/" +
+                        appName +
+                        "/");
                 dest.mkdirs();
 
                 boolean isGif = picturePath != null && picturePath.endsWith(".gif");

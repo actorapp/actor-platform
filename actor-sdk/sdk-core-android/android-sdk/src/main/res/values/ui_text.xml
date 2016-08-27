@@ -106,6 +106,9 @@
     <string name="auth_privacy">By signing up, you agree to the Privacy Policy.</string>
     <string name="auth_find_by_diclamer"> Others users will be able to find you via email or phone number.</string>
 
+    <string name="auth_change_endpoint">Change server endpoint</string>
+    <string name="auth_reset_default_endpoint">reset to default</string>
+
     <string name="auth_tos_index">Terms of Service</string>
     <string name="auth_privacy_index">Privacy Policy</string>
 
@@ -183,7 +186,7 @@
     <string name="settings_home_page">Home page</string>
     <string name="settings_notifications">Notifications</string>
     <string name="settings_chat">Chat Settings</string>
-    <string name="settings_security">Security</string>
+    <string name="settings_security">Security and Privacy</string>
     <string name="settings_blocked_list">Blocked list</string>
     <string name="nickname_empty">Set username</string>
     <string name="nickname_change">Change username</string>
@@ -215,6 +218,11 @@
     <string name="dialogs_menu_group_rename">Rename group</string>
     <string name="dialogs_menu_group_leave">Exit group</string>
     <string name="dialogs_menu_group_delete">Delete group</string>
+
+    <string name="dialogs_menu_channel_view">View channel info</string>
+    <string name="dialogs_menu_channel_rename">Rename channel</string>
+    <string name="dialogs_menu_channel_leave">Exit channel</string>
+    <string name="dialogs_menu_channel_delete">Delete channel</string>
 
     <!-- Contacts -->
     <string name="contacts_title">Contacts</string>
@@ -308,13 +316,15 @@
     <string name="profile_shared_media">Media</string>
     <string name="profile_settings_header">Settings</string>
     <string name="profile_settings_notifications">Notifications</string>
+    <string name="profile_settings_notifications_picker">Notifications sound</string>
     <string name="profile_settings_block">Block user</string>
     <string name="profile_settings_unblock">Unblock user</string>
     <string name="profile_settings_block_confirm">Block {user}?</string>
 
-    <string name="profile_contacts_added">In Contacts</string>
+    <string name="profile_contacts_added">Remove from contacts</string>
     <string name="profile_contacts_available">Add to Contacts</string>
     <string name="profile_call">Voice Call</string>
+    <string name="profile_video_call">Video Call</string>
     <string name="profile_compose">New Message</string>
 
     <string name="settings_mobile_phone">Mobile phone</string>
@@ -331,6 +341,7 @@
 
     <!-- Group -->
     <string name="group_title">Group Info</string>
+    <string name="channel_title">Channel Info</string>
     <string name="group_members_header">Members</string>
     <string name="group_members_count">{0} of {1}</string>
 
@@ -356,6 +367,8 @@
     <string name="group_shared_files">Documents</string>
 
     <string name="group_add_member">Add a member</string>
+    <string name="channel_add_member">Add a member</string>
+    <string name="channel_add_members">Add members</string>
     <string name="group_leave">Leave group</string>
     <string name="group_leave_channel">Leave channel</string>
     <string name="group_administration">Administration</string>
@@ -372,7 +385,9 @@
     <string name="group_type">Group Type</string>
     <string name="channel_type">Channel Type</string>
     <string name="group_type_pubic">Public</string>
+    <string name="channel_type_pubic">Public</string>
     <string name="group_type_private">Private</string>
+    <string name="channel_type_private">Private</string>
     <string name="group_delete">Delete Group</string>
     <string name="group_delete_hint">You will lose all messages in this group.</string>
     <string name="channel_delete">Delete Channel</string>
@@ -383,12 +398,26 @@
     <string name="group_share_history_hint">All members will see all messages</string>
 
     <string name="group_can_edit_info_members">All members can edit group info</string>
-    <string name="channel_can_edit_info_members">All members can edit group info</string>
+    <string name="group_can_edit_info_admins">Admins can edit group info</string>
+    <string name="group_can_invite_members">All members can invite to group</string>
+    <string name="group_show_leave_join">Show member leave/join messages</string>
+    <string name="group_show_admin_to_members">Admin label is visible to all members</string>
+
+    <string name="channel_can_edit_info_members">All members can edit channel info</string>
+    <string name="channel_can_edit_info_admins">Admins can edit channel info</string>
+    <string name="channel_can_invite_members">All members can invite to channel</string>
+    <string name="channel_show_leave_join">Show member leave/join messages</string>
+    <string name="channel_show_admin_to_members">Admin label is visible to all members</string>
 
     <string name="group_public_group_title">Public Group</string>
     <string name="group_public_group_text">Public groups can be found in search, anyone can join them.</string>
     <string name="group_private_group_title">Private Group</string>
-    <string name="group_private_group_text">Private Group can only be joined via personal invitation.</string>
+    <string name="group_private_group_text">Private group can only be joined via personal invitation.</string>
+
+    <string name="group_public_channel_title">Public Channel</string>
+    <string name="group_public_channel_text">Public channels can be found in search, anyone can join them.</string>
+    <string name="group_private_channel_title">Private channel</string>
+    <string name="group_private_channel_text">Private channel can only be joined via personal invitation.</string>
 
 
     <string name="group_not_member">You are not a member of this group</string>
@@ -488,8 +517,7 @@
     <string name="not_title">Notifications</string>
     <string name="not_conv_tones">Conversation tones</string>
     <string name="not_conv_tones_subtitle">Play sounds for incoming and outgoing messages.</string>
-    <string name="not_sound">Sound</string>
-    <string name="not_sound_subtitle">Enable notification sounds</string>
+
     <string name="not_vibration">Vibration</string>
     <string name="not_vibration_subtitle">Enable vibration in notifications</string>
     <string name="not_group">Group</string>
@@ -498,6 +526,10 @@
     <string name="not_group_mentions_subtitle">Enable group notifications only for mentions</string>
     <string name="not_show_text">Show names and messages</string>
     <string name="not_show_text_subtitle">Show message text and sender name in notification panel</string>
+    <string name="not_sound">Sound</string>
+    <string name="not_sound_subtitle">Enable notification sounds</string>
+    <string name="not_sound_picker">Set sound</string>
+    <string name="not_sound_picker_subtitle">Set notification sound</string>
     <string name="notification_multiple_canversations_after_msg_count">" messages in "</string>
     <string name="notifications_multiple_canversations_after_coversations_count">" chats"</string>
     <string name="notifications_single_conversation_аfter_messages_count">" messages"</string>
@@ -517,7 +549,7 @@
     <string name="settings_chat_markdown_subtitle">Is markdown enabled</string>
 
     <!-- Security -->
-    <string name="security_title">Security</string>
+    <string name="security_title">Security and Privacy</string>
     <string name="security_terminate_title">Terminate all sessions</string>
     <string name="security_terminate_subtitle">Sign Out on all devices</string>
     <string name="security_terminate_message">Are you sure you want to log out on all other devices? All app data will be lost on these devices.</string>
@@ -527,6 +559,13 @@
     <string name="security_toast_unable_remove_auth">Unable to remove auth</string>
     <string name="security_this_title">(This) </string>
     <string name="security_toast_unable_to_load">Unable to load. Please try again.</string>
+
+    <!-- Last Seen -->
+    <string name="security_last_seen_title">Last seen</string>
+    <string name="security_last_seen_subtitle">Change who can see your Last Seen time.</string>
+    <string name="security_last_seen_everybody">Everybody</string>
+    <string name="security_last_seen_contacts">My Contacts</string>
+    <string name="security_last_seen_nobody">Nobody</string>
 
     <!-- Blocked list -->
     <string name="blocked_title">Blocked list</string>
@@ -574,9 +613,11 @@
 
     <!-- Dialogs -->
     <string name="alert_leave_group_message">Are you sure you want to exit group "%1$s"?</string>
+    <string name="alert_leave_channel_message">Are you sure you want to exit channel "%1$s"?</string>
     <string name="alert_leave_group_yes">Exit</string>
 
     <string name="alert_delete_group_title">Delete "%1$s" group?</string>
+    <string name="alert_delete_channel_title">Delete "%1$s" channel?</string>
     <string name="alert_delete_group_yes">Delete</string>
 
     <string name="alert_delete_chat_message">Delete chat with "%1$s"?</string>

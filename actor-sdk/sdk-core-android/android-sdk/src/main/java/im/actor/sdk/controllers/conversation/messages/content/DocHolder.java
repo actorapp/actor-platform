@@ -13,6 +13,7 @@ import com.droidkit.progress.CircularView;
 
 import im.actor.core.entity.FileReference;
 import im.actor.core.entity.Message;
+import im.actor.core.entity.Peer;
 import im.actor.core.entity.content.DocumentContent;
 import im.actor.core.entity.content.FileLocalSource;
 import im.actor.core.entity.content.FileRemoteSource;
@@ -68,11 +69,11 @@ public class DocHolder extends MessageHolder {
     protected UploadFileVM uploadFileVM;
     protected DocumentContent document;
 
-    public DocHolder(final MessagesAdapter fragment, View itemView) {
-        this(fragment, itemView, false);
+    public DocHolder(final MessagesAdapter adapter, View itemView, Peer peer) {
+        this(adapter, itemView, false, peer);
     }
 
-    public DocHolder(final MessagesAdapter fragment, View itemView, boolean isFullSize) {
+    public DocHolder(final MessagesAdapter fragment, View itemView, boolean isFullSize, Peer peer) {
         super(fragment, itemView, isFullSize);
         waitColor = ActorSDK.sharedActor().style.getConvStatePendingColor();
         sentColor = ActorSDK.sharedActor().style.getConvStateSentColor();

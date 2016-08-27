@@ -137,6 +137,7 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
                 final View recordView = inflater.inflate(R.layout.contact_record, nickContainer, false);
                 ImageView nickIcon = (ImageView) recordView.findViewById(R.id.recordIcon);
                 Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_mention_24_dp));
+                drawable.mutate();
                 DrawableCompat.setTint(drawable, style.getSettingsIconColor());
                 nickIcon.setImageDrawable(drawable);
 
@@ -165,6 +166,7 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
         final TextView aboutTitle = (TextView) about.findViewById(R.id.value);
         ImageView nickIcon = (ImageView) about.findViewById(R.id.recordIcon);
         Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_info_black_24dp));
+        drawable.mutate();
         DrawableCompat.setTint(drawable, style.getSettingsIconColor());
         nickIcon.setImageDrawable(drawable);
         aboutTitle.setTextColor(style.getTextPrimaryColor());
@@ -301,6 +303,7 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
                         ImageView tintImageView = (ImageView) recordView.findViewById(R.id.recordIcon);
                         if (i == 0) {
                             Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_email_white_24dp));
+                            drawable.mutate();
                             DrawableCompat.setTint(drawable, style.getSettingsIconColor());
                             tintImageView.setImageDrawable(drawable);
                         } else {

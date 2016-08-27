@@ -15,7 +15,7 @@ import im.actor.core.network.mtp.MTProto;
 import im.actor.core.network.mtp.entity.EncryptedCBCPackage;
 import im.actor.core.network.mtp.entity.EncryptedPackage;
 import im.actor.core.network.mtp.entity.ProtoMessage;
-import im.actor.core.util.ExponentialBackoff;
+import im.actor.runtime.util.ExponentialBackoff;
 import im.actor.runtime.*;
 import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorRef;

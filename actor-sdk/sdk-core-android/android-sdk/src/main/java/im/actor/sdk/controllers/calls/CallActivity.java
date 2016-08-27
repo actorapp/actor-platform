@@ -3,6 +3,7 @@ package im.actor.sdk.controllers.calls;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.WindowManager;
 
@@ -44,7 +45,11 @@ public class CallActivity extends BaseFragmentActivity {
 
         if (savedInstanceState == null) {
             callId = getIntent().getLongExtra("callId", -1);
-            showFragment(new CallFragment(callId), false);
+            Fragment callFragment = ActorSDK.sharedActor().getDelegate().fragmentForCall(callId);
+            if (callFragment == null) {
+                callFragment = CallFragment.create(callId);
+            }
+            showFragment(callFragment, false);
         }
     }
 

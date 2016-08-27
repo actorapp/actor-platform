@@ -51,6 +51,7 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
     }
   }
 
+  // TODO: duplicate isBot check
   protected def makeUserAdmin(cmd: MakeUserAdmin): Unit = {
     if (!state.permissions.canEditAdmins(cmd.clientUserId)) {
       sender() ! noPermission
@@ -67,7 +68,7 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
         val members = newState.members.values.map(_.asStruct).toVector
 
         val updateAdmin = UpdateGroupMemberAdminChanged(groupId, cmd.candidateUserId, isAdmin = true)
-        val updateMembers = UpdateGroupMembersUpdated(groupId, members)
+        val updateMembers = UpdateGroupMembersUpdated(groupId, members) // don't push it!
         // now this user is admin, change edit rules for admins
 
         val updatePermissions = permissionsUpdates(cmd.candidateUserId, newState)
@@ -136,6 +137,7 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
     }
   }
 
+  // TODO: duplicate isBot check
   protected def dismissUserAdmin(cmd: DismissUserAdmin): Unit = {
     if (!state.permissions.canEditAdmins(cmd.clientUserId)) {
       sender() ! noPermission
@@ -147,53 +149,16 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
       persist(AdminStatusChanged(Instant.now, cmd.targetUserId, isAdmin = false)) { evt ⇒
         val newState = commit(evt)
 
-        val dateMillis = evt.ts.toEpochMilli
         val memberIds = newState.memberIds
         val members = newState.members.values.map(_.asStruct).toVector
 
         val updateAdmin = UpdateGroupMemberAdminChanged(groupId, cmd.targetUserId, isAdmin = false)
-        val updateMembers = UpdateGroupMembersUpdated(groupId, members)
-        // now this user is not admin, change edit rules to plain members
-
         val updatePermissions = permissionsUpdates(cmd.targetUserId, newState)
-        //        val updateCanEdit = UpdateGroupCanEditInfoChanged(groupId, canEditGroup = newState.adminSettings.canMembersEditGroupInfo)
 
         val updateObsolete = UpdateGroupMembersUpdateObsolete(groupId, members)
 
         //TODO: remove deprecated
         db.run(GroupUserRepo.dismissAdmin(groupId, cmd.targetUserId): @silent)
-
-        val adminGROUPUpdates: Future[SeqState] =
-          for {
-            // push admin changed to all
-            _ ← seqUpdExt.broadcastPeopleUpdate(
-              userIds = memberIds + cmd.clientUserId,
-              updateAdmin
-            )
-            // push changed members to all users
-            seqState ← seqUpdExt.broadcastClientUpdate(
-              cmd.clientUserId,
-              cmd.clientAuthId,
-              memberIds - cmd.clientUserId,
-              updateMembers
-            )
-          } yield seqState
-
-        val adminCHANNELUpdates: Future[SeqState] =
-          for {
-            // push admin changed to all
-            _ ← seqUpdExt.broadcastPeopleUpdate(
-              userIds = memberIds + cmd.clientUserId,
-              updateAdmin
-            )
-            // push changed members to admins and fresh admin
-            seqState ← seqUpdExt.broadcastClientUpdate(
-              cmd.clientUserId,
-              cmd.clientAuthId,
-              newState.adminIds - cmd.clientUserId,
-              updateMembers
-            )
-          } yield seqState
 
         val result: Future[SeqState] = for {
 
@@ -214,8 +179,12 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
           _ ← FutureExt.ftraverse(updatePermissions) { update ⇒
             seqUpdExt.deliverUserUpdate(cmd.targetUserId, update)
           }
-          seqState ← if (state.groupType.isChannel) adminCHANNELUpdates else adminGROUPUpdates
-
+          seqState ← seqUpdExt.broadcastClientUpdate(
+            cmd.clientUserId,
+            cmd.clientAuthId,
+            memberIds - cmd.clientUserId,
+            updateAdmin
+          )
         } yield seqState
 
         result pipeTo sender()
@@ -223,6 +192,7 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
     }
   }
 
+  // TODO: duplicate isBot check
   protected def transferOwnership(cmd: TransferOwnership): Unit = {
     if (!state.isOwner(cmd.clientUserId)) {
       sender() ! Status.Failure(CommonErrors.Forbidden)
@@ -259,7 +229,7 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
 
   protected def updateAdminSettings(cmd: UpdateAdminSettings): Unit = {
     if (!state.permissions.canEditAdminSettings(cmd.clientUserId)) {
-      sender() ! Status.Failure(NotAdmin)
+      sender() ! noPermission
     } else if (AdminSettings.fromBitMask(cmd.settingsBitMask) == state.adminSettings) {
       sender() ! UpdateAdminSettingsAck()
     } else {
@@ -320,8 +290,6 @@ private[group] trait AdminCommandHandlers extends GroupsImplicits {
       persist(GroupDeleted(Instant.now, cmd.clientUserId)) { evt ⇒
         commit(evt)
 
-        val dateMillis = evt.ts.toEpochMilli
-        val randomId = ACLUtils.randomLong()
         val ZeroPermissions = 0L
 
         val deleteGroupMembersUpdates: Vector[Update] =

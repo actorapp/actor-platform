@@ -157,7 +157,7 @@ public class AuthActivity extends BaseFragmentActivity {
                 break;
             case LOGGED_IN:
                 finish();
-                ActorSDK.sharedActor().startMessagingApp(this);
+                ActorSDK.sharedActor().startAfterLoginActivity(this);
                 break;
         }
     }

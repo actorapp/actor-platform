@@ -121,6 +121,8 @@ public class GroupInfoFragment extends BaseFragment {
         TextView shortLinkView = (TextView) header.findViewById(R.id.shortNameLink);
 
         TextView addMember = (TextView) header.findViewById(R.id.addMemberAction);
+        addMember.setText(groupVM.getGroupType() == GroupType.CHANNEL ? R.string.channel_add_member : R.string.group_add_member);
+
         TextView members = (TextView) header.findViewById(R.id.viewMembersAction);
         TextView leaveAction = (TextView) header.findViewById(R.id.leaveAction);
         TextView administrationAction = (TextView) header.findViewById(R.id.administrationAction);
@@ -268,7 +270,7 @@ public class GroupInfoFragment extends BaseFragment {
                 leaveAction.setVisibility(View.VISIBLE);
                 leaveAction.setOnClickListener(view1 -> {
                     new AlertDialog.Builder(getActivity())
-                            .setMessage(getString(R.string.alert_leave_group_message).replace("%1$s",
+                            .setMessage(getString(groupVM.getGroupType() == GroupType.CHANNEL ? R.string.alert_leave_channel_message : R.string.alert_leave_group_message).replace("%1$s",
                                     groupVM.getName().get()))
                             .setPositiveButton(R.string.alert_leave_group_yes, (dialog2, which) -> {
                                 execute(messenger().leaveAndDeleteGroup(chatId).then(aVoid -> ActorSDK.returnToRoot(getActivity())));

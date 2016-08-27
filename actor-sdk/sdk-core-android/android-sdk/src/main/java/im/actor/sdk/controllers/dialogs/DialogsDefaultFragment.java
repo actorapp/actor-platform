@@ -5,6 +5,7 @@ import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
 
 import im.actor.core.entity.Dialog;
+import im.actor.core.entity.GroupType;
 import im.actor.core.entity.PeerType;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.GroupVM;
@@ -70,12 +71,16 @@ public class DialogsDefaultFragment extends BaseDialogFragment {
         } else if (dialog.getPeer().getPeerType() == PeerType.GROUP) {
             GroupVM groupVM = groups().get(dialog.getPeer().getPeerId());
             CharSequence[] items;
+            int dialogs_menu_view = groupVM.getGroupType() == GroupType.CHANNEL ? R.string.dialogs_menu_channel_view : R.string.dialogs_menu_group_view;
+            int dialogs_menu_rename = groupVM.getGroupType() == GroupType.CHANNEL ? R.string.dialogs_menu_channel_rename : R.string.dialogs_menu_group_rename;
+            int dialogs_menu_leave = groupVM.getGroupType() == GroupType.CHANNEL ? R.string.dialogs_menu_channel_leave : R.string.dialogs_menu_group_leave;
+            int dialogs_menu_delete = groupVM.getGroupType() == GroupType.CHANNEL ? R.string.dialogs_menu_channel_delete : R.string.dialogs_menu_group_delete;
             items = new CharSequence[]{
-                    getString(R.string.dialogs_menu_group_view),
-                    getString(R.string.dialogs_menu_group_rename),
-                    getString(groupVM.getIsCanLeave().get() ? R.string.dialogs_menu_group_leave :
-                            groupVM.getIsCanDelete().get() ? R.string.dialogs_menu_group_delete :
-                                    R.string.dialogs_menu_group_delete),
+                    getString(dialogs_menu_view),
+                    getString(dialogs_menu_rename),
+                    getString(groupVM.getIsCanLeave().get() ? dialogs_menu_leave :
+                            groupVM.getIsCanDelete().get() ? dialogs_menu_delete :
+                                    dialogs_menu_leave),
             };
             new AlertDialog.Builder(getActivity())
                     .setItems(items, (d, which) -> {
@@ -84,12 +89,14 @@ public class DialogsDefaultFragment extends BaseDialogFragment {
                         } else if (which == 1) {
                             startActivity(Intents.editGroupTitle(dialog.getPeer().getPeerId(), getActivity()));
                         } else if (which == 2) {
+                            int alert_delete_title = groupVM.getGroupType() == GroupType.CHANNEL ? R.string.alert_delete_channel_title : R.string.alert_delete_group_title;
+                            int alert_leave_message = groupVM.getGroupType() == GroupType.CHANNEL ? R.string.alert_leave_channel_message : R.string.alert_leave_group_message;
                             new AlertDialog.Builder(getActivity())
-                                    .setMessage(getString(groupVM.getIsCanLeave().get() ? R.string.alert_delete_group_title :
-                                            groupVM.getIsCanDelete().get() ? R.string.alert_delete_group_title :
-                                                    R.string.alert_leave_group_message, dialog.getDialogTitle()))
+                                    .setMessage(getString(groupVM.getIsCanLeave().get() ? alert_leave_message :
+                                            groupVM.getIsCanDelete().get() ? alert_delete_title :
+                                                    alert_leave_message, dialog.getDialogTitle()))
                                     .setNegativeButton(R.string.dialog_cancel, null)
-                                    .setPositiveButton(R.string.alert_leave_group_yes, (d1, which1) -> {
+                                    .setPositiveButton(groupVM.getIsCanLeave().get() ? R.string.alert_leave_group_yes : R.string.alert_delete_group_yes, (d1, which1) -> {
                                         if (groupVM.getIsCanLeave().get()) {
                                             execute(messenger().leaveAndDeleteGroup(dialog.getPeer().getPeerId()), R.string.progress_common).failure(e -> {
                                                 Toast.makeText(getActivity(), R.string.toast_unable_leave, Toast.LENGTH_LONG).show();

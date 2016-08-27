@@ -98,7 +98,7 @@ public class DialogsActor extends ModuleActor {
             }
 
             boolean forceUpdate = false;
-
+            boolean needUpdateSearch = false;
             if (dialog != null) {
                 // Ignore old messages if no force
                 if (!forceWrite && dialog.getSortDate() > message.getSortDate()) {
@@ -125,11 +125,15 @@ public class DialogsActor extends ModuleActor {
 
                 builder.setPeer(peer)
                         .setSortKey(message.getSortDate());
-
+                needUpdateSearch = true;
                 forceUpdate = true;
             }
 
-            addOrUpdateItem(builder.createDialog());
+            Dialog dialog1 = builder.createDialog();
+            addOrUpdateItem(dialog1);
+            if (needUpdateSearch) {
+                updateSearch(dialog1);
+            }
             notifyState(forceUpdate);
         }
 

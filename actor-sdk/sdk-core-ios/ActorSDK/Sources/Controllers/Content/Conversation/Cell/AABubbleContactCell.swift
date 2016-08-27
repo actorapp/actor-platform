@@ -199,10 +199,6 @@ public class AAContactCellLayout: AACellLayout {
 
 public class AABubbleContactCellLayouter: AABubbleLayouter {
     public func isSuitable(message: ACMessage) -> Bool {
-        if (!ActorSDK.sharedActor().enableExperimentalFeatures) {
-            return false
-        }
-        
         if (message.content is ACContactContent) {
             return true
         }

@@ -9,6 +9,7 @@ import im.actor.api.rpc.groups._
 import im.actor.server.group.GroupErrors.{ IncorrectGroupType, NoPermission, NotOwner }
 import im.actor.server.group.GroupQueries._
 import im.actor.server.group.GroupType.{ Channel, General, Unrecognized }
+import im.actor.util.cache.CacheHelpers.withCachedFuture
 
 import scala.concurrent.Future
 
@@ -52,7 +53,12 @@ trait GroupQueryHandlers {
 
       for {
         (members, nextOffset) ← Source(state.members)
-          .mapAsync(1)(member ⇒ userExt.getName(member._1, clientUserId) map (member._2 → _))
+          .mapAsync(1) {
+            case (userId, member) ⇒
+              withCachedFuture[java.lang.Integer, String](userId) {
+                userExt.getName(userId, clientUserId)
+              } map { name ⇒ member → name }
+          }
           .runFold(Vector.empty[(Member, String)])(_ :+ _) map { users ⇒
             val tail = users.sortBy(_._2).map(_._1).drop(offset)
             val nextOffset = if (tail.length > limit) Some(Int32Value(offset + limit).toByteArray) else None
@@ -89,7 +95,7 @@ trait GroupQueryHandlers {
 
   //TODO: add ext!
   //TODO: what if state changes during request?
-  protected def getApiStruct(clientUserId: Int) = {
+  protected def getApiStruct(clientUserId: Int, loadGroupMembers: Boolean) = {
     val isMember = state.isMember(clientUserId)
     val (members, count) = membersAndCount(state, clientUserId)
 
@@ -102,7 +108,7 @@ trait GroupQueryHandlers {
           avatar = state.avatar,
           isMember = Some(isMember),
           creatorUserId = state.creatorUserId,
-          members = members,
+          members = if (loadGroupMembers) members else Vector.empty,
           createDate = extractCreatedAtMillis(state),
           isAdmin = Some(state.isAdmin(clientUserId)),
           theme = state.topic,
@@ -185,9 +191,9 @@ trait GroupQueryHandlers {
 
   /**
    * Return group members, and number of members.
-   * If `clientUserId` is not a group member, return empty members list and 0
-   * For `General` and `Public` groups return all members and their number.
-   * For `Channel` return members list only if `clientUserId` is group admin. Otherwise return empty members list and real members count
+   * If `clientUserId` is not a group member, return empty members list and 0 members count
+   * If group is group with async members - return list with single client user and real members count
+   * If group is regular group - return all group members and real members count
    */
   private def membersAndCount(group: GroupState, clientUserId: Int): (Vector[ApiMember], Int) = {
     def apiMembers = group.members.toVector map {
@@ -196,15 +202,11 @@ trait GroupQueryHandlers {
     }
 
     if (state.isMember(clientUserId)) {
-      state.groupType match {
-        case General ⇒
-          apiMembers → group.membersCount
-        case Channel ⇒
-          if (state.isAdmin(clientUserId))
-            apiMembers → group.membersCount
-          else
-            apiMembers.find(_.userId == clientUserId).toVector → group.membersCount
-        case Unrecognized(v) ⇒ throw IncorrectGroupType(v)
+      if (state.isAsyncMembers) {
+        // compatibility with old clients
+        apiMembers.find(_.userId == clientUserId).toVector → group.membersCount
+      } else {
+        apiMembers → group.membersCount
       }
     } else {
       Vector.empty[ApiMember] → 0

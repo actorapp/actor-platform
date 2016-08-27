@@ -477,6 +477,16 @@ public class GroupVM extends BaseValueModel<Group> {
     }
 
     /**
+     * Is current user can edit admins
+     *
+     * @return is current user can edit admins
+     */
+    @NotNull
+    public BooleanValueModel getIsCanEditAdmins() {
+        return isCanEditAdmins;
+    }
+
+    /**
      * Is group deleted
      *
      * @return is this group deleted model

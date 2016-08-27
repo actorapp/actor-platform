@@ -12,7 +12,6 @@ import im.actor.sdk.controllers.conversation.messages.content.preprocessor.Prepr
 import im.actor.sdk.controllers.conversation.view.BubbleContainer;
 import im.actor.sdk.controllers.conversation.view.ReactionSpan;
 import im.actor.sdk.util.DateFormatting;
-import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
@@ -20,7 +19,7 @@ import im.actor.core.entity.PeerType;
 import static im.actor.sdk.util.ActorSDKMessenger.myUid;
 import static im.actor.sdk.util.ActorSDKMessenger.users;
 
-public abstract class MessageHolder extends BindedViewHolder
+public abstract class MessageHolder extends AbsMessageViewHolder
         implements BubbleContainer.OnAvatarClickListener, BubbleContainer.OnAvatarLongClickListener, View.OnClickListener, View.OnLongClickListener {
 
     protected MessagesAdapter adapter;
@@ -58,6 +57,7 @@ public abstract class MessageHolder extends BindedViewHolder
         return adapter.getMessagesFragment().getPeer();
     }
 
+    @Override
     public final void bindData(Message message, Message prev, Message next, long readDate, long receiveDate, PreprocessedData preprocessedData) {
         boolean isUpdated = currentMessage == null || currentMessage.getRid() != message.getRid();
         currentMessage = message;
@@ -147,7 +147,7 @@ public abstract class MessageHolder extends BindedViewHolder
         return false;
     }
 
-
+    @Override
     public void unbind() {
         currentMessage = null;
     }

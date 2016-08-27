@@ -3,20 +3,19 @@ package im.actor.sdk;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
-import android.view.ViewGroup;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+
+import im.actor.core.RawUpdatesHandler;
 import im.actor.core.entity.Peer;
-import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.sdk.controllers.conversation.ChatFragment;
 import im.actor.sdk.controllers.conversation.attach.AbsAttachFragment;
 import im.actor.sdk.controllers.conversation.inputbar.InputBarFragment;
 import im.actor.sdk.controllers.conversation.mentions.AutocompleteFragment;
-import im.actor.sdk.controllers.conversation.messages.content.MessageHolder;
-import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
+import im.actor.sdk.controllers.conversation.messages.BubbleLayouter;
 import im.actor.sdk.controllers.conversation.quote.QuoteFragment;
-import im.actor.sdk.controllers.settings.BaseGroupInfoActivity;
 import im.actor.sdk.intents.ActorIntent;
 import im.actor.sdk.intents.ActorIntentFragmentActivity;
 
@@ -62,6 +61,15 @@ public interface ActorSDKDelegate {
      */
     @Nullable
     Fragment fragmentForProfile(int uid);
+
+    /**
+     * If not null returned, overrides call fragment
+     *
+     * @param callId call id
+     * @return Fragment
+     */
+    @Nullable
+    Fragment fragmentForCall(long callId);
 
     /**
      * If not null returned, overrides group info fragment
@@ -124,29 +132,6 @@ public interface ActorSDKDelegate {
      */
     @Nullable
     Fragment fragmentForToolbar(Peer peer);
-
-
-    /**
-     * Override for hacking default messages view holders
-     *
-     * @param base base view holder class
-     * @param args args passed to view holder
-     * @param <T>  base view holder class
-     * @param <J>  return class
-     * @return hacked view holder
-     */
-    <T extends BindedViewHolder, J extends T> J getViewHolder(Class<T> base, Object... args);
-
-    /**
-     * Override for hacking custom messages view holders
-     *
-     * @param dataTypeHash    json dataType hash
-     * @param messagesAdapter adapter to pass to holder
-     * @param viewGroup       ViewGroup to pass to holder
-     * @return custom view holder
-     */
-    MessageHolder getCustomMessageViewHolder(int dataTypeHash, MessagesAdapter messagesAdapter, ViewGroup viewGroup);
-
 
     //
     // Settings
@@ -220,9 +205,21 @@ public interface ActorSDKDelegate {
      */
     int getNotificationColor();
 
+    /**
+     * If not null returned, overrides raw updates handler actor
+     *
+     * @return RawUpdatesHandler actor
+     */
+    RawUpdatesHandler getRawUpdatesHandler();
 
 
     Class getNotificationIntentClass();
 
+    /**
+     * Override/add new messages view holders
+     *
+     * @param layouters default layouters
+     */
+    void configureChatViewHolders(ArrayList<BubbleLayouter> layouters);
 
 }

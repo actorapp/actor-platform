@@ -2,8 +2,6 @@ package im.actor.sdk;
 
 import android.graphics.Color;
 
-import im.actor.sdk.util.Screen;
-
 /**
  * Actor Styling class
  */
@@ -937,6 +935,10 @@ public class ActorStyle {
         return Color.argb(Color.alpha(color), (int) Math.round(Color.red(color) * percent), (int) Math.round(Color.green(color) * percent), (int) Math.round(Color.blue(color) * percent));
     }
 
+    public static int adjustColorAlpha(int color, int alpha) {
+        return (alpha << 24) | (color & 0x00ffffff);
+    }
+
     /**
      * Get color with fallback to default - if color is 0, returns fallback color
      *
@@ -957,14 +959,14 @@ public class ActorStyle {
     //////////////////////////
 
     // DialogsFragment layout settings
-    private int dialogsPaddingTop = Screen.dp(8);
+    private int dialogsPaddingTopDp = 8;
 
-    public int getDialogsPaddingTop() {
-        return dialogsPaddingTop;
+    public int getDialogsPaddingTopDp() {
+        return dialogsPaddingTopDp;
     }
 
-    public void setDialogsPaddingTop(int dialogsPaddingTop) {
-        this.dialogsPaddingTop = dialogsPaddingTop;
+    public void setDialogsPaddingTopDp(int dialogsPaddingTopDp) {
+        this.dialogsPaddingTopDp = dialogsPaddingTopDp;
     }
 
     // ContactsFragment layout settings

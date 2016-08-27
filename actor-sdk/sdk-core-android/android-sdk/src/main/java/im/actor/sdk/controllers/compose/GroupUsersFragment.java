@@ -19,12 +19,14 @@ import android.widget.Toast;
 import im.actor.core.entity.Contact;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.runtime.function.Consumer;
+import im.actor.runtime.promise.Promise;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.compose.view.UserSpan;
 import im.actor.sdk.controllers.contacts.BaseContactFragment;
 import im.actor.sdk.util.BoxUtil;
+import im.actor.sdk.util.KeyboardHelper;
 import im.actor.sdk.util.Screen;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
@@ -36,16 +38,17 @@ public class GroupUsersFragment extends BaseContactFragment {
     private String avatarPath;
     private EditText searchField;
     private TextWatcher textWatcher;
+    private boolean isChannel;
+    private int gid;
 
     public GroupUsersFragment() {
         super(true, false, true);
 
         setRootFragment(true);
         setHomeAsUp(true);
-        setTitle(R.string.create_group_title);
     }
 
-    public static GroupUsersFragment create(String title, String avatarPath) {
+    public static GroupUsersFragment createGroup(String title, String avatarPath) {
         GroupUsersFragment res = new GroupUsersFragment();
         Bundle args = new Bundle();
         args.putString("title", title);
@@ -54,9 +57,21 @@ public class GroupUsersFragment extends BaseContactFragment {
         return res;
     }
 
+    public static GroupUsersFragment createChannel(int gid) {
+        GroupUsersFragment res = new GroupUsersFragment();
+        Bundle args = new Bundle();
+        args.putBoolean("isChannel", true);
+        args.putInt("gid", gid);
+        res.setArguments(args);
+        return res;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        isChannel = getArguments().getBoolean("isChannel", false);
+        setTitle(isChannel ? R.string.channel_add_members : R.string.create_group_title);
 
+        gid = getArguments().getInt("gid");
         title = getArguments().getString("title");
         avatarPath = getArguments().getString("avatarPath");
 
@@ -87,6 +102,8 @@ public class GroupUsersFragment extends BaseContactFragment {
                 filter(filter);
             }
         };
+        KeyboardHelper helper = new KeyboardHelper(getActivity());
+        helper.setImeVisibility(searchField, false);
         return res;
     }
 
@@ -100,24 +117,45 @@ public class GroupUsersFragment extends BaseContactFragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.create_group, menu);
-        menu.findItem(R.id.done).setEnabled(getSelectedCount() > 0);
+        menu.findItem(R.id.done).setEnabled(getSelectedCount() > 0 || isChannel);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.done) {
-            if (getSelectedCount() > 0) {
-                execute(messenger().createGroup(title, avatarPath, BoxUtil.unbox(getSelected())).then(gid -> {
-                    getActivity().startActivity(Intents.openGroupDialog(gid, true, getActivity()));
-                    getActivity().finish();
-                }).failure(e -> {
-                    Toast.makeText(getActivity(), getString(R.string.toast_unable_create_group),
-                            Toast.LENGTH_LONG).show();
-                }));
+            if (isChannel) {
+                if (getSelectedCount() > 0) {
+                    Promise invites = null;
+                    for (int uid : getSelected()) {
+                        if (invites == null) {
+                            invites = messenger().inviteMemberPromise(gid, uid);
+                        } else {
+                            invites.chain(o -> messenger().inviteMemberPromise(gid, uid));
+                        }
+                    }
+                    execute(invites.then(o -> openChannel()), R.string.progress_common);
+                } else {
+                    openChannel();
+                }
+            } else {
+                if (getSelectedCount() > 0) {
+                    execute(messenger().createGroup(title, avatarPath, BoxUtil.unbox(getSelected())).then(gid -> {
+                        getActivity().startActivity(Intents.openGroupDialog(gid, true, getActivity()));
+                        getActivity().finish();
+                    }).failure(e -> {
+                        Toast.makeText(getActivity(), getString(R.string.toast_unable_create_group),
+                                Toast.LENGTH_LONG).show();
+                    }));
+                }
             }
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    protected void openChannel() {
+        getActivity().startActivity(Intents.openGroupDialog(gid, true, getActivity()));
+        getActivity().finish();
     }
 
     @Override
