@@ -136,7 +136,7 @@ public class Application extends ActorSDKApplication {
         @Nullable
         @Override
         public AbsAttachFragment fragmentForAttachMenu(Peer peer) {
-            return new AttachFragmentEx();
+            return new AttachFragmentEx(peer);
         }
 
 //        @Override
