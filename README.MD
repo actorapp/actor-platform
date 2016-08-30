@@ -48,7 +48,7 @@ Our [Actor Bootstrap](https://github.com/actorapp/actor-bootstrap) repository co
 
 # Community Support
 
-Keep in touch with the Actor community in our [group chat](https://quit.email/join/0d43e6a90d108ad9608514b5c17b76d5b2721d5e2ea51058d6ca43a66befe7f4).
+Keep in touch with the Actor community in our [group chat](https://actor.im/join/actor_oss).
 
 # Contacts
 

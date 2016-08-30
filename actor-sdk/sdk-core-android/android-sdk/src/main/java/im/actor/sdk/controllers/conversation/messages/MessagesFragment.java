@@ -18,6 +18,7 @@ import fr.castorflex.android.circularprogressbar.CircularProgressBar;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
 import im.actor.core.viewmodel.ConversationVM;
+import im.actor.runtime.Log;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.conversation.messages.content.AudioHolder;
@@ -175,13 +176,17 @@ public abstract class MessagesFragment extends DisplayListFragment<Message, AbsM
     //
     private void recalculateUnreadMessageIfNeeded() {
 
+        Log.d("READ_DEBUG", "trying to scroll to unread");
+
         // Scroll to unread only in primary mode
         if (!isPrimaryMode) {
             return;
         }
 
         BindedDisplayList<Message> list = getDisplayList();
-        firstUnread = conversationVM.getLastMessageDate();
+        if (firstUnread == -1) {
+            firstUnread = conversationVM.getLastMessageDate();
+        }
 
         // Do not scroll to unread twice
         if (isUnreadLoaded) {

@@ -124,12 +124,8 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
     public Uri getNotificationSoundForPeer(Peer peer) {
 
         String globalSound = messenger().getPreferences().getString("userNotificationSound_" + peer.getPeerId());
-        if (globalSound != null) {
-            if (globalSound.equals("none")) {
-                return null;
-            } else {
-                return Uri.parse(globalSound);
-            }
+        if (globalSound != null && !globalSound.equals("none")) {
+            return Uri.parse(globalSound);
         }
 
         return getNotificationSound();

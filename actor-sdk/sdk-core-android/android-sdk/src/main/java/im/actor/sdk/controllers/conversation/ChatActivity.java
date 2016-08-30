@@ -95,16 +95,26 @@ public class ChatActivity extends BaseActivity {
         //
 
         if (saveInstance == null) {
-            Peer peer = Peer.fromUniqueId(getIntent().getExtras().getLong(EXTRA_CHAT_PEER));
-            chatFragment = ActorSDK.sharedActor().getDelegate().fragmentForChat(peer);
-            if (chatFragment == null) {
-                chatFragment = ChatFragment.create(peer);
-            }
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.chatFragment, chatFragment)
-                    .commitNow();
-            quote = getIntent().getStringExtra("forward_text_raw");
+            handleIntent(getIntent());
         }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        handleIntent(intent);
+    }
+
+    protected void handleIntent(Intent intent) {
+        Peer peer = Peer.fromUniqueId(intent.getExtras().getLong(EXTRA_CHAT_PEER));
+        chatFragment = ActorSDK.sharedActor().getDelegate().fragmentForChat(peer);
+        if (chatFragment == null) {
+            chatFragment = ChatFragment.create(peer);
+        }
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.chatFragment, chatFragment)
+                .commitNow();
+        quote = intent.getStringExtra("forward_text_raw");
     }
 
     @Override

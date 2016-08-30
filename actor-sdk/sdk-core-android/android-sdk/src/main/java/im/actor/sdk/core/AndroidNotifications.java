@@ -91,7 +91,7 @@ public class AndroidNotifications implements NotificationProvider {
 //                .setBackground(((BitmapDrawable) AppContext.getContext().getResources().getDrawable(R.drawable.wear_bg)).getBitmap())
 //                .setHintHideIcon(true));
 
-        final Notification topNotification = topNotifications.get(0);
+        final Notification topNotification = topNotifications.get(topNotifications.size() - 1);
 
 //        if (!silentUpdate) {
 //            builder.setTicker(getNotificationTextFull(topNotification, messenger));
