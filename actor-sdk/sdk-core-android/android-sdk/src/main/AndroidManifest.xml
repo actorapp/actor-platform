@@ -95,7 +95,6 @@
         <activity
             android:name=".controllers.share.ShareActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:label="@string/app_name"
             android:theme="@style/MainActivityTheme"
             android:windowSoftInputMode="adjustResize">
 
