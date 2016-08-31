@@ -261,7 +261,7 @@ public class ChatToolbarFragment extends BaseFragment {
             } else if (peer.getPeerType() == PeerType.GROUP) {
 
                 GroupVM groupVM = groups().get(peer.getPeerId());
-                if (groupVM.getGroupType() == GroupType.GROUP) {
+                if (groupVM.getGroupType() == GroupType.GROUP && groupVM.isMember().get() && groupVM.getIsCanCall().get()) {
                     callsEnabled = groupVM.getMembersCount().get() <= MAX_USERS_FOR_CALLS;
                     videoCallsEnabled = false;
                 } else {
