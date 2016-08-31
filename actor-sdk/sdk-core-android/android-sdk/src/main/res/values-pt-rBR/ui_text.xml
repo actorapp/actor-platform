@@ -97,26 +97,26 @@
     <string name="auth_email_edit_text_hint">E-mail</string>
     <string name="auth_email_get_code">CONFIRMAR E-MAIL</string>
 
-    <string name="auth_tos_privacy">By signing up, you agree to the Terms of Service and Privacy Policy.</string>
-    <string name="auth_tos">By signing up, you agree to the Terms of Service.</string>
-    <string name="auth_privacy">By signing up, you agree to the Privacy Policy.</string>
-    <string name="auth_find_by_diclamer"> Others users will be able to find you via email or phone number.</string>
+    <string name="auth_tos_privacy">Ao inscrever-se, você concorda com os Termos de Serviço e Política de Privacidade.</string>
+    <string name="auth_tos">Ao inscrever-se, você concorda com os Termos de Serviço.</string>
+    <string name="auth_privacy">Ao inscrever-se, você concorda com a Política de Privacidade.</string>
+    <string name="auth_find_by_diclamer">Outros usuários serão capazes de encontrá-lo via e-mail ou número de telefone.</string>
 
-    <string name="auth_change_endpoint">Change server endpoint</string>
-    <string name="auth_reset_default_endpoint">reset to default</string>
+    <string name="auth_change_endpoint">Alterar o endereço do servidor</string>
+    <string name="auth_reset_default_endpoint">Restaurar o valor padrão</string>
 
-    <string name="auth_tos_index">Terms of Service</string>
-    <string name="auth_privacy_index">Privacy Policy</string>
+    <string name="auth_tos_index">Termos de Serviço</string>
+    <string name="auth_privacy_index">Política de Privacidade</string>
 
     <!-- Sign in Fragment-->
-    <string name="sign_in_title">Sign in</string>
-    <string name="sign_in_hint">Please enter your phone or email.</string>
-    <string name="sign_in_hint_phone_only">Please enter your phone.</string>
-    <string name="sign_in_hint_email_only">Please enter your email.</string>
-    <string name="sign_in_edit_text_hint">phone or email</string>
-    <string name="sign_in_edit_text_hint_phone_only">phone</string>
+    <string name="sign_in_title">Entrar</string>
+    <string name="sign_in_hint">Por favor, informe seu telefone ou email.</string>
+    <string name="sign_in_hint_phone_only">Por favor, informe seu telefone.</string>
+    <string name="sign_in_hint_email_only">Por favor, informe seu email.</string>
+    <string name="sign_in_edit_text_hint">telefone ou email</string>
+    <string name="sign_in_edit_text_hint_phone_only">telefone</string>
     <string name="sign_in_edit_text_hint_email_only">email</string>
-    <string name="sign_in_get_code">SIGN IN</string>
+    <string name="sign_in_get_code">ENTRAR</string>
 
     <!-- Sign In Fragment -->
     <string name="auth_code_phone_hint">Nós lhe enviamos um SMS com o código de para o seu telefone {0}</string>
@@ -137,7 +137,7 @@
     <string name="auth_profile_done">COMEÇAR A CONVERSAR</string>
 
     <!-- Auth errors -->
-    <string name="auth_error_wrong_auth_id">Please, enter a valid phone number or email</string>
+    <string name="auth_error_wrong_auth_id">Por favor, informe um telefone ou email válido</string>
     <string name="auth_error_empty_phone">Por favor, insira seu número de telefone</string>
     <string name="auth_error_empty_email">por favor, insira seu e-mail</string>
     <string name="auth_error_code_expired">O código expirou. Por favor reinicie o processo de validação.</string>
@@ -146,7 +146,7 @@
 
     <!-- Main -->
     <string name="main_search_hint">Insira algo para pesquisar</string>
-    <string name="main_search_global_header">Global search</string>
+    <string name="main_search_global_header">Pesquisa Global</string>
     <string name="main_search_empty">Nada encontrado</string>
     <string name="main_menu_help">Ajuda</string>
     <string name="main_menu_search">Pesquisar</string>
@@ -182,15 +182,15 @@
     <string name="settings_chat">Opções do Chat</string>
     <string name="settings_security">Segurança</string>
 
-    <string name="settings_blocked_list">Blocked list</string>
-    <string name="nickname_empty">Set username</string>
-    <string name="nickname_change">Change username</string>
-    <string name="nickname">Username</string>
-    <string name="nickname_hint">You can choose a username in {appName}. Other people will be able to find you by this username and contact you without using your phone number.\n\nYou can use a–z, 0–9 and underscores. Minimum length is 5 characters.</string>
-    <string name="nickname_edittext_hint">Enter your Username</string>
-    <string name="about_user_me">About me</string>
-    <string name="about_user">About user</string>
-    <string name="wallpaper">Wallpaper</string>
+    <string name="settings_blocked_list">Lista de bloqueados</string>
+    <string name="nickname_empty">Informe o apelido</string>
+    <string name="nickname_change">Alterar o apelido</string>
+    <string name="nickname">Apelido</string>
+    <string name="nickname_hint">Você pode escolher um nome de usuário {appName}. Outras pessoas serão capazes de encontrá-lo por este nome de usuário e contactá-lo sem usar o seu número de telefone.\n\nVocê pode usar os caracteres a-z, 0-9 e underline. O comprimento mínimo é de 5 caracteres.</string>
+    <string name="nickname_edittext_hint">Informe seu apelido</string>
+    <string name="about_user_me">Sobre mim</string>
+    <string name="about_user">Sobre o usuário</string>
+    <string name="wallpaper">Papel de Parede</string>
 
     <!-- Profile controls -->
     <string name="phone_menu_call">Chamar {0}</string>
@@ -224,7 +224,7 @@
     <string name="contacts_empty_invite_action">Avise um amigo</string>
     <string name="contacts_empty_add_hint">ou adicione manualmente usando o botão abaixo.</string>
 
-    <string name="contacts_menu_remove">Removee {0} dos contatos</string>
+    <string name="contacts_menu_remove">Remove {0} dos contatos</string>
     <string name="contacts_menu_remove_progress">Removendo…</string>
     <string name="contacts_menu_edit">Editar nome</string>
 
@@ -274,28 +274,28 @@
 
     <string name="chat_unsupported">Mensagem não suportada nesta versão. Por favor espere pela atualização da aplicação para ver a mensagem.</string>
 
-    <string name="messages_action_forward">Forward</string>
-    <string name="messages_action_quote">Quote</string>
-    <string name="messages_action_delete">Delete</string>
-    <string name="messages_action_copy">Copy</string>
-    <string name="messages_action_like">Like</string>
-    <string name="edit_message">Edit last message</string>
-    <string name="edit_message_error_not_last">Only your last message can be edited</string>
-    <string name="edit_message_error_slowpoke">The message is too old</string>
+    <string name="messages_action_forward">Encaminhar</string>
+    <string name="messages_action_quote">Citar</string>
+    <string name="messages_action_delete">Excluir</string>
+    <string name="messages_action_copy">Copiar</string>
+    <string name="messages_action_like">Gostar</string>
+    <string name="edit_message">Editar a última mensagem</string>
+    <string name="edit_message_error_not_last">Somente sua última mensagem pode ser editada</string>
+    <string name="edit_message_error_slowpoke">A mensagem é muito velha</string>
 
     <!-- Share menu-->
-    <string name="share_menu_gallery">Gallery</string>
-    <string name="share_menu_video">Video</string>
-    <string name="share_menu_file">File</string>
-    <string name="share_menu_camera">Camera</string>
-    <string name="share_menu_contact">Contact</string>
-    <string name="share_menu_location">Location</string>
+    <string name="share_menu_gallery">Galeria</string>
+    <string name="share_menu_video">Vídeo</string>
+    <string name="share_menu_file">Arquivo</string>
+    <string name="share_menu_camera">Câmera</string>
+    <string name="share_menu_contact">Contato</string>
+    <string name="share_menu_location">Localização</string>
 
     <!-- Map -->
-    <string name="map_title">Location</string>
-    <string name="map_type_normal">Map</string>
-    <string name="map_type_satellite">Satellite</string>
-    <string name="map_type_hybrid">Hybrid</string>
+    <string name="map_title">Localização</string>
+    <string name="map_type_normal">Mapa</string>
+    <string name="map_type_satellite">Satélite</string>
+    <string name="map_type_hybrid">Híbrido</string>
 
     <!-- Profile -->
     <string name="profile_title">Perfil</string>
@@ -305,17 +305,17 @@
     <string name="profile_settings_header">Configurações</string>
     <string name="profile_settings_notifications">Notificações</string>
     <string name="profile_settings_notifications_picker">Notifications sound</string>
-    <string name="profile_settings_block">Block user</string>
-    <string name="profile_settings_unblock">Unblock user</string>
-    <string name="profile_settings_block_confirm">Block {user}?</string>
+    <string name="profile_settings_block">Bloquear usuário</string>
+    <string name="profile_settings_unblock">Desbloquear usuário</string>
+    <string name="profile_settings_block_confirm">Bloquear {user}?</string>
 
-    <string name="profile_contacts_added">Remove from contacts</string>
-    <string name="profile_contacts_available">Add to Contacts</string>
-    <string name="profile_call">Voice Call</string>
-    <string name="profile_video_call">Video Call</string>
-    <string name="profile_compose">New Message</string>
+    <string name="profile_contacts_added">Remover dos contatos</string>
+    <string name="profile_contacts_available">Adicionar aos contatos</string>
+    <string name="profile_call">Chamada de voz</string>
+    <string name="profile_video_call">Chamada de vídeo</string>
+    <string name="profile_compose">Nova mensagem</string>
 
-    <string name="settings_mobile_phone">Mobile phone</string>
+    <string name="settings_mobile_phone">Telefone celular</string>
 
     <string name="profile_adding">Adicionando aos Contatos…</string>
     <string name="profile_removing">Removendo dos Contatos…</string>
@@ -355,67 +355,67 @@
     <string name="group_shared_files">Documentos</string>
 
     <string name="group_add_member">Adicionar um membro</string>
-    <string name="channel_add_member">Add a member</string>
-    <string name="channel_add_members">Add members</string>
-    <string name="group_leave">Leave group</string>
-    <string name="group_leave_channel">Leave channel</string>
-    <string name="group_administration">Administration</string>
-    <string name="group_make_admin">Make admin</string>
-    <string name="group_revoke_admin">Revoke admin rights</string>
+    <string name="channel_add_member">Adicionar um membro</string>
+    <string name="channel_add_members">Adicionar membros</string>
+    <string name="group_leave">Sair do grupo</string>
+    <string name="group_leave_channel">Sair do canal</string>
+    <string name="group_administration">Administração</string>
+    <string name="group_make_admin">Torná-lo admin</string>
+    <string name="group_revoke_admin">Remover permissão de admin</string>
 
-    <string name="group_admin_title">Group Administration</string>
-    <string name="channel_admin_title">Channel Administration</string>
+    <string name="group_admin_title">Administração do grupo</string>
+    <string name="channel_admin_title">Administração do canal</string>
 
-    <string name="group_permissions">Permissions</string>
-    <string name="group_permissions_hint">Control what is possible in this group</string>
-    <string name="channel_permissions_hint">Control what is possible in this channel</string>
+    <string name="group_permissions">Permissões</string>
+    <string name="group_permissions_hint">Configure o que é possível ser feito neste grupo.</string>
+    <string name="channel_permissions_hint">Configure o que é possível ser feito neste canal.</string>
 
-    <string name="group_type">Group Type</string>
-    <string name="channel_type">Channel Type</string>
-    <string name="group_type_pubic">Public</string>
-    <string name="channel_type_pubic">Public</string>
-    <string name="group_type_private">Private</string>
-    <string name="channel_type_private">Private</string>
-    <string name="group_delete">Delete Group</string>
-    <string name="group_delete_hint">You will lose all messages in this group.</string>
-    <string name="channel_delete">Delete Channel</string>
-    <string name="channel_delete_hint">You will lose all messages in this channel.</string>
+    <string name="group_type">Tipo do Grupo</string>
+    <string name="channel_type">Tipo do Canal</string>
+    <string name="group_type_pubic">Público</string>
+    <string name="channel_type_pubic">Público</string>
+    <string name="group_type_private">Privado</string>
+    <string name="channel_type_private">Privado</string>
+    <string name="group_delete">Excluir Grupo</string>
+    <string name="group_delete_hint">Você irá perder todas as mensagens deste grupo.</string>
+    <string name="channel_delete">Excluir Canal</string>
+    <string name="channel_delete_hint">Você irá perder todas as mensagens deste canal.</string>
 
-    <string name="group_share_history">Share History</string>
-    <string name="group_share_history_enabled">Shared</string>
-    <string name="group_share_history_hint">All members will see all messages</string>
+    <string name="group_share_history">Compartilhar Histórico</string>
+    <string name="group_share_history_enabled">Compartilhado</string>
+    <string name="group_share_history_hint">Todos os membros irão ver todas as mensagens</string>
 
-    <string name="group_can_edit_info_members">All members can edit group info</string>
-    <string name="group_can_edit_info_admins">Admins can edit group info</string>
-    <string name="group_can_invite_members">All members can invite to group</string>
-    <string name="group_show_leave_join">Show member leave/join messages</string>
-    <string name="group_show_admin_to_members">Admin label is visible to all members</string>
+    <string name="group_can_edit_info_members">Todos os membros podem editar as informações do grupo.</string>
+    <string name="group_can_edit_info_admins">Admins podem editar as informações do grupo.</string>
+    <string name="group_can_invite_members">Todos os membros podem convidar para o grupo.</string>
+    <string name="group_show_leave_join">Exibir mensagens quando membros sairem/entrarem.</string>
+    <string name="group_show_admin_to_members">Indicador de Admin será visível para todos os membros.</string>
 
-    <string name="channel_can_edit_info_members">All members can edit channel info</string>
-    <string name="channel_can_edit_info_admins">Admins can edit channel info</string>
-    <string name="channel_can_invite_members">All members can invite to channel</string>
-    <string name="channel_show_leave_join">Show member leave/join messages</string>
-    <string name="channel_show_admin_to_members">Admin label is visible to all members</string>
+    <string name="channel_can_edit_info_members">Todos os membros podem editar as informações do canal.</string>
+    <string name="channel_can_edit_info_admins">Admins podem editar as informações do canal.</string>
+    <string name="channel_can_invite_members">Todos os membros podem convidar para o canal.</string>
+    <string name="channel_show_leave_join">Exibir mensagens quando membros sairem/entrarem.</string>
+    <string name="channel_show_admin_to_members">Indicador de Admin será visível para todos os membros.</string>
 
-    <string name="group_public_group_title">Public Group</string>
-    <string name="group_public_group_text">Public groups can be found in search, anyone can join them.</string>
-    <string name="group_private_group_title">Private Group</string>
-    <string name="group_private_group_text">Private group can only be joined via personal invitation.</string>
+    <string name="group_public_group_title">Grupo público</string>
+    <string name="group_public_group_text">Grupos públicos podem ser encontrados na busca, qualquer um pode entrar.</string>
+    <string name="group_private_group_title">Grupo privado</string>
+    <string name="group_private_group_text">Grupos privados só podem ser acessados através de convite pessoal.</string>
 
-    <string name="group_public_channel_title">Public Channel</string>
-    <string name="group_public_channel_text">Public channels can be found in search, anyone can join them.</string>
-    <string name="group_private_channel_title">Private channel</string>
-    <string name="group_private_channel_text">Private channel can only be joined via personal invitation.</string>
+    <string name="group_public_channel_title">Canal público</string>
+    <string name="group_public_channel_text">Canais públicos podem ser encontrados na busca, qualquer um pode entrar.</string>
+    <string name="group_private_channel_title">Canal privado</string>
+    <string name="group_private_channel_text">Canais privados só podem ser acessados através de convite pessoal.</string>
 
     <string name="group_not_member">Você não é membro desse grupo</string>
-    <string name="about_group">About the group</string>
-    <string name="about_group_empty">Set group description</string>
-    <string name="theme_group">Group theme</string>
-    <string name="theme_group_empty">Set group theme</string>
+    <string name="about_group">Sobre o grupo</string>
+    <string name="about_group_empty">Atribuir uma descrição ao grupo</string>
+    <string name="theme_group">Tema do grupo</string>
+    <string name="theme_group_empty">Atribuir um tema ao grupo</string>
 
     <string name="members_adapter_bot_online_status">bot</string>
 
-    <string name="group_edit_change_short_name_error">Unable to change group short name</string>
+    <string name="group_edit_change_short_name_error">Não é possível alterar o nome curto do grupo</string>
 
     <!-- Avatar -->
     <string name="avatar_title_your">Sua foto</string>
@@ -442,12 +442,12 @@
     <string name="create_group_done">Feito</string>
 
     <!-- Create Channel -->
-    <string name="create_channel_title">Create channel</string>
-    <string name="create_channel_name_hint">Name the channel</string>
-    <string name="create_channel_hint">Enter channel name and set optional channel picture</string>
+    <string name="create_channel_title">Criar canal</string>
+    <string name="create_channel_name_hint">Nome do canal</string>
+    <string name="create_channel_hint">Entre com o nome do canal e adicionar uma foto opcional</string>
 
-    <string name="group_name_hint">Name</string>
-    <string name="group_description_hint">Description</string>
+    <string name="group_name_hint">Nome</string>
+    <string name="group_description_hint">Descrição</string>
 
     <!-- Group add -->
     <string name="group_add_title">Adicionar membro</string>
@@ -475,15 +475,15 @@
     <string name="edit_name_title_you">Insira seu nome</string>
     <string name="edit_name_title_contact">Insira o nome do contato</string>
     <string name="edit_name_title_group">Insira o nome do grupo</string>
-    <string name="edit_name_title_group_theme">Enter group theme</string>
-    <string name="edit_name_title_nick">Enter your nick</string>
+    <string name="edit_name_title_group_theme">Informe o tema do grupo</string>
+    <string name="edit_name_title_nick">Informe seu apelido</string>
     <string name="edit_name_cancel">CANCELAR</string>
     <string name="edit_name_save">SALVAR</string>
     <string name="edit_name_process">Alterando o nome…</string>
-    <string name="edit_nick_process">Changing username…</string>
-    <string name="edit_about_process">Changing description…</string>
-    <string name="edit_theme_process">Changing theme…</string>
-    <string name="edit_about_edittext_hint">Tell people anything you want, briefly.</string>
+    <string name="edit_nick_process">Alterando o apelido…</string>
+    <string name="edit_about_process">Alterando a descrição…</string>
+    <string name="edit_theme_process">Alterando o tema…</string>
+    <string name="edit_about_edittext_hint">Diga às pessoas o que quiser, brevemente.</string>
 
 
     <!-- Help -->
@@ -506,19 +506,19 @@
 
     <string name="not_vibration">Vibrar</string>
     <string name="not_vibration_subtitle">Ativar aletas vibratórios</string>
-    <string name="not_group">Group</string>
-    <string name="not_group_subtitle">Enable group notifications</string>
-    <string name="not_group_mentions">Only for mentions</string>
-    <string name="not_group_mentions_subtitle">Enable group notifications only for mentions</string>
+    <string name="not_group">Grupo</string>
+    <string name="not_group_subtitle">Ativar notificação de grupos</string>
+    <string name="not_group_mentions">Apenas para mensionamentos</string>
+    <string name="not_group_mentions_subtitle">Ativar notificação do grupo apenas para mensionamentos</string>
     <string name="not_show_text">Mostrar nome e mensagens</string>
     <string name="not_show_text_subtitle">Mostrar texto da mensagem e o nome do contato no painel de notificações</string>
     <string name="not_sound">Sons</string>
     <string name="not_sound_subtitle">Ativar alertas sonoros</string>
-    <string name="not_sound_picker">Set sound</string>
-    <string name="not_sound_picker_subtitle">Set notification sound</string>
-    <string name="notification_multiple_canversations_after_msg_count">" messages in "</string>
-    <string name="notifications_multiple_canversations_after_coversations_count">" chats"</string>
-    <string name="notifications_single_conversation_аfter_messages_count">" messages"</string>
+    <string name="not_sound_picker">Configurar som</string>
+    <string name="not_sound_picker_subtitle">Configurar som da notificação.</string>
+    <string name="notification_multiple_canversations_after_msg_count">" mensagem em "</string>
+    <string name="notifications_multiple_canversations_after_coversations_count">" conversas"</string>
+    <string name="notifications_single_conversation_аfter_messages_count">" mensagems"</string>
 
 
     <!-- Pick user -->
@@ -529,8 +529,8 @@
     <string name="settings_chat_send_enter">Enviar usando enter</string>
     <string name="settings_chat_send_enter_subtitle">Pressionar a tecla enter envia a mensagem</string>
 
-    <string name="settings_animation_auto_play_title">Animation auto play</string>
-    <string name="settings_animation_auto_play_subtitle">Is animations playing automatically after downloaded</string>
+    <string name="settings_animation_auto_play_title">Tocar Animação automaticamente.</string>
+    <string name="settings_animation_auto_play_subtitle">As animações tocarão automaticamente após o download</string>
 
     <string name="settings_chat_markdown">Markdown</string>
     <string name="settings_chat_markdown_subtitle">Markdown está ativado</string>
@@ -540,25 +540,25 @@
     <string name="security_terminate_title">Finalizar todas as sessões</string>
     <string name="security_terminate_subtitle">Sair de todos os dispositivos</string>
     <string name="security_terminate_message">Você tem certeza que quer sair de todos os outros dispositivos? Todas as informações serão perdidas neles.</string>
-    <string name="security_terminate_this_message">Are you sure want to logout on this device? All app data will be lost on {device} </string>
+    <string name="security_terminate_this_message">Tem a certeza que quer sair deste dispositivo? Todos os dados de aplicativos serão perdidos em {device} </string>
     <string name="security_authorized_header">Dispositivos e serviços autorizados</string>
     <string name="security_authorized_loading">Carregando…</string>
-    <string name="security_toast_unable_remove_auth">Unable to remove auth</string>
-    <string name="security_this_title">(This) </string>
-    <string name="security_toast_unable_to_load">Unable to load. Please try again.</string>
+    <string name="security_toast_unable_remove_auth">Não foi possível remover a autenticação</string>
+    <string name="security_this_title">(Isto) </string>
+    <string name="security_toast_unable_to_load">Não foi possível carregar. Tente novamente.</string>
 
     <!-- Last Seen -->
-    <string name="security_last_seen_title">Last seen</string>
-    <string name="security_last_seen_subtitle">Change who can see your Last Seen time.</string>
-    <string name="security_last_seen_everybody">Everybody</string>
-    <string name="security_last_seen_contacts">My Contacts</string>
-    <string name="security_last_seen_nobody">Nobody</string>
+    <string name="security_last_seen_title">Visto pela última vez</string>
+    <string name="security_last_seen_subtitle">Alterar quem pode ver o sua última atividade.</string>
+    <string name="security_last_seen_everybody">Todo mundo</string>
+    <string name="security_last_seen_contacts">Meus contatos</string>
+    <string name="security_last_seen_nobody">Ninguem</string>
 
     <!-- Blocked list -->
-    <string name="blocked_title">Blocked list</string>
-    <string name="blocked_empty_list">You haven\'t blocked anyone</string>
-    <string name="blocked_loading">Loading blocked list…</string>
-    <string name="blocked_unblock">UNBLOCK</string>
+    <string name="blocked_title">Lista de bloqueados</string>
+    <string name="blocked_empty_list">Você não tem ninguem bloqueado</string>
+    <string name="blocked_loading">Carregando lista de bloqueados…</string>
+    <string name="blocked_unblock">DESBLOQUEAR</string>
 
     <!-- Alerts -->
     <string name="alert_delete_messages_text">Você tem certeza que quer remover {0} mensagens?</string>
@@ -583,27 +583,27 @@
     <string name="media">Midia</string>
     <string name="media_picture">Imagens</string>
     <string name="media_pager" formatted="false">%d de %d</string>
-    <string name="emoji_no_recent">no recent emoji yet</string>
+    <string name="emoji_no_recent">nenhum emoji recente ainda</string>
 
     <!-- Calls -->
-    <string name="call_ended">Call ended</string>
-    <string name="call_incoming">Incoming call</string>
-    <string name="call_outgoing">Ringing…</string>
-    <string name="call_connecting">Connecting…</string>
-    <string name="call_enable_speaker">speaker</string>
-    <string name="call_enable_mute">mute</string>
-    <string name="call_enable_video">video</string>
-    <string name="call_to_messages">messages</string>
-    <string name="call_add_user">add user</string>
-    <string name="call_notification">return to call</string>
+    <string name="call_ended">Ligação terminada</string>
+    <string name="call_incoming">Recebendo ligação</string>
+    <string name="call_outgoing">Tocando…</string>
+    <string name="call_connecting">Conectando…</string>
+    <string name="call_enable_speaker">alto falante</string>
+    <string name="call_enable_mute">mudo</string>
+    <string name="call_enable_video">vídeo</string>
+    <string name="call_to_messages">mensagens</string>
+    <string name="call_add_user">adicionar usuário</string>
+    <string name="call_notification">retornar a ligação</string>
 
     <!-- Dialogs -->
     <string name="alert_leave_group_message">Você tem certeza que quer sair do grupo "%1$s"?</string>
-    <string name="alert_leave_channel_message">Are you sure you want to exit channel "%1$s"?</string>
+    <string name="alert_leave_channel_message">Você tem certeza que quer sair do canal "%1$s"?</string>
     <string name="alert_leave_group_yes">Sair</string>
 
     <string name="alert_delete_group_title">Remover "%1$s" grupo?</string>
-    <string name="alert_delete_channel_title">Delete "%1$s" channel?</string>
+    <string name="alert_delete_channel_title">Remover "%1$s" canal?</string>
     <string name="alert_delete_group_yes">Remover</string>
 
     <string name="alert_delete_chat_message">Remover conversa com "%1$s"?</string>
@@ -625,6 +625,5 @@
         problema persistir.
     </string>
     <string name="error_view_url">Tipo de URL desconhecida</string>
-
-
+    
 </resources>
