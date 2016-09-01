@@ -202,7 +202,7 @@ public abstract class MessagesFragment extends DisplayListFragment<Message, AbsM
         isUnreadLoaded = true;
 
         // If don't have unread message date: nothing to do
-        if (firstUnread == 0) {
+        if (firstUnread <= 0) {
             return;
         }
 
