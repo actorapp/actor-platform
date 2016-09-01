@@ -198,6 +198,12 @@ public abstract class MessagesFragment extends DisplayListFragment<Message, AbsM
             return;
         }
 
+        // refresh list if top message is too old
+        if (getDisplayList().getItem(0).getSortDate() < firstUnread) {
+            getDisplayList().initCenter(firstUnread, true);
+            return;
+        }
+
         // If List is not empty: mark as loaded
         isUnreadLoaded = true;
 
