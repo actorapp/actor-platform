@@ -9,6 +9,7 @@ import akka.stream.{ ActorMaterializer, Materializer }
 import akka.util.ByteString
 import com.amazonaws.HttpMethod
 import com.amazonaws.auth.BasicAWSCredentials
+import com.amazonaws.regions.{ Region, Regions }
 import com.amazonaws.services.s3.model.{ GeneratePresignedUrlRequest, ObjectMetadata }
 import com.amazonaws.services.s3.S3ClientOptions
 import com.amazonaws.services.s3.transfer.TransferManager
@@ -32,18 +33,23 @@ final class S3StorageAdapter(_system: ActorSystem) extends FileStorageAdapter {
   private implicit val ec: ExecutionContext = system.dispatcher
   private implicit val mat: Materializer = ActorMaterializer()
 
-  private val config = S3StorageAdapterConfig.load(system.settings.config.getConfig("services.aws.s3")).get
+  private val config = S3StorageAdapterConfig.load
   private val bucketName = config.bucketName
   private val awsCredentials = new BasicAWSCredentials(config.key, config.secret)
   private val db = DbExtension(system).db
 
-  val s3Client = new AmazonS3ScalaClient(awsCredentials)
-  if (!config.endpoint.isEmpty) {
-    s3Client.client.setEndpoint(config.endpoint)
-
-    if (config.pathStyleAccess) {
-      s3Client.client.setS3ClientOptions(new S3ClientOptions().withPathStyleAccess(true));
+  val s3Client = {
+    val blueprint = new AmazonS3ScalaClient(awsCredentials)
+    config.endpoint foreach { endpoint ⇒
+      blueprint.client.setEndpoint(endpoint)
     }
+    config.region foreach { region ⇒
+      blueprint.client.setRegion(Region.getRegion(Regions.fromName(region)))
+    }
+    if (config.pathStyleAccess) {
+      blueprint.client.setS3ClientOptions(new S3ClientOptions().withPathStyleAccess(true))
+    }
+    blueprint
   }
 
   val transferManager = new TransferManager(s3Client.client)

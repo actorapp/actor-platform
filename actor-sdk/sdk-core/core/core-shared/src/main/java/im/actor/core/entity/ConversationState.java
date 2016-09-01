@@ -135,6 +135,7 @@ public class ConversationState extends BserObject implements KeyValueItem {
         outReadDate = values.getLong(5, 0);
         unreadCount = values.getInt(6);
         outSendDate = values.getLong(7, 0);
+        inMaxMessageDate = values.getLong(9, 0);
     }
 
     @Override
@@ -147,6 +148,7 @@ public class ConversationState extends BserObject implements KeyValueItem {
         writer.writeLong(5, outReadDate);
         writer.writeInt(6, unreadCount);
         writer.writeLong(7, outSendDate);
+        writer.writeLong(9, inMaxMessageDate);
     }
 
     @Override
