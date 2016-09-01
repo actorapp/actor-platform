@@ -3,23 +3,25 @@ package im.actor.server.file.s3
 import com.github.kxbmap.configs.syntax._
 import com.typesafe.config.{ ConfigFactory, Config }
 
-import scala.util.Try
+private[s3] case class S3StorageAdapterConfig(
+  bucketName:      String,
+  region:          Option[String],
+  key:             String,
+  secret:          String,
+  endpoint:        Option[String],
+  pathStyleAccess: Boolean
+)
 
-case class S3StorageAdapterConfig(bucketName: String, key: String, secret: String, endpoint: String, pathStyleAccess: Boolean)
-
-object S3StorageAdapterConfig {
-  def load(config: Config): Try[S3StorageAdapterConfig] = {
-    for {
-      bucketName ← config.get[Try[String]]("default-bucket")
-      key ← config.get[Try[String]]("access-key")
-      secret ← config.get[Try[String]]("secret-key")
-      endpoint ← config.get[Try[String]]("endpoint")
-      pathStyleAccess ← config.get[Try[Boolean]]("path-style-access")
-    } yield S3StorageAdapterConfig(bucketName, key, secret, endpoint, pathStyleAccess)
+private[s3] object S3StorageAdapterConfig {
+  def load(config: Config): S3StorageAdapterConfig = {
+    S3StorageAdapterConfig(
+      bucketName = config.get[String]("default-bucket"),
+      region = config.getOpt[String]("region"),
+      key = config.get[String]("access-key"),
+      secret = config.get[String]("secret-key"),
+      endpoint = config.getOpt[String]("endpoint"),
+      pathStyleAccess = config.get[Boolean]("path-style-access")
+    )
   }
-
-  def load: Try[S3StorageAdapterConfig] = {
-    val config = ConfigFactory.load().getConfig("services.aws.s3")
-    load(config)
-  }
+  def load: S3StorageAdapterConfig = load(ConfigFactory.load().getConfig("services.aws.s3"))
 }

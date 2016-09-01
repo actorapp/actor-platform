@@ -97,22 +97,24 @@ services {
   # AWS configuration
   # It is strictly recommended to configure s3 storage for
   # enabling file sharing in apps
-  aws {
+  # aws {
     # S3 Storage, used for file sharing
     # For more information see https://github.com/actorapp/actor-bootstrap/blob/master/docs/server/configure-s3.md
-    s3 {
+    # s3 {
+      # Bucket name
+      # default-bucket: <put_your_bucket_name_here>
       # S3 Api Key
-      access-key: <put_your_aws_key_here>
+      # access-key: <put_your_aws_key_here>
       # S3 Api Secret
-      secret-key: <put_your_aws_secret_here>
-      # File bucket
-      default-bucket: <put_your_bucket_here>
+      # secret-key: <put_your_aws_secret_here>
       # S3 Endpoint
       # endpoint: <put_your_custom_endpoint_here>
+      # S3 bucket region
+      # region: <put_your_region_here>
       # Enable S3 URLs with path-style access
       # path-style-access: true / false
-    }
-  }
+    # }
+  # }
 
   # Service used for sending activation codes
   activation {
