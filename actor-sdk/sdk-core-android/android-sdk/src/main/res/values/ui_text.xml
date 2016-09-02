@@ -212,6 +212,7 @@
 
     <string name="dialogs_menu_contact_view">View contact</string>
     <string name="dialogs_menu_contact_rename">Rename contact</string>
+    <string name="dialogs_menu_conversation_clear">Clear conversation</string>
     <string name="dialogs_menu_conversation_delete">Delete conversation</string>
 
     <string name="dialogs_menu_group_view">View group info</string>
@@ -619,6 +620,9 @@
     <string name="alert_delete_group_title">Delete "%1$s" group?</string>
     <string name="alert_delete_channel_title">Delete "%1$s" channel?</string>
     <string name="alert_delete_group_yes">Delete</string>
+
+    <string name="alert_clear_chat_message">Clear chat with "%1$s"?</string>
+    <string name="alert_clear_chat_yes">Clear</string>
 
     <string name="alert_delete_chat_message">Delete chat with "%1$s"?</string>
     <string name="alert_delete_chat_yes">Delete</string>

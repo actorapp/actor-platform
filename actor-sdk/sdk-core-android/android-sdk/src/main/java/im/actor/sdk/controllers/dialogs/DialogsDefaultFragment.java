@@ -35,6 +35,7 @@ public class DialogsDefaultFragment extends BaseDialogFragment {
                     .setItems(new CharSequence[]{
                             getString(R.string.dialogs_menu_contact_view),
                             getString(R.string.dialogs_menu_contact_rename),
+                            getString(R.string.dialogs_menu_conversation_clear),
                             getString(R.string.dialogs_menu_conversation_delete)
                     }, (d, which) -> {
                         if (which == 0) {
@@ -44,6 +45,26 @@ public class DialogsDefaultFragment extends BaseDialogFragment {
                             // Rename user
                             startActivity(Intents.editUserName(dialog.getPeer().getPeerId(), getActivity()));
                         } else if (which == 2) {
+                            // Clear chat
+                            new AlertDialog.Builder(getActivity())
+                                    .setMessage(getString(R.string.alert_clear_chat_message, dialog.getDialogTitle()))
+                                    .setNegativeButton(R.string.dialog_cancel, null)
+                                    .setPositiveButton(R.string.alert_clear_chat_yes, (d1, which1) -> {
+                                        execute(messenger().clearChat(dialog.getPeer()), R.string.progress_common,
+                                                new CommandCallback<Void>() {
+                                                    @Override
+                                                    public void onResult(Void res) {
+
+                                                    }
+
+                                                    @Override
+                                                    public void onError(Exception e) {
+                                                        Toast.makeText(getActivity(), R.string.toast_unable_delete_chat, Toast.LENGTH_LONG).show();
+                                                    }
+                                                });
+                                    })
+                                    .show();
+                        } else if (which == 3) {
                             // Delete chat
                             new AlertDialog.Builder(getActivity())
                                     .setMessage(getString(R.string.alert_delete_chat_message, dialog.getDialogTitle()))

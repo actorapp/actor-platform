@@ -226,6 +226,7 @@
 
     <string name="dialogs_menu_contact_view">Посмотреть контакт</string>
     <string name="dialogs_menu_contact_rename">Переименовать контакт</string>
+    <string name="dialogs_menu_conversation_clear">Очистить чат</string>
     <string name="dialogs_menu_conversation_delete">Удалить чат</string>
 
     <string name="dialogs_menu_group_view">Информация о группе</string>
@@ -624,6 +625,9 @@
     <string name="alert_delete_group_title">Вы уверены, что хотите удалить группу "%1$s"?</string>
     <string name="alert_delete_channel_title">Вы уверены, что хотите удалить канал "%1$s"?</string>
     <string name="alert_delete_group_yes">Удалить</string>
+
+    <string name="alert_clear_chat_message">Очистить чат с "%1$s"?</string>
+    <string name="alert_clear_chat_yes">Очистить</string>
 
     <string name="alert_delete_chat_message">Вы уверены, что хотите удалить чат с "%1$s"?</string>
     <string name="alert_delete_chat_yes">Удалить</string>
