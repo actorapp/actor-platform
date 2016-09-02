@@ -40,6 +40,8 @@ public class BottomSheetListView extends RecyclerListView {
     }
 
     private void init() {
+        setOverScrollMode(OVER_SCROLL_NEVER);
+        setVerticalScrollBarEnabled(false);
         header = new View(getContext());
         header.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0));
         addHeaderView(header);
