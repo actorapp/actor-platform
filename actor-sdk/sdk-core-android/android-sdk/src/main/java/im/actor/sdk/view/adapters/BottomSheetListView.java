@@ -2,14 +2,22 @@ package im.actor.sdk.view.adapters;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+
+import im.actor.sdk.ActorSDK;
+import im.actor.sdk.R;
+import im.actor.sdk.util.Screen;
 
 public class BottomSheetListView extends RecyclerListView {
 
-    private View header;
+    private FrameLayout header;
     private View underlyingView;
     private int minHeight = 0;
 
@@ -42,8 +50,14 @@ public class BottomSheetListView extends RecyclerListView {
     private void init() {
         setOverScrollMode(OVER_SCROLL_NEVER);
         setVerticalScrollBarEnabled(false);
-        header = new View(getContext());
+        header = new FrameLayout(getContext());
+//        header.setBackgroundColor(ActorSDK.sharedActor().style.getAccentColor());
         header.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0));
+        ImageView shadow = new ImageView(getContext());
+        shadow.setScaleType(ImageView.ScaleType.FIT_XY);
+        shadow.setImageResource(R.drawable.conv_field_shadow);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, Screen.dp(2), Gravity.BOTTOM);
+        header.addView(shadow, params);
         addHeaderView(header);
 
         setOnTouchListener(new View.OnTouchListener() {
@@ -80,6 +94,7 @@ public class BottomSheetListView extends RecyclerListView {
     }
 
     protected void resizeHeader() {
+        setVisibility(minHeight == 0 ? INVISIBLE : VISIBLE);
         if (header.getLayoutParams().height != getHeight() - minHeight) {
             header.getLayoutParams().height = getHeight() - minHeight;
             header.requestLayout();

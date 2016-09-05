@@ -149,7 +149,7 @@ public class AutocompleteFragment extends BaseFragment {
             }
 
 
-            list.setMinHeight(newRowsCount == 1 ? Screen.dp(48) : newRowsCount == 2 ? Screen.dp(97) : Screen.dp(122));
+            list.setMinHeight(newRowsCount == 0 ? 0 : newRowsCount == 1 ? Screen.dp(48) + 1 : newRowsCount == 2 ? Screen.dp(96) + 2 : Screen.dp(122));
             list.setVisibility(View.VISIBLE);
 //        Animation a = new ExpandAnimation(list, targetHeight, initialHeight);
 //
