@@ -60,6 +60,10 @@
     <color name="selector_messages">#44000000</color>
     <color name="selector_messages_selected">#66000000</color>
 
+    <color name="selector_background_common">#ffffff</color>
+    <color name="selector_background_selected">#999999</color>
+    <color name="selector_background_hovered">#dddddd</color>
+
     <!--<color name="divider">#1e000000</color>-->
     <!--<color name="dividerInvColor">#1effffff</color>-->
 
