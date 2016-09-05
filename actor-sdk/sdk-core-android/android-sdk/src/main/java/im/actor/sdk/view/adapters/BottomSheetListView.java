@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -131,5 +132,13 @@ public class BottomSheetListView extends RecyclerListView {
         this.underlyingView = underlyingView;
     }
 
+    @Override
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        super.setOnItemClickListener((adapterView, view, i, l) -> listener.onItemClick(adapterView, view, i - 1, l));
+    }
 
+    @Override
+    public void setOnItemLongClickListener(OnItemLongClickListener listener) {
+        super.setOnItemLongClickListener((adapterView, view, i, l) -> listener.onItemLongClick(adapterView, view, i - 1, l));
+    }
 }
