@@ -1,6 +1,8 @@
 package im.actor.sdk.view.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -48,6 +50,7 @@ public class BottomSheetListView extends RecyclerListView {
     }
 
     private void init() {
+        setSelector(new ColorDrawable(Color.TRANSPARENT));
         setOverScrollMode(OVER_SCROLL_NEVER);
         setVerticalScrollBarEnabled(false);
         header = new FrameLayout(getContext());
@@ -94,7 +97,7 @@ public class BottomSheetListView extends RecyclerListView {
     }
 
     protected void resizeHeader() {
-        setVisibility(minHeight == 0 ? INVISIBLE : VISIBLE);
+        setVisibility(minHeight == 0 ? GONE : VISIBLE);
         if (header.getLayoutParams().height != getHeight() - minHeight) {
             header.getLayoutParams().height = getHeight() - minHeight;
             header.requestLayout();

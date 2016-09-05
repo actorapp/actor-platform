@@ -90,6 +90,8 @@ public class CommandsAdapter extends HolderAdapter<BotCommand> {
         @Override
         public View init(final BotCommand data, ViewGroup viewGroup, Context context) {
             View res = ((Activity) context).getLayoutInflater().inflate(R.layout.fragment_chat_mention_item, viewGroup, false);
+            res.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
+            res.findViewById(R.id.container).setBackgroundResource(R.drawable.selector);
             res.findViewById(R.id.divider).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
 
             commandName = (TextView) res.findViewById(R.id.name);

@@ -81,7 +81,8 @@ public class MentionsAdapter extends HolderAdapter<MentionFilterResult> {
         @Override
         public View init(final MentionFilterResult data, ViewGroup viewGroup, Context context) {
             View res = ((Activity) context).getLayoutInflater().inflate(R.layout.fragment_chat_mention_item, viewGroup, false);
-            res.setBackgroundResource(R.drawable.selectable_background);
+            res.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
+            res.findViewById(R.id.container).setBackgroundResource(R.drawable.selector);
             res.findViewById(R.id.divider).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
 
             userName = (TextView) res.findViewById(R.id.name);
