@@ -8,6 +8,8 @@ import com.google.gwt.core.client.JavaScriptObject;
 
 import im.actor.core.entity.ContentType;
 import im.actor.core.entity.Dialog;
+import im.actor.core.entity.GroupType;
+import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.js.JsMessenger;
 import im.actor.runtime.js.mvvm.JsEntityConverter;
@@ -22,7 +24,8 @@ public class JsDialog extends JavaScriptObject {
             JsMessenger messenger = JsMessenger.getInstance();
 
             boolean showSender = false;
-            if (src.getPeer().getPeerType() == PeerType.GROUP) {
+            Peer peer = src.getPeer();
+            if (peer.getPeerType() == PeerType.GROUP) {
                 if (src.getMessageType() != ContentType.SERVICE && src.getMessageType() != ContentType.NONE) {
                     showSender = src.getSenderId() != 0;
                 }
@@ -40,12 +43,14 @@ public class JsDialog extends JavaScriptObject {
                 fileUrl = messenger.getFileUrl(src.getDialogAvatar().getSmallImage().getFileReference());
             }
 
+            boolean isChannel = peer.getPeerType() == PeerType.GROUP && messenger.getGroups().get(peer.getPeerId()).getGroupType() == GroupType.CHANNEL;
+
             boolean highlightContent = src.getMessageType() != ContentType.TEXT;
             String messageText = messenger.getFormatter().formatContentText(src.getSenderId(),
-                    src.getMessageType(), src.getText(), src.getRelatedUid());
+                    src.getMessageType(), src.getText(), src.getRelatedUid(), false);
 
-            JsPeerInfo peerInfo = JsPeerInfo.create(JsPeer.create(src.getPeer()), src.getDialogTitle(), null, fileUrl,
-                    Placeholders.getPlaceholder(src.getPeer().getPeerId()), false);
+            JsPeerInfo peerInfo = JsPeerInfo.create(JsPeer.create(peer), src.getDialogTitle(), null, fileUrl,
+                    Placeholders.getPlaceholder(peer.getPeerId()), isChannel);
 
             String state = "unknown";
             if (messenger.myUid() == src.getSenderId()) {
