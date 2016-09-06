@@ -1,16 +1,17 @@
 package im.actor.sdk.controllers.conversation.mentions;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.FrameLayout;
 
 import im.actor.core.entity.BotCommand;
@@ -20,6 +21,7 @@ import im.actor.core.entity.PeerType;
 import im.actor.sdk.controllers.BaseFragment;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.MaterialInterpolator;
+import im.actor.sdk.view.adapters.BottomSheetListView;
 import im.actor.sdk.view.adapters.HolderAdapter;
 import im.actor.sdk.view.adapters.RecyclerListView;
 
@@ -32,7 +34,8 @@ public class AutocompleteFragment extends BaseFragment {
     private boolean isGroup;
 
     private HolderAdapter autocompleteAdapter;
-    private RecyclerListView autocompleteList;
+    private BottomSheetListView autocompleteList;
+    private View underlyingView;
 
     public static AutocompleteFragment create(Peer peer) {
         AutocompleteFragment res = new AutocompleteFragment();
@@ -63,10 +66,13 @@ public class AutocompleteFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        autocompleteList = new RecyclerListView(getContext());
+        autocompleteList = new BottomSheetListView(getContext());
+        autocompleteList.setVisibility(View.INVISIBLE);
+        autocompleteList.setUnderlyingView(underlyingView);
         autocompleteList.setDivider(null);
         autocompleteList.setDividerHeight(0);
-        autocompleteList.setBackgroundColor(style.getMainBackgroundColor());
+        autocompleteList.setBackgroundColor(Color.TRANSPARENT);
+
         if (autocompleteAdapter != null) {
             autocompleteList.setAdapter(autocompleteAdapter);
         }
@@ -88,12 +94,13 @@ public class AutocompleteFragment extends BaseFragment {
         });
 
         // Initial zero height
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         params.gravity = Gravity.BOTTOM;
         autocompleteList.setLayoutParams(params);
 
         return autocompleteList;
     }
+
 
     public void onCurrentWordChanged(String text) {
         if (isBot) {
@@ -135,24 +142,22 @@ public class AutocompleteFragment extends BaseFragment {
     // Expand Animations
     //
 
-    private void expandMentions(final View v, final int oldRowsCount, final int newRowsCount) {
-        if (newRowsCount == oldRowsCount) {
-            return;
-        }
+    private void expandMentions(final BottomSheetListView list, final int oldRowsCount, final int newRowsCount) {
+        list.post(() -> {
+            if (newRowsCount == oldRowsCount) {
+                return;
+            }
 
-        v.measure(AbsListView.LayoutParams.MATCH_PARENT, AbsListView.LayoutParams.WRAP_CONTENT);
-        int newRowsHeight = Screen.dp(48) * newRowsCount + newRowsCount;
 
-        final int targetHeight = (newRowsHeight) > Screen.dp(96 + 2) ? Screen.dp(122) : newRowsHeight;
-        final int initialHeight = v.getLayoutParams().height;
+            list.setMinHeight(newRowsCount == 0 ? 0 : newRowsCount == 1 ? Screen.dp(48) + 1 : newRowsCount == 2 ? Screen.dp(96) + 2 : Screen.dp(122));
+            list.setVisibility(View.VISIBLE);
+//        Animation a = new ExpandAnimation(list, targetHeight, initialHeight);
+//
+//        a.setDuration((newRowsCount > oldRowsCount ? targetHeight : initialHeight / Screen.dp(1)));
+//        a.setInterpolator(MaterialInterpolator.getInstance());
+//        list.startAnimation(a);
+        });
 
-        v.getLayoutParams().height = initialHeight;
-        v.setVisibility(View.VISIBLE);
-        Animation a = new ExpandAnimation(v, targetHeight, initialHeight);
-
-        a.setDuration((newRowsCount > oldRowsCount ? targetHeight : initialHeight / Screen.dp(1)));
-        a.setInterpolator(MaterialInterpolator.getInstance());
-        v.startAnimation(a);
     }
 
     private static class ExpandAnimation extends Animation {
@@ -187,5 +192,9 @@ public class AutocompleteFragment extends BaseFragment {
         public boolean willChangeBounds() {
             return true;
         }
+    }
+
+    public void setUnderlyingView(View underlyingView) {
+        this.underlyingView = underlyingView;
     }
 }

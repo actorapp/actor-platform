@@ -284,15 +284,21 @@
             </LinearLayout>
         </LinearLayout>
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_marginTop="120dp"
-            android:layout_marginRight="18dp"
-            android:src="@drawable/ic_message_white_24dp"
-            android:layout_alignParentRight="true"
-            android:layout_gravity="top|right"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        <FrameLayout
+            android:layout_marginTop="98dp"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_gravity="top|right">
+
+            <android.support.design.widget.FloatingActionButton
+                android:layout_marginRight="18dp"
+                android:layout_gravity="center_vertical|right"
+                android:id="@+id/fab"
+                android:src="@drawable/ic_message_white_24dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </FrameLayout>
+
 
     </FrameLayout>
 
