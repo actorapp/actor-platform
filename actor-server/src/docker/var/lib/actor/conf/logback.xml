@@ -3,7 +3,6 @@
     <logger name="slick.compiler" level="WARN"/>
     <logger name="slick.ast" level="WARN"/>
     <logger name="akka.stream.impl" level="WARN"/>
-    <logger name="org.apache.zookeeper.ClientCnxn" level="WARN"/>
     <logger name="slick.relational.ResultConverterCompiler" level="WARN"/>
     <logger name="slick.jdbc.StatementInvoker.result" level="WARN"/>
     <logger name="slick.jdbc.JdbcBackend.statement" level="WARN"/>
@@ -11,7 +10,6 @@
     <logger name="slick.jdbc.JdbcBackend.benchmark" level="WARN"/>
     <logger name="im.actor.server.session.ReSender" level="WARN"/>
     <logger name="im.actor.server.session.SessionMessagePublisher" level="WARN"/>
-    <logger name="im.actor.server.peermanagers.GroupPeerManager" level="INFO"/>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <withJansi>true</withJansi>
@@ -22,7 +20,7 @@
         </encoder>
     </appender>
 
-    <root level="INFO">
+    <root level="DEBUG">
         <appender-ref ref="STDOUT"/>
     </root>
 </configuration>
