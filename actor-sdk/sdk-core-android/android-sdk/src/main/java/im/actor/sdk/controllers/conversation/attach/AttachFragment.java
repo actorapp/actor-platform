@@ -121,6 +121,12 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
         int shareIconSize = Screen.dp(60);
         View.OnClickListener defaultSendOcl = null;
 
+        Configuration config = getResources().getConfiguration();
+        boolean isRtl = false;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            isRtl = config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
+        }
+
         for (int i = 0; i < menuFields.size(); i++) {
             ShareMenuField f = menuFields.get(i);
 
@@ -155,14 +161,14 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
             icon.setOnClickListener(l);
 
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(menuItemSize, menuItemSize);
-            params.setMargins(marginFromStart, first ? 0 : secondRowTopMargin, initialMargin, 0);
+            params.setMargins(isRtl ? initialMargin : marginFromStart, first ? 0 : secondRowTopMargin, isRtl ? marginFromStart : initialMargin, 0);
 
             if (i == menuFields.size() - 1) {
                 menuIconToChange = icon;
                 menuTitleToChange = title;
                 defaultSendOcl = l;
 
-                params.setMargins(marginFromStart, first ? 0 : secondRowTopMargin, 0, 0);
+                params.setMargins(isRtl ? 0 : marginFromStart, first ? 0 : secondRowTopMargin, isRtl ? marginFromStart : 0, 0);
 
             }
             row.addView(shareItem, params);
