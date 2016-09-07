@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
@@ -42,12 +43,14 @@ import im.actor.sdk.controllers.tools.MediaPickerFragment;
 import im.actor.sdk.util.SDKFeatures;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.ShareMenuButtonFactory;
+import im.actor.sdk.view.adapters.HeaderViewRecyclerAdapter;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
 public class AttachFragment extends AbsAttachFragment implements MediaPickerCallback {
 
     private static final int PERMISSION_REQ_MEDIA = 11;
+    public static final int SPAN_COUNT = 4;
 
     private FrameLayout root;
     private View container;
@@ -56,6 +59,7 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
     private TextView menuTitleToChange;
 
     private boolean isLoaded = false;
+    private RecyclerView fastShare;
 
     public AttachFragment(Peer peer) {
         super(peer);
@@ -90,7 +94,8 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
         isLoaded = true;
 
         container = getLayoutInflater(null).inflate(R.layout.share_menu, root, false);
-        container.setVisibility(View.INVISIBLE);
+        fastShare = new RecyclerView(getActivity());
+        fastShare.setVisibility(View.INVISIBLE);
 
         container.findViewById(R.id.menu_bg).setBackgroundColor(style.getMainBackgroundColor());
         container.findViewById(R.id.cancelField).setOnClickListener(view -> hide());
@@ -192,11 +197,19 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
             hide();
         };
 
-        RecyclerView fastShare = (RecyclerView) container.findViewById(R.id.fast_share);
+//        RecyclerView fastShare = (RecyclerView) container.findViewById(R.id.fast_share);
         fastAttachAdapter = new FastAttachAdapter(getActivity());
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
-        fastShare.setAdapter(fastAttachAdapter);
+        HeaderViewRecyclerAdapter adapter = new HeaderViewRecyclerAdapter(fastAttachAdapter);
+        adapter.addHeaderView(container);
+        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), SPAN_COUNT);
+        fastShare.setAdapter(adapter);
         fastShare.setLayoutManager(layoutManager);
+        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                return position == 0 ? 4 : 1;
+            }
+        });
         StateListDrawable background = ShareMenuButtonFactory.get(style.getMainColor(), getActivity());
 
         final View.OnClickListener finalDefaultSendOcl = defaultSendOcl;
@@ -218,14 +231,20 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
                 menuIconToChange.setPadding(0, 0, 0, 0);
             }
         });
-
-        root.addView(container);
+        root.post(new Runnable() {
+            @Override
+            public void run() {
+                container.getLayoutParams().height = root.getHeight() - Screen.dp(135);
+                container.requestLayout();
+            }
+        });
+        root.addView(fastShare);
     }
 
     @Override
     public void show() {
         prepareView();
-        if (container.getVisibility() == View.INVISIBLE) {
+        if (fastShare.getVisibility() == View.INVISIBLE) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 Activity activity = getActivity();
                 if (activity == null) {
@@ -240,58 +259,58 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
             }
             onShown();
             messenger().getGalleryScannerActor().send(new GalleryScannerActor.Show());
-            showView(container);
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                View internal = container.findViewById(R.id.menu_bg);
-                int cx = internal.getWidth() - Screen.dp(56 + 56);
-                int cy = internal.getHeight() - Screen.dp(56 / 2);
-                float finalRadius = (float) Math.hypot(cx, cy);
-                Animator anim = ViewAnimationUtils.createCircularReveal(internal, cx, cy, 0, finalRadius);
-                anim.setDuration(200);
-                anim.start();
-                internal.setAlpha(1);
-            }
+            showView(fastShare);
+//            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+//                View internal = container.findViewById(R.id.menu_bg);
+//                int cx = internal.getWidth() - Screen.dp(56 + 56);
+//                int cy = internal.getHeight() - Screen.dp(56 / 2);
+//                float finalRadius = (float) Math.hypot(cx, cy);
+//                Animator anim = ViewAnimationUtils.createCircularReveal(internal, cx, cy, 0, finalRadius);
+//                anim.setDuration(200);
+//                anim.start();
+//                internal.setAlpha(1);
+//            }
         }
     }
 
     @Override
     public void hide() {
-        if (container != null && container.getVisibility() == View.VISIBLE) {
+        if (fastShare != null && fastShare.getVisibility() == View.VISIBLE) {
             onHidden();
             fastAttachAdapter.clearSelected();
             messenger().getGalleryScannerActor().send(new GalleryScannerActor.Hide());
-            hideView(container);
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                View internal = container.findViewById(R.id.menu_bg);
-                int cx = internal.getWidth() - Screen.dp(56 + 56);
-                int cy = internal.getHeight() - Screen.dp(56 / 2);
-                float finalRadius = (float) Math.hypot(cx, cy);
-                Animator anim = ViewAnimationUtils.createCircularReveal(internal, cx, cy, finalRadius, 0);
-                anim.addListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animator) {
-                        internal.setAlpha(1);
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animator animator) {
-                        internal.setAlpha(0);
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animator) {
-
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animator) {
-
-                    }
-                });
-
-                anim.setDuration(200);
-                anim.start();
-            }
+            hideView(fastShare);
+//            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+//                View internal = container.findViewById(R.id.menu_bg);
+//                int cx = internal.getWidth() - Screen.dp(56 + 56);
+//                int cy = internal.getHeight() - Screen.dp(56 / 2);
+//                float finalRadius = (float) Math.hypot(cx, cy);
+//                Animator anim = ViewAnimationUtils.createCircularReveal(internal, cx, cy, finalRadius, 0);
+//                anim.addListener(new Animator.AnimatorListener() {
+//                    @Override
+//                    public void onAnimationStart(Animator animator) {
+//                        internal.setAlpha(1);
+//                    }
+//
+//                    @Override
+//                    public void onAnimationEnd(Animator animator) {
+//                        internal.setAlpha(0);
+//                    }
+//
+//                    @Override
+//                    public void onAnimationCancel(Animator animator) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onAnimationRepeat(Animator animator) {
+//
+//                    }
+//                });
+//
+//                anim.setDuration(200);
+//                anim.start();
+//            }
         }
     }
 
@@ -411,6 +430,7 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
             fastAttachAdapter = null;
         }
         container = null;
+        fastShare = null;
         root = null;
         menuIconToChange = null;
         menuTitleToChange = null;

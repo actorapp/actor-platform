@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import im.actor.runtime.mvvm.ValueModel;
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.ActorBinder;
 import im.actor.sdk.util.Screen;
@@ -82,6 +83,7 @@ public class FastAttachAdapter extends RecyclerView.Adapter<FastAttachAdapter.Fa
 
         public FastShareVH(View itemView) {
             super(itemView);
+            itemView.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
             v = (SimpleDraweeView) itemView.findViewById(R.id.image);
             chb = (CheckBox) itemView.findViewById(R.id.check);
             int size = Screen.dp(80);
