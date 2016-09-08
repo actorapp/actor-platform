@@ -38,9 +38,12 @@ public class FastAttachAdapter extends RecyclerView.Adapter<FastAttachAdapter.Fa
     private ValueModel<Set<String>> selectedVM;
 
     private ActorBinder binder;
+    private WidthGetter widthGetter;
 
-    public FastAttachAdapter(Context context) {
+    public FastAttachAdapter(Context context, WidthGetter widthGetter) {
+        this.widthGetter = widthGetter;
         this.context = context;
+//        setHasStableIds(true);
         binder = new ActorBinder();
         binder.bind(messenger().getGalleryVM().getGalleryMediaPath(), (val, valueModel) -> {
             imagesPath.clear();
@@ -50,11 +53,13 @@ public class FastAttachAdapter extends RecyclerView.Adapter<FastAttachAdapter.Fa
         selectedVM = new ValueModel<>("fast_share.selected", new HashSet<>());
     }
 
+
     protected View inflate(int id, ViewGroup viewGroup) {
         return LayoutInflater
                 .from(context)
                 .inflate(id, viewGroup, false);
     }
+
 
     public void release() {
         binder.unbindAll();
@@ -62,7 +67,9 @@ public class FastAttachAdapter extends RecyclerView.Adapter<FastAttachAdapter.Fa
 
     @Override
     public FastShareVH onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new FastShareVH(inflate(R.layout.share_menu_fast_share, parent));
+        View itemView = inflate(R.layout.share_menu_fast_share, parent);
+        itemView.setLayoutParams(new ViewGroup.LayoutParams(widthGetter.get(), widthGetter.get()));
+        return new FastShareVH(itemView);
     }
 
     @Override
@@ -127,5 +134,9 @@ public class FastAttachAdapter extends RecyclerView.Adapter<FastAttachAdapter.Fa
 
     public ValueModel<Set<String>> getSelectedVM() {
         return selectedVM;
+    }
+
+    public interface WidthGetter {
+        int get();
     }
 }

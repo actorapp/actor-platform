@@ -344,7 +344,7 @@ public class ChatFragment extends BaseFragment implements InputBarCallback, Mess
 
         AbsAttachFragment attachFragment = findShareFragment();
         if (attachFragment != null) {
-            quoteContainer.post(() -> attachFragment.show());
+            quoteContainer.postDelayed(() -> attachFragment.show(), 200);
         }
     }
 

@@ -7,21 +7,15 @@
         android:id="@+id/cancelField"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/dialog_overlay"
         android:clickable="true" />
 
     <LinearLayout
         android:id="@+id/menu_bg"
         android:layout_width="match_parent"
-        android:layout_height="196dp"
+        android:layout_height="191dp"
+        android:paddingTop="10dp"
         android:layout_gravity="bottom"
         android:orientation="vertical">
-
-        <!--<android.support.v7.widget.RecyclerView-->
-        <!--android:id="@+id/fast_share"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="90dp" />-->
-
         <FrameLayout
             android:id="@+id/share_row_one"
             android:layout_width="wrap_content"
