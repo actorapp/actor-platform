@@ -213,6 +213,11 @@
     <string name="dialogs_menu_group_leave">Sair do grupo</string>
     <string name="dialogs_menu_group_delete">Remover grupo</string>
 
+    <string name="dialogs_menu_channel_view">Ver informações do canal</string>
+    <string name="dialogs_menu_channel_rename">Renomear canal</string>
+    <string name="dialogs_menu_channel_leave">Sair do canal</string>
+    <string name="dialogs_menu_channel_delete">Excluir canal</string>
+
     <!-- Contacts -->
     <string name="contacts_title">Contatos</string>
     <string name="contacts_empty_short">Não há contatos</string>

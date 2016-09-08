@@ -273,6 +273,10 @@ public class SignPhoneFragment extends BaseAuthFragment {
                 requestCode();
             }
         });
+
+
+        setCountry(Countries.getInstance().getCountryByShortName("BR"));
+
     }
 
     private void requestCode() {
