@@ -144,9 +144,13 @@ public class AutocompleteFragment extends BaseFragment {
 
     private void expandMentions(final BottomSheetListView list, final int oldRowsCount, final int newRowsCount) {
         list.post(() -> {
-            if (newRowsCount == oldRowsCount) {
-                return;
-            }
+
+            // I dont understand for what it.
+            // But when its not comment, not work first time typing "/", only next.
+            //
+            //if (newRowsCount == oldRowsCount) {
+            //    return;
+            //}
 
 
             list.setMinHeight(newRowsCount == 0 ? 0 : newRowsCount == 1 ? Screen.dp(48) + 1 : newRowsCount == 2 ? Screen.dp(96) + 2 : Screen.dp(122));
