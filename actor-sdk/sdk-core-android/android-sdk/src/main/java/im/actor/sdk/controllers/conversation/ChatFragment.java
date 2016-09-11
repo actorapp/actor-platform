@@ -349,6 +349,15 @@ public class ChatFragment extends BaseFragment implements InputBarCallback, Mess
     }
 
     @Override
+    public void onSlashPressed() {
+        if (findInputBar().getText() == "/") {
+            findInputBar().setText("", true);
+        } else {
+            findInputBar().setText("/", true);
+        }
+    }
+
+    @Override
     public void onAvatarClick(int uid) {
         ActorSDKLauncher.startProfileActivity(getActivity(), uid);
     }
@@ -460,6 +469,7 @@ public class ChatFragment extends BaseFragment implements InputBarCallback, Mess
         findInputBar().setDisableOnEmptyText(true);
         findInputBar().setAudioEnabled(true);
         findInputBar().setAttachEnabled(true);
+        findInputBar().setSlashEnabled(true);
     }
 
     private void showQuote(String text, boolean isQuote) {
@@ -468,5 +478,6 @@ public class ChatFragment extends BaseFragment implements InputBarCallback, Mess
         findInputBar().setDisableOnEmptyText(false);
         findInputBar().setAudioEnabled(false);
         findInputBar().setAttachEnabled(false);
+        findInputBar().setSlashEnabled(false);
     }
 }

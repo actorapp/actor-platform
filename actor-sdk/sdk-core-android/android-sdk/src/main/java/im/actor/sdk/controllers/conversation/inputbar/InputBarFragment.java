@@ -58,6 +58,7 @@ public class InputBarFragment extends BaseFragment {
 
     private boolean isAudioEnabled = true;
     private boolean isAttachEnabled = true;
+    private boolean isSlashEnabled = true;
     private boolean isDisableOnEmptyText = true;
 
     //
@@ -67,6 +68,7 @@ public class InputBarFragment extends BaseFragment {
     protected BarEditText messageEditText;
     protected TintImageView sendButton;
     protected ImageButton attachButton;
+    protected ImageButton slashButton;
     protected String lastWord = "";
 
     //
@@ -185,6 +187,15 @@ public class InputBarFragment extends BaseFragment {
         attachButton = (ImageButton) res.findViewById(R.id.ib_attach);
         attachButton.setOnClickListener(v -> {
             onAttachButtonClicked();
+        });
+
+
+        //
+        // Slash Button
+        //
+        slashButton = (ImageButton) res.findViewById(R.id.ib_slash);
+        slashButton.setOnClickListener(v -> {
+            onSlashButtonClicked();
         });
 
 
@@ -375,6 +386,16 @@ public class InputBarFragment extends BaseFragment {
         checkSendButton();
     }
 
+    public boolean isSlashEnabled() {
+        return isSlashEnabled;
+    }
+
+    public void setSlashEnabled(boolean slashEnabled) {
+        isSlashEnabled = slashEnabled;
+        hideAudio(true);
+        checkSendButton();
+    }
+
     public boolean isDisableOnEmptyText() {
         return isDisableOnEmptyText;
     }
@@ -403,6 +424,13 @@ public class InputBarFragment extends BaseFragment {
         Fragment parent = getParentFragment();
         if (parent instanceof InputBarCallback) {
             ((InputBarCallback) parent).onAttachPressed();
+        }
+    }
+
+    protected void onSlashButtonClicked() {
+        Fragment parent = getParentFragment();
+        if (parent instanceof InputBarCallback) {
+            ((InputBarCallback) parent).onSlashPressed();
         }
     }
 
@@ -484,6 +512,7 @@ public class InputBarFragment extends BaseFragment {
             } else {
                 zoomOutView(attachButton);
             }
+            zoomOutView(slashButton);
             zoomInView(sendButton);
             zoomOutView(audioButton);
         } else {
@@ -493,6 +522,11 @@ public class InputBarFragment extends BaseFragment {
                 zoomInView(attachButton);
             } else {
                 zoomOutView(attachButton);
+            }
+            if (isSlashEnabled) {
+                zoomInView(slashButton);
+            } else {
+                zoomOutView(slashButton);
             }
             if (isAudioEnabled) {
                 zoomInView(audioButton);
@@ -519,6 +553,7 @@ public class InputBarFragment extends BaseFragment {
         isAudioVisible = true;
 
         hideView(attachButton);
+        hideView(slashButton);
         hideView(messageEditText);
         hideView(emojiButton);
 
@@ -561,6 +596,7 @@ public class InputBarFragment extends BaseFragment {
         isAudioVisible = false;
 
         showView(attachButton);
+        showView(slashButton);
         showView(messageEditText);
         showView(emojiButton);
 
