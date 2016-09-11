@@ -105,6 +105,7 @@ public class ChatFragment extends BaseFragment implements InputBarCallback, Mess
             AutocompleteFragment autocompleteFragment = ActorSDK.sharedActor().getDelegate().fragmentForAutocomplete(peer);
             if (autocompleteFragment == null) {
                 autocompleteFragment = AutocompleteFragment.create(peer);
+                autocompleteFragment.setUnderlyingView(res.findViewById(R.id.messagesFragment));
             }
 
             QuoteFragment quoteFragment = ActorSDK.sharedActor().getDelegate().fragmentForQuote();
@@ -343,7 +344,7 @@ public class ChatFragment extends BaseFragment implements InputBarCallback, Mess
 
         AbsAttachFragment attachFragment = findShareFragment();
         if (attachFragment != null) {
-            quoteContainer.post(() -> attachFragment.show());
+            quoteContainer.postDelayed(() -> attachFragment.show(), 200);
         }
     }
 

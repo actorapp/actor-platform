@@ -78,8 +78,8 @@
     <string name="auth_switch_to_email">Использовать email для регистрации</string>
     <string name="auth_switch_to_phone">Использовать телефон для регистрации</string>
 
-    <string name="auth_privacy_index">Политика Конфиденциальности</string>
-    <string name="auth_tos_index"> Условия Использования</string>
+    <string name="auth_privacy_index">Privacy Policy</string>
+    <string name="auth_tos_index">Terms of Service</string>
 
     <string name="auth_change_endpoint">Использовать альтернативный сервер</string>
     <string name="auth_reset_default_endpoint">По умолчанию</string>

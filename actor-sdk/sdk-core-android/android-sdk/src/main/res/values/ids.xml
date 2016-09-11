@@ -8,4 +8,5 @@
     <item type="id" name="share_contact" />
     <item type="id" name="share_hide" />
     <item type="id" name="share_send" />
+    <item type="id" name="peer" />
 </resources>

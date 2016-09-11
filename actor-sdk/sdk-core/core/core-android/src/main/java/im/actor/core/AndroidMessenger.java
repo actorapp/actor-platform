@@ -513,6 +513,13 @@ public class AndroidMessenger extends im.actor.core.Messenger {
     public GalleryVM getGalleryVM() {
         if (galleryVM == null) {
             galleryVM = new GalleryVM();
+            checkGalleryScannerActor();
+        }
+        return galleryVM;
+    }
+
+    protected void checkGalleryScannerActor() {
+        if (galleryScannerActor == null) {
             galleryScannerActor = ActorSystem.system().actorOf(Props.create(new ActorCreator() {
                 @Override
                 public Actor create() {
@@ -520,10 +527,10 @@ public class AndroidMessenger extends im.actor.core.Messenger {
                 }
             }), "actor/gallery_scanner");
         }
-        return galleryVM;
     }
 
     public ActorRef getGalleryScannerActor() {
+        checkGalleryScannerActor();
         return galleryScannerActor;
     }
 
