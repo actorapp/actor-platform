@@ -4,6 +4,7 @@ import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -192,8 +193,8 @@ public class InputBarFragment extends BaseFragment {
         // Emoji keyboard
         //
         emojiButton = (ImageView) res.findViewById(R.id.ib_emoji);
-        emojiButton.setOnClickListener(v -> emojiKeyboard.toggle(messageEditText));
-        emojiKeyboard = new EmojiKeyboard(getActivity());
+        emojiButton.setOnClickListener(v -> emojiKeyboard.toggle());
+        emojiKeyboard = new EmojiKeyboard(getActivity(), messageEditText);
         emojiKeyboard.setOnStickerClickListener(sticker -> {
             Fragment parent = getParentFragment();
             if (parent instanceof InputBarCallback) {
@@ -596,5 +597,18 @@ public class InputBarFragment extends BaseFragment {
         super.onDestroyView();
         emojiKeyboard.release();
         emojiKeyboard = null;
+    }
+
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (emojiKeyboard != null) {
+            emojiKeyboard.onConfigurationChange();
+        }
+    }
+
+    public boolean onBackPressed() {
+        return emojiKeyboard.onBackPressed();
     }
 }

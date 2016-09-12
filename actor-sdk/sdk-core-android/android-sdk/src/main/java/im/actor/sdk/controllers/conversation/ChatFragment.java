@@ -1,6 +1,7 @@
 package im.actor.sdk.controllers.conversation;
 
 import android.app.Activity;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -254,6 +255,10 @@ public class ChatFragment extends BaseFragment implements InputBarCallback, Mess
             if (attachFragment.onBackPressed()) {
                 return true;
             }
+        }
+
+        if (findInputBar().onBackPressed()) {
+            return true;
         }
 
         // Message Edit

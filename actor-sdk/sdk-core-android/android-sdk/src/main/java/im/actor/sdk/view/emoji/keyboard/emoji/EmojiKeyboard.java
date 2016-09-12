@@ -23,6 +23,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
@@ -54,8 +55,8 @@ public class EmojiKeyboard extends BaseKeyboard implements OnSmileClickListener,
     private SmilePagerAdapter mEmojisAdapter;
 
 
-    public EmojiKeyboard(Activity activity) {
-        super(activity);
+    public EmojiKeyboard(Activity activity, EditText messageBody) {
+        super(activity, messageBody);
     }
 
     @Override
