@@ -17,6 +17,7 @@ object DBIOResultRpc {
     def pure[A](a: A): DBIO[A] = DBIO.successful(a)
     def flatMap[A, B](fa: DBIO[A])(f: A ⇒ DBIO[B]): DBIO[B] = fa flatMap f
     override def map[A, B](fa: DBIO[A])(f: A ⇒ B): DBIO[B] = fa map f
+    def tailRecM[A, B](a: A)(f: A ⇒ DBIO[Either[A, B]]): DBIO[B] = defaultTailRecM(a)(f)
   }
 
   def point[A](a: A): Result[A] = Result[A](DBIO.successful(right(a)))
