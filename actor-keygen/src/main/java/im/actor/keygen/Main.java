@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.security.DigestException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Base64;
 
 public class Main {
     public static void main(String[] args) throws DigestException, NoSuchAlgorithmException, IOException {
@@ -25,6 +26,6 @@ public class Main {
             FileUtils.writeByteArrayToFile(pubFile, keyPair.getPublicKey());
             FileUtils.writeByteArrayToFile(keyFile, keyPair.getPrivateKey());
         }
-        System.out.println("Shared Secret: " + Hex.toHex(secureRandom.generateSeed(64)));
+        System.out.println("Shared Secret: " + Base64.getEncoder().encodeToString(secureRandom.generateSeed(64)));
     }
 }
