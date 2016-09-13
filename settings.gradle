@@ -35,6 +35,12 @@ include ":actor-sdk:sdk-core-android:android-google-maps"
 include ":actor-sdk:sdk-core-ios"
 
 //
+// SDK KeyGen
+//
+
+include ":actor-keygen"
+
+//
 // SDK Command Line Client
 //
 
