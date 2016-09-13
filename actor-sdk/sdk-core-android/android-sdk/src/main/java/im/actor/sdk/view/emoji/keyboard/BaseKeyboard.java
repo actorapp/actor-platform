@@ -50,7 +50,7 @@ public class BaseKeyboard implements
     //    private boolean dismissed;
     private boolean softwareKeyboardShowing;
     private KeyboardHelper keyboardHelper;
-    private boolean configChanged = false;
+    private boolean keyboardMeasured = false;
 
     public BaseKeyboard(Activity activity, EditText messageBody) {
         this.activity = activity;
@@ -63,6 +63,18 @@ public class BaseKeyboard implements
         keyboardHeight = (int) activity.getResources().getDimension(R.dimen.keyboard_height);
         keyboardHelper = new KeyboardHelper(activity);
         this.messageBody = messageBody;
+
+        messageBody.setOnClickListener(view -> {
+            if (showing) {
+                dismiss();
+            }
+        });
+        messageBody.setOnFocusChangeListener((view, b) -> {
+            if (b && showing) {
+                dismiss();
+            }
+        });
+
     }
 
 
@@ -76,16 +88,7 @@ public class BaseKeyboard implements
 
 
     public void show() {
-        messageBody.setOnClickListener(view -> {
-            if (showing) {
-                dismiss();
-            }
-        });
-        messageBody.setOnFocusChangeListener((view, b) -> {
-            if (b && showing) {
-                dismiss();
-            }
-        });
+        softKeyboardListeningEnabled = true;
         this.root = (KeyboardLayout) messageBody.getRootView().findViewById(R.id.container).getParent();
         this.container = (RelativeLayout) messageBody.getRootView().findViewById(R.id.container);
 
@@ -150,7 +153,7 @@ public class BaseKeyboard implements
         if (messageBody != null) {
             keyboardHelper.setImeVisibility(messageBody, !dismissAll);
         }
-        if (emojiKeyboardView != null && root != null && container != null && keyboardHelper != null) {
+        if (emojiKeyboardView != null && root != null && keyboardHelper != null) {
             final View emojiKeyboardViewCopy = emojiKeyboardView;
 //            emojiKeyboardView
 //                    .animate()
@@ -225,10 +228,10 @@ public class BaseKeyboard implements
         int heightDifference = screenHeight
                 - (r.bottom - r.top);
 
-        int widthDiff = decorView.getRootView().getWidth() - (r.right - r.left);
-        if (Math.abs(widthDiff) > 0) {
-            return;
-        }
+//        int widthDiff = decorView.getRootView().getWidth() - (r.right - r.left);
+//        if (Math.abs(widthDiff) > 0) {
+//            return;
+//        }
         int resourceId = activity.getResources()
                 .getIdentifier("status_bar_height",
                         "dimen", "android");
@@ -257,7 +260,9 @@ public class BaseKeyboard implements
             softwareKeyboardShowing = true;
 
             Log.d(TAG, "onGlobalLayout: " + heightDifference);
+
             keyboardHeight = heightDifference;
+
             if (!showRequested) {
                 Log.d(TAG, "onGlobalLayout: " + "showing");
 
@@ -272,6 +277,10 @@ public class BaseKeyboard implements
 
             if (showRequested) {
                 showInternal();
+            } else {
+                if (root != null) {
+                    root.dismissInternal();
+                }
             }
             Log.d(TAG, "onGlobalLayout: " + heightDifference);
             Log.d(TAG, "onGlobalLayout: " + "dismiss?");
