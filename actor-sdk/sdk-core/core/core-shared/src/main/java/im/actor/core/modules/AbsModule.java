@@ -63,6 +63,7 @@ public abstract class AbsModule {
     public static final String STORAGE_BLOB = "blob";
 
     public static final long BLOB_DIALOGS_ACTIVE = 0;
+    public static final long BLOB_ENCTYPTED_DIALOGS_ACTIVE_GROUP = 1;
 
     private ModuleContext context;
 

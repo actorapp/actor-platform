@@ -31,6 +31,7 @@ import im.actor.core.api.updates.UpdateReactionsUpdate;
 import im.actor.core.entity.Avatar;
 import im.actor.core.entity.ContentDescription;
 import im.actor.core.entity.ConversationState;
+import im.actor.core.entity.EncryptedConversationState;
 import im.actor.core.entity.Group;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.MessageState;
@@ -103,9 +104,11 @@ public class RouterActor extends ModuleActor {
 
     // Storage
     private KeyValueEngine<ConversationState> conversationStates;
+    private KeyValueEngine<EncryptedConversationState> encryptedConversationStates;
 
     // Active Dialogs
     private ActiveDialogStorage activeDialogStorage;
+    private ActiveDialogGroup activeEncryptedDialogGroupStorage;
 
     // Self-Destructor
     private Destructor destructor;
@@ -120,6 +123,8 @@ public class RouterActor extends ModuleActor {
         super.preStart();
 
         conversationStates = context().getMessagesModule().getConversationStates().getEngine();
+        encryptedConversationStates = context().getEncryption().getConversationState().getEngine();
+
 
         //
         // Self-Destructor
@@ -138,6 +143,17 @@ public class RouterActor extends ModuleActor {
                 e.printStackTrace();
             }
         }
+
+        activeEncryptedDialogGroupStorage = new ActiveDialogGroup("EncryptedStuff", "Encrypted", new ArrayList<>());
+        byte[] groupData = context().getStorageModule().getBlobStorage().loadItem(AbsModule.BLOB_ENCTYPTED_DIALOGS_ACTIVE_GROUP);
+        if (groupData != null) {
+            try {
+                activeEncryptedDialogGroupStorage = new ActiveDialogGroup(groupData);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         if (!activeDialogStorage.isLoaded()) {
             api(new RequestLoadGroupedDialogs(ApiSupportConfiguration.OPTIMIZATIONS))
                     .chain(r -> updates().applyRelatedData(r.getUsers(), r.getGroups()))
@@ -269,6 +285,36 @@ public class RouterActor extends ModuleActor {
         //
         // Updating Counter
         //
+
+        boolean needNotifyActiveDialogsVM = false;
+
+        if (peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED && !isConversationVisible) {
+
+            // Add this encrypted dialog to active if we don't have it there already
+            if (!activeEncryptedDialogGroupStorage.getPeers().contains(peer)) {
+                activeEncryptedDialogGroupStorage.getPeers().add(peer);
+                context().getStorageModule().getBlobStorage()
+                        .addOrUpdateItem(AbsModule.BLOB_ENCTYPTED_DIALOGS_ACTIVE_GROUP, activeEncryptedDialogGroupStorage.toByteArray());
+            }
+
+            // update counter
+            ArrayList<Long> incoming = new ArrayList<>();
+            for (Message m : messages) {
+
+                if (m.getSenderId() != myUid()) {
+                    incoming.add(m.getRid());
+                }
+            }
+
+            EncryptedConversationState encryptedConversationState = encryptedConversationStates.getValue(peer.getPeerId());
+            encryptedConversationState = encryptedConversationState.addUnreadMessages(incoming);
+
+            encryptedConversationStates.addOrUpdateItem(encryptedConversationState);
+
+            needNotifyActiveDialogsVM = true;
+        }
+
+
         boolean isRead = false;
         if (unreadCount != 0) {
             if (isConversationVisible) {
@@ -305,10 +351,14 @@ public class RouterActor extends ModuleActor {
                 }
                 conversationStates.addOrUpdateItem(state);
 
-                notifyActiveDialogsVM();
+                needNotifyActiveDialogsVM = true;
+
             }
         }
 
+        if (needNotifyActiveDialogsVM) {
+            notifyActiveDialogsVM();
+        }
 
         //
         // Marking As Received
@@ -876,6 +926,12 @@ public class RouterActor extends ModuleActor {
             }
             groups.add(new DialogGroup(i.getTitle(), i.getKey(), dialogSmalls));
         }
+
+        for (Peer p : activeEncryptedDialogGroupStorage.getPeers()) {
+            int unreadCount = encryptedConversationStates.getValue(p.getPeerId()).getUnreadCount();
+            counter += unreadCount;
+        }
+
         context().getMessagesModule().getDialogGroupsVM().getGroupsValueModel().change(groups);
         context().getConductor().getGlobalStateVM().onGlobalCounterChanged(counter);
     }

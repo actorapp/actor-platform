@@ -12,11 +12,13 @@ public class EncryptedConversationVM extends BaseValueModel<EncryptedConversatio
 
     private int uid;
     private IntValueModel timer;
+    private IntValueModel counter;
 
     public EncryptedConversationVM(EncryptedConversationState rawObj) {
         super(rawObj);
         uid = rawObj.getUid();
         timer = new IntValueModel("encrypted_" + uid + ".timer", rawObj.getTimer());
+        counter = new IntValueModel("encrypted_" + uid + ".counter", rawObj.getUnreadCount());
     }
 
     public int getUid() {
@@ -27,8 +29,13 @@ public class EncryptedConversationVM extends BaseValueModel<EncryptedConversatio
         return timer;
     }
 
+    public IntValueModel getCounter() {
+        return counter;
+    }
+
     @Override
     protected void updateValues(EncryptedConversationState rawObj) {
         timer.change(rawObj.getTimer());
+        counter.change(rawObj.getUnreadCount());
     }
 }
