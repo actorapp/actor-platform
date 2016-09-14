@@ -202,12 +202,8 @@ public class BaseKeyboard implements
 
 
     public void destroy() {
-        showing = false;
-//        dismissed = true;
-        if (emojiKeyboardView != null) {
-//            windowManager.removeView(emojiKeyboardView);
-            emojiKeyboardView = null;
-        }
+        dismiss(true);
+
         if (keyboardStatusListener != null) {
             keyboardStatusListener.onDismiss();
         }
