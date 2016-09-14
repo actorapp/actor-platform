@@ -1,12 +1,13 @@
 package im.actor.server.dialog
 
+import akka.actor.ActorSystem
 import im.actor.api.rpc.messaging.ApiMessage
 import im.actor.server.sequence.SeqState
 import im.actor.server.model.Peer
 
 import scala.concurrent.Future
 
-trait DeliveryExtension {
+abstract class DeliveryExtension(system: ActorSystem, extData: Array[Byte]) {
 
   def receiverDelivery(
     receiverUserId: Int,
