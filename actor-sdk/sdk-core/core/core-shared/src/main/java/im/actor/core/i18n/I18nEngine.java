@@ -381,7 +381,7 @@ public class I18nEngine extends IntlEngine {
             case SERVICE_TIMER_SET:
                 return getTemplateNamed(senderId, "content.service.encrypted.timer_changed.compact");
             case SERVICE_TIMER_CLEAR:
-                return getTemplateNamed(senderId, "content.service.encrypted.timer_disabled.compact");
+                return getTemplateNamed(senderId, "content.service.encrypted.timer_disabled");
             case NONE:
                 return "";
             default:
