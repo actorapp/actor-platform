@@ -16,7 +16,7 @@ import im.actor.core.network.mtp.entity.RequestStartAuth;
 import im.actor.core.network.mtp.entity.ResponseDoDH;
 import im.actor.core.network.mtp.entity.ResponseGetServerKey;
 import im.actor.core.network.mtp.entity.ResponseStartAuth;
-import im.actor.core.util.ExponentialBackoff;
+import im.actor.runtime.util.ExponentialBackoff;
 import im.actor.runtime.Crypto;
 import im.actor.runtime.Log;
 import im.actor.runtime.Network;

@@ -1,9 +1,13 @@
 package im.actor.sdk.util;
 
+import android.support.annotation.LayoutRes;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
+import android.view.animation.Transformation;
 
 import im.actor.sdk.view.MaterialInterpolator;
 
@@ -15,6 +19,16 @@ public class ViewUtils {
 
     public static void goneView(final View view, boolean isAnimated) {
         goneView(view, isAnimated, true);
+    }
+
+    public static View inflate(@LayoutRes int id, ViewGroup viewGroup) {
+        return inflate(id, viewGroup, false);
+    }
+
+    public static View inflate(@LayoutRes int id, ViewGroup viewGroup, boolean attach) {
+        return LayoutInflater
+                .from(viewGroup.getContext())
+                .inflate(id, viewGroup, attach);
     }
 
     public static void goneView(final View view, boolean isAnimated, boolean isSlow) {
@@ -272,5 +286,68 @@ public class ViewUtils {
         layer.startAnimation(scaleAnimation);
     }
 
+    public static void expandView(View v, int targetHeight, int initialHeight, After after) {
 
+        Animation a = new ExpandAnimation(v, targetHeight, initialHeight);
+
+        a.setDuration((targetHeight > initialHeight ? targetHeight : initialHeight / Screen.dp(1)));
+        a.setInterpolator(MaterialInterpolator.getInstance());
+        v.clearAnimation();
+        a.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                after.doAfter();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        v.startAnimation(a);
+
+    }
+
+    private static class ExpandAnimation extends Animation {
+
+        private final View v;
+        private final int targetHeight;
+        private final int initialHeight;
+        private int currentHeight;
+
+        public ExpandAnimation(View v, int targetHeight, int initialHeight) {
+            this.v = v;
+            this.targetHeight = targetHeight;
+            this.initialHeight = initialHeight;
+            this.currentHeight = initialHeight;
+        }
+
+        @Override
+        protected void applyTransformation(float interpolatedTime, Transformation t) {
+            if (targetHeight > initialHeight) {
+                currentHeight =
+                        (int) ((targetHeight * interpolatedTime) - initialHeight * interpolatedTime + initialHeight);
+            } else {
+                currentHeight =
+                        (int) (initialHeight - (initialHeight * interpolatedTime) - targetHeight * (1f - interpolatedTime) + targetHeight);
+            }
+
+            v.getLayoutParams().height = currentHeight;
+            v.requestLayout();
+        }
+
+        @Override
+        public boolean willChangeBounds() {
+            return true;
+        }
+    }
+
+    public interface After {
+        void doAfter();
+    }
 }

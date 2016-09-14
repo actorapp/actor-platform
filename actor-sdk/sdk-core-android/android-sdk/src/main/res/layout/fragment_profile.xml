@@ -9,265 +9,330 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/container"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
+        android:layout_height="wrap_content">
         <LinearLayout
-            android:id="@+id/avatarContainer"
+            android:animateLayoutChanges="true"
+            android:id="@+id/container"
             android:layout_width="match_parent"
-            android:layout_height="248dp"
-            android:layout_gravity="bottom"
-            android:gravity="center_vertical"
-            android:orientation="vertical"
-            android:paddingLeft="24dp"
-            android:paddingRight="24dp"
-            android:paddingTop="44dp">
-
-            <im.actor.sdk.view.avatar.AvatarView
-                android:id="@+id/avatar"
-                android:layout_width="96dp"
-                android:layout_height="96dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="16dp" />
-
-            <TextView
-                android:id="@+id/name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="-2dp"
-                android:ellipsize="end"
-                android:gravity="center"
-                android:includeFontPadding="false"
-                android:lines="1"
-                android:singleLine="true"
-                android:textSize="28sp" />
-
-            <TextView
-                android:id="@+id/lastSeen"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="-2dp"
-                android:gravity="center"
-                android:textSize="14sp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="72dp">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/addContact"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/selector"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:id="@+id/avatarContainer"
+                android:layout_width="match_parent"
+                android:layout_height="148dp"
+                android:layout_gravity="bottom"
+                android:gravity="center_vertical"
+                android:paddingTop="44dp">
 
-                <ImageView
-                    android:id="@+id/addContactIcon"
-                    android:layout_width="wrap_content"
+                <im.actor.sdk.view.avatar.AvatarView
+                    android:id="@+id/avatar"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="18dp" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
-                    android:layout_marginTop="4dp" />
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/addContactTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:lines="1"
-                    android:singleLine="true" />
+                    <TextView
+                        android:id="@+id/name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="-2dp"
+                        android:ellipsize="end"
+                        android:gravity="left"
+                        android:includeFontPadding="false"
+                        android:lines="1"
+                        android:singleLine="true"
+                        android:textSize="20sp" />
 
+                    <TextView
+                        android:id="@+id/lastSeen"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="-2dp"
+                        android:gravity="left"
+                        android:textSize="16sp" />
+                </LinearLayout>
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_marginTop="32dp"
+                android:id="@+id/contactsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+            <im.actor.sdk.view.DividerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="72dp"
+                android:layout_marginTop="8dp" />
 
             <LinearLayout
                 android:id="@+id/newMessage"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
                 android:background="@drawable/selector"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:gravity="center_vertical"
+                android:paddingRight="8dp">
 
                 <ImageView
                     android:id="@+id/newMessageIcon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
-                    android:layout_marginTop="4dp" />
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:scaleType="center" />
 
                 <TextView
                     android:id="@+id/newMessageText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:lines="1"
-                    android:singleLine="true"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
                     android:text="@string/profile_compose"
-                    android:textColor="@color/action" />
+                    android:textSize="16sp" />
+
             </LinearLayout>
+
+            <im.actor.sdk.view.DividerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="72dp"
+                android:layout_marginTop="8dp" />
+
+            <LinearLayout
+                android:id="@+id/videoCall"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/selector"
+                android:gravity="center_vertical"
+                android:paddingRight="8dp">
+
+                <ImageView
+                    android:id="@+id/videoCallIcon"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:scaleType="center" />
+
+                <TextView
+                    android:id="@+id/videoCallText"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="@string/profile_video_call"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+            <im.actor.sdk.view.DividerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="72dp"
+                android:layout_marginTop="8dp" />
 
             <LinearLayout
                 android:id="@+id/newEncryptedMessage"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
                 android:background="@drawable/selector"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:gravity="center_vertical"
+                android:paddingRight="8dp">
 
                 <ImageView
                     android:id="@+id/newEncryptedMessageIcon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
-                    android:layout_marginTop="4dp" />
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:scaleType="center" />
 
                 <TextView
                     android:id="@+id/newEncryptedMessageText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:lines="1"
-                    android:singleLine="true"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
                     android:text="@string/profile_compose_encrypted"
-                    android:textColor="@color/action" />
+                    android:textSize="16sp" />
             </LinearLayout>
+
+            <im.actor.sdk.view.DividerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="72dp"
+                android:layout_marginTop="8dp" />
 
             <LinearLayout
                 android:id="@+id/voiceCall"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
                 android:background="@drawable/selector"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:gravity="center_vertical"
+                android:paddingRight="8dp">
 
                 <ImageView
                     android:id="@+id/actionIcon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
-                    android:layout_marginTop="4dp" />
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:scaleType="center" />
 
                 <TextView
                     android:id="@+id/actionText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:lines="1"
-                    android:singleLine="true"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
                     android:text="@string/profile_call"
-                    android:textColor="@color/action" />
+                    android:textSize="16sp" />
+
             </LinearLayout>
 
+            <im.actor.sdk.view.DividerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="72dp"
+                android:layout_marginTop="8dp" />
+
+            <LinearLayout
+                android:id="@+id/notificationsCont"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/selector"
+                android:paddingRight="8dp">
+
+                <ImageView
+                    android:id="@+id/settings_notification_icon"
+                    android:layout_width="72dp"
+                    android:layout_height="48dp"
+                    android:scaleType="center" />
+
+                <TextView
+                    android:id="@+id/settings_notifications_title"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="@string/profile_settings_notifications"
+                    android:textSize="16sp" />
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/enableNotifications"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/notificationsPickerCont"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/selector"
+                android:paddingRight="8dp">
+
+                <View
+                    android:layout_width="72dp"
+                    android:layout_height="48dp" />
+
+                <TextView
+                    android:id="@+id/settings_notifications_picker_title"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="@string/profile_settings_notifications_picker"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <im.actor.sdk.view.DividerView
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="72dp"
+                android:layout_marginTop="8dp" />
+
+            <LinearLayout
+                android:id="@+id/blockCont"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/selector"
+                android:paddingRight="8dp">
+
+                <ImageView
+                    android:id="@+id/settings_block_icon"
+                    android:layout_width="72dp"
+                    android:layout_height="48dp"
+                    android:scaleType="center" />
+
+                <TextView
+                    android:id="@+id/settings_block_title"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="@string/profile_settings_block"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/addContact"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/selector"
+                android:gravity="center_vertical"
+                android:paddingRight="8dp"
+                android:layout_marginBottom="8dp">
+
+                <ImageView
+                    android:id="@+id/addContactIcon"
+                    android:layout_width="72dp"
+                    android:layout_height="48dp"
+                    android:scaleType="center" />
+
+                <TextView
+                    android:id="@+id/addContactTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
         </LinearLayout>
 
-        <im.actor.sdk.view.DividerView
+        <FrameLayout
+            android:layout_marginTop="98dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp" />
+            android:layout_height="100dp"
+            android:layout_gravity="top|right">
 
-        <LinearLayout
-            android:id="@+id/contactsContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" />
-
-        <LinearLayout
-            android:id="@+id/notificationsCont"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:background="@drawable/selector"
-            android:paddingRight="8dp">
-
-            <ImageView
-                android:id="@+id/settings_notification_icon"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="32dp"
-                android:layout_marginTop="12dp"
-                android:scaleType="center" />
-
-            <TextView
-                android:id="@+id/settings_notifications_title"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center_vertical"
-                android:text="@string/profile_settings_notifications"
-                android:textSize="16sp" />
-
-            <android.support.v7.widget.SwitchCompat
-                android:id="@+id/enableNotifications"
+            <android.support.design.widget.FloatingActionButton
+                android:layout_marginRight="18dp"
+                android:layout_gravity="center_vertical|right"
+                android:id="@+id/fab"
+                android:src="@drawable/ic_message_white_24dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
-        </LinearLayout>
+        </FrameLayout>
 
-        <LinearLayout
-            android:id="@+id/notificationsPickerCont"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:background="@drawable/selector"
-            android:paddingRight="8dp">
 
-            <View
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="32dp"
-                android:layout_marginTop="12dp" />
+    </FrameLayout>
 
-            <TextView
-                android:id="@+id/settings_notifications_picker_title"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center_vertical"
-                android:text="@string/profile_settings_notifications_picker"
-                android:textSize="16sp" />
-        </LinearLayout>
 
-        <im.actor.sdk.view.DividerView
-            android:id="@+id/divider"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="72dp"
-            android:layout_marginTop="8dp" />
-
-        <LinearLayout
-            android:id="@+id/blockCont"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:background="@drawable/selector"
-            android:paddingRight="8dp">
-
-            <ImageView
-                android:id="@+id/settings_block_icon"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="32dp"
-                android:layout_marginTop="12dp"
-                android:scaleType="center" />
-
-            <TextView
-                android:id="@+id/settings_block_title"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center_vertical"
-                android:text="@string/profile_settings_block"
-                android:textSize="16sp" />
-        </LinearLayout>
-    </LinearLayout>
 </ScrollView>

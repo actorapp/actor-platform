@@ -2,7 +2,6 @@ package im.actor.server.persist
 
 import com.github.tototoshi.slick.PostgresJodaSupport._
 import im.actor.server.model.{ Peer, PeerType, HistoryMessage }
-import im.actor.server.persist.dialog.DialogRepo
 import org.joda.time.DateTime
 import slick.dbio.Effect.{ Write, Read }
 import slick.driver.PostgresDriver

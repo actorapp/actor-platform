@@ -2,9 +2,7 @@ package im.actor.sdk.controllers.compose;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,14 +13,11 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.util.List;
-
-import im.actor.runtime.function.Consumer;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.BaseFragment;
-import im.actor.sdk.controllers.tools.MediaPickerCallback;
+import im.actor.sdk.controllers.group.GroupTypeFragment;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.avatar.AvatarView;
 import im.actor.sdk.util.KeyboardHelper;
@@ -137,12 +132,12 @@ public class GroupNameFragment extends BaseFragment {
         if (title.length() > 0) {
             if (isChannel) {
                 execute(messenger().createChannel(groupName.getText().toString().trim(), avatarPath).then(gid -> {
-                    startActivity(Intents.openGroupDialog(gid, false, getActivity()));
-                    getActivity().finish();
+                    ((CreateGroupActivity) getActivity()).showNextFragment(
+                            GroupTypeFragment.create(gid, true), false);
                 }));
             } else {
                 ((CreateGroupActivity) getActivity()).showNextFragment(
-                        GroupUsersFragment.create(groupName.getText().toString().trim(), avatarPath), false);
+                        GroupUsersFragment.createGroup(groupName.getText().toString().trim(), avatarPath), false);
             }
         }
     }

@@ -34,7 +34,7 @@ public class CommandsAdapter extends HolderAdapter<BotCommand> {
         botUser = users().get(uid);
         highlightColor = context.getResources().getColor(R.color.primary);
         commands = users().get(uid).getBotCommands().get();
-        commandsToShow = new ArrayList<>(commands);
+        commandsToShow = new ArrayList<>();
         this.uid = uid;
     }
 
@@ -90,6 +90,8 @@ public class CommandsAdapter extends HolderAdapter<BotCommand> {
         @Override
         public View init(final BotCommand data, ViewGroup viewGroup, Context context) {
             View res = ((Activity) context).getLayoutInflater().inflate(R.layout.fragment_chat_mention_item, viewGroup, false);
+            res.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
+            res.findViewById(R.id.container).setBackgroundResource(R.drawable.selector);
             res.findViewById(R.id.divider).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
 
             commandName = (TextView) res.findViewById(R.id.name);

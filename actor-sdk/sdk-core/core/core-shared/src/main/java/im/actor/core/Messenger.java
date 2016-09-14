@@ -704,12 +704,13 @@ public class Messenger {
     /**
      * MUST be called when external push received
      *
-     * @param seq sequence number of update
+     * @param seq    sequence number of update
+     * @param authId auth id
      */
-    @ObjectiveCName("onPushReceivedWithSeq:")
-    public void onPushReceived(int seq) {
+    @ObjectiveCName("onPushReceivedWithSeq:withAuthId:")
+    public void onPushReceived(int seq, long authId) {
         if (modules.getUpdatesModule() != null) {
-            modules.getUpdatesModule().onPushReceived(seq);
+            modules.getUpdatesModule().onPushReceived(seq, authId);
         }
     }
 
@@ -1133,7 +1134,7 @@ public class Messenger {
     @ObjectiveCName("loadLastMessageDate:")
     @Deprecated
     public long loadLastMessageDate(Peer peer) {
-        return getConversationVM(peer).getLastMessageDate();
+        return getConversationVM(peer).getLastReadMessageDate();
     }
 
     /**
@@ -1653,6 +1654,19 @@ public class Messenger {
         return callback -> modules.getGroupsModule().addMember(gid, uid)
                 .then(v -> callback.onResult(v))
                 .failure(e -> callback.onError(e));
+    }
+
+    /**
+     * Adding member to group
+     *
+     * @param gid group's id
+     * @param uid user's id
+     * @return promise of adding member to group
+     */
+    @NotNull
+    @ObjectiveCName("inviteMemberPromiseWithGid:withUid:")
+    public Promise<Void> inviteMemberPromise(int gid, int uid) {
+        return modules.getGroupsModule().addMember(gid, uid);
     }
 
     /**

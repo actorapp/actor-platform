@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import im.actor.core.entity.Message;
+import im.actor.core.entity.Peer;
 import im.actor.core.entity.content.ContactContent;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
@@ -47,8 +48,8 @@ public class ContactHolder extends MessageHolder {
     private ImageView contactAvatar;
 
 
-    public ContactHolder(MessagesAdapter fragment, final View itemView) {
-        super(fragment, itemView, false);
+    public ContactHolder(MessagesAdapter adapter, final View itemView, Peer peer) {
+        super(adapter, itemView, false);
         waitColor = ActorSDK.sharedActor().style.getConvStatePendingColor();
         sentColor = ActorSDK.sharedActor().style.getConvStateSentColor();
         deliveredColor = ActorSDK.sharedActor().style.getConvStateDeliveredColor();

@@ -28,12 +28,12 @@ object StringUtils {
 
   def nonEmptyString(s: String): NonEmptyList[String] Xor String = {
     val trimmed = s.trim
-    if (trimmed.isEmpty) NonEmptyList("Should be nonempty").left else trimmed.right
+    if (trimmed.isEmpty) NonEmptyList.of("Should be nonempty").left else trimmed.right
   }
 
   def printableString(s: String): NonEmptyList[String] Xor String = {
     val p = Pattern.compile("\\p{Print}+", Pattern.UNICODE_CHARACTER_CLASS)
-    if (p.matcher(s).matches) s.right else NonEmptyList("Should contain printable characters only").left
+    if (p.matcher(s).matches) s.right else NonEmptyList.of("Should contain printable characters only").left
   }
 
   def validName(n: String): NonEmptyList[String] Xor String =

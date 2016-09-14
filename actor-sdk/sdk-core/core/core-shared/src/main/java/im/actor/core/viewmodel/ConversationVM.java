@@ -53,7 +53,7 @@ public class ConversationVM extends BaseValueModel<ConversationState> {
         return receiveDate;
     }
 
-    public long getLastMessageDate() {
+    public long getLastReadMessageDate() {
         return Math.max(ownReadDate.get(), ownSendDate.get());
     }
 

@@ -29,6 +29,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import im.actor.core.entity.Message;
+import im.actor.core.entity.Peer;
 import im.actor.core.entity.content.LocationContent;
 import im.actor.core.viewmodel.FileVM;
 import im.actor.core.viewmodel.UploadFileVM;
@@ -66,9 +67,9 @@ public class LocationHolder extends MessageHolder {
     protected UploadFileVM uploadFileVM;
     protected boolean isPhoto;
 
-    public LocationHolder(MessagesAdapter fragment, View itemView) {
-        super(fragment, itemView, false);
-        this.context = fragment.getMessagesFragment().getActivity();
+    public LocationHolder(MessagesAdapter adapter, View itemView, Peer peer) {
+        super(adapter, itemView, false);
+        this.context = adapter.getMessagesFragment().getActivity();
 
         COLOR_PENDING = ActorSDK.sharedActor().style.getConvMediaStatePendingColor();
         COLOR_SENT = ActorSDK.sharedActor().style.getConvMediaStateSentColor();

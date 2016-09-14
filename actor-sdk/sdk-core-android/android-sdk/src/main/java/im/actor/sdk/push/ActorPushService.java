@@ -22,7 +22,7 @@ import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import im.actor.core.util.ExponentialBackoff;
+import im.actor.runtime.util.ExponentialBackoff;
 
 /**
  * Actor Push service based on MQTT

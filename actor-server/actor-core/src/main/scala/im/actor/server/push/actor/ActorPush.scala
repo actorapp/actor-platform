@@ -23,7 +23,7 @@ final case class ActorPushMessage(data: JsonObject)
 
 object ActorPushMessage {
   def apply(fields: Map[String, String]): ActorPushMessage =
-    ActorPushMessage(JsonObject.fromMap(fields mapValues Json.string))
+    ActorPushMessage(JsonObject.fromMap(fields mapValues Json.fromString))
 
   def apply(fields: (String, String)*): ActorPushMessage =
     ActorPushMessage(Map(fields: _*))
@@ -70,7 +70,7 @@ final class ActorPush(system: ActorSystem) extends Extension {
   }
 
   def deliver(seq: Int, creds: ActorPushCredentials): Unit =
-    deliver(ActorPushMessage(JsonObject.singleton("seq", Json.int(seq))), creds)
+    deliver(ActorPushMessage(JsonObject.singleton("seq", Json.fromInt(seq))), creds)
 
   def deliver(message: ActorPushMessage, creds: ActorPushCredentials): Unit = {
     val uri = Uri.parseAbsolute(ParserInput(creds.endpoint))

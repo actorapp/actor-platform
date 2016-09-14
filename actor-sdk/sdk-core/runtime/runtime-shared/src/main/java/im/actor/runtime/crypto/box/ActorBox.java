@@ -50,7 +50,7 @@ public class ActorBox {
         }
         PKCS7Padding padding = new PKCS7Padding();
         if (!padding.validate(plainText, plainText.length - 1 - paddingSize, paddingSize)) {
-            throw new IntegrityException("Padding does not match!");
+            throw new IntegrityException("Padding does not isMatch!");
         }
 
         return ByteStrings.substring(plainText, 0, plainText.length - 1 - paddingSize);

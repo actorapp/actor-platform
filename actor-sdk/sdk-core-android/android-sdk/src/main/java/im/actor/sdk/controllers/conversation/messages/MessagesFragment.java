@@ -19,15 +19,12 @@ import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.viewmodel.ConversationVM;
-import im.actor.runtime.mvvm.Value;
-import im.actor.runtime.mvvm.ValueChangedListener;
-import im.actor.runtime.mvvm.ValueDoubleChangedListener;
+import im.actor.runtime.Log;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
-import im.actor.sdk.controllers.conversation.ChatActivity;
 import im.actor.sdk.controllers.conversation.messages.content.AudioHolder;
+import im.actor.sdk.controllers.conversation.messages.content.AbsMessageViewHolder;
 import im.actor.sdk.controllers.conversation.messages.content.preprocessor.ChatListProcessor;
-import im.actor.sdk.controllers.conversation.messages.content.MessageHolder;
 import im.actor.sdk.controllers.DisplayListFragment;
 import im.actor.sdk.controllers.settings.BaseActorSettingsFragment;
 import im.actor.sdk.util.Screen;
@@ -36,7 +33,7 @@ import im.actor.runtime.generic.mvvm.BindedDisplayList;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
-public abstract class MessagesFragment extends DisplayListFragment<Message, MessageHolder> {
+public abstract class MessagesFragment extends DisplayListFragment<Message, AbsMessageViewHolder> {
 
     private final boolean isPrimaryMode;
 
@@ -48,6 +45,7 @@ public abstract class MessagesFragment extends DisplayListFragment<Message, Mess
     protected CircularProgressBar progressView;
     private long firstUnread = -1;
     private boolean isUnreadLoaded = false;
+    private boolean reloaded;
 
 
     //
@@ -151,7 +149,7 @@ public abstract class MessagesFragment extends DisplayListFragment<Message, Mess
     // Configure RecyclerView
     //
     @Override
-    protected BindedListAdapter<Message, MessageHolder> onCreateAdapter(BindedDisplayList<Message> displayList, Activity activity) {
+    protected BindedListAdapter<Message, AbsMessageViewHolder> onCreateAdapter(BindedDisplayList<Message> displayList, Activity activity) {
         messagesAdapter = new MessagesAdapter(displayList, this, activity);
         if (firstUnread != -1 && messagesAdapter.getFirstUnread() == -1) {
             messagesAdapter.setFirstUnread(firstUnread);
@@ -181,13 +179,17 @@ public abstract class MessagesFragment extends DisplayListFragment<Message, Mess
     //
     private void recalculateUnreadMessageIfNeeded() {
 
+        Log.d("READ_DEBUG", "trying to scroll to unread");
+
         // Scroll to unread only in primary mode
         if (!isPrimaryMode) {
             return;
         }
 
         BindedDisplayList<Message> list = getDisplayList();
-        firstUnread = conversationVM.getLastMessageDate();
+        if (firstUnread == -1) {
+            firstUnread = conversationVM.getLastReadMessageDate();
+        }
 
         // Do not scroll to unread twice
         if (isUnreadLoaded) {
@@ -199,11 +201,18 @@ public abstract class MessagesFragment extends DisplayListFragment<Message, Mess
             return;
         }
 
+        // refresh list if top message is too old
+        if (getDisplayList().getItem(0).getSortDate() < firstUnread && !reloaded) {
+            reloaded = true;
+            getDisplayList().initCenter(firstUnread, true);
+            return;
+        }
+
         // If List is not empty: mark as loaded
         isUnreadLoaded = true;
 
         // If don't have unread message date: nothing to do
-        if (firstUnread == 0) {
+        if (firstUnread <= 0) {
             return;
         }
 

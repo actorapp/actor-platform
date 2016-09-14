@@ -9,6 +9,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import im.actor.core.entity.Message;
+import im.actor.core.entity.Peer;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
@@ -33,8 +34,8 @@ public class TextHolder extends MessageHolder {
     private int readColor;
     private int errorColor;
 
-    public TextHolder(MessagesAdapter fragment, final View itemView) {
-        super(fragment, itemView, false);
+    public TextHolder(MessagesAdapter adapter, final View itemView, Peer peer) {
+        super(adapter, itemView, false);
 
         mainContainer = (ViewGroup) itemView.findViewById(R.id.mainContainer);
         messageBubble = (FrameLayout) itemView.findViewById(R.id.fl_bubble);
@@ -71,6 +72,7 @@ public class TextHolder extends MessageHolder {
     }
 
     public void bindRawText(CharSequence rawText, long readDate, long receiveDate, Spannable reactions, Message message, boolean isItalic) {
+        text.setTag(R.id.peer, getPeer());
         if (message.getSenderId() == myUid()) {
             messageBubble.setBackgroundResource(R.drawable.bubble_text_out);
         } else {

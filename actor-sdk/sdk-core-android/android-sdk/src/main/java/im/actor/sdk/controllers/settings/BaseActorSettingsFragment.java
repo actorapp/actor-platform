@@ -137,6 +137,7 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
                 final View recordView = inflater.inflate(R.layout.contact_record, nickContainer, false);
                 ImageView nickIcon = (ImageView) recordView.findViewById(R.id.recordIcon);
                 Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_mention_24_dp));
+                drawable.mutate();
                 DrawableCompat.setTint(drawable, style.getSettingsIconColor());
                 nickIcon.setImageDrawable(drawable);
 
@@ -165,6 +166,7 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
         final TextView aboutTitle = (TextView) about.findViewById(R.id.value);
         ImageView nickIcon = (ImageView) about.findViewById(R.id.recordIcon);
         Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_info_black_24dp));
+        drawable.mutate();
         DrawableCompat.setTint(drawable, style.getSettingsIconColor());
         nickIcon.setImageDrawable(drawable);
         aboutTitle.setTextColor(style.getTextPrimaryColor());
@@ -301,6 +303,7 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
                         ImageView tintImageView = (ImageView) recordView.findViewById(R.id.recordIcon);
                         if (i == 0) {
                             Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_email_white_24dp));
+                            drawable.mutate();
                             DrawableCompat.setTint(drawable, style.getSettingsIconColor());
                             tintImageView.setImageDrawable(drawable);
                         } else {
@@ -592,8 +595,7 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
             icon.setImageResource(R.drawable.ic_image_black_24dp);
             icon.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             icon.setColorFilter(ActorSDK.sharedActor().style.getSettingsIconColor(), PorterDuff.Mode.SRC_IN);
-            icon.setPadding(Screen.dp(16), 0, 0, 0);
-            fl.addView(icon, new FrameLayout.LayoutParams(Screen.dp(40), Screen.dp(85), Gravity.CENTER_VERTICAL | Gravity.LEFT));
+            fl.addView(icon, new FrameLayout.LayoutParams(Screen.dp(72), Screen.dp(85), Gravity.CENTER));
             fl.setLayoutParams(new ViewGroup.LayoutParams(Screen.dp(72), Screen.dp(85)));
             wallpaperAdapter.addHeaderView(fl);
             wallpapers.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));

@@ -237,6 +237,7 @@ public class RouterActor extends ModuleActor {
         ConversationState state = conversationStates.getValue(peer.getUnuqueId());
         Message topMessage = null;
         int unreadCount = 0;
+        long maxInReadDate = 0;
         long maxInDate = 0;
         for (Message m : messages) {
             if (topMessage == null || topMessage.getSortDate() < m.getSortDate()) {
@@ -245,6 +246,9 @@ public class RouterActor extends ModuleActor {
             if (m.getSenderId() != myUid()) {
                 if (m.getSortDate() > state.getInReadDate()) {
                     unreadCount++;
+                    maxInReadDate = Math.max(maxInReadDate, m.getSortDate());
+                }
+                if (m.getSortDate() > state.getInMaxMessageDate()) {
                     maxInDate = Math.max(maxInDate, m.getSortDate());
                 }
             }
@@ -269,24 +273,33 @@ public class RouterActor extends ModuleActor {
         if (unreadCount != 0) {
             if (isConversationVisible) {
                 // Auto Reading message
-                if (maxInDate > 0) {
-                    if (state.getInReadDate() < maxInDate) {
-                        state = state.changeInReadDate(maxInDate);
+                boolean needUpdateState = false;
+                if (maxInReadDate > 0) {
+                    if (state.getInReadDate() < maxInReadDate) {
+                        state = state.changeInReadDate(maxInReadDate);
                     }
                     state = state.changeCounter(0);
-                    if (state.getInMaxMessageDate() < maxInDate) {
-                        state.changeInMaxDate(maxInDate);
-                    }
+
                     context().getMessagesModule().getPlainReadActor()
-                            .send(new CursorReaderActor.MarkRead(peer, maxInDate));
-                    context().getNotificationsModule().onOwnRead(peer, maxInDate);
+                            .send(new CursorReaderActor.MarkRead(peer, maxInReadDate));
+                    context().getNotificationsModule().onOwnRead(peer, maxInReadDate);
                     isRead = true;
+                    needUpdateState = true;
+                }
+
+                if (state.getInMaxMessageDate() < maxInDate) {
+                    state.changeInMaxDate(maxInDate);
+                    needUpdateState = true;
+                }
+
+                if (needUpdateState) {
                     conversationStates.addOrUpdateItem(state);
                 }
+
             } else {
                 // Updating counter
                 state = state.changeCounter(state.getUnreadCount() + unreadCount);
-                if (maxInDate > state.getInMaxMessageDate()) {
+                if (state.getInMaxMessageDate() < maxInDate) {
                     state = state
                             .changeInMaxDate(maxInDate);
                 }
@@ -300,9 +313,9 @@ public class RouterActor extends ModuleActor {
         //
         // Marking As Received
         //
-        if (maxInDate > 0 && !isRead) {
+        if (maxInReadDate > 0 && !isRead) {
             context().getMessagesModule().getPlainReceiverActor()
-                    .send(new CursorReceiverActor.MarkReceived(peer, maxInDate));
+                    .send(new CursorReceiverActor.MarkReceived(peer, maxInReadDate));
         }
 
 
@@ -558,8 +571,16 @@ public class RouterActor extends ModuleActor {
 
         Message head = conversation(peer).getHeadValue();
 
-        if (head != null && head.getMessageState() == MessageState.PENDING) {
-            head = null;
+        if (head != null) {
+            ConversationState state = conversationStates.getValue(peer.getUnuqueId());
+            state = state
+                    .changeInReadDate(head.getSortDate())
+                    .changeOutSendDate(head.getSortDate());
+            conversationStates.addOrUpdateItem(state);
+
+            if (head.getMessageState() == MessageState.PENDING) {
+                head = null;
+            }
         }
 
         return getDialogsRouter().onMessageDeleted(peer, head);
@@ -797,8 +818,9 @@ public class RouterActor extends ModuleActor {
         ConversationState state = conversationStates.getValue(peer.getUnuqueId());
         if (state.isEmpty() != isEmpty) {
             state = state.changeIsEmpty(isEmpty);
-            conversationStates.addOrUpdateItem(state);
         }
+
+        conversationStates.addOrUpdateItem(state);
     }
 
     //

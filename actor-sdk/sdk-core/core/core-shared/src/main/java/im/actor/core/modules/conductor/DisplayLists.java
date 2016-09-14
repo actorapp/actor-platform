@@ -95,7 +95,7 @@ public class DisplayLists extends AbsModule {
         PlatformDisplayList<Message> res = Storage.createDisplayList(context().getMessagesModule().getConversationEngine(peer),
                 isShared, Message.ENTITY_NAME);
 
-        long lastRead = context().getMessagesModule().getConversationVM(peer).getLastMessageDate();
+        long lastRead = context().getMessagesModule().getConversationVM(peer).getLastReadMessageDate();
 
         if (lastRead != 0) {
             res.initCenter(lastRead);

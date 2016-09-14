@@ -3,19 +3,18 @@ package im.actor.sdk;
 import android.net.Uri;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
-import android.view.ViewGroup;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+
 import im.actor.core.RawUpdatesHandler;
 import im.actor.core.entity.Peer;
-import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.sdk.controllers.conversation.ChatFragment;
 import im.actor.sdk.controllers.conversation.attach.AbsAttachFragment;
 import im.actor.sdk.controllers.conversation.inputbar.InputBarFragment;
 import im.actor.sdk.controllers.conversation.mentions.AutocompleteFragment;
-import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
-import im.actor.sdk.controllers.conversation.messages.content.MessageHolder;
+import im.actor.sdk.controllers.conversation.messages.BubbleLayouter;
 import im.actor.sdk.controllers.conversation.quote.QuoteFragment;
 import im.actor.sdk.intents.ActorIntent;
 import im.actor.sdk.intents.ActorIntentFragmentActivity;
@@ -120,25 +119,11 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
         return null;
     }
 
-    @Override
-    public <T extends BindedViewHolder, J extends T> J getViewHolder(Class<T> base, Object[] args) {
-        return null;
-    }
-
-    @Override
-    public MessageHolder getCustomMessageViewHolder(int dataTypeHash, MessagesAdapter messagesAdapter, ViewGroup viewGroup) {
-        return null;
-    }
-
     public Uri getNotificationSoundForPeer(Peer peer) {
 
         String globalSound = messenger().getPreferences().getString("userNotificationSound_" + peer.getPeerId());
-        if (globalSound != null) {
-            if (globalSound.equals("none")) {
-                return null;
-            } else {
-                return Uri.parse(globalSound);
-            }
+        if (globalSound != null && !globalSound.equals("none")) {
+            return Uri.parse(globalSound);
         }
 
         return getNotificationSound();
@@ -168,5 +153,9 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
     @Override
     public RawUpdatesHandler getRawUpdatesHandler() {
         return null;
+    }
+
+    @Override
+    public void configureChatViewHolders(ArrayList<BubbleLayouter> layouters) {
     }
 }

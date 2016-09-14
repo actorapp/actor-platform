@@ -321,9 +321,10 @@
     <string name="profile_settings_unblock">Unblock user</string>
     <string name="profile_settings_block_confirm">Block {user}?</string>
 
-    <string name="profile_contacts_added">In Contacts</string>
+    <string name="profile_contacts_added">Remove from contacts</string>
     <string name="profile_contacts_available">Add to Contacts</string>
     <string name="profile_call">Voice Call</string>
+    <string name="profile_video_call">Video Call</string>
     <string name="profile_compose">New Message</string>
     <string name="profile_compose_encrypted">Secret Chat</string>
 
@@ -368,6 +369,7 @@
 
     <string name="group_add_member">Add a member</string>
     <string name="channel_add_member">Add a member</string>
+    <string name="channel_add_members">Add members</string>
     <string name="group_leave">Leave group</string>
     <string name="group_leave_channel">Leave channel</string>
     <string name="group_administration">Administration</string>

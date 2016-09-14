@@ -78,8 +78,8 @@
     <string name="auth_switch_to_email">Использовать email для регистрации</string>
     <string name="auth_switch_to_phone">Использовать телефон для регистрации</string>
 
-    <string name="auth_privacy_index">Политика Конфиденциальности</string>
-    <string name="auth_tos_index"> Условия Использования</string>
+    <string name="auth_privacy_index">Privacy Policy</string>
+    <string name="auth_tos_index">Terms of Service</string>
 
     <string name="auth_change_endpoint">Использовать альтернативный сервер</string>
     <string name="auth_reset_default_endpoint">По умолчанию</string>
@@ -329,9 +329,10 @@
     <string name="profile_settings_block">Заблокировать пользователя</string>
     <string name="profile_settings_unblock">Разблокировать пользователя</string>
     <string name="profile_settings_block_confirm">Заблокировать {user}?</string>
-    <string name="profile_contacts_added">В Контактах</string>
+    <string name="profile_contacts_added">Убрать из контактов</string>
     <string name="profile_contacts_available">Добавить в контакты</string>
     <string name="profile_call">Звонок</string>
+    <string name="profile_video_call">Видео звонок</string>
     <string name="profile_compose">Новое сообщение</string>
 
     <string name="profile_adding">Добавление в Контакты…</string>
@@ -373,6 +374,7 @@
 
     <string name="group_add_member">Добавить в группу</string>
     <string name="channel_add_member">Добавить в канал</string>
+    <string name="channel_add_members">Добавить в канал</string>
     <string name="group_leave">Покинуть группу</string>
     <string name="group_leave_channel">Покинуть канал</string>
 

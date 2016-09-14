@@ -137,6 +137,7 @@ public class GroupAdminFragment extends BaseFragment {
         delete.setTextColor(style.getTextDangerColor());
         TextView deleteHint = (TextView) res.findViewById(R.id.deleteHint);
         deleteHint.setTextColor(style.getTextSecondaryColor());
+
         if (groupVM.getGroupType() == GroupType.CHANNEL) {
             delete.setText(R.string.channel_delete);
             deleteHint.setText(R.string.channel_delete_hint);
@@ -146,14 +147,15 @@ public class GroupAdminFragment extends BaseFragment {
         }
 
         bind(groupVM.getIsCanLeave(), groupVM.getIsCanDelete(), (canLeave, canDelete) -> {
-            if (canDelete || canDelete) {
+            if (canLeave || canDelete) {
                 deleteContainer.setVisibility(View.VISIBLE);
                 delete.setOnClickListener(v -> {
-
+                    int alert_delete_title = groupVM.getGroupType() == GroupType.CHANNEL ? R.string.alert_delete_channel_title : R.string.alert_delete_group_title;
+                    int alert_leave_message = groupVM.getGroupType() == GroupType.CHANNEL ? R.string.alert_leave_channel_message : R.string.alert_leave_group_message;
                     new AlertDialog.Builder(getActivity())
-                            .setMessage(getString(groupVM.getIsCanLeave().get() ? R.string.alert_delete_group_title :
-                                    groupVM.getIsCanDelete().get() ? R.string.alert_delete_group_title :
-                                            R.string.alert_leave_group_message, groupVM.getName().get()))
+                            .setMessage(getString(groupVM.getIsCanLeave().get() ? alert_leave_message :
+                                    groupVM.getIsCanDelete().get() ? alert_delete_title :
+                                            alert_leave_message, groupVM.getName().get()))
                             .setNegativeButton(R.string.dialog_cancel, null)
                             .setPositiveButton(R.string.alert_delete_group_yes, (d1, which1) -> {
                                 if (groupVM.getIsCanLeave().get()) {

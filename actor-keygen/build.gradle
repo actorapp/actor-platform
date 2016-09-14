@@ -1,0 +1,16 @@
+apply plugin: 'application'
+
+mainClassName = "im.actor.keygen.Main"
+
+dependencies {
+    compile group: 'commons-io', name: 'commons-io', version: '2.5'
+    testCompile "junit:junit:4.11"
+}
+
+allprojects {
+    tasks.withType(JavaCompile) {
+        sourceCompatibility = "1.8"
+        targetCompatibility = "1.8"
+    }
+}
+
