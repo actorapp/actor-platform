@@ -9,6 +9,7 @@ import im.actor.sdk.R;
 
 public class KeyboardLayout extends FrameLayout {
     boolean showInternal = false;
+    boolean sync = false;
     private RelativeLayout container;
     private int keyboardHeight;
 
@@ -35,6 +36,7 @@ public class KeyboardLayout extends FrameLayout {
                 if (container.getPaddingBottom() != 0) {
                     container.setPadding(0, 0, 0, 0);
                 }
+                sync = showInternal;
             }
         }
 
@@ -45,8 +47,10 @@ public class KeyboardLayout extends FrameLayout {
                 if (container.getPaddingBottom() != keyboardHeight) {
                     container.setPadding(0, 0, 0, keyboardHeight);
                 }
+                sync = showInternal;
             }
         }
+
     }
 
     @Override
@@ -60,10 +64,16 @@ public class KeyboardLayout extends FrameLayout {
     public void showInternal(int keyboardHeight) {
         showInternal = true;
         this.keyboardHeight = keyboardHeight;
+        sync = false;
     }
 
     public void dismissInternal() {
         showInternal = false;
+        sync = true;
+    }
+
+    public boolean isSync() {
+        return sync == showInternal;
     }
 
 }

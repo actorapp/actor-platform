@@ -144,14 +144,21 @@ public class BaseKeyboard implements
         dismissInternally(false);
     }
 
-    public void dismiss(boolean all) {
-        dismissInternally(all);
+    public void dismiss(boolean dismissAll) {
+        dismissInternally(dismissAll);
     }
 
     private void dismissInternally(boolean dismissAll) {
         showing = false;
         if (messageBody != null) {
-            keyboardHelper.setImeVisibility(messageBody, !dismissAll);
+            if (dismissAll) {
+                keyboardHelper.setImeVisibility(messageBody, false);
+            } else if (!softwareKeyboardShowing) {
+                keyboardHelper.setImeVisibility(messageBody, true);
+            }
+        }
+        if (root != null) {
+            root.dismissInternal();
         }
         if (emojiKeyboardView != null && root != null && keyboardHelper != null) {
             final View emojiKeyboardViewCopy = emojiKeyboardView;
@@ -180,10 +187,6 @@ public class BaseKeyboard implements
                 container.setPadding(0, 0, 0, 0);
             }
             onDismiss();
-        }
-
-        if (root != null) {
-            root.dismissInternal();
         }
     }
 
@@ -251,6 +254,9 @@ public class BaseKeyboard implements
             }
         }
 
+        boolean changed = softwareKeyboardShowing;
+
+
         if (heightDifference > 100) {
 
             softwareKeyboardShowing = true;
@@ -259,21 +265,17 @@ public class BaseKeyboard implements
 
             keyboardHeight = heightDifference;
 
-            if (!showRequested) {
-                Log.d(TAG, "onGlobalLayout: " + "showing");
+            dismiss();
 
-                if (showing) {
-                    dismiss();
-                }
-            }
 
         } else {
 
             softwareKeyboardShowing = false;
 
             if (showRequested) {
+                root.showInternal(keyboardHeight);
                 showInternal();
-            } else {
+            } else if (changed) {
                 if (root != null) {
                     root.dismissInternal();
                 }
@@ -286,6 +288,21 @@ public class BaseKeyboard implements
 //            dismissed = true;
 //            dismissInternally();
         }
+
+        changed = changed != softwareKeyboardShowing;
+        Log.d(TAG, "keyboard state change:  " + changed);
+
+        // FIXME verify root view applied new padding after keyboard state change
+        // workaround for [some of android versions] bug, when keyboard closing not causing relayout, or causing it with delay
+        if (changed && root != null) {
+
+            root.postDelayed(() -> {
+                if (!root.isSync()) {
+                    root.requestLayout();
+                }
+            }, 30);
+        }
+
 
 
     }
@@ -312,8 +329,8 @@ public class BaseKeyboard implements
     }
 
     public void onConfigurationChange() {
-        dismiss(true);
-        softwareKeyboardShowing = false;
+//        dismiss(true);
+//        softwareKeyboardShowing = false;
     }
 
     public boolean onBackPressed() {
