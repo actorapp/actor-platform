@@ -26,15 +26,15 @@ public class EncryptedConversationState extends BserObject implements KeyValueIt
     private boolean isLoaded;
     private int timer;
     private long timerDate;
-    private ArrayList<Long> unreadMessagesRids;
+    private ArrayList<Long> unreadMessagesSortDate;
 
 
-    public EncryptedConversationState(int uid, boolean isLoaded, int timer, long timerDate, ArrayList<Long> unreadMessagesRids) {
+    public EncryptedConversationState(int uid, boolean isLoaded, int timer, long timerDate, ArrayList<Long> unreadMessagesSortDate) {
         this.uid = uid;
         this.isLoaded = isLoaded;
         this.timer = timer;
         this.timerDate = timerDate;
-        this.unreadMessagesRids = unreadMessagesRids;
+        this.unreadMessagesSortDate = unreadMessagesSortDate;
     }
 
     private EncryptedConversationState() {
@@ -53,7 +53,7 @@ public class EncryptedConversationState extends BserObject implements KeyValueIt
     }
 
     public int getUnreadCount() {
-        return unreadMessagesRids.size();
+        return unreadMessagesSortDate.size();
     }
 
     public long getTimerDate() {
@@ -61,13 +61,19 @@ public class EncryptedConversationState extends BserObject implements KeyValueIt
     }
 
     public EncryptedConversationState editTimer(int timer, long timerDate) {
-        return new EncryptedConversationState(uid, isLoaded, timer, timerDate, unreadMessagesRids);
+        return new EncryptedConversationState(uid, isLoaded, timer, timerDate, unreadMessagesSortDate);
     }
 
-    public EncryptedConversationState addUnreadMessages(ArrayList<Long> rids) {
+    public EncryptedConversationState addUnreadMessages(ArrayList<Long> sortDates) {
         ArrayList<Long> res = new ArrayList<>();
-        res.addAll(unreadMessagesRids);
-        res.addAll(rids);
+        res.addAll(unreadMessagesSortDate);
+        res.addAll(sortDates);
+        return new EncryptedConversationState(uid, isLoaded, timer, timerDate, res);
+    }
+
+    public EncryptedConversationState read(long rid) {
+        ArrayList<Long> res = new ArrayList<>(unreadMessagesSortDate);
+        res.remove(rid);
         return new EncryptedConversationState(uid, isLoaded, timer, timerDate, res);
     }
 
@@ -82,9 +88,9 @@ public class EncryptedConversationState extends BserObject implements KeyValueIt
         isLoaded = values.getBool(2);
         timer = values.getInt(3);
         timerDate = values.getLong(4);
-        unreadMessagesRids = new ArrayList<>();
+        unreadMessagesSortDate = new ArrayList<>();
         for (long i : values.getRepeatedLong(5)) {
-            unreadMessagesRids.add(i);
+            unreadMessagesSortDate.add(i);
         }
     }
 
@@ -94,7 +100,7 @@ public class EncryptedConversationState extends BserObject implements KeyValueIt
         writer.writeBool(2, isLoaded);
         writer.writeLong(3, timer);
         writer.writeLong(4, timerDate);
-        writer.writeRepeatedLong(5, unreadMessagesRids);
+        writer.writeRepeatedLong(5, unreadMessagesSortDate);
     }
 
     @Override

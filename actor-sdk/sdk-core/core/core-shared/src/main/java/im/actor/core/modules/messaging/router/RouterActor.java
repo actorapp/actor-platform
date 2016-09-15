@@ -288,7 +288,10 @@ public class RouterActor extends ModuleActor {
 
         boolean needNotifyActiveDialogsVM = false;
 
-        if (peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED && !isConversationVisible) {
+        boolean encrypted = peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED;
+        EncryptedConversationState encryptedConversationState = encryptedConversationStates.getValue(peer.getPeerId());
+
+        if (encrypted && !isConversationVisible) {
 
             // Add this encrypted dialog to active if we don't have it there already
             if (!activeEncryptedDialogGroupStorage.getPeers().contains(peer)) {
@@ -302,11 +305,10 @@ public class RouterActor extends ModuleActor {
             for (Message m : messages) {
 
                 if (m.getSenderId() != myUid()) {
-                    incoming.add(m.getRid());
+                    incoming.add(m.getSortDate());
                 }
             }
 
-            EncryptedConversationState encryptedConversationState = encryptedConversationStates.getValue(peer.getPeerId());
             encryptedConversationState = encryptedConversationState.addUnreadMessages(incoming);
 
             encryptedConversationStates.addOrUpdateItem(encryptedConversationState);
@@ -372,13 +374,13 @@ public class RouterActor extends ModuleActor {
         //
         // Updating Dialog List
         //
-        Promise<Void> res = getDialogsRouter().onMessage(peer, topMessage, state.getUnreadCount());
+        Promise<Void> res = getDialogsRouter().onMessage(peer, topMessage, encrypted ? encryptedConversationState.getUnreadCount() : state.getUnreadCount());
 
 
         //
         // Update Self-Destructor
         //
-        if (peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
+        if (encrypted) {
             ArrayList<MessageDesc> pendingDescs = new ArrayList<>();
             for (Message m : messages) {
                 if (m.getTimer() > 0) {
@@ -738,7 +740,16 @@ public class RouterActor extends ModuleActor {
 
     private Promise<Void> onMessageReadByMe(Peer peer, long date, int counter) {
 
+        boolean encrypted = peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED;
+
         ConversationState state = conversationStates.getValue(peer.getUnuqueId());
+
+        if (encrypted) {
+            EncryptedConversationState encryptedConversationState = encryptedConversationStates.getValue(peer.getPeerId());
+            encryptedConversationState = encryptedConversationState.read(date);
+            encryptedConversationStates.addOrUpdateItem(encryptedConversationState);
+        }
+
 
         if (state.getInReadDate() >= date) {
             return Promise.success(null);
@@ -841,6 +852,7 @@ public class RouterActor extends ModuleActor {
             ConversationState state = conversationStates.getValue(peer.getUnuqueId());
             long inMaxMessageDate = state.getInMaxMessageDate();
             //check UnreadCount for zero, because it can be loaded from server (after login)
+            boolean needUpdateDialogs = false;
             if (state.getUnreadCount() != 0 || state.getInReadDate() < inMaxMessageDate) {
                 state = state
                         .changeCounter(0)
@@ -850,9 +862,8 @@ public class RouterActor extends ModuleActor {
                 context().getMessagesModule().getPlainReadActor()
                         .send(new CursorReaderActor.MarkRead(peer, inMaxMessageDate));
 
-                notifyActiveDialogsVM();
+                needUpdateDialogs = true;
 
-                getDialogsRouter().onCounterChanged(peer, 0);
 
                 if (peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
                     destructor.onMessageReadByMe(peer, inMaxMessageDate);
@@ -860,6 +871,17 @@ public class RouterActor extends ModuleActor {
 
                 context().getNotificationsModule().onOwnRead(peer, inMaxMessageDate);
             }
+
+            if (peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
+                encryptedConversationStates.addOrUpdateItem(encryptedConversationStates.getValue(peer.getPeerId()).readAll());
+                needUpdateDialogs = true;
+            }
+
+            if (needUpdateDialogs) {
+                getDialogsRouter().onCounterChanged(peer, 0);
+                notifyActiveDialogsVM();
+            }
+
         }
     }
 
