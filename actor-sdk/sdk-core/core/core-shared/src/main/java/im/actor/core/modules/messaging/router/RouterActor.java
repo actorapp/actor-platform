@@ -642,12 +642,19 @@ public class RouterActor extends ModuleActor {
             }
         }
 
-        encryptedConversationStates.addOrUpdateItem(encryptedConversationStates.getValue(peer.getPeerId()).read(rids));
+        if (peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
+            encryptedConversationStates.addOrUpdateItem(encryptedConversationStates.getValue(peer.getPeerId()).read(rids));
+            notifyActiveDialogsVM();
+        }
 
         return getDialogsRouter().onMessageDeleted(peer, head);
     }
 
     private Promise<Void> onMessageDestructed(Peer peer, List<Long> rids) {
+        if (peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
+            encryptedConversationStates.addOrUpdateItem(encryptedConversationStates.getValue(peer.getPeerId()).read(rids));
+            notifyActiveDialogsVM();
+        }
         return onMessageDeleted(peer, rids);
     }
 
@@ -659,6 +666,11 @@ public class RouterActor extends ModuleActor {
         if (!state.isLoaded()) {
             state = state.changeIsLoaded(true);
             conversationStates.addOrUpdateItem(state);
+        }
+
+        if (peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
+            encryptedConversationStates.addOrUpdateItem(encryptedConversationStates.getValue(peer.getPeerId()).readAll());
+            notifyActiveDialogsVM();
         }
 
         updateChatState(peer);
@@ -674,6 +686,11 @@ public class RouterActor extends ModuleActor {
         if (!state.isLoaded()) {
             state = state.changeIsLoaded(true);
             conversationStates.addOrUpdateItem(state);
+        }
+
+        if (peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED) {
+            encryptedConversationStates.addOrUpdateItem(encryptedConversationStates.getValue(peer.getPeerId()).readAll());
+            notifyActiveDialogsVM();
         }
 
         updateChatState(peer);
