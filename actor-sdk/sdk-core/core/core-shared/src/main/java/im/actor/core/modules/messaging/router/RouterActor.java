@@ -419,12 +419,19 @@ public class RouterActor extends ModuleActor {
                             messagesCount += activeDialogueUnreadCount;
                         }
                     }
+                    for (Peer activePeer : activeEncryptedDialogGroupStorage.getPeers()) {
+                        int activeDialogueUnreadCount = encryptedConversationStates.getValue(activePeer.getPeerId()).getUnreadCount();
+                        if (activeDialogueUnreadCount > 0) {
+                            dialogsCount++;
+                            messagesCount += activeDialogueUnreadCount;
+                        }
+                    }
 
                     context().getNotificationsModule().onInMessage(
                             peer,
                             m.getSenderId(),
                             m.getSortDate(),
-                            ContentDescription.fromContent(m.getContent()),
+                            ContentDescription.fromContent(peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED ? TextContent.create("[secret message]", null, null) : m.getContent()),
                             hasCurrentMention,
                             messagesCount,
                             dialogsCount);
