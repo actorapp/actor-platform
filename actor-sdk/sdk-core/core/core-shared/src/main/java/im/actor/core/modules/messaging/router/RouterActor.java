@@ -301,11 +301,11 @@ public class RouterActor extends ModuleActor {
             }
 
             // update counter
-            ArrayList<Long> incoming = new ArrayList<>();
+            ArrayList<EncryptedConversationState.ShortMessage> incoming = new ArrayList<>();
             for (Message m : messages) {
 
                 if (m.getSenderId() != myUid()) {
-                    incoming.add(m.getSortDate());
+                    incoming.add(new EncryptedConversationState.ShortMessage(m.getSortDate(), m.getRid()));
                 }
             }
 
@@ -431,7 +431,7 @@ public class RouterActor extends ModuleActor {
                             peer,
                             m.getSenderId(),
                             m.getSortDate(),
-                            ContentDescription.fromContent(peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED ? TextContent.create("[secret message]", null, null) : m.getContent()),
+                            ContentDescription.fromContent(peer.getPeerType() == PeerType.PRIVATE_ENCRYPTED ? TextContent.create("new secret message", null, null) : m.getContent()),
                             hasCurrentMention,
                             messagesCount,
                             dialogsCount);
@@ -642,6 +642,8 @@ public class RouterActor extends ModuleActor {
             }
         }
 
+        encryptedConversationStates.addOrUpdateItem(encryptedConversationStates.getValue(peer.getPeerId()).read(rids));
+
         return getDialogsRouter().onMessageDeleted(peer, head);
     }
 
@@ -752,11 +754,8 @@ public class RouterActor extends ModuleActor {
         ConversationState state = conversationStates.getValue(peer.getUnuqueId());
 
         if (encrypted) {
-            EncryptedConversationState encryptedConversationState = encryptedConversationStates.getValue(peer.getPeerId());
-            encryptedConversationState = encryptedConversationState.read(date);
-            encryptedConversationStates.addOrUpdateItem(encryptedConversationState);
+            encryptedConversationStates.addOrUpdateItem(encryptedConversationStates.getValue(peer.getPeerId()).readBefore(date));
         }
-
 
         if (state.getInReadDate() >= date) {
             return Promise.success(null);
@@ -1124,7 +1123,6 @@ public class RouterActor extends ModuleActor {
         } else if (update instanceof ApiEncryptedRead) {
             ApiEncryptedRead encryptedRead = (ApiEncryptedRead) update;
             if (senderId == myUid()) {
-                // TODO: Fix Counter
                 return onMessageReadByMe(Peer.secret(encryptedRead.getReceiverId()), encryptedRead.getReadDate(), 0);
             } else {
                 return onMessageRead(Peer.secret(senderId), encryptedRead.getReadDate());
