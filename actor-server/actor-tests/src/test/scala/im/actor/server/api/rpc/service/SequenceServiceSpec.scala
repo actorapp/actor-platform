@@ -307,17 +307,27 @@ final class SequenceServiceSpec extends BaseAppSuite({
 
     {
       implicit val cd = aliceClientData
+      // FAVOURITE
       whenReady(msgService.handleFavouriteDialog(getOutPeer(bob.id, aliceAuthId)))(identity)
 
       // read 5 messages, 15 left
       whenReady(msgService.handleMessageRead(getOutPeer(bob.id, aliceAuthId), bobReadDates(4)))(identity)
 
+      // UNFAVOURITE
       whenReady(msgService.handleUnfavouriteDialog(getOutPeer(bob.id, aliceAuthId)))(identity)
+
       // read 10 messages, 10 left
       whenReady(msgService.handleMessageRead(getOutPeer(bob.id, aliceAuthId), bobReadDates(9)))(identity)
 
       // read all messages in group
       whenReady(msgService.handleMessageRead(group.asOutPeer, groupReadDates.last))(identity)
+    }
+
+    {
+      implicit val cd = ClientData(bobAuthId, sessionId, Some(AuthData(bob.id, bobAuthSid, 42)))
+      1 to 10 map { i ⇒
+        sendMessageToUser(alice.id, s"Hello $i")._2.date
+      }
     }
 
     {
@@ -336,7 +346,7 @@ final class SequenceServiceSpec extends BaseAppSuite({
         optDirect shouldBe defined
 
         val bobsDialog = optDirect.get.dialogs.find(_.peer.id == bob.id)
-        bobsDialog.get.counter shouldEqual 10
+        bobsDialog.get.counter shouldEqual 20
 
         val optGroups = upd.dialogs.find(_.key == DialogGroupKeys.Groups)
         optGroups shouldBe defined

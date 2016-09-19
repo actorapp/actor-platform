@@ -1,8 +1,7 @@
 package im.actor.server.sequence.operations
 
 import akka.http.scaladsl.util.FastFuture
-import im.actor.api.rpc.messaging.{ ApiDialogGroup, ApiDialogShort, UpdateChatGroupsChanged, UpdateMessageReadByMe }
-import im.actor.api.rpc.peers.ApiPeer
+import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.sequence.UpdateEmptyUpdate
 import im.actor.server.dialog.{ DialogGroupKeys, DialogGroupTitles }
 import im.actor.server.model.{ SeqUpdate, SerializedUpdate, UpdateMapping }
@@ -59,6 +58,15 @@ trait DifferenceOperations { this: SeqUpdatesExtension ⇒
         }
       }
 
+    private def incrementCounter(dialogs: IndexedSeq[ApiDialogShort], upd: UpdateMessage) =
+      dialogs map { dlg ⇒
+        if (upd.peer == dlg.peer) {
+          dlg.copy(counter = dlg.counter + 1)
+        } else {
+          dlg
+        }
+      }
+
     def toVector = {
       val originalUpdates = (generic ++ reduced.values).values.toVector
 
@@ -94,6 +102,14 @@ trait DifferenceOperations { this: SeqUpdatesExtension ⇒
                       rewriteDialogsCounter(fav, upd),
                       rewriteDialogsCounter(gr, upd),
                       rewriteDialogsCounter(dir, upd)
+                    )
+                  } getOrElse acc
+                } else if (upd.header == upd.header) {
+                  UpdateMessage.parseFrom(upd.body).right.toOption map { upd ⇒
+                    (
+                      incrementCounter(fav, upd),
+                      incrementCounter(gr, upd),
+                      incrementCounter(dir, upd)
                     )
                   } getOrElse acc
                 } else acc
