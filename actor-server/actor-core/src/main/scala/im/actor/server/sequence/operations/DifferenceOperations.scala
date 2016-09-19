@@ -60,7 +60,7 @@ trait DifferenceOperations { this: SeqUpdatesExtension ⇒
 
     private def incrementCounter(dialogs: IndexedSeq[ApiDialogShort], upd: UpdateMessage) =
       dialogs map { dlg ⇒
-        if (upd.peer == dlg.peer) {
+        if (upd.peer == dlg.peer && upd.date > dlg.date) {
           dlg.copy(counter = dlg.counter + 1)
         } else {
           dlg
