@@ -31,6 +31,7 @@ private[bot] final class UsersBotService(system: ActorSystem) extends BotService
     case AddUserExtBool(userId, key, value)       ⇒ addUserExtBool(userId, key, value).toWeak
     case RemoveUserExt(userId, key)               ⇒ removeUserExt(userId, key).toWeak
     case FindUser(query)                          ⇒ findUser(query).toWeak
+    case GetUserById(userId)                      ⇒ getUserById(userId).toWeak
     case IsAdmin(userId)                          ⇒ isAdmin(userId).toWeak
   }
 
@@ -77,10 +78,18 @@ private[bot] final class UsersBotService(system: ActorSystem) extends BotService
   private def findUser(query: String) = RequestHandler[FindUser, FindUser#Response] {
     (botUserId, botAuthId, botAuthSid) ⇒
       ifIsAdmin(botUserId) {
-
         (for {
           ids ← fromFuture(userExt.findUserIds(query))
           users ← fromFuture(ftraverse(ids)(UserUtils.safeGetUser(_, botUserId, botAuthId))) map (_.flatten)
+        } yield FoundUsers(users)).value
+      }
+  }
+
+  private def getUserById(userId: Int) = RequestHandler[GetUserById, GetUserById#Response] {
+    (botUserId, botAuthId, botAuthSid) ⇒
+      ifIsAdmin(botUserId) {
+        (for {
+          users ← fromFuture(ftraverse(Seq(userId))(UserUtils.safeGetUser(_, botUserId, botAuthId))) map (_.flatten)
         } yield FoundUsers(users)).value
       }
   }

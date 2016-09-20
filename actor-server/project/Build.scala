@@ -141,7 +141,7 @@ object Build extends sbt.Build with Versioning with Releasing with Packaging {
     settings = defaultSettingsServer ++
       Seq(libraryDependencies ++= Dependencies.bots)
   )
-    .dependsOn(actorCore, actorHttpApi, actorTestkit % "test")
+    .dependsOn(actorCore, actorHttpApi, actorBotsShared, actorTestkit % "test")
 
   lazy val actorBotsShared = Project(
     id = "actor-bots-shared",

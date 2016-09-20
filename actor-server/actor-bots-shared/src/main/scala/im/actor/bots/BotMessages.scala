@@ -520,6 +520,16 @@ object BotMessages {
     override def readResponse(obj: Js.Obj): Response = readJs[Response](obj)
   }
 
+  @key("GetUserById")
+  final case class GetUserById(
+    @beanGetter userId: Int
+  ) extends RequestBody {
+    override type Response = FoundUsers
+    override val service: String = Services.Users
+
+    override def readResponse(obj: Js.Obj): Response = readJs[Response](obj)
+  }
+
   final case class FoundUsers(users: Seq[User]) extends ResponseBody {
     def getUsers = seqAsJavaList(users)
   }
@@ -849,8 +859,8 @@ object BotMessages {
 
   @key("AnimationVid")
   final case class DocumentExAnimationVid(
-    @beanGetter width:  Int,
-    @beanGetter height: Int,
+    @beanGetter width:    Int,
+    @beanGetter height:   Int,
     @beanGetter duration: Int
   ) extends DocumentEx
 
