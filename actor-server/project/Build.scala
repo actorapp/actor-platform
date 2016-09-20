@@ -239,7 +239,7 @@ object Build extends sbt.Build with Versioning with Releasing with Packaging {
       libraryDependencies ++= Dependencies.session
     )
   )
-    .dependsOn(actorPersist, actorCore, actorCodecs, actorCore, actorRpcApi)
+    .dependsOn(actorCodecs, actorCore, actorPersist, actorRpcApi)
 
   lazy val actorSessionMessages = Project(
     id = "actor-session-messages",

@@ -30,6 +30,7 @@ import im.actor.runtime.crypto.Base64Utils;
 public abstract class JsContent extends JavaScriptObject {
 
     public static JsContent createContent(AbsContent src, int sender) {
+
         JsMessenger messenger = JsMessenger.getInstance();
         JsContent content;
         if (src instanceof TextContent) {
@@ -58,7 +59,7 @@ public abstract class JsContent extends JavaScriptObject {
                 content = JsContentText.create(((TextContent) src).getText());
             }
         } else if (src instanceof ServiceContent) {
-            content = JsContentService.create(messenger.getFormatter().formatFullServiceMessage(sender, (ServiceContent) src));
+            content = JsContentService.create(messenger.getFormatter().formatFullServiceMessage(sender, (ServiceContent) src, false));
         } else if (src instanceof DocumentContent) {
             DocumentContent doc = (DocumentContent) src;
 

@@ -38,7 +38,8 @@ final class SequenceServiceSpec extends BaseAppSuite({
   it should "not produce empty difference if there is one update bigger than difference size limit" in bigUpdate
   it should "map updates correctly" in mapUpdates
   it should "exclude optimized updates from sequence" in optimizedUpdates
-  it should "return single UpdateChatGroupsChanged in difference as if it was applied after all message reads" in chatGroupChanged
+  it should "return single UpdateChatGroupsChanged in difference as if it was applied after all message reads" in chatGroupChangedRead
+  it should "return single UpdateChatGroupsChanged in difference as if it was aplied after all received messages" in chatGroupChangedReceived
 
   private val config = SequenceServiceConfig.load().get
 
@@ -278,7 +279,7 @@ final class SequenceServiceSpec extends BaseAppSuite({
     }
   }
 
-  def chatGroupChanged(): Unit = {
+  def chatGroupChangedRead(): Unit = {
     val (alice, aliceAuthId, aliceAuthSid, _) = createUser()
 
     val sessionId = createSessionId()
@@ -307,17 +308,27 @@ final class SequenceServiceSpec extends BaseAppSuite({
 
     {
       implicit val cd = aliceClientData
+      // FAVOURITE
       whenReady(msgService.handleFavouriteDialog(getOutPeer(bob.id, aliceAuthId)))(identity)
 
       // read 5 messages, 15 left
       whenReady(msgService.handleMessageRead(getOutPeer(bob.id, aliceAuthId), bobReadDates(4)))(identity)
 
+      // UNFAVOURITE
       whenReady(msgService.handleUnfavouriteDialog(getOutPeer(bob.id, aliceAuthId)))(identity)
+
       // read 10 messages, 10 left
       whenReady(msgService.handleMessageRead(getOutPeer(bob.id, aliceAuthId), bobReadDates(9)))(identity)
 
       // read all messages in group
       whenReady(msgService.handleMessageRead(group.asOutPeer, groupReadDates.last))(identity)
+    }
+
+    {
+      implicit val cd = ClientData(bobAuthId, sessionId, Some(AuthData(bob.id, bobAuthSid, 42)))
+      1 to 10 map { i ⇒
+        sendMessageToUser(alice.id, s"Hello $i")._2.date
+      }
     }
 
     {
@@ -336,13 +347,67 @@ final class SequenceServiceSpec extends BaseAppSuite({
         optDirect shouldBe defined
 
         val bobsDialog = optDirect.get.dialogs.find(_.peer.id == bob.id)
-        bobsDialog.get.counter shouldEqual 10
+        bobsDialog.get.counter shouldEqual 20
 
         val optGroups = upd.dialogs.find(_.key == DialogGroupKeys.Groups)
         optGroups shouldBe defined
 
         val groupDialog = optGroups.get.dialogs.find(_.peer.id == group.groupId)
         groupDialog.get.counter shouldEqual 0
+      }
+    }
+
+  }
+
+  def chatGroupChangedReceived(): Unit = {
+    val (alice, aliceAuthId, aliceAuthSid, _) = createUser()
+
+    val sessionId = createSessionId()
+    val aliceClientData = ClientData(aliceAuthId, sessionId, Some(AuthData(alice.id, aliceAuthSid, 42)))
+
+    val (bob, bobAuthId, bobAuthSid, _) = createUser()
+    val bobClientData = ClientData(bobAuthId, sessionId, Some(AuthData(bob.id, bobAuthSid, 42)))
+
+    {
+      implicit val cd = bobClientData
+      1 to 10 map { i ⇒
+        sendMessageToUser(alice.id, s"Hello $i")._2.date
+      }
+    }
+
+    {
+      implicit val cd = aliceClientData
+      // FAVOURITE
+      whenReady(msgService.handleFavouriteDialog(getOutPeer(bob.id, aliceAuthId)))(identity)
+
+      // UNFAVOURITE
+      whenReady(msgService.handleUnfavouriteDialog(getOutPeer(bob.id, aliceAuthId)))(identity)
+    }
+
+    {
+      implicit val cd = bobClientData
+      1 to 5 map { i ⇒
+        sendMessageToUser(alice.id, s"Hello $i")._2.date
+      }
+    }
+
+    {
+      implicit val cd = aliceClientData
+
+      whenReady(service.handleGetDifference(0, Array.empty, Vector.empty)) { res ⇒
+        inside(res) {
+          case Ok(rsp: ResponseGetDifference) ⇒
+            val groupedChatsUpdates = rsp.updates.filter(_.updateHeader == UpdateChatGroupsChanged.header)
+            groupedChatsUpdates should have length 1
+        }
+      }
+
+      expectUpdate(classOf[UpdateChatGroupsChanged]) { upd ⇒
+        val optDirect = upd.dialogs.find(_.key == DialogGroupKeys.Direct)
+        optDirect shouldBe defined
+
+        val bobsDialog = optDirect.get.dialogs.find(_.peer.id == bob.id)
+        bobsDialog.get.counter shouldEqual 15
       }
     }
 

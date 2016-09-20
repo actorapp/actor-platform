@@ -4,13 +4,8 @@ import com.github.tototoshi.slick.PostgresJodaSupport._
 import im.actor.server.db.ActorPostgresDriver.api._
 import im.actor.server.model._
 import org.joda.time.DateTime
-import slick.dbio.DBIOAction
-import slick.dbio.Effect.Read
-import slick.lifted.ColumnOrdered
-import slick.profile.FixedSqlStreamingAction
 
 import scala.concurrent.ExecutionContext
-import scala.util.{ Failure, Success }
 
 final class DialogCommonTable(tag: Tag) extends Table[DialogCommon](tag, "dialog_commons") {
 
@@ -111,49 +106,6 @@ final class UserDialogTable(tag: Tag) extends Table[UserDialog](tag, "user_dialo
 
 object DialogRepo extends UserDialogOperations with DialogCommonOperations {
 
-  def create(dialog: DialogObsolete)(implicit ec: ExecutionContext): DBIO[Int] = {
-    val dialogId = getDialogId(Some(dialog.userId), dialog.peer)
-
-    val common = DialogCommon(
-      dialogId = dialogId,
-      lastMessageDate = dialog.lastMessageDate,
-      lastReceivedAt = dialog.lastReceivedAt,
-      lastReadAt = dialog.lastReadAt
-    )
-
-    val user = UserDialog(
-      userId = dialog.userId,
-      peer = dialog.peer,
-      ownerLastReceivedAt = dialog.ownerLastReceivedAt,
-      ownerLastReadAt = dialog.ownerLastReadAt,
-      createdAt = dialog.createdAt,
-      shownAt = dialog.shownAt,
-      isFavourite = dialog.isFavourite,
-      archivedAt = dialog.archivedAt
-    )
-
-    for {
-      exists ← commonExists(dialogId)
-      result ← if (exists) {
-        UserDialogRepo.userDialogs += user
-      } else {
-        for {
-          c ← (DialogCommonRepo.dialogCommon += common)
-            .asTry
-            .flatMap {
-              case Failure(e) ⇒
-                commonExists(common.dialogId) flatMap {
-                  case true  ⇒ DBIO.successful(1)
-                  case false ⇒ DBIO.failed(e)
-                }
-              case Success(res) ⇒ DBIO.successful(res)
-            }
-          _ ← UserDialogRepo.userDialogs += user
-        } yield c
-      }
-    } yield result
-  }
-
   private val dialogs = for {
     c ← DialogCommonRepo.dialogCommon
     u ← UserDialogRepo.userDialogs if c.dialogId === repDialogId(u.userId, u.peerId, u.peerType)
@@ -163,31 +115,17 @@ object DialogRepo extends UserDialogOperations with DialogCommonOperations {
 
   private val byUserC = Compiled(byUserId _)
 
-  private val archived = DialogRepo.dialogs.filter(_._2.archivedAt.isDefined)
-
-  private val notArchived = DialogRepo.dialogs.filter(_._2.archivedAt.isEmpty)
-
-  private def archivedByUserId(
-    userId: Rep[Int],
-    offset: ConstColumn[Long],
-    limit:  ConstColumn[Long]
-  ) = archived filter (_._2.userId === userId) drop offset take limit
-
-  private val archivedByUserIdC = Compiled(archivedByUserId _)
-
-  private val archivedExistC = Compiled { (userId: Rep[Int]) ⇒
-    archivedByUserId(userId, 0L, 1L).take(1).exists
-  }
-
   private def byPKSimple(userId: Rep[Int], peerType: Rep[Int], peerId: Rep[Int]) =
     dialogs.filter({ case (_, u) ⇒ u.userId === userId && u.peerType === peerType && u.peerId === peerId })
 
   private def byUserId(userId: Rep[Int]) =
     dialogs.filter({ case (_, u) ⇒ u.userId === userId })
 
+  @deprecated("Migrations only", "2016-09-02")
   def findDialog(userId: Int, peer: Peer)(implicit ec: ExecutionContext): DBIO[Option[DialogObsolete]] =
     byPKC((userId, peer.typ.value, peer.id)).result.headOption map (_.map { case (c, u) ⇒ DialogObsolete.fromCommonAndUser(c, u) })
 
+  @deprecated("Migrations only", "2016-09-02")
   def fetchDialogs(userId: Int)(implicit ec: ExecutionContext): DBIO[Seq[DialogObsolete]] =
     byUserC(userId).result map (_.map { case (c, u) ⇒ DialogObsolete.fromCommonAndUser(c, u) })
 }

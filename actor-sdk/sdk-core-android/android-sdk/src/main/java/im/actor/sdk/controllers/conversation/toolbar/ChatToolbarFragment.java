@@ -223,6 +223,7 @@ public class ChatToolbarFragment extends BaseFragment {
         super.onCreateOptionsMenu(menu, inflater);
 
         // Inflating menu
+        menu.clear();
         inflater.inflate(R.menu.chat_menu, menu);
 
         // Show menu for opening chat contact
@@ -261,7 +262,7 @@ public class ChatToolbarFragment extends BaseFragment {
             } else if (peer.getPeerType() == PeerType.GROUP) {
 
                 GroupVM groupVM = groups().get(peer.getPeerId());
-                if (groupVM.getGroupType() == GroupType.GROUP) {
+                if (groupVM.getGroupType() == GroupType.GROUP && groupVM.isMember().get() && groupVM.getIsCanCall().get()) {
                     callsEnabled = groupVM.getMembersCount().get() <= MAX_USERS_FOR_CALLS;
                     videoCallsEnabled = false;
                 } else {

@@ -693,7 +693,7 @@ public class Messenger {
      * @param seq    sequence number of update
      * @param authId auth id
      */
-    @ObjectiveCName("onPushReceivedWithSeq:")
+    @ObjectiveCName("onPushReceivedWithSeq:withAuthId:")
     public void onPushReceived(int seq, long authId) {
         if (modules.getUpdatesModule() != null) {
             modules.getUpdatesModule().onPushReceived(seq, authId);
@@ -1120,7 +1120,7 @@ public class Messenger {
     @ObjectiveCName("loadLastMessageDate:")
     @Deprecated
     public long loadLastMessageDate(Peer peer) {
-        return getConversationVM(peer).getLastMessageDate();
+        return getConversationVM(peer).getLastReadMessageDate();
     }
 
     /**

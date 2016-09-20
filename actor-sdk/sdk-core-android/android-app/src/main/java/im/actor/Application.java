@@ -5,6 +5,7 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.multidex.MultiDex;
 import android.support.v4.app.Fragment;
+import android.text.Spannable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -102,7 +103,14 @@ public class Application extends ActorSDKApplication {
         @Override
         public void configureChatViewHolders(ArrayList<BubbleLayouter> layouters) {
 //            layouters.add(0, new BubbleTextHolderLayouter());
-            layouters.add(0, new DefaultLayouter(DefaultLayouter.TEXT_HOLDER, CensoredTextHolderEx::new));
+            layouters.add(0, new DefaultLayouter(DefaultLayouter.TEXT_HOLDER, (adapter2, root2, peer2) -> new TextHolder(adapter2, root2, peer2){
+                @Override
+                public void bindRawText(CharSequence rawText, long readDate, long receiveDate, Spannable reactions, Message message, boolean isItalic) {
+                    super.bindRawText(rawText, readDate, receiveDate, reactions, message, isItalic);
+                    text.append("\n\n" + message.getSortDate());
+                }
+            }));
+//            layouters.add(0, new DefaultLayouter(DefaultLayouter.TEXT_HOLDER, CensoredTextHolderEx::new));
             layouters.add(0, new XmlBubbleLayouter(content -> content instanceof PhotoContent, R.layout.adapter_dialog_photo, (adapter1, root1, peer1) -> new PhotoHolder(adapter1, root1, peer1) {
                 @Override
                 protected void onConfigureViewHolder() {
