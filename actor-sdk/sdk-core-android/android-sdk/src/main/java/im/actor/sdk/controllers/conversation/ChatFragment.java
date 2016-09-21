@@ -1,6 +1,7 @@
 package im.actor.sdk.controllers.conversation;
 
 import android.app.Activity;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -256,6 +257,10 @@ public class ChatFragment extends BaseFragment implements InputBarCallback, Mess
             }
         }
 
+        if (findInputBar().onBackPressed()) {
+            return true;
+        }
+
         // Message Edit
         if (editRid != 0) {
             editRid = 0;
@@ -344,7 +349,7 @@ public class ChatFragment extends BaseFragment implements InputBarCallback, Mess
 
         AbsAttachFragment attachFragment = findShareFragment();
         if (attachFragment != null) {
-            quoteContainer.post(() -> attachFragment.show());
+            quoteContainer.postDelayed(() -> attachFragment.show(), 200);
         }
     }
 

@@ -10,7 +10,9 @@ import java.util.List;
 
 import im.actor.core.Messenger;
 import im.actor.core.entity.Avatar;
+import im.actor.core.entity.GroupType;
 import im.actor.core.entity.Notification;
+import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.js.entity.JsPeer;
 import im.actor.core.js.JsMessenger;
@@ -50,15 +52,16 @@ public class JsNotificationsProvider implements NotificationProvider {
         Notification notification = topNotifications.get(0);
 
         // Peer info
+        Peer peer = notification.getPeer();
         if (conversationsCount == 1) {
             Avatar peerAvatar;
-            JsPeer jsPeer = JsPeer.create(notification.getPeer());
-            if (notification.getPeer().getPeerType() == PeerType.PRIVATE) {
-                UserVM userVM = messenger.getUser(notification.getPeer().getPeerId());
+            JsPeer jsPeer = JsPeer.create(peer);
+            if (peer.getPeerType() == PeerType.PRIVATE) {
+                UserVM userVM = messenger.getUser(peer.getPeerId());
                 peerTitle = userVM.getName().get();
                 peerAvatar = userVM.getAvatar().get();
             } else {
-                GroupVM groupVM = messenger.getGroup(notification.getPeer().getPeerId());
+                GroupVM groupVM = messenger.getGroup(peer.getPeerId());
                 peerTitle = groupVM.getName().get();
                 peerAvatar = groupVM.getAvatar().get();
             }
@@ -80,19 +83,22 @@ public class JsNotificationsProvider implements NotificationProvider {
             showCounters = true;
         }
 
+        boolean isChannel = peer.getPeerType() == PeerType.GROUP && messenger.getGroups().get(peer.getPeerId()).getGroupType() == GroupType.CHANNEL;
+
         if (conversationsCount == 1) {
             for (int i = 0; i < nCount; i++) {
                 Notification n = topNotifications.get(i);
                 if (contentMessage.length() > 0) {
                     contentMessage += "\n";
                 }
-                if (notification.getPeer().getPeerType() == PeerType.GROUP) {
+                if (peer.getPeerType() == PeerType.GROUP) {
                     contentMessage += messenger.getUser(notification.getSender()).getName().get() + ": ";
                 }
                 contentMessage += messenger.getFormatter().formatContentText(n.getSender(),
                         n.getContentDescription().getContentType(),
                         n.getContentDescription().getText(),
-                        n.getContentDescription().getRelatedUser());
+                        n.getContentDescription().getRelatedUser(),
+                        isChannel);
             }
 
             if (showCounters) {
@@ -114,7 +120,8 @@ public class JsNotificationsProvider implements NotificationProvider {
                 contentMessage += messenger.getFormatter().formatContentText(n.getSender(),
                         n.getContentDescription().getContentType(),
                         n.getContentDescription().getText(),
-                        n.getContentDescription().getRelatedUser());
+                        n.getContentDescription().getRelatedUser(),
+                        isChannel);
             }
 
             if (showCounters) {

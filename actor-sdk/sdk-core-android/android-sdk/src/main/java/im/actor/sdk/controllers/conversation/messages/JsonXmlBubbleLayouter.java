@@ -25,7 +25,14 @@ public class JsonXmlBubbleLayouter extends JsonBubbleLayouter {
 
     @Override
     public AbsMessageViewHolder onCreateViewHolder(MessagesAdapter adapter, ViewGroup root, Peer peer) {
-        return creator.onCreateViewHolder(adapter, (ViewGroup) ViewUtils.inflate(id, root), peer);
+        ViewGroup holder = (ViewGroup) ViewUtils.inflate(id, root);
+        if (!(holder instanceof BubbleContainer)) {
+            BubbleContainer rootHolder = new BubbleContainer(root.getContext());
+            rootHolder.addView(holder, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            holder = rootHolder;
+            holder.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        }
+        return creator.onCreateViewHolder(adapter, holder, peer);
     }
 
 }

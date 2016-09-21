@@ -44,6 +44,7 @@ public abstract class MessagesFragment extends DisplayListFragment<Message, AbsM
     protected CircularProgressBar progressView;
     private long firstUnread = -1;
     private boolean isUnreadLoaded = false;
+    private boolean reloaded;
 
 
     //
@@ -185,7 +186,7 @@ public abstract class MessagesFragment extends DisplayListFragment<Message, AbsM
 
         BindedDisplayList<Message> list = getDisplayList();
         if (firstUnread == -1) {
-            firstUnread = conversationVM.getLastMessageDate();
+            firstUnread = conversationVM.getLastReadMessageDate();
         }
 
         // Do not scroll to unread twice
@@ -199,7 +200,8 @@ public abstract class MessagesFragment extends DisplayListFragment<Message, AbsM
         }
 
         // refresh list if top message is too old
-        if (getDisplayList().getItem(0).getSortDate() < firstUnread) {
+        if (getDisplayList().getItem(0).getSortDate() < firstUnread && !reloaded) {
+            reloaded = true;
             getDisplayList().initCenter(firstUnread, true);
             return;
         }

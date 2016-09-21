@@ -72,6 +72,7 @@ public class TextHolder extends MessageHolder {
     }
 
     public void bindRawText(CharSequence rawText, long readDate, long receiveDate, Spannable reactions, Message message, boolean isItalic) {
+        text.setTag(R.id.peer, getPeer());
         if (message.getSenderId() == myUid()) {
             messageBubble.setBackgroundResource(R.drawable.bubble_text_out);
         } else {

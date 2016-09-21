@@ -305,8 +305,8 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
     extensions match {
       case Seq() ⇒
         log.debug("No delivery extensions, using default one")
-        new ActorDelivery()
-      case ext +: tail ⇒
+        new ActorDelivery(system)
+      case ext +: _ ⇒
         log.debug("Got extensions: {}", extensions)
         val idToName = InternalExtensions.extensions(InternalDialogExtensions)
         idToName.get(ext.id) flatMap { className ⇒

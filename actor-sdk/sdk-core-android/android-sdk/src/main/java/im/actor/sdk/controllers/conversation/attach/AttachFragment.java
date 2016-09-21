@@ -14,7 +14,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.view.Gravity;
@@ -22,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
+import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -41,27 +42,55 @@ import im.actor.sdk.controllers.tools.MediaPickerCallback;
 import im.actor.sdk.controllers.tools.MediaPickerFragment;
 import im.actor.sdk.util.SDKFeatures;
 import im.actor.sdk.util.Screen;
+import im.actor.sdk.view.MaterialInterpolator;
 import im.actor.sdk.view.ShareMenuButtonFactory;
+import im.actor.sdk.view.adapters.HeaderViewRecyclerAdapter;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
 public class AttachFragment extends AbsAttachFragment implements MediaPickerCallback {
 
     private static final int PERMISSION_REQ_MEDIA = 11;
+    public static final int SPAN_COUNT = 4;
 
     private FrameLayout root;
-    private View container;
+    private View shareButtons;
     private FastAttachAdapter fastAttachAdapter;
     private ImageView menuIconToChange;
     private TextView menuTitleToChange;
+    private ImageView menuIconToChangeClone;
+    private TextView menuTitleToChangeClone;
 
     private boolean isLoaded = false;
+    private RecyclerView fastShare;
+    private View bottomBackground;
+    private boolean isFastShareFullScreen;
+    private GridLayoutManager layoutManager;
+    private int shareIconSize;
+    private View hideClone;
+    private int fastShareWidth;
+    private int spanCount;
 
     public AttachFragment(Peer peer) {
         super(peer);
     }
 
     public AttachFragment() {
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        hide();
+        if (layoutManager != null) {
+            layoutManager = getGridLayoutManager();
+        }
+        root.removeAllViews();
+        isLoaded = false;
+    }
+
+    protected GridLayoutManager getLayoutManager() {
+        return layoutManager;
     }
 
     @Nullable
@@ -74,11 +103,24 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
                     .commitNow();
         }
 
-        root = new FrameLayout(getContext());
+        root = new FrameLayout(getContext()) {
+            @Override
+            protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+                super.onSizeChanged(w, h, oldw, oldh);
+                if (h != oldh && shareButtons != null) {
+                    shareButtons.getLayoutParams().height = root.getHeight() - Screen.dp(135);
+                    shareButtons.requestLayout();
+                }
+            }
+        };
         root.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
+        root.setBackgroundColor(getActivity().getResources().getColor(R.color.dialog_overlay));
+        root.setVisibility(View.INVISIBLE);
 
         isLoaded = false;
+//        messenger().getGalleryScannerActor().send(new GalleryScannerActor.Show());
+//        messenger().getGalleryScannerActor().send(new GalleryScannerActor.Hide());
 
         return root;
     }
@@ -89,80 +131,79 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
         }
         isLoaded = true;
 
-        container = getLayoutInflater(null).inflate(R.layout.share_menu, root, false);
-        container.setVisibility(View.INVISIBLE);
+        shareButtons = getLayoutInflater(null).inflate(R.layout.share_menu, root, false);
+        fastShare = new RecyclerView(getActivity());
+        fastShare.setOverScrollMode(View.OVER_SCROLL_NEVER);
 
-        container.findViewById(R.id.menu_bg).setBackgroundColor(style.getMainBackgroundColor());
-        container.findViewById(R.id.cancelField).setOnClickListener(view -> hide());
+        shareButtons.findViewById(R.id.menu_bg).setBackgroundColor(style.getMainBackgroundColor());
+        shareButtons.findViewById(R.id.cancelField).setOnClickListener(view -> hide());
+
+        //
+        // Setup appearing hide button
+        //
+        isFastShareFullScreen = false;
+        fastShare.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                boolean visible = layoutManager.findFirstVisibleItemPosition() == 0;
+                if (isFastShareFullScreen == visible) {
+                    isFastShareFullScreen = !visible;
+                    if (visible) {
+                        hideView(hideClone);
+                    } else {
+                        showView(hideClone);
+                    }
+                }
+            }
+        });
 
         //
         // Building Menu Fields
         //
         ArrayList<ShareMenuField> menuFields = new ArrayList<>(onCreateFields());
         // Adding Additional Hide for better UI
+        ShareMenuField shareMenuFieldHide = new ShareMenuField(R.id.share_hide, R.drawable.attach_hide2, style.getAccentColor(), "");
         if (menuFields.size() % 2 != 0) {
-            menuFields.add(new ShareMenuField(R.id.share_hide, R.drawable.attach_hide2, style.getBackyardBackgroundColor(), ""));
+            menuFields.add(shareMenuFieldHide);
         }
 
         //
         // Building Layout
         //
-        FrameLayout row = (FrameLayout) container.findViewById(R.id.share_row_one);
+        FrameLayout row = (FrameLayout) shareButtons.findViewById(R.id.share_row_one);
         boolean first = true;
         int menuItemSize = Screen.dp(80);
         int screenWidth =
                 (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT
                         ? Screen.getWidth()
-                        : Screen.getHeight());
+                        : Screen.getWidth());
         int distance = screenWidth / (menuFields.size() / 2 + menuFields.size() % 2);
         int initialMargin = distance / 2 - menuItemSize / 2;
         int marginFromStart = initialMargin;
         int secondRowTopMargin = Screen.dp(96);
-        int shareIconSize = Screen.dp(60);
+        shareIconSize = Screen.dp(60);
         View.OnClickListener defaultSendOcl = null;
+
+        Configuration config = getResources().getConfiguration();
+        boolean isRtl = false;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            isRtl = config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
+        }
 
         for (int i = 0; i < menuFields.size(); i++) {
             ShareMenuField f = menuFields.get(i);
 
-            LinearLayout shareItem = new LinearLayout(getActivity());
-            shareItem.setOrientation(LinearLayout.VERTICAL);
-            shareItem.setGravity(Gravity.CENTER_HORIZONTAL);
-
-            TextView title = new TextView(getActivity());
-            title.setGravity(Gravity.CENTER);
-            title.setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
-            title.setText(f.getTitle());
-            title.setTextSize(14);
-
-            ImageView icon = new ImageView(getActivity());
-            icon.setClickable(true);
-            if (f.getSelector() != 0) {
-                icon.setBackgroundResource(f.getSelector());
-            } else {
-                icon.setBackgroundDrawable(ShareMenuButtonFactory.get(f.getColor(), getActivity()));
-                icon.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                icon.setImageResource(f.getIcon());
-            }
-
-            shareItem.addView(icon, shareIconSize, shareIconSize);
-            shareItem.addView(title);
-
-            View.OnClickListener l = v -> {
-                hide();
-                onItemClicked(v.getId());
-            };
-            icon.setId(f.getId());
-            icon.setOnClickListener(l);
+            View shareItem = instantiateShareMenuItem(f);
 
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(menuItemSize, menuItemSize);
-            params.setMargins(marginFromStart, first ? 0 : secondRowTopMargin, initialMargin, 0);
+            params.setMargins(isRtl ? initialMargin : marginFromStart, first ? 0 : secondRowTopMargin, isRtl ? marginFromStart : initialMargin, 0);
 
             if (i == menuFields.size() - 1) {
-                menuIconToChange = icon;
-                menuTitleToChange = title;
-                defaultSendOcl = l;
+                menuIconToChange = (ImageView) shareItem.getTag(R.id.icon);
+                menuTitleToChange = (TextView) shareItem.getTag(R.id.title);
+                defaultSendOcl = (View.OnClickListener) shareItem.getTag(R.id.list);
 
-                params.setMargins(marginFromStart, first ? 0 : secondRowTopMargin, 0, 0);
+                params.setMargins(isRtl ? 0 : marginFromStart, first ? 0 : secondRowTopMargin, isRtl ? marginFromStart : 0, 0);
 
             }
             row.addView(shareItem, params);
@@ -171,6 +212,12 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
             }
             first = !first;
         }
+
+        hideClone = instantiateShareMenuItem(shareMenuFieldHide);
+        hideClone.setVisibility(View.INVISIBLE);
+        menuTitleToChangeClone = (TextView) hideClone.getTag(R.id.title);
+        menuIconToChangeClone = (ImageView) hideClone.getTag(R.id.icon);
+        menuTitleToChangeClone.setVisibility(View.GONE);
 
         menuIconToChange.setTag(R.id.icon, menuIconToChange.getDrawable());
         menuIconToChange.setTag(R.id.background, menuIconToChange.getBackground());
@@ -186,11 +233,20 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
             hide();
         };
 
-        RecyclerView fastShare = (RecyclerView) container.findViewById(R.id.fast_share);
-        fastAttachAdapter = new FastAttachAdapter(getActivity());
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
-        fastShare.setAdapter(fastAttachAdapter);
+//        RecyclerView fastShare = (RecyclerView) shareButtons.findViewById(R.id.fast_share);
+        fastAttachAdapter = new FastAttachAdapter(getActivity(), () -> fastShareWidth + 1);
+
+        HeaderViewRecyclerAdapter adapter = new HeaderViewRecyclerAdapter(fastAttachAdapter);
+        adapter.addHeaderView(shareButtons);
+        layoutManager = getGridLayoutManager();
+        fastShare.setAdapter(adapter);
         fastShare.setLayoutManager(layoutManager);
+        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                return position == 0 ? spanCount : 1;
+            }
+        });
         StateListDrawable background = ShareMenuButtonFactory.get(style.getMainColor(), getActivity());
 
         final View.OnClickListener finalDefaultSendOcl = defaultSendOcl;
@@ -202,6 +258,13 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
                 menuTitleToChange.setText(getString(R.string.chat_doc_send) + "(" + val.size() + ")");
                 menuIconToChange.setOnClickListener(shareSendOcl);
                 menuIconToChange.setPadding(Screen.dp(10), 0, Screen.dp(5), 0);
+
+
+                menuIconToChangeClone.setBackgroundDrawable(background);
+                menuIconToChangeClone.setImageResource(R.drawable.conv_send);
+                menuIconToChangeClone.setColorFilter(0xffffffff, PorterDuff.Mode.SRC_IN);
+                menuIconToChangeClone.setOnClickListener(shareSendOcl);
+                menuIconToChangeClone.setPadding(Screen.dp(10), 0, Screen.dp(5), 0);
             } else {
 
                 menuIconToChange.setBackgroundDrawable((Drawable) menuIconToChange.getTag(R.id.background));
@@ -210,16 +273,78 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
                 menuIconToChange.setOnClickListener(finalDefaultSendOcl);
                 menuTitleToChange.setText((String) menuTitleToChange.getTag());
                 menuIconToChange.setPadding(0, 0, 0, 0);
+
+                menuIconToChangeClone.setBackgroundDrawable((Drawable) menuIconToChange.getTag(R.id.background));
+                menuIconToChangeClone.setImageDrawable((Drawable) menuIconToChange.getTag(R.id.icon));
+                menuIconToChangeClone.setColorFilter(null);
+                menuIconToChangeClone.setOnClickListener(finalDefaultSendOcl);
+                menuIconToChangeClone.setPadding(0, 0, 0, 0);
             }
         });
 
-        root.addView(container);
+        shareButtons.getLayoutParams().height = root.getHeight() - Screen.dp(135);
+        shareButtons.requestLayout();
+
+
+        bottomBackground = new View(getContext());
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(135), Gravity.BOTTOM);
+        bottomBackground.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
+        root.addView(bottomBackground, params);
+        root.addView(fastShare);
+        FrameLayout.LayoutParams params2 = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM | Gravity.RIGHT);
+        params2.setMargins(0, 0, Screen.dp(20), Screen.dp(20));
+        root.addView(hideClone, params2);
+    }
+
+    @NonNull
+    private GridLayoutManager getGridLayoutManager() {
+        spanCount = Screen.getWidth() / Screen.dp(88);
+        fastShareWidth = Screen.getWidth() / spanCount;
+        return new GridLayoutManager(getActivity(), spanCount);
+    }
+
+    private View instantiateShareMenuItem(ShareMenuField f) {
+        LinearLayout shareItem = new LinearLayout(getActivity());
+        shareItem.setOrientation(LinearLayout.VERTICAL);
+        shareItem.setGravity(Gravity.CENTER_HORIZONTAL);
+
+        TextView title = new TextView(getActivity());
+        title.setGravity(Gravity.CENTER);
+        title.setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
+        title.setText(f.getTitle());
+        title.setTextSize(14);
+
+        ImageView icon = new ImageView(getActivity());
+        icon.setClickable(true);
+        if (f.getSelector() != 0) {
+            icon.setBackgroundResource(f.getSelector());
+        } else {
+            icon.setBackgroundDrawable(ShareMenuButtonFactory.get(f.getColor(), getActivity()));
+            icon.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            icon.setImageResource(f.getIcon());
+        }
+
+        shareItem.addView(icon, shareIconSize, shareIconSize);
+        shareItem.addView(title);
+
+        View.OnClickListener l = v -> {
+            hide();
+            onItemClicked(v.getId());
+        };
+        icon.setId(f.getId());
+        icon.setOnClickListener(l);
+
+        shareItem.setTag(R.id.title, title);
+        shareItem.setTag(R.id.icon, icon);
+        shareItem.setTag(R.id.list, l);
+
+        return shareItem;
     }
 
     @Override
     public void show() {
         prepareView();
-        if (container.getVisibility() == View.INVISIBLE) {
+        if (root.getVisibility() == View.INVISIBLE) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 Activity activity = getActivity();
                 if (activity == null) {
@@ -234,29 +359,43 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
             }
             onShown();
             messenger().getGalleryScannerActor().send(new GalleryScannerActor.Show());
-            showView(container);
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                View internal = container.findViewById(R.id.menu_bg);
-                int cx = internal.getWidth() - Screen.dp(56 + 56);
-                int cy = internal.getHeight() - Screen.dp(56 / 2);
-                float finalRadius = (float) Math.hypot(cx, cy);
-                Animator anim = ViewAnimationUtils.createCircularReveal(internal, cx, cy, 0, finalRadius);
-                anim.setDuration(200);
-                anim.start();
-                internal.setAlpha(1);
-            }
+            showView(root);
+            TranslateAnimation animation = new TranslateAnimation(0, 0, root.getHeight(), 0);
+            animation.setInterpolator(MaterialInterpolator.getInstance());
+            animation.setDuration(200);
+//            fastShare.startAnimation(animation);
+//            bottomBackground.startAnimation(animation);
+            shareButtons.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                        View internal = fastShare;
+                        int cx = internal.getWidth() - Screen.dp(56 + 56);
+                        int cy = internal.getHeight() - Screen.dp(56 / 2);
+                        float finalRadius = (float) Math.hypot(cx, cy);
+                        Animator anim = ViewAnimationUtils.createCircularReveal(internal, cx, cy, 0, finalRadius);
+                        anim.setDuration(200);
+                        anim.start();
+                        internal.setAlpha(1);
+                    }
+                }
+            });
+
         }
     }
 
     @Override
     public void hide() {
-        if (container != null && container.getVisibility() == View.VISIBLE) {
+        if (root != null && root.getVisibility() == View.VISIBLE) {
             onHidden();
             fastAttachAdapter.clearSelected();
             messenger().getGalleryScannerActor().send(new GalleryScannerActor.Hide());
-            hideView(container);
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                View internal = container.findViewById(R.id.menu_bg);
+            fastShare.scrollToPosition(0);
+            hideView(root);
+
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && !isFastShareFullScreen) {
+                View internal = fastShare;
                 int cx = internal.getWidth() - Screen.dp(56 + 56);
                 int cy = internal.getHeight() - Screen.dp(56 / 2);
                 float finalRadius = (float) Math.hypot(cx, cy);
@@ -285,6 +424,12 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
 
                 anim.setDuration(200);
                 anim.start();
+            } else {
+                TranslateAnimation animation = new TranslateAnimation(0, 0, 0, root.getHeight());
+                animation.setInterpolator(MaterialInterpolator.getInstance());
+                animation.setDuration(250);
+                fastShare.startAnimation(animation);
+                bottomBackground.startAnimation(animation);
             }
         }
     }
@@ -374,7 +519,7 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
 
     @Override
     public boolean onBackPressed() {
-        if (container != null && container.getVisibility() == View.VISIBLE) {
+        if (root != null && root.getVisibility() == View.VISIBLE) {
             hide();
             return true;
         }
@@ -404,7 +549,8 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
             fastAttachAdapter.release();
             fastAttachAdapter = null;
         }
-        container = null;
+        shareButtons = null;
+        fastShare = null;
         root = null;
         menuIconToChange = null;
         menuTitleToChange = null;

@@ -34,7 +34,7 @@ public class CommandsAdapter extends HolderAdapter<BotCommand> {
         botUser = users().get(uid);
         highlightColor = context.getResources().getColor(R.color.primary);
         commands = users().get(uid).getBotCommands().get();
-        commandsToShow = new ArrayList<>(commands);
+        commandsToShow = new ArrayList<>();
         this.uid = uid;
     }
 

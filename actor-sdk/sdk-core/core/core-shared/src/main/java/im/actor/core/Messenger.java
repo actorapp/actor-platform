@@ -1120,7 +1120,7 @@ public class Messenger {
     @ObjectiveCName("loadLastMessageDate:")
     @Deprecated
     public long loadLastMessageDate(Peer peer) {
-        return getConversationVM(peer).getLastMessageDate();
+        return getConversationVM(peer).getLastReadMessageDate();
     }
 
     /**

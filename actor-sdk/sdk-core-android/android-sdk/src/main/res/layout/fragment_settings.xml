@@ -81,10 +81,9 @@
 
                         <ImageView
                             android:id="@+id/recordIcon"
-                            android:layout_width="24dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="16dp"
-                            android:layout_marginRight="32dp" />
+                            android:layout_width="72dp"
+                            android:scaleType="centerInside"
+                            android:layout_height="match_parent" />
 
                         <TextView
                             android:gravity="center_vertical|left"
@@ -183,10 +182,8 @@
 
                         <im.actor.sdk.view.TintImageView
                             android:id="@+id/settings_notification_icon"
-                            android:layout_width="24dp"
+                            android:layout_width="72dp"
                             android:layout_height="match_parent"
-                            android:layout_marginLeft="16dp"
-                            android:layout_marginRight="32dp"
                             app:src="@drawable/ic_notifications_white_24dp" />
 
                         <TextView
@@ -207,10 +204,8 @@
 
                         <im.actor.sdk.view.TintImageView
                             android:id="@+id/settings_chat_icon"
-                            android:layout_width="24dp"
+                            android:layout_width="72dp"
                             android:layout_height="match_parent"
-                            android:layout_marginLeft="16dp"
-                            android:layout_marginRight="32dp"
                             app:src="@drawable/ic_chat_white_24dp" />
 
                         <TextView
@@ -231,10 +226,8 @@
 
                         <im.actor.sdk.view.TintImageView
                             android:id="@+id/settings_security_icon"
-                            android:layout_width="24dp"
+                            android:layout_width="72dp"
                             android:layout_height="match_parent"
-                            android:layout_marginLeft="16dp"
-                            android:layout_marginRight="32dp"
                             app:src="@drawable/ic_security_white_24dp" />
 
                         <TextView
@@ -255,10 +248,8 @@
 
                         <im.actor.sdk.view.TintImageView
                             android:id="@+id/settings_blocked_icon"
-                            android:layout_width="24dp"
+                            android:layout_width="72dp"
                             android:layout_height="match_parent"
-                            android:layout_marginLeft="16dp"
-                            android:layout_marginRight="32dp"
                             app:src="@drawable/ic_block_white_24dp" />
 
                         <TextView
@@ -294,10 +285,8 @@
 
                         <im.actor.sdk.view.TintImageView
                             android:id="@+id/settings_ask_icon"
-                            android:layout_width="24dp"
+                            android:layout_width="72dp"
                             android:layout_height="match_parent"
-                            android:layout_marginLeft="16dp"
-                            android:layout_marginRight="32dp"
                             app:src="@drawable/ic_live_help_white_24dp" />
 
                         <TextView
@@ -318,10 +307,8 @@
 
                         <im.actor.sdk.view.TintImageView
                             android:id="@+id/settings_twitter_icon"
-                            android:layout_width="24dp"
+                            android:layout_width="72dp"
                             android:layout_height="match_parent"
-                            android:layout_marginLeft="16dp"
-                            android:layout_marginRight="32dp"
                             app:src="@drawable/ic_twitterlogo_white_24dp" />
 
                         <TextView
@@ -342,10 +329,8 @@
 
                         <im.actor.sdk.view.TintImageView
                             android:id="@+id/settings_home_page_icon"
-                            android:layout_width="24dp"
+                            android:layout_width="72dp"
                             android:layout_height="match_parent"
-                            android:layout_marginLeft="16dp"
-                            android:layout_marginRight="32dp"
                             app:src="@drawable/ic_public_white_24dp" />
 
                         <TextView
@@ -367,10 +352,8 @@
 
                         <im.actor.sdk.view.TintImageView
                             android:id="@+id/settings_help_icon"
-                            android:layout_width="24dp"
+                            android:layout_width="72dp"
                             android:layout_height="match_parent"
-                            android:layout_marginLeft="16dp"
-                            android:layout_marginRight="32dp"
                             app:src="@drawable/ic_help_white_24dp" />
 
                         <TextView
