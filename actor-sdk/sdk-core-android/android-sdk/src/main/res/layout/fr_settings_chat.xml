@@ -107,6 +107,167 @@
                     android:gravity="center_vertical" />
             </LinearLayout>
 
+            <im.actor.sdk.view.DividerView
+                android:layout_width="match_parent"
+                android:layout_height="1px" />
+
+            <LinearLayout
+                android:id="@+id/imageAutoDownloadCont"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector"
+                android:gravity="center_vertical"
+                android:paddingBottom="@dimen/settings_content_padding"
+                android:paddingLeft="@dimen/settings_content_padding"
+                android:paddingRight="@dimen/settings_content_padding"
+                android:paddingTop="@dimen/settings_content_padding">
+
+                <TextView
+                    android:id="@+id/settings_image_download_title"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_image_download_title"
+                    android:textSize="@dimen/text_primary" />
+
+                <CheckBox
+                    android:id="@+id/imageAutoDownload"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/settings_content_padding"
+                    android:layout_marginRight="@dimen/settings_content_padding"
+                    android:gravity="center_vertical" />
+            </LinearLayout>
+
+            <im.actor.sdk.view.DividerView
+                android:layout_width="match_parent"
+                android:layout_height="1px" />
+
+            <LinearLayout
+                android:id="@+id/animationAutoDownloadCont"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector"
+                android:gravity="center_vertical"
+                android:paddingBottom="@dimen/settings_content_padding"
+                android:paddingLeft="@dimen/settings_content_padding"
+                android:paddingRight="@dimen/settings_content_padding"
+                android:paddingTop="@dimen/settings_content_padding">
+
+                <TextView
+                    android:id="@+id/settings_animation_download_title"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_animation_download_title"
+                    android:textSize="@dimen/text_primary" />
+
+                <CheckBox
+                    android:id="@+id/animationAutoDownload"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/settings_content_padding"
+                    android:layout_marginRight="@dimen/settings_content_padding"
+                    android:gravity="center_vertical" />
+            </LinearLayout>
+
+            <im.actor.sdk.view.DividerView
+                android:layout_width="match_parent"
+                android:layout_height="1px" />
+
+            <LinearLayout
+                android:id="@+id/videoAutoDownloadCont"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector"
+                android:gravity="center_vertical"
+                android:paddingBottom="@dimen/settings_content_padding"
+                android:paddingLeft="@dimen/settings_content_padding"
+                android:paddingRight="@dimen/settings_content_padding"
+                android:paddingTop="@dimen/settings_content_padding">
+
+                <TextView
+                    android:id="@+id/settings_video_download_title"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_video_download_title"
+                    android:textSize="@dimen/text_primary" />
+
+                <CheckBox
+                    android:id="@+id/videoAutoDownload"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/settings_content_padding"
+                    android:layout_marginRight="@dimen/settings_content_padding"
+                    android:gravity="center_vertical" />
+            </LinearLayout>
+
+            <im.actor.sdk.view.DividerView
+                android:layout_width="match_parent"
+                android:layout_height="1px" />
+
+            <LinearLayout
+                android:id="@+id/audioAutoDownloadCont"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector"
+                android:gravity="center_vertical"
+                android:paddingBottom="@dimen/settings_content_padding"
+                android:paddingLeft="@dimen/settings_content_padding"
+                android:paddingRight="@dimen/settings_content_padding"
+                android:paddingTop="@dimen/settings_content_padding">
+
+                <TextView
+                    android:id="@+id/settings_audio_download_title"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_audio_download_title"
+                    android:textSize="@dimen/text_primary" />
+
+                <CheckBox
+                    android:id="@+id/audioAutoDownload"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/settings_content_padding"
+                    android:layout_marginRight="@dimen/settings_content_padding"
+                    android:gravity="center_vertical" />
+            </LinearLayout>
+
+            <im.actor.sdk.view.DividerView
+                android:layout_width="match_parent"
+                android:layout_height="1px" />
+
+            <LinearLayout
+                android:id="@+id/docAutoDownloadCont"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector"
+                android:gravity="center_vertical"
+                android:paddingBottom="@dimen/settings_content_padding"
+                android:paddingLeft="@dimen/settings_content_padding"
+                android:paddingRight="@dimen/settings_content_padding"
+                android:paddingTop="@dimen/settings_content_padding">
+
+                <TextView
+                    android:id="@+id/settings_doc_download_title"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_doc_download_title"
+                    android:textSize="@dimen/text_primary" />
+
+                <CheckBox
+                    android:id="@+id/docAutoDownload"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/settings_content_padding"
+                    android:layout_marginRight="@dimen/settings_content_padding"
+                    android:gravity="center_vertical" />
+            </LinearLayout>
+
+
             <View
                 android:id="@+id/dividerBot"
                 android:layout_width="match_parent"
