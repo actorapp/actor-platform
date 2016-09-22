@@ -445,7 +445,7 @@ import ReachabilitySwift
                     Actor.checkCall(jlong(callId)!, withAttempt: 0)
                 }
             } else if let seq = aps["seq"] as? String {
-                // Actor.onPushReceivedWithSeq(jint(seq)!)
+                Actor.onPushReceived(withSeq: jint(seq)!, withAuthId: 0)
             }
         }
     }
