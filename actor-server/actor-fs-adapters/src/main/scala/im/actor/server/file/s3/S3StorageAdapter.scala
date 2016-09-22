@@ -50,6 +50,7 @@ final class S3StorageAdapter(_system: ActorSystem) extends FileStorageAdapter {
     if (config.pathStyleAccess) {
       val co = S3ClientOptions.builder()
         .setPathStyleAccess(true)
+        .setPayloadSigningEnabled(true)
         .build()
       cl.client.setS3ClientOptions(co)
     }
