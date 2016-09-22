@@ -10,7 +10,7 @@ class AAUserViewController: AAContentTableController {
     var isContactRow: AACommonRow!
     
     init(uid: Int) {
-        super.init(style: AAContentTableStyle.SettingsPlain)
+        super.init(style: AAContentTableStyle.settingsPlain)
         
         self.uid = uid
         self.autoTrack = true
@@ -36,11 +36,11 @@ class AAUserViewController: AAContentTableController {
                     r.avatar = self.user.getAvatarModel().get()
                     
                     let presence = self.user.getPresenceModel().get()
-                    let presenceText = Actor.getFormatter().formatPresence(presence, withSex: self.user.getSex())
+                    let presenceText = Actor.getFormatter().formatPresence(presence, with: self.user.getSex())
                     
                     if !self.isBot {
                         r.subtitle = presenceText
-                        if presence!.state.ordinal() == ACUserPresence_State.ONLINE().ordinal() {
+                        if presence!.state.ordinal() == ACUserPresence_State.online().ordinal() {
                             r.subtitleColor = self.appStyle.userOnlineColor
                         } else {
                             r.subtitleColor = self.appStyle.userOfflineColor
@@ -53,13 +53,13 @@ class AAUserViewController: AAContentTableController {
                 
                 r.avatarDidTap = { [unowned self] (view: UIView) -> () in
                     let avatar = self.user.getAvatarModel().get()
-                    if avatar != nil && avatar.fullImage != nil {
+                    if avatar != nil && avatar?.fullImage != nil {
                         
-                        let full = avatar.fullImage.fileReference
-                        let small = avatar.smallImage.fileReference
-                        let size = CGSize(width: Int(avatar.fullImage.width), height: Int(avatar.fullImage.height))
+                        let full = avatar?.fullImage.fileReference
+                        let small = avatar?.smallImage.fileReference
+                        let size = CGSize(width: Int((avatar?.fullImage.width)!), height: Int((avatar?.fullImage.height)!))
                         
-                        self.presentViewController(AAPhotoPreviewController(file: full, previewFile: small, size: size, fromView: view), animated: true, completion: nil)
+                        self.present(AAPhotoPreviewController(file: full!, previewFile: small, size: size, fromView: view), animated: true, completion: nil)
                     }
                 }
             }
@@ -68,7 +68,7 @@ class AAUserViewController: AAContentTableController {
                 // Profile: Starting Voice Call
                 s.action("CallsStartAudio") { (r) -> () in
                     r.selectAction = { () -> Bool in
-                        self.execute(Actor.doCallWithUid(jint(self.uid)))
+                        self.execute(Actor.doCall(withUid: jint(self.uid)))
                         return false
                     }
                 }
@@ -77,12 +77,12 @@ class AAUserViewController: AAContentTableController {
             // Profile: Send messages
             s.action("ProfileSendMessage") { (r) -> () in
                 r.selectAction = { () -> Bool in
-                    if let customController = ActorSDK.sharedActor().delegate.actorControllerForConversation(ACPeer.userWithInt(jint(self.uid))) {
+                    if let customController = ActorSDK.sharedActor().delegate.actorControllerForConversation(ACPeer.user(with: jint(self.uid))) {
                         self.navigateDetail(customController)
                     } else {
-                        self.navigateDetail(ConversationViewController(peer: ACPeer.userWithInt(jint(self.uid))))
+                        self.navigateDetail(ConversationViewController(peer: ACPeer.user(with: jint(self.uid))))
                     }
-                    self.popover?.dismissPopoverAnimated(true)
+                    self.popover?.dismiss(animated: true)
                     return false
                 }
             }
@@ -113,9 +113,9 @@ class AAUserViewController: AAContentTableController {
                     }
                     r.selectAction = { (c: ACUserPhone) -> Bool in
                         let phoneNumber = c.phone
-                        let hasPhone = UIApplication.sharedApplication().canOpenURL(NSURL(string: "telprompt://")!)
+                        let hasPhone = UIApplication.shared.canOpenURL(URL(string: "telprompt://")!)
                         if (!hasPhone) {
-                            UIPasteboard.generalPasteboard().string = "+\(phoneNumber)"
+                            UIPasteboard.general.string = "+\(phoneNumber)"
                             self.alertUser("NumberCopied")
                         } else {
                             ActorSDK.sharedActor().openUrl("telprompt://+\(phoneNumber)")
@@ -149,44 +149,44 @@ class AAUserViewController: AAContentTableController {
         
         section { (s) -> () in
             s.common { (r) -> () in
-                let peer = ACPeer.userWithInt(jint(self.uid))
-                r.style = .Switch
+                let peer = ACPeer.user(with: jint(self.uid))
+                r.style = .switch
                 r.content = AALocalized("ProfileNotifications")
                 
                 r.bindAction = { (r) -> () in
-                    r.switchOn = Actor.isNotificationsEnabledWithPeer(peer)
+                    r.switchOn = Actor.isNotificationsEnabled(with: peer)
                 }
                 
                 r.switchAction = { (on: Bool) -> () in
-                    if !on && !self.user.isBot().boolValue {
+                    if !on && !self.user.isBot() {
                         self.confirmAlertUser("ProfileNotificationsWarring",
                             action: "ProfileNotificationsWarringAction",
                             tapYes: { () -> () in
-                                Actor.changeNotificationsEnabledWithPeer(peer, withValue: false)
+                                Actor.changeNotificationsEnabled(with: peer, withValue: false)
                             }, tapNo: { () -> () in
                                 r.reload()
                         })
                         return
                     }
-                    Actor.changeNotificationsEnabledWithPeer(peer, withValue: on)
+                    Actor.changeNotificationsEnabled(with: peer, withValue: on)
                 }
                 
                 if(ActorSDK.sharedActor().enableChatGroupSound) {
-                    if(Actor.isNotificationsEnabledWithPeer(peer)){
+                    if(Actor.isNotificationsEnabled(with: peer)){
                         r.selectAction = {() -> Bool in
                             // Sound: Choose sound
                             let setRingtoneController = AARingtonesViewController()
-                            let sound = Actor.getNotificationsSoundWithPeer(peer)
-                            setRingtoneController.selectedRingtone = (sound != nil) ? sound : ""
+                            let sound = Actor.getNotificationsSound(with: peer)
+                            setRingtoneController.selectedRingtone = (sound != nil) ? sound! : ""
                             setRingtoneController.completion = {(selectedSound:String) in
-                                Actor.changeNotificationsSoundPeer(peer, withValue: selectedSound)
+                                Actor.changeNotificationsSound(peer, withValue: selectedSound)
                             }
                             let navigationController = AANavigationController(rootViewController: setRingtoneController)
                             if (AADevice.isiPad) {
-                                navigationController.modalInPopover = true
-                                navigationController.modalPresentationStyle = UIModalPresentationStyle.CurrentContext
+                                navigationController.isModalInPopover = true
+                                navigationController.modalPresentationStyle = UIModalPresentationStyle.currentContext
                             }
-                            self.presentViewController(navigationController, animated: true, completion: {
+                            self.present(navigationController, animated: true, completion: {
                                 }
                             )
                             return false
@@ -204,18 +204,18 @@ class AAUserViewController: AAContentTableController {
                 r.bindAction = { (r) -> () in
                     if self.user.isContactModel().get().booleanValue() {
                         r.content = AALocalized("ProfileRemoveFromContacts")
-                        r.style = .Destructive
+                        r.style = .destructive
                     } else {
                         r.content = AALocalized("ProfileAddToContacts")
-                        r.style = .Action
+                        r.style = .action
                     }
                 }
                 
                 r.selectAction = { () -> Bool in
                     if (self.user.isContactModel().get().booleanValue()) {
-                        self.execute(Actor.removeContactCommandWithUid(jint(self.uid))!)
+                        self.execute(Actor.removeContactCommand(withUid: jint(self.uid))!)
                     } else {
-                        self.execute(Actor.addContactCommandWithUid(jint(self.uid))!)
+                        self.execute(Actor.addContactCommand(withUid: jint(self.uid))!)
                     }
                     return true
                 }
@@ -236,7 +236,7 @@ class AAUserViewController: AAContentTableController {
                                     if d.length == 0 {
                                         return
                                     }
-                                    c.executeSafeOnlySuccess(Actor.editNameCommandWithUid(jint(self.uid), withName: d)!, successBlock: { (val) -> Void in
+                                    c.executeSafeOnlySuccess(Actor.editNameCommand(withUid: jint(self.uid), withName: d)!, successBlock: { (val) -> Void in
                                         c.dismiss()
                                     })
                                 }
@@ -267,21 +267,21 @@ class AAUserViewController: AAContentTableController {
                     } else {
                         r.content = AALocalized("ProfileUnblockContact")
                     }
-                    r.style = .Destructive
+                    r.style = .destructive
                 }
                 
                 r.selectAction = { () -> Bool in
                     if !self.user.isBlockedModel().get().booleanValue() {
                         self.executePromise(Actor.blockUser(jint(self.uid)),
                             successBlock: { success in
-                                dispatch_async(dispatch_get_main_queue(),{
+                                DispatchQueue.main.async(execute: {
                                     r.reload()
                                 })
                             } ,failureBlock:nil)
                     } else {
                         self.executePromise(Actor.unblockUser(jint(self.uid)),
                             successBlock: { success in
-                                dispatch_async(dispatch_get_main_queue(),{
+                                DispatchQueue.main.async(execute: {
                                     r.reload()
                                 })
                             } ,failureBlock:nil)
@@ -293,7 +293,7 @@ class AAUserViewController: AAContentTableController {
         }
     }
     
-    override func tableWillBind(binder: AABinder) {
+    override func tableWillBind(_ binder: AABinder) {
         binder.bind(user.getAvatarModel(), closure: { (value: ACAvatar?) -> () in
             self.headerRow.reload()
         })

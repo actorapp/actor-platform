@@ -4,30 +4,30 @@
 
 import Foundation
 
-public class AAGroupTypeViewController: AAContentTableController {
+open class AAGroupTypeViewController: AAContentTableController {
     
-    private let isCreation: Bool
-    private var isChannel: Bool = false
-    private var isPublic: Bool = false
-    private var linkSection: AAManagedSection!
-    private var publicRow: AACommonRow!
-    private var privateRow: AACommonRow!
-    private var shortNameRow: AAEditRow!
+    fileprivate let isCreation: Bool
+    fileprivate var isChannel: Bool = false
+    fileprivate var isPublic: Bool = false
+    fileprivate var linkSection: AAManagedSection!
+    fileprivate var publicRow: AACommonRow!
+    fileprivate var privateRow: AACommonRow!
+    fileprivate var shortNameRow: AAEditRow!
     
     public init(gid: Int, isCreation: Bool) {
         self.isCreation = isCreation
-        super.init(style: .SettingsGrouped)
+        super.init(style: .settingsGrouped)
         self.gid = gid
-        self.isChannel = group.groupType == ACGroupType.CHANNEL()
+        self.isChannel = group.groupType == ACGroupType.channel()
         if (isChannel) {
             navigationItem.title = AALocalized("GroupTypeTitleChannel")
         } else {
             navigationItem.title = AALocalized("GroupTypeTitle")
         }
         if isCreation {
-            navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationNext"), style: .Done, target: self, action: #selector(saveDidTap))
+            navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationNext"), style: .done, target: self, action: #selector(saveDidTap))
         } else {
-            navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationSave"), style: .Done, target: self, action: #selector(saveDidTap))
+            navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationSave"), style: .done, target: self, action: #selector(saveDidTap))
         }
     }
     
@@ -35,21 +35,21 @@ public class AAGroupTypeViewController: AAContentTableController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func tableDidLoad() {
+    open override func tableDidLoad() {
         
         self.isPublic = group.shortName.get() != nil
 
         section { (s) in
 
             if isChannel {
-                s.headerText = AALocalized("GroupTypeTitleChannel").uppercaseString
+                s.headerText = AALocalized("GroupTypeTitleChannel").uppercased()
                 if self.isPublic {
                     s.footerText = AALocalized("GroupTypeHintPublicChannel")
                 } else {
                     s.footerText = AALocalized("GroupTypeHintPrivateChannel")
                 }
             } else {
-                s.headerText = AALocalized("GroupTypeTitle").uppercaseString
+                s.headerText = AALocalized("GroupTypeTitle").uppercased()
                 if self.isPublic {
                     s.footerText = AALocalized("GroupTypeHintPublic")
                 } else {
@@ -73,17 +73,17 @@ public class AAGroupTypeViewController: AAContentTableController {
                         } else {
                             s.footerText = AALocalized("GroupTypeHintPublic")
                         }
-                        self.tableView.reloadSection(0, withRowAnimation: .Automatic)
+                        self.tableView.reloadSection(0, with: .automatic)
                         self.managedTable.sections.append(self.linkSection)
-                        self.tableView.insertSection(1, withRowAnimation: .Fade)
+                        self.tableView.insertSection(1, with: .fade)
                     }
                     return true
                 }
                 r.bindAction = { (r) in
                     if self.isPublic {
-                        r.style = .Checkmark
+                        r.style = .checkmark
                     } else {
-                        r.style = .Normal
+                        r.style = .normal
                     }
                 }
             })
@@ -105,17 +105,17 @@ public class AAGroupTypeViewController: AAContentTableController {
                         } else {
                             s.footerText = AALocalized("GroupTypeHintPrivate")
                         }
-                        self.tableView.reloadSection(0, withRowAnimation: .Automatic)
-                        self.managedTable.sections.removeAtIndex(1)
-                        self.tableView.deleteSection(1, withRowAnimation: .Fade)
+                        self.tableView.reloadSection(0, with: .automatic)
+                        self.managedTable.sections.remove(at: 1)
+                        self.tableView.deleteSection(1, with: .fade)
                     }
                     return true
                 }
                 r.bindAction = { (r) in
                     if !self.isPublic {
-                        r.style = .Checkmark
+                        r.style = .checkmark
                     } else {
-                        r.style = .Normal
+                        r.style = .normal
                     }
                 }
             })
@@ -129,17 +129,17 @@ public class AAGroupTypeViewController: AAContentTableController {
             }
             
             self.shortNameRow = s.edit({ (r) in
-                r.autocapitalizationType = .None
+                r.autocapitalizationType = .none
                 r.prefix = ActorSDK.sharedActor().invitePrefixShort
                 r.text = self.group.shortName.get()
             })
         }
         if !self.isPublic {
-            managedTable.sections.removeAtIndex(1)
+            managedTable.sections.remove(at: 1)
         }
     }
     
-    public func saveDidTap() {
+    open func saveDidTap() {
         let nShortName: String?
         if self.isPublic {
             if let shortNameVal = self.shortNameRow.text?.trim() {
@@ -156,12 +156,12 @@ public class AAGroupTypeViewController: AAContentTableController {
         }
         
         if nShortName != group.shortName.get() {
-            executePromise(Actor.editGroupShortNameWithGid(jint(self.gid), withAbout: nShortName).then({ (r:ARVoid!) in
+            executePromise(Actor.editGroupShortName(withGid: jint(self.gid), withAbout: nShortName).then({ (r:ARVoid!) in
                 if (self.isCreation) {
-                    if let customController = ActorSDK.sharedActor().delegate.actorControllerForConversation(ACPeer.groupWithInt(jint(self.gid))) {
+                    if let customController = ActorSDK.sharedActor().delegate.actorControllerForConversation(ACPeer.group(with: jint(self.gid))) {
                         self.navigateDetail(customController)
                     } else {
-                        self.navigateDetail(ConversationViewController(peer: ACPeer.groupWithInt(jint(self.gid))))
+                        self.navigateDetail(ConversationViewController(peer: ACPeer.group(with: jint(self.gid))))
                     }
                     self.dismiss()
                 } else {
@@ -170,10 +170,10 @@ public class AAGroupTypeViewController: AAContentTableController {
             }))
         } else {
             if (isCreation) {
-                if let customController = ActorSDK.sharedActor().delegate.actorControllerForConversation(ACPeer.groupWithInt(jint(self.gid))) {
+                if let customController = ActorSDK.sharedActor().delegate.actorControllerForConversation(ACPeer.group(with: jint(self.gid))) {
                     self.navigateDetail(customController)
                 } else {
-                    self.navigateDetail(ConversationViewController(peer: ACPeer.groupWithInt(jint(self.gid))))
+                    self.navigateDetail(ConversationViewController(peer: ACPeer.group(with: jint(self.gid))))
                 }
                 self.dismiss()
             } else {

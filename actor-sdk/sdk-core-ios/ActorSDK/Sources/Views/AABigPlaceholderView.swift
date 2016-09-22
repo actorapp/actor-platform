@@ -6,33 +6,33 @@ import UIKit
 
 class AABigPlaceholderView: UIView {
     
-    private var contentView: UIView!
-    private var bgView: UIView!
-    private var imageView: UIImageView!
-    private var titleLabel: UILabel!
-    private var subtitleLabel: UILabel!
-    private var actionButton: UIButton!
-    private var topOffset: CGFloat!
-    private var subtitle2Label: UILabel!
-    private var action2Button: UIButton!
+    fileprivate var contentView: UIView!
+    fileprivate var bgView: UIView!
+    fileprivate var imageView: UIImageView!
+    fileprivate var titleLabel: UILabel!
+    fileprivate var subtitleLabel: UILabel!
+    fileprivate var actionButton: UIButton!
+    fileprivate var topOffset: CGFloat!
+    fileprivate var subtitle2Label: UILabel!
+    fileprivate var action2Button: UIButton!
     
     //
     // Constructors
     //
     
     init(topOffset: CGFloat!) {
-        super.init(frame: CGRectZero)
+        super.init(frame: CGRect.zero)
         
         self.topOffset = topOffset
         
-        backgroundColor = UIColor.whiteColor()
+        backgroundColor = UIColor.white
         
         contentView = UIView()
-        contentView.backgroundColor = UIColor.whiteColor()
+        contentView.backgroundColor = UIColor.white
         addSubview(contentView)
         
         imageView = UIImageView()
-        imageView.hidden = true
+        imageView.isHidden = true
         
         bgView = UIView()
         bgView.backgroundColor = ActorSDK.sharedActor().style.placeholderBgColor
@@ -41,31 +41,31 @@ class AABigPlaceholderView: UIView {
         
         titleLabel = UILabel()
         titleLabel.textColor = ActorSDK.sharedActor().style.placeholderTitleColor
-        titleLabel.font = UIFont.systemFontOfSize(22)
-        titleLabel.textAlignment = NSTextAlignment.Center
+        titleLabel.font = UIFont.systemFont(ofSize: 22)
+        titleLabel.textAlignment = NSTextAlignment.center
         titleLabel.text = " "
         titleLabel.sizeToFit()
         contentView.addSubview(titleLabel)
         
         subtitleLabel = UILabel()
         subtitleLabel.textColor = ActorSDK.sharedActor().style.placeholderHintColor
-        subtitleLabel.font = UIFont.systemFontOfSize(16.0)
-        subtitleLabel.textAlignment = NSTextAlignment.Center
+        subtitleLabel.font = UIFont.systemFont(ofSize: 16.0)
+        subtitleLabel.textAlignment = NSTextAlignment.center
         subtitleLabel.numberOfLines = 0
         contentView.addSubview(subtitleLabel)
         
-        actionButton = UIButton(type: .System)
+        actionButton = UIButton(type: .system)
         actionButton.titleLabel!.font = UIFont.mediumSystemFontOfSize(21)
         contentView.addSubview(actionButton)
         
         subtitle2Label = UILabel()
         subtitle2Label.textColor = ActorSDK.sharedActor().style.placeholderHintColor
-        subtitle2Label.font = UIFont.systemFontOfSize(16.0)
-        subtitle2Label.textAlignment = NSTextAlignment.Center
+        subtitle2Label.font = UIFont.systemFont(ofSize: 16.0)
+        subtitle2Label.textAlignment = NSTextAlignment.center
         subtitle2Label.numberOfLines = 0
         contentView.addSubview(subtitle2Label)
         
-        action2Button = UIButton(type: .System)
+        action2Button = UIButton(type: .system)
         action2Button.titleLabel!.font = UIFont.mediumSystemFontOfSize(21)
         contentView.addSubview(action2Button)
     }
@@ -78,73 +78,73 @@ class AABigPlaceholderView: UIView {
     // Setting image
     //
     
-    func setImage(image: UIImage?, title: String?, subtitle: String?) {
+    func setImage(_ image: UIImage?, title: String?, subtitle: String?) {
         setImage(image, title: title, subtitle: subtitle, actionTitle: nil,  subtitle2: nil, actionTarget: nil, actionSelector: nil, action2title: nil, action2Selector: nil)
     }
     
-    func setImage(image: UIImage?, title: String?, subtitle: String?, actionTitle: String?, subtitle2: String?, actionTarget: AnyObject?, actionSelector: Selector?, action2title: String?, action2Selector: Selector?) {
+    func setImage(_ image: UIImage?, title: String?, subtitle: String?, actionTitle: String?, subtitle2: String?, actionTarget: AnyObject?, actionSelector: Selector?, action2title: String?, action2Selector: Selector?) {
         
         if image != nil {
             imageView.image = image!
-            imageView.hidden = false
+            imageView.isHidden = false
         } else {
-            imageView.hidden = true
+            imageView.isHidden = true
         }
         
         if title != nil {
             titleLabel.text = title
-            titleLabel.hidden = false
+            titleLabel.isHidden = false
         } else {
-            titleLabel.hidden = true
+            titleLabel.isHidden = true
         }
         
         if subtitle != nil {
             
             let paragraphStyle = NSMutableParagraphStyle()
             paragraphStyle.lineHeightMultiple = 1.11
-            paragraphStyle.alignment = NSTextAlignment.Center
+            paragraphStyle.alignment = NSTextAlignment.center
             
             let attrString = NSMutableAttributedString(string: subtitle!)
             attrString.addAttribute(NSParagraphStyleAttributeName, value:paragraphStyle, range:NSMakeRange(0, attrString.length))
 
             subtitleLabel.attributedText = attrString
             
-            subtitleLabel.hidden = false
+            subtitleLabel.isHidden = false
         } else {
-            subtitleLabel.hidden = true
+            subtitleLabel.isHidden = true
         }
 
         if actionTitle != nil && actionTarget != nil && actionSelector != nil {
-            actionButton.removeTarget(nil, action: nil, forControlEvents: UIControlEvents.AllEvents)
-            actionButton.addTarget(actionTarget!, action: actionSelector!, forControlEvents: UIControlEvents.TouchUpInside)
-            actionButton.setTitle(actionTitle, forState: UIControlState.Normal)
-            actionButton.hidden = false
+            actionButton.removeTarget(nil, action: nil, for: UIControlEvents.allEvents)
+            actionButton.addTarget(actionTarget!, action: actionSelector!, for: UIControlEvents.touchUpInside)
+            actionButton.setTitle(actionTitle, for: UIControlState())
+            actionButton.isHidden = false
         } else {
-            actionButton.hidden = true
+            actionButton.isHidden = true
         }
         
         if (subtitle2 != nil) {
             let paragraphStyle = NSMutableParagraphStyle()
             paragraphStyle.lineHeightMultiple = 1.11
-            paragraphStyle.alignment = NSTextAlignment.Center
+            paragraphStyle.alignment = NSTextAlignment.center
             
             let attrString = NSMutableAttributedString(string: subtitle2!)
             attrString.addAttribute(NSParagraphStyleAttributeName, value:paragraphStyle, range:NSMakeRange(0, attrString.length))
             
             subtitle2Label.attributedText = attrString
             
-            subtitle2Label.hidden = false
+            subtitle2Label.isHidden = false
         } else {
-            subtitle2Label.hidden = true
+            subtitle2Label.isHidden = true
         }
         
         if action2title != nil && actionTarget != nil && actionSelector != nil {
-            action2Button.removeTarget(nil, action: nil, forControlEvents: UIControlEvents.AllEvents)
-            action2Button.addTarget(actionTarget!, action: action2Selector!, forControlEvents: UIControlEvents.TouchUpInside)
-            action2Button.setTitle(action2title, forState: UIControlState.Normal)
-            action2Button.hidden = false
+            action2Button.removeTarget(nil, action: nil, for: UIControlEvents.allEvents)
+            action2Button.addTarget(actionTarget!, action: action2Selector!, for: UIControlEvents.touchUpInside)
+            action2Button.setTitle(action2title, for: UIControlState())
+            action2Button.isHidden = false
         } else {
-            action2Button.hidden = true
+            action2Button.isHidden = true
         }
         
         setNeedsLayout()
@@ -160,7 +160,7 @@ class AABigPlaceholderView: UIView {
         var contentHeight: CGFloat = 0
         let maxContentWidth = bounds.size.width - 40
         
-        if imageView.hidden == false {
+        if imageView.isHidden == false {
             imageView.frame = CGRect(x: 20 + (maxContentWidth - imageView.image!.size.width) / 2.0, y: topOffset, width: imageView.image!.size.width, height: imageView.image!.size.height)
             
             contentHeight += imageView.image!.size.height + topOffset
@@ -168,7 +168,7 @@ class AABigPlaceholderView: UIView {
         
         bgView.frame = CGRect(x: 0, y: 0, width: bounds.size.width, height: imageView.frame.height * 0.75 + topOffset)
         
-        if titleLabel.hidden == false {
+        if titleLabel.isHidden == false {
             if contentHeight > 0 {
                 contentHeight += 10
             }
@@ -177,42 +177,42 @@ class AABigPlaceholderView: UIView {
             contentHeight += titleLabel.bounds.size.height
         }
         
-        if subtitleLabel.hidden == false {
+        if subtitleLabel.isHidden == false {
             if contentHeight > 0 {
                 contentHeight += 14
             }
             
-            let subtitleLabelSize = subtitleLabel.sizeThatFits(CGSize(width: maxContentWidth, height: CGFloat.max))
+            let subtitleLabelSize = subtitleLabel.sizeThatFits(CGSize(width: maxContentWidth, height: CGFloat.greatestFiniteMagnitude))
             subtitleLabel.frame = CGRect(x: 20, y: contentHeight, width: maxContentWidth, height: subtitleLabelSize.height)
             contentHeight += subtitleLabelSize.height
         }
         
-        if actionButton.hidden == false {
+        if actionButton.isHidden == false {
             if contentHeight > 0 {
                 contentHeight += 14
             }
             
-            let actionButtonTitleLabelSize = actionButton.titleLabel!.sizeThatFits(CGSize(width: maxContentWidth, height: CGFloat.max))
+            let actionButtonTitleLabelSize = actionButton.titleLabel!.sizeThatFits(CGSize(width: maxContentWidth, height: CGFloat.greatestFiniteMagnitude))
             actionButton.frame = CGRect(x: 20, y: contentHeight, width: maxContentWidth, height: actionButtonTitleLabelSize.height)
             contentHeight += actionButtonTitleLabelSize.height
         }
         
-        if subtitle2Label.hidden == false {
+        if subtitle2Label.isHidden == false {
             if contentHeight > 0 {
                 contentHeight += 14
             }
             
-            let subtitleLabelSize = subtitle2Label.sizeThatFits(CGSize(width: maxContentWidth, height: CGFloat.max))
+            let subtitleLabelSize = subtitle2Label.sizeThatFits(CGSize(width: maxContentWidth, height: CGFloat.greatestFiniteMagnitude))
             subtitle2Label.frame = CGRect(x: 20, y: contentHeight, width: maxContentWidth, height: subtitleLabelSize.height)
             contentHeight += subtitleLabelSize.height
         }
         
-        if action2Button.hidden == false {
+        if action2Button.isHidden == false {
             if contentHeight > 0 {
                 contentHeight += 14
             }
             
-            let actionButtonTitleLabelSize = action2Button.titleLabel!.sizeThatFits(CGSize(width: maxContentWidth, height: CGFloat.max))
+            let actionButtonTitleLabelSize = action2Button.titleLabel!.sizeThatFits(CGSize(width: maxContentWidth, height: CGFloat.greatestFiniteMagnitude))
             action2Button.frame = CGRect(x: 20, y: contentHeight, width: maxContentWidth, height: actionButtonTitleLabelSize.height)
             contentHeight += actionButtonTitleLabelSize.height
         }

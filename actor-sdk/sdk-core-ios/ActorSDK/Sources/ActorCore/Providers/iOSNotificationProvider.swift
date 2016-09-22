@@ -17,25 +17,25 @@ import AudioToolbox.AudioServices
         super.init()
     }
     
-    func loadSound(soundFile:String? = ""){
+    func loadSound(_ soundFile:String? = ""){
         if !isLoaded {
             isLoaded = true
             
-            var path = NSBundle.framework.URLForResource("notification", withExtension: "caf")
+            var path = Bundle.framework.url(forResource: "notification", withExtension: "caf")
             
-            if let fileURL: NSURL = NSURL(fileURLWithPath: "/Library/Ringtones/\(soundFile)") {
+            if let fileURL: URL = URL(fileURLWithPath: "/Library/Ringtones/\(soundFile)") {
                    path = fileURL
             }
             
-            AudioServicesCreateSystemSoundID(path!, &internalMessage)
+            AudioServicesCreateSystemSoundID(path! as CFURL, &internalMessage)
         }
     }
     
-    func onMessageArriveInAppWithMessenger(messenger: ACMessenger!) {
-        let currentTime = NSDate().timeIntervalSinceReferenceDate
+    func onMessageArriveInApp(with messenger: ACMessenger!) {
+        let currentTime = Date().timeIntervalSinceReferenceDate
         if (currentTime - lastSoundPlay > 0.2) {
-            let peer = ACPeer.userWithInt(jint(messenger.myUid()))
-            let soundFileSting = messenger.getNotificationsSoundWithPeer(peer)
+            let peer = ACPeer.user(with: jint(messenger.myUid()))
+            let soundFileSting = messenger.getNotificationsSound(with: peer)
             loadSound(soundFileSting)
             AudioServicesPlaySystemSound(internalMessage)
             lastSoundPlay = currentTime
@@ -43,11 +43,11 @@ import AudioToolbox.AudioServices
     }
     
     
-    func onNotificationWithMessenger(messenger: ACMessenger!, withTopNotifications topNotifications: JavaUtilList!, withMessagesCount messagesCount: jint, withConversationsCount conversationsCount: jint) {
+    func onNotification(with messenger: ACMessenger!, withTopNotifications topNotifications: JavaUtilList!, withMessagesCount messagesCount: jint, withConversationsCount conversationsCount: jint) {
         // Not Supported
     }
     
-    func onUpdateNotificationWithMessenger(messenger: ACMessenger!, withTopNotifications topNotifications: JavaUtilList!, withMessagesCount messagesCount: jint, withConversationsCount conversationsCount: jint) {
+    func onUpdateNotification(with messenger: ACMessenger!, withTopNotifications topNotifications: JavaUtilList!, withMessagesCount messagesCount: jint, withConversationsCount conversationsCount: jint) {
         // Not Supported
     }
     
@@ -55,15 +55,15 @@ import AudioToolbox.AudioServices
         dispatchOnUi { () -> Void in
             // Clearing notifications
             if let number = Actor.getGlobalState().globalCounter.get() {
-                UIApplication.sharedApplication().applicationIconBadgeNumber = 0 // If current value will equals to number + 1
-                UIApplication.sharedApplication().applicationIconBadgeNumber = number.integerValue + 1
-                UIApplication.sharedApplication().applicationIconBadgeNumber = number.integerValue
+                UIApplication.shared.applicationIconBadgeNumber = 0 // If current value will equals to number + 1
+                UIApplication.shared.applicationIconBadgeNumber = number.intValue + 1
+                UIApplication.shared.applicationIconBadgeNumber = number.intValue
             } else {
-                UIApplication.sharedApplication().applicationIconBadgeNumber = 0
+                UIApplication.shared.applicationIconBadgeNumber = 0
             }
             
             // Clearing local notifications
-            UIApplication.sharedApplication().cancelAllLocalNotifications()
+            UIApplication.shared.cancelAllLocalNotifications()
         }
     }
 }

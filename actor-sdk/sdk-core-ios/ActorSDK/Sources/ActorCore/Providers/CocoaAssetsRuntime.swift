@@ -6,19 +6,19 @@ import Foundation
 
 class CocoaAssetsRuntime: NSObject, ARAssetsRuntime {
 
-    func hasAssetWithNSString(name: String!) -> jboolean {
-        if NSBundle.mainBundle().pathForResource(name, ofType: nil) != nil {
+    func hasAsset(with name: String!) -> jboolean {
+        if Bundle.main.path(forResource: name, ofType: nil) != nil {
             return true
         }
-        if NSBundle.framework.pathForResource(name, ofType: nil) != nil {
+        if Bundle.framework.path(forResource: name, ofType: nil) != nil {
             return true
         }
         return false
     }
     
-    func loadAssetWithNSString(name: String!) -> String! {
+    func loadAsset(with name: String!) -> String! {
         var path: String?
-        path = NSBundle.mainBundle().pathForResource(name, ofType: nil)
+        path = Bundle.main.path(forResource: name, ofType: nil)
         if path != nil {
             do {
                 return try String(contentsOfFile: path!)
@@ -27,7 +27,7 @@ class CocoaAssetsRuntime: NSObject, ARAssetsRuntime {
             }
         }
         
-        path = NSBundle.framework.pathForResource(name, ofType: nil)
+        path = Bundle.framework.path(forResource: name, ofType: nil)
         if path != nil {
             do {
                 return try String(contentsOfFile: path!)
@@ -39,18 +39,18 @@ class CocoaAssetsRuntime: NSObject, ARAssetsRuntime {
         return nil
     }
     
-    func loadBinAssetWithNSString(name: String!) -> IOSByteArray! {
+    func loadBinAsset(with name: String!) -> IOSByteArray! {
         var path: String?
-        path = NSBundle.mainBundle().pathForResource(name, ofType: nil)
+        path = Bundle.main.path(forResource: name, ofType: nil)
         if path != nil {
-            if let data = NSData(contentsOfFile: path!) {
+            if let data = try? Data(contentsOf: URL(fileURLWithPath: path!)) {
                 return data.toJavaBytes()
             }
         }
         
-        path = NSBundle.framework.pathForResource(name, ofType: nil)
+        path = Bundle.framework.path(forResource: name, ofType: nil)
         if path != nil {
-            if let data = NSData(contentsOfFile: path!) {
+            if let data = try? Data(contentsOf: URL(fileURLWithPath: path!)) {
                 return data.toJavaBytes()
             }
         }

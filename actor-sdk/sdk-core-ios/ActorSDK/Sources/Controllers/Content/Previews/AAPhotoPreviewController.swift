@@ -4,7 +4,7 @@
 
 import Foundation
 
-public class AAPhotoPreviewController: NYTPhotosViewController, NYTPhotosViewControllerDelegate {
+open class AAPhotoPreviewController: NYTPhotosViewController, NYTPhotosViewControllerDelegate {
     
     var autoShowBadge = false
     
@@ -35,7 +35,7 @@ public class AAPhotoPreviewController: NYTPhotosViewController, NYTPhotosViewCon
             }
             
             if p.file != nil  {
-                let desc = Actor.findDownloadedDescriptorWithFileId(p.file!.getFileId())
+                let desc = Actor.findDownloadedDescriptor(withFileId: p.file!.getFileId())
                 if desc != nil {
                     let img = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(desc!))
                     if img != nil {
@@ -46,7 +46,7 @@ public class AAPhotoPreviewController: NYTPhotosViewController, NYTPhotosViewCon
             }
             
             if p.previewFile != nil {
-                let desc = Actor.findDownloadedDescriptorWithFileId(p.previewFile!.getFileId())
+                let desc = Actor.findDownloadedDescriptor(withFileId: p.previewFile!.getFileId())
                 if desc != nil {
                     var img = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(desc!))
                     if img != nil {
@@ -77,11 +77,11 @@ public class AAPhotoPreviewController: NYTPhotosViewController, NYTPhotosViewCon
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func viewWillAppear(animated: Bool) {
+    open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         // Setting tint color
-        navigationController?.navigationBar.tintColor = UIColor.whiteColor()
+        navigationController?.navigationBar.tintColor = UIColor.white
         
         // Binding files
         for i in 0..<controllerPhotos.count {
@@ -97,17 +97,17 @@ public class AAPhotoPreviewController: NYTPhotosViewController, NYTPhotosViewCon
                         let image = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference))
                         dispatchOnUi({ () -> Void in
                             cp.image = image
-                            self.updateImageForPhoto(cp)
+                            self.updateImage(for: cp)
                         })
                 })
                 
-                Actor.bindRawFileWithReference(p.file!, autoStart: true, withCallback: callback)
+                Actor.bindRawFile(with: p.file!, autoStart: true, with: callback)
                 bind[i] = callback
             }
         }
         
         // Hide Status bar
-        UIApplication.sharedApplication().animateStatusBarAppearance(.SlideUp, duration: 0.3)
+        UIApplication.shared.animateStatusBarAppearance(.slideUp, duration: 0.3)
         
         // Hide badge
         if autoShowBadge {
@@ -115,21 +115,21 @@ public class AAPhotoPreviewController: NYTPhotosViewController, NYTPhotosViewCon
         }
     }
     
-    public func photosViewController(photosViewController: NYTPhotosViewController, referenceViewForPhoto photo: NYTPhoto) -> UIView? {
+    open func photosViewController(_ photosViewController: NYTPhotosViewController, referenceViewFor photo: NYTPhoto) -> UIView? {
         return self.fromView
     }
     
-    public override func viewWillDisappear(animated: Bool) {
+    open override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         // Unbind all
         for i in bind {
-            Actor.unbindRawFileWithFileId(photos[i.0].file!.getFileId(), autoCancel: true, withCallback: i.1)
+            Actor.unbindRawFile(withFileId: photos[i.0].file!.getFileId(), autoCancel: true, with: i.1)
         }
         bind.removeAll()
         
         // Restoring status bar
-        UIApplication.sharedApplication().animateStatusBarAppearance(.SlideDown, duration: 0.3)
+        UIApplication.shared.animateStatusBarAppearance(.slideDown, duration: 0.3)
         
         // Restoring badge
         if autoShowBadge {
@@ -138,7 +138,7 @@ public class AAPhotoPreviewController: NYTPhotosViewController, NYTPhotosViewCon
     }
 }
 
-public class PreviewImage {
+open class PreviewImage {
     
     let preview: UIImage?
     var image: UIImage?
@@ -166,7 +166,7 @@ public class PreviewImage {
 class AAPhoto: NSObject, NYTPhoto {
     
     var image: UIImage?
-    var imageData: NSData?
+    var imageData: Data?
     var placeholderImage: UIImage?
     let attributedCaptionTitle: NSAttributedString?
     let attributedCaptionSummary: NSAttributedString?

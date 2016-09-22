@@ -4,7 +4,7 @@
 
 import Foundation
 
-public class AACodePreviewController: AAViewController {
+open class AACodePreviewController: AAViewController {
     
     var webView = UIWebView()
     let code: String
@@ -18,7 +18,7 @@ public class AACodePreviewController: AAViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func viewDidLoad() {
+    open override func viewDidLoad() {
         super.viewDidLoad()
         
         navigationItem.title = "Source Code"
@@ -34,15 +34,15 @@ public class AACodePreviewController: AAViewController {
             "</body>\n" +
             "</html>"
 
-        let bundle = NSBundle.framework
-        let path = bundle.pathForResource("highlight.min", ofType: "js")!
+        let bundle = Bundle.framework
+        let path = bundle.path(forResource: "highlight.min", ofType: "js")!
         
-        webView.loadHTMLString(data, baseURL: NSURL(fileURLWithPath: path))
+        webView.loadHTMLString(data, baseURL: URL(fileURLWithPath: path))
         
         view.addSubview(webView)
     }
     
-    public override func viewDidLayoutSubviews() {
+    open override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
         webView.frame = view.bounds

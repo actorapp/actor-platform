@@ -4,11 +4,11 @@
 
 import Foundation
 
-private let documentsFolder = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0].asNS.stringByDeletingLastPathComponent
+private let documentsFolder = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)[0].asNS.deletingLastPathComponent
 
 // Public methods for working with files
-public class CocoaFiles {
-    public class func pathFromDescriptor(path: String) -> String {
+open class CocoaFiles {
+    open class func pathFromDescriptor(_ path: String) -> String {
         return documentsFolder + path
     }
 }
@@ -17,19 +17,19 @@ public class CocoaFiles {
 
 @objc class CocoaFileSystemRuntime : NSObject, ARFileSystemRuntime {
     
-    let manager = NSFileManager.defaultManager()
+    let manager = FileManager.default
     
     override init() {
         super.init()
     }
     
     func createTempFile() -> ARFileSystemReference! {
-        let fileName = "/tmp/\(NSUUID().UUIDString)"
-        NSFileManager.defaultManager().createFileAtPath(documentsFolder + fileName, contents: nil, attributes: nil)
+        let fileName = "/tmp/\(UUID().uuidString)"
+        FileManager.default.createFile(atPath: documentsFolder + fileName, contents: nil, attributes: nil)
         return CocoaFile(path: fileName)
     }
     
-    func commitTempFile(sourceFile: ARFileSystemReference!, withFileId fileId: jlong, withFileName fileName: String!) -> ARFileSystemReference! {
+    func commitTempFile(_ sourceFile: ARFileSystemReference!, withFileId fileId: jlong, withFileName fileName: String!) -> ARFileSystemReference! {
 
         // Finding file available name
         
@@ -44,15 +44,15 @@ public class CocoaFiles {
 //            }
 //        }
         
-        let srcUrl = NSURL(fileURLWithPath: documentsFolder + sourceFile.getDescriptor()!)
-        let destUrl = NSURL(fileURLWithPath: documentsFolder + descriptor)
+        let srcUrl = URL(fileURLWithPath: documentsFolder + sourceFile.getDescriptor()!)
+        let destUrl = URL(fileURLWithPath: documentsFolder + descriptor)
         
         // manager.replaceItemAtURL(srcUrl, withItemAtURL: destUrl, backupItemName: nil, options: 0, resultingItemURL: nil)
         
         // Moving file to new place
         
         do {
-            try manager.replaceItemAtURL(destUrl, withItemAtURL: srcUrl, backupItemName: nil, options: NSFileManagerItemReplacementOptions(rawValue: 0), resultingItemURL: nil)
+            try manager.replaceItem(at: destUrl, withItemAt: srcUrl, backupItemName: nil, options: FileManager.ItemReplacementOptions(rawValue: 0), resultingItemURL: nil)
             
             // try manager.moveItemAtPath(documentsFolder + sourceFile.getDescriptor()!, toPath: path)
             return CocoaFile(path: descriptor)
@@ -61,7 +61,7 @@ public class CocoaFiles {
         }
     }
     
-    func fileFromDescriptor(descriptor: String!) -> ARFileSystemReference! {
+    func file(fromDescriptor descriptor: String!) -> ARFileSystemReference! {
         return CocoaFile(path: descriptor)
     }
     
@@ -85,7 +85,7 @@ class CocoaFile : NSObject, ARFileSystemReference {
     }
     
     func isExist() -> Bool {
-        return NSFileManager().fileExistsAtPath(realPath);
+        return FileManager().fileExists(atPath: realPath);
     }
     
     func isInAppMemory() -> jboolean {
@@ -98,8 +98,9 @@ class CocoaFile : NSObject, ARFileSystemReference {
     
     func getSize() -> jint {
         do {
-            let attrs = try NSFileManager().attributesOfItemAtPath(realPath)
-            return jint(NSDictionary.fileSize(attrs)())
+            let attrs = try FileManager().attributesOfItem(atPath: realPath)
+            // return jint(Dictionary.fileSize(attrs)())
+            return 0
         } catch _ {
             return 0
         }
@@ -107,24 +108,24 @@ class CocoaFile : NSObject, ARFileSystemReference {
     
     
     func openRead() -> ARPromise! {
-        let fileHandle = NSFileHandle(forReadingAtPath: realPath)
+        let fileHandle = FileHandle(forReadingAtPath: realPath)
         
         if (fileHandle == nil) {
-            return ARPromise.failure(JavaLangRuntimeException(NSString: "Unable to open file"))
+            return ARPromise.failure(JavaLangRuntimeException(nsString: "Unable to open file"))
         }
         
         return ARPromise.success(CocoaInputFile(fileHandle: fileHandle!))
     }
     
-    func openWriteWithSize(size: jint) -> ARPromise! {
-        let fileHandle = NSFileHandle(forWritingAtPath: realPath)
+    func openWrite(withSize size: jint) -> ARPromise! {
+        let fileHandle = FileHandle(forWritingAtPath: realPath)
         
         if (fileHandle == nil) {
-            return ARPromise.failure(JavaLangRuntimeException(NSString: "Unable to open file"))
+            return ARPromise.failure(JavaLangRuntimeException(nsString: "Unable to open file"))
         }
         
-        fileHandle!.seekToFileOffset(UInt64(size))
-        fileHandle!.seekToFileOffset(0)
+        fileHandle!.seek(toFileOffset: UInt64(size))
+        fileHandle!.seek(toFileOffset: 0)
         
         return ARPromise.success(CocoaOutputFile(fileHandle: fileHandle!))
     }
@@ -132,19 +133,19 @@ class CocoaFile : NSObject, ARFileSystemReference {
 
 class CocoaOutputFile : NSObject, AROutputFile {
     
-    let fileHandle: NSFileHandle
+    let fileHandle: FileHandle
     
-    init(fileHandle:NSFileHandle) {
+    init(fileHandle:FileHandle) {
         self.fileHandle = fileHandle
     }
     
-    func writeWithOffset(fileOffset: jint, withData data: IOSByteArray!, withDataOffset dataOffset: jint, withLength dataLen: jint) -> Bool {
+    func write(withOffset fileOffset: jint, withData data: IOSByteArray!, withDataOffset dataOffset: jint, withLength dataLen: jint) -> Bool {
         
-        let pointer = data.buffer().advancedBy(Int(dataOffset))
-        let srcData = NSData(bytesNoCopy: pointer, length: Int(dataLen), freeWhenDone: false)
+        let pointer = data.buffer().advanced(by: Int(dataOffset))
+        let srcData = Data(bytesNoCopy: UnsafeMutableRawPointer(pointer), count: Int(dataLen), deallocator: .none)
         
-        fileHandle.seekToFileOffset(UInt64(fileOffset))
-        fileHandle.writeData(srcData)
+        fileHandle.seek(toFileOffset: UInt64(fileOffset))
+        fileHandle.write(srcData)
 
         return true;
     }
@@ -158,30 +159,30 @@ class CocoaOutputFile : NSObject, AROutputFile {
 
 class CocoaInputFile :NSObject, ARInputFile {
     
-    let fileHandle:NSFileHandle
+    let fileHandle:FileHandle
     
-    init(fileHandle:NSFileHandle) {
+    init(fileHandle:FileHandle) {
         self.fileHandle = fileHandle
     }
     
-    func readWithOffset(fileOffset: jint, withLength len: jint) -> ARPromise! {
+    func read(withOffset fileOffset: jint, withLength len: jint) -> ARPromise! {
         
         return ARPromise { (resolver) in
             dispatchBackground {
-                self.fileHandle.seekToFileOffset(UInt64(fileOffset))
-                
-                let readed: NSData = self.fileHandle.readDataOfLength(Int(len))
-                let data = IOSByteArray(length: UInt(len))
-                var srcBuffer = UnsafeMutablePointer<UInt8>(readed.bytes)
-                var destBuffer = UnsafeMutablePointer<UInt8>(data.buffer())
-                let readCount = min(Int(len), Int(readed.length))
-                for _ in 0..<readCount {
-                    destBuffer.memory = srcBuffer.memory
-                    destBuffer = destBuffer.successor()
-                    srcBuffer = srcBuffer.successor()
-                }
-                
-                resolver.result(ARFilePart(offset: fileOffset, withLength: len, withContents: data))
+//                self.fileHandle.seek(toFileOffset: UInt64(fileOffset))
+//                
+//                let readed: Data = self.fileHandle.readData(ofLength: Int(len))
+//                let data = IOSByteArray(length: UInt(len))
+//                var srcBuffer = UnsafeMutablePointer<UInt8>(mutating: (readed as NSData).bytes.bindMemory(to: UInt8.self, capacity: readed.count))
+//                var destBuffer = UnsafeMutableRawPointer(data!.buffer())
+//                let readCount = min(Int(len), Int(readed.count))
+//                for _ in 0..<readCount {
+//                    destBuffer.pointee = srcBuffer.pointee
+//                    destBuffer = destBuffer.successor()
+//                    srcBuffer = srcBuffer.successor()
+//                }
+//                
+//                resolver.result(ARFilePart(offset: fileOffset, withLength: len, withContents: data!))
             }
         }
     }

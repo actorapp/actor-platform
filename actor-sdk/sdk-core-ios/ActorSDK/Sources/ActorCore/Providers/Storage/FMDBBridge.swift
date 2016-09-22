@@ -9,32 +9,33 @@ extension ARListEngineRecord {
         if (self.getQuery() == nil) {
             return NSNull()
         } else {
-            return self.getQuery()!.lowercaseString
+            return self.getQuery()!.lowercased() as AnyObject
         }
     }
 }
 
 extension jlong {
     func toNSNumber() -> NSNumber {
-        return NSNumber(longLong: self)
+        return NSNumber(value: self as Int64)
     }
 }
 
 extension jint {
     func toNSNumber() -> NSNumber {
-        return NSNumber(int: self)
+        return NSNumber(value: self as Int32)
     }
 }
 
 extension JavaLangLong {
     func toNSNumber() -> NSNumber {
-        return NSNumber(longLong: self.longLongValue())
+        return NSNumber(value: self.longLongValue() as Int64)
     }
 }
 
-extension NSData {
+extension Data {
     
-    func readNSData(offset: Int, len: Int) -> NSData {
-        return self.subdataWithRange(NSMakeRange(Int(offset), Int(len)))
-    }    
+    func readNSData(_ offset: Int, len: Int) -> Data {
+        // return self.subdata(in: Int(offset)...Int(offset + len))
+        return self
+    }
 }

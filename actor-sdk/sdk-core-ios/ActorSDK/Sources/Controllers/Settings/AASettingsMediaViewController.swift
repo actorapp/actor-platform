@@ -4,12 +4,12 @@
 
 import UIKit
 
-public class AASettingsMediaViewController: AAContentTableController {
+open class AASettingsMediaViewController: AAContentTableController {
     
-    private var sessionsCell: AAManagedArrayRows<ARApiAuthSession, AACommonCell>?
+    fileprivate var sessionsCell: AAManagedArrayRows<ARApiAuthSession, AACommonCell>?
     
     public init() {
-        super.init(style: AAContentTableStyle.SettingsGrouped)
+        super.init(style: AAContentTableStyle.settingsGrouped)
         
         navigationItem.title = AALocalized("MediaTitle")
     }
@@ -18,14 +18,14 @@ public class AASettingsMediaViewController: AAContentTableController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func tableDidLoad() {
+    open override func tableDidLoad() {
         
         section { (s) -> () in
     
             s.headerText = AALocalized("MediaPhotoDownloadHeader")
             
             s.common { (r) -> () in
-                r.style = .Switch
+                r.style = .switch
                 r.content = AALocalized("SettingsPrivateChats")
                 
                 r.switchOn = ActorSDK.sharedActor().isPhotoAutoDownloadPrivate
@@ -36,7 +36,7 @@ public class AASettingsMediaViewController: AAContentTableController {
             }
             
             s.common { (r) -> () in
-                r.style = .Switch
+                r.style = .switch
                 r.content = AALocalized("SettingsGroupChats")
                 
                 r.switchOn = ActorSDK.sharedActor().isPhotoAutoDownloadGroup
@@ -52,7 +52,7 @@ public class AASettingsMediaViewController: AAContentTableController {
             s.headerText = AALocalized("MediaAudioDownloadHeader")
             
             s.common { (r) -> () in
-                r.style = .Switch
+                r.style = .switch
                 r.content = AALocalized("SettingsPrivateChats")
                 
                 r.switchOn = ActorSDK.sharedActor().isAudioAutoDownloadPrivate
@@ -63,7 +63,7 @@ public class AASettingsMediaViewController: AAContentTableController {
             }
             
             s.common { (r) -> () in
-                r.style = .Switch
+                r.style = .switch
                 r.content = AALocalized("SettingsGroupChats")
                 
                 r.switchOn = ActorSDK.sharedActor().isAudioAutoDownloadGroup
@@ -79,7 +79,7 @@ public class AASettingsMediaViewController: AAContentTableController {
             s.headerText = AALocalized("MediaOtherHeader")
             
             s.common { (r) -> () in
-                r.style = .Switch
+                r.style = .switch
                 r.content = AALocalized("MediaAutoplayGif")
                 
                 r.switchOn = ActorSDK.sharedActor().isGIFAutoplayEnabled

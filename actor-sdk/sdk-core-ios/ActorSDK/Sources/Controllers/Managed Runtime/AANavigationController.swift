@@ -4,15 +4,15 @@
 
 import UIKit
 
-public class AANavigationController: UINavigationController {
+open class AANavigationController: UINavigationController {
     
-    private let binder = AABinder()
+    fileprivate let binder = AABinder()
     
     public init() {
         super.init(nibName: nil, bundle: nil)
     }
     
-    public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
+    public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
     
@@ -24,7 +24,7 @@ public class AANavigationController: UINavigationController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func viewDidLoad() {
+    open override func viewDidLoad() {
         super.viewDidLoad()
         
         styleNavBar()
@@ -43,19 +43,19 @@ public class AANavigationController: UINavigationController {
 //        }
     }
     
-    public override func viewWillAppear(animated: Bool) {
+    open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         styleNavBar()
         
-        UIApplication.sharedApplication().setStatusBarStyle(ActorSDK.sharedActor().style.vcStatusBarStyle, animated: true)
+        UIApplication.shared.setStatusBarStyle(ActorSDK.sharedActor().style.vcStatusBarStyle, animated: true)
     }
     
-    public override func preferredStatusBarStyle() -> UIStatusBarStyle {
+    open override var preferredStatusBarStyle : UIStatusBarStyle {
         return ActorSDK.sharedActor().style.vcStatusBarStyle
     }
     
-    private func styleNavBar() {
+    fileprivate func styleNavBar() {
         navigationBar.titleTextAttributes =
             [NSForegroundColorAttributeName: ActorSDK.sharedActor().style.navigationTitleColor]
         navigationBar.tintColor = ActorSDK.sharedActor().style.navigationTintColor

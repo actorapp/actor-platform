@@ -207,6 +207,7 @@
 					EA6B7348F8364542DDD264F741AAAA19 = {
 						CreatedOnToolsVersion = 6.4;
 						DevelopmentTeam = HVJR44Y5B6;
+						LastSwiftMigration = 0800;
 						SystemCapabilities = {
 							com.apple.Maps.iOS = {
 								enabled = 1;
@@ -422,6 +423,7 @@
 				SDK_PATH = "../actor-sdk";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 				USER_HEADER_SEARCH_PATHS = "";
 			};
 			name = Debug;
@@ -498,6 +500,7 @@
 				SDK_PATH = "../actor-sdk";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 				USER_HEADER_SEARCH_PATHS = "";
 			};
 			name = Release;

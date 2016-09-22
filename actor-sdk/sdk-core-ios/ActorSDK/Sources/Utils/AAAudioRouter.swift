@@ -6,16 +6,16 @@ import Foundation
 import AVFoundation
 
 public enum Route {
-    case Speaker
-    case Receiver
+    case speaker
+    case receiver
 }
 
-public class AAAudioRouter {
+open class AAAudioRouter {
     
-    private var isBatchedUpdate = false
-    private var isInvalidated = false
+    fileprivate var isBatchedUpdate = false
+    fileprivate var isInvalidated = false
     
-    public var isEnabled = false {
+    open var isEnabled = false {
         willSet(v) {
             if isEnabled != v {
                 isInvalidated = true
@@ -26,7 +26,7 @@ public class AAAudioRouter {
         }
     }
     
-    public var isRTCEnabled = false {
+    open var isRTCEnabled = false {
         willSet(v) {
             if isRTCEnabled != v {
                 isInvalidated = true
@@ -37,7 +37,7 @@ public class AAAudioRouter {
         }
     }
     
-    public var currentRoute = Route.Receiver {
+    open var currentRoute = Route.receiver {
         willSet(v) {
             if currentRoute != v {
                 isInvalidated = true
@@ -48,7 +48,7 @@ public class AAAudioRouter {
         }
     }
     
-    public var mode = AVAudioSessionModeDefault {
+    open var mode = AVAudioSessionModeDefault {
         willSet(v) {
             if mode != v {
                 isInvalidated = true
@@ -59,7 +59,7 @@ public class AAAudioRouter {
         }
     }
     
-    public var category = AVAudioSessionCategorySoloAmbient {
+    open var category = AVAudioSessionCategorySoloAmbient {
         willSet(v) {
             if category != v {
                 isInvalidated = true
@@ -72,19 +72,19 @@ public class AAAudioRouter {
     
     public init() {
         fixSession()
-        NSNotificationCenter.defaultCenter().addObserverForName(AVAudioSessionRouteChangeNotification,
-            object: nil, queue: NSOperationQueue.mainQueue()) { (note) -> Void in
-            let notification: NSNotification = note as NSNotification
-            if let info = notification.userInfo {
+        NotificationCenter.default.addObserver(forName: NSNotification.Name.AVAudioSessionRouteChange,
+            object: nil, queue: OperationQueue.main) { (note) -> Void in
+            let notification: Notification = note as Notification
+            if let info = (notification as NSNotification).userInfo {
                 let numberReason: NSNumber = info[AVAudioSessionRouteChangeReasonKey] as! NSNumber
-                if let reason = AVAudioSessionRouteChangeReason(rawValue: UInt(numberReason.integerValue)) {
+                if let reason = AVAudioSessionRouteChangeReason(rawValue: UInt(numberReason.intValue)) {
                     self.routeChanged(reason)
                 }
             }
         }
     }
     
-    func batchedUpdate(@noescape closure: ()->()) {
+    func batchedUpdate(_ closure: ()->()) {
         isInvalidated = false
         isBatchedUpdate = true
         closure()
@@ -95,14 +95,14 @@ public class AAAudioRouter {
         }
     }
     
-    private func onChanged() {
+    fileprivate func onChanged() {
         if !isBatchedUpdate && isInvalidated {
             isInvalidated = false
             fixSession()
         }
     }
     
-    private func fixSession() {
+    fileprivate func fixSession() {
         
         let session = AVAudioSession.sharedInstance()
         
@@ -123,10 +123,10 @@ public class AAAudioRouter {
                 if let route: AVAudioSessionRouteDescription = session.currentRoute {
                     for port in route.outputs {
                         let portDescription: AVAudioSessionPortDescription = port as AVAudioSessionPortDescription
-                        if (self.currentRoute == .Receiver && portDescription.portType != AVAudioSessionPortBuiltInReceiver) {
-                            try session.overrideOutputAudioPort(.None)
-                        } else if (self.currentRoute == .Speaker && portDescription.portType != AVAudioSessionPortBuiltInSpeaker) {
-                            try session.overrideOutputAudioPort(AVAudioSessionPortOverride.Speaker)
+                        if (self.currentRoute == .receiver && portDescription.portType != AVAudioSessionPortBuiltInReceiver) {
+                            try session.overrideOutputAudioPort(.none)
+                        } else if (self.currentRoute == .speaker && portDescription.portType != AVAudioSessionPortBuiltInSpeaker) {
+                            try session.overrideOutputAudioPort(AVAudioSessionPortOverride.speaker)
                         }
                     }
                 }
@@ -146,10 +146,10 @@ public class AAAudioRouter {
                 if let route: AVAudioSessionRouteDescription = session.currentRoute {
                     for port in route.outputs {
                         let portDescription: AVAudioSessionPortDescription = port as AVAudioSessionPortDescription
-                        if (self.currentRoute == .Receiver && portDescription.portType != AVAudioSessionPortBuiltInReceiver) {
-                            try session.overrideOutputAudioPort(.None)
-                        } else if (self.currentRoute == .Speaker && portDescription.portType != AVAudioSessionPortBuiltInSpeaker) {
-                            try session.overrideOutputAudioPort(AVAudioSessionPortOverride.Speaker)
+                        if (self.currentRoute == .receiver && portDescription.portType != AVAudioSessionPortBuiltInReceiver) {
+                            try session.overrideOutputAudioPort(.none)
+                        } else if (self.currentRoute == .speaker && portDescription.portType != AVAudioSessionPortBuiltInSpeaker) {
+                            try session.overrideOutputAudioPort(AVAudioSessionPortOverride.speaker)
                         }
                     }
                 }
@@ -165,7 +165,7 @@ public class AAAudioRouter {
         }
     }
     
-    private func isHeadsetPluggedIn() -> Bool {
+    fileprivate func isHeadsetPluggedIn() -> Bool {
         let route: AVAudioSessionRouteDescription = AVAudioSession.sharedInstance().currentRoute
         for port in route.outputs {
             let portDescription: AVAudioSessionPortDescription = port as AVAudioSessionPortDescription
@@ -176,20 +176,20 @@ public class AAAudioRouter {
         return false
     }
     
-    private func routeChanged(reason: AVAudioSessionRouteChangeReason) {
-        if reason == .NewDeviceAvailable {
+    fileprivate func routeChanged(_ reason: AVAudioSessionRouteChangeReason) {
+        if reason == .newDeviceAvailable {
             if isHeadsetPluggedIn() {
-                self.currentRoute = .Receiver
+                self.currentRoute = .receiver
                 return
             }
-        } else if reason == .OldDeviceUnavailable {
+        } else if reason == .oldDeviceUnavailable {
             if !isHeadsetPluggedIn() {
-                self.currentRoute = .Receiver
+                self.currentRoute = .receiver
                 return
             }
         }
         
-        if reason == .Override || reason == .RouteConfigurationChange {
+        if reason == .override || reason == .routeConfigurationChange {
             fixSession()
         }
     }

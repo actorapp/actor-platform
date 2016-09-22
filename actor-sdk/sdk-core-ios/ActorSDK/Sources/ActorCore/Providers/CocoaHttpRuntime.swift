@@ -6,21 +6,21 @@ import Foundation
 
 class CocoaHttpRuntime: NSObject, ARHttpRuntime {
     
-    let queue:NSOperationQueue = NSOperationQueue()
+    let queue:OperationQueue = OperationQueue()
     
-    func getMethodWithUrl(url: String!, withStartOffset startOffset: jint, withSize size: jint, withTotalSize totalSize: jint) -> ARPromise! {
+    func getMethodWithUrl(_ url: String!, withStartOffset startOffset: jint, withSize size: jint, withTotalSize totalSize: jint) -> ARPromise! {
         
         return ARPromise { (resolver) in
             
             let header = "bytes=\(startOffset)-\(min(startOffset + size, totalSize))"
-            let request = NSMutableURLRequest(URL: NSURL(string: url)!)
-            request.HTTPShouldHandleCookies = false
-            request.cachePolicy = NSURLRequestCachePolicy.ReloadIgnoringLocalAndRemoteCacheData
+            let request = NSMutableURLRequest(url: URL(string: url)!)
+            request.httpShouldHandleCookies = false
+            request.cachePolicy = NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData
             request.setValue(header, forHTTPHeaderField: "Range")
-            request.HTTPMethod = "GET"
+            request.httpMethod = "GET"
             
-            NSURLConnection.sendAsynchronousRequest(request, queue: self.queue, completionHandler:{ (response: NSURLResponse?, data: NSData?, error: NSError?) -> Void in
-                if let respHttp = response as? NSHTTPURLResponse {
+            NSURLConnection.sendAsynchronousRequest(request as URLRequest, queue: self.queue, completionHandler:{ (response: URLResponse?, data: Data?, error: NSError?) -> Void in
+                if let respHttp = response as? HTTPURLResponse {
                     if (respHttp.statusCode >= 200 && respHttp.statusCode < 300) {
                         resolver.result(ARHTTPResponse(code: jint(respHttp.statusCode), withContent: data!.toJavaBytes()))
                     } else {
@@ -29,21 +29,21 @@ class CocoaHttpRuntime: NSObject, ARHttpRuntime {
                 } else {
                     resolver.error(ARHTTPError(int: 0))
                 }
-            })
+            } as! (URLResponse?, Data?, Error?) -> Void)
         }
     }
     
-    func putMethodWithUrl(url: String!, withContents contents: IOSByteArray!) -> ARPromise! {
+    func putMethod(withUrl url: String!, withContents contents: IOSByteArray!) -> ARPromise! {
         return ARPromise { (resolver) in
-            let request = NSMutableURLRequest(URL: NSURL(string: url)!)
-            request.HTTPShouldHandleCookies = false
-            request.cachePolicy = NSURLRequestCachePolicy.ReloadIgnoringLocalAndRemoteCacheData
-            request.HTTPMethod = "PUT"
-            request.HTTPBody = contents.toNSData()
+            let request = NSMutableURLRequest(url: URL(string: url)!)
+            request.httpShouldHandleCookies = false
+            request.cachePolicy = NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData
+            request.httpMethod = "PUT"
+            request.httpBody = contents.toNSData()
             request.setValue("application/octet-stream", forHTTPHeaderField: "Content-Type")
             
-            NSURLConnection.sendAsynchronousRequest(request, queue: self.queue, completionHandler:{ (response: NSURLResponse?, data: NSData?, error: NSError?) -> Void in
-                if let respHttp = response as? NSHTTPURLResponse {
+            NSURLConnection.sendAsynchronousRequest(request as URLRequest, queue: self.queue, completionHandler:{ (response: URLResponse?, data: Data?, error: NSError?) -> Void in
+                if let respHttp = response as? HTTPURLResponse {
                     if (respHttp.statusCode >= 200 && respHttp.statusCode < 300) {
                         resolver.result(ARHTTPResponse(code: jint(respHttp.statusCode), withContent: nil))
                     } else {
@@ -52,7 +52,7 @@ class CocoaHttpRuntime: NSObject, ARHttpRuntime {
                 } else {
                     resolver.error(ARHTTPError(int: 0))
                 }
-            })
+            } as! (URLResponse?, Data?, Error?) -> Void)
         }
     }
 }

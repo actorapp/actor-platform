@@ -5,31 +5,31 @@
 import Foundation
 import UIKit
 
-public class AAContactCell : AATableViewCell, AABindedCell, AABindedSearchCell {
+open class AAContactCell : AATableViewCell, AABindedCell, AABindedSearchCell {
     
     public typealias BindData = ACContact
     
-    public static func bindedCellHeight(table: AAManagedTable, item: BindData) -> CGFloat {
+    open static func bindedCellHeight(_ table: AAManagedTable, item: BindData) -> CGFloat {
         return 56
     }
     
-    public static func bindedCellHeight(item: BindData) -> CGFloat {
+    open static func bindedCellHeight(_ item: BindData) -> CGFloat {
         return 56
     }
     
-    public let avatarView = AAAvatarView()
-    public let shortNameView = YYLabel()
-    public let titleView = YYLabel()
+    open let avatarView = AAAvatarView()
+    open let shortNameView = YYLabel()
+    open let titleView = YYLabel()
     
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        titleView.font = UIFont.systemFontOfSize(18)
+        titleView.font = UIFont.systemFont(ofSize: 18)
         titleView.textColor = appStyle.contactTitleColor
         titleView.displaysAsynchronously = true
         
-        shortNameView.font = UIFont.boldSystemFontOfSize(18)
-        shortNameView.textAlignment = NSTextAlignment.Center
+        shortNameView.font = UIFont.boldSystemFont(ofSize: 18)
+        shortNameView.textAlignment = NSTextAlignment.center
         shortNameView.textColor = appStyle.contactTitleColor
         shortNameView.displaysAsynchronously = true
         
@@ -42,23 +42,23 @@ public class AAContactCell : AATableViewCell, AABindedCell, AABindedSearchCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public func bind(item: ACContact, search: String?) {
+    open func bind(_ item: ACContact, search: String?) {
         bind(item)
     }
     
-    public func bind(item: ACContact, table: AAManagedTable, index: Int, totalCount: Int) {
+    open func bind(_ item: ACContact, table: AAManagedTable, index: Int, totalCount: Int) {
         bind(item)
     }
     
-    func bind(item: ACContact) {
+    func bind(_ item: ACContact) {
         avatarView.bind(item.name, id: Int(item.uid), avatar: item.avatar);
         
         titleView.text = item.name;
         
-        shortNameView.hidden = true
+        shortNameView.isHidden = true
     }
 
-    func bindDisabled(disabled: Bool) {
+    func bindDisabled(_ disabled: Bool) {
         if disabled {
             titleView.alpha = 0.5
             avatarView.alpha = 0.5
@@ -68,11 +68,11 @@ public class AAContactCell : AATableViewCell, AABindedCell, AABindedSearchCell {
         }
     }
     
-    public override func layoutSubviews() {
+    open override func layoutSubviews() {
         super.layoutSubviews()
         let width = self.contentView.frame.width;
-        shortNameView.frame = CGRectMake(0, 8, 30, 40);
-        avatarView.frame = CGRectMake(30, 8, 44, 44);
-        titleView.frame = CGRectMake(80, 8, width - 80 - 14, 40);
+        shortNameView.frame = CGRect(x: 0, y: 8, width: 30, height: 40);
+        avatarView.frame = CGRect(x: 30, y: 8, width: 44, height: 44);
+        titleView.frame = CGRect(x: 80, y: 8, width: width - 80 - 14, height: 40);
     }
 }

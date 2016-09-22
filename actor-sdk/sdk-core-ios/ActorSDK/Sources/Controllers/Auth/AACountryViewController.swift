@@ -5,85 +5,85 @@
 import UIKit
 
 public protocol AACountryViewControllerDelegate {
-    func countriesController(countriesController: AACountryViewController, didChangeCurrentIso currentIso: String)
+    func countriesController(_ countriesController: AACountryViewController, didChangeCurrentIso currentIso: String)
 }
 
-public class AACountryViewController: AATableViewController {
+open class AACountryViewController: AATableViewController {
     
-    private var _countries: NSDictionary!
-    private var _letters: NSArray!
+    fileprivate var _countries: NSDictionary!
+    fileprivate var _letters: Array<String>!
     
-    public var delegate: AACountryViewControllerDelegate?
+    open var delegate: AACountryViewControllerDelegate?
     
     public init() {
-        super.init(style: UITableViewStyle.Plain)
+        super.init(style: UITableViewStyle.plain)
         
         self.title = AALocalized("AuthCountryTitle")
         
-        let cancelButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: UIBarButtonItemStyle.Plain, target: self, action: Selector("dismiss"))
-        self.navigationItem.setLeftBarButtonItem(cancelButtonItem, animated: false)
+        let cancelButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: UIBarButtonItemStyle.plain, target: self, action: Selector("dismiss"))
+        self.navigationItem.setLeftBarButton(cancelButtonItem, animated: false)
         
-        self.content = ACAllEvents_Auth.AUTH_PICK_COUNTRY()
+        self.content = ACAllEvents_Auth.auth_PICK_COUNTRY()
     }
 
     public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func viewDidLoad() {
+    open override func viewDidLoad() {
         super.viewDidLoad()
         
         tableView.rowHeight = 44.0
-        tableView.sectionIndexBackgroundColor = UIColor.clearColor()
+        tableView.sectionIndexBackgroundColor = UIColor.clear
     }
     
-    private func countries() -> NSDictionary {
+    fileprivate func countries() -> NSDictionary {
         if (_countries == nil) {
             let countries = NSMutableDictionary()
-            for (_, iso) in ABPhoneField.sortedIsoCodes().enumerate() {
+            for (_, iso) in ABPhoneField.sortedIsoCodes().enumerated() {
                 let countryName = ABPhoneField.countryNameByCountryCode()[iso as! String] as! String
                 let phoneCode = ABPhoneField.callingCodeByCountryCode()[iso as! String] as! String
                 //            if (self.searchBar.text.length == 0 || [countryName rangeOfString:self.searchBar.text options:NSCaseInsensitiveSearch].location != NSNotFound)
                 
-                let countryLetter = countryName.substringToIndex(countryName.startIndex.advancedBy(1))
+                let countryLetter = countryName.substring(to: countryName.characters.index(countryName.startIndex, offsetBy: 1))
                 if (countries[countryLetter] == nil) {
                     countries[countryLetter] = NSMutableArray()
                 }
                 
-                countries[countryLetter]!.addObject([countryName, iso, phoneCode])
+                (countries[countryLetter]! as AnyObject).add([countryName, iso, phoneCode])
             }
             _countries = countries;
         }
         return _countries;
     }
     
-    private func letters() -> NSArray {
-        if (_letters == nil) {
-            _letters = (countries().allKeys as NSArray).sortedArrayUsingSelector(#selector(YYTextPosition.compare(_:)))
-        }
-        return _letters;
+    fileprivate func letters() -> Array<String> {
+//        if (_letters == nil) {
+//            _letters = (countries().allKeys as Array).sortedArray(using: #selector(YYTextPosition.compare(_:)))
+//        }
+        return _letters
     }
     
-    public func sectionIndexTitlesForTableView(tableView: UITableView) -> [AnyObject]! {
+    open func sectionIndexTitlesForTableView(_ tableView: UITableView) -> [AnyObject]! {
         return letters() as [AnyObject]
     }
     
-    public func tableView(tableView: UITableView, sectionForSectionIndexTitle title: String, atIndex index: Int) -> Int {
+    open func tableView(_ tableView: UITableView, sectionForSectionIndexTitle title: String, atIndex index: Int) -> Int {
         return index
     }
     
-    public override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    open override func numberOfSections(in tableView: UITableView) -> Int {
         return letters().count;
     }
     
-    public override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    open override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return (countries()[letters()[section] as! String] as! NSArray).count
     }
     
-    public override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    open override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: AAAuthCountryCell = tableView.dequeueCell(indexPath)
-        let letter = letters()[indexPath.section] as! String
-        let countryData = (countries().objectForKey(letter) as! NSArray)[indexPath.row] as! [String]
+        let letter = letters()[(indexPath as NSIndexPath).section] as! String
+        let countryData = (countries().object(forKey: letter) as! NSArray)[(indexPath as NSIndexPath).row] as! [String]
         
         cell.setTitle(countryData[0])
         cell.setCode("+\(countryData[2])")
@@ -92,28 +92,28 @@ public class AACountryViewController: AATableViewController {
         return cell
     }
     
-    public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    open func tableView(_ tableView: UITableView, didSelectRowAtIndexPath indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
         
-        let letter = letters()[indexPath.section] as! String
-        let countryData = (countries().objectForKey(letter) as! NSArray)[indexPath.row] as! [String]
+        let letter = letters()[(indexPath as NSIndexPath).section] as! String
+        let countryData = (countries().object(forKey: letter) as! NSArray)[(indexPath as NSIndexPath).row] as! [String]
         
         delegate?.countriesController(self, didChangeCurrentIso: countryData[1])
 
         dismiss()
     }
     
-    public func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    open func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 25.0
     }
     
-    public func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    open func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return letters()[section] as? String
     }
     
-    public override func viewWillDisappear(animated: Bool) {
+    open override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        UIApplication.sharedApplication().setStatusBarStyle(.Default, animated: true)
+        UIApplication.shared.setStatusBarStyle(.default, animated: true)
     }
 }

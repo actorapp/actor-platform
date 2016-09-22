@@ -7,39 +7,39 @@ import zipzap
 
 class AATools {
     
-    class func copyFileCommand(from: String, to: String) -> ACCommand {
+    class func copyFileCommand(_ from: String, to: String) -> ACCommand {
         return CopyCommand(from: from, to: to)
     }
     
-    class func zipDirectoryCommand(from: String, to: String) -> ACCommand {
+    class func zipDirectoryCommand(_ from: String, to: String) -> ACCommand {
         return ZipCommand(dir: from, to: to)
     }
     
-    class func isValidEmail(testStr:String) -> Bool {
+    class func isValidEmail(_ testStr:String) -> Bool {
         
         let emailRegEx = "^[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}"
         
         let emailTest = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
-        return emailTest.evaluateWithObject(testStr)
+        return emailTest.evaluate(with: testStr)
     }
 }
 
 private class ZipCommand: BackgroundCommand {
     
-    private let dir: String
-    private let to: String
+    fileprivate let dir: String
+    fileprivate let to: String
     
     init(dir: String, to: String) {
         self.dir = dir
         self.to = to
     }
     
-    private override func backgroundTask() throws {
-        let rootPath = NSURL(fileURLWithPath: dir).lastPathComponent!
+    fileprivate override func backgroundTask() throws {
+        let rootPath = URL(fileURLWithPath: dir).lastPathComponent
         
-        let zip = try ZZArchive(URL: NSURL(fileURLWithPath: to), options: [ZZOpenOptionsCreateIfMissingKey: true])
+        let zip = try ZZArchive(url: URL(fileURLWithPath: to), options: [ZZOpenOptionsCreateIfMissingKey: true])
         
-        let subs = try NSFileManager.defaultManager().subpathsOfDirectoryAtPath(dir)
+        let subs = try FileManager.default.subpathsOfDirectory(atPath: dir)
         var entries = [ZZArchiveEntry]()
         for p in subs {
             
@@ -49,15 +49,15 @@ private class ZipCommand: BackgroundCommand {
             
             // Check path type: directory or file?
             var isDir : ObjCBool = false
-            if NSFileManager.defaultManager().fileExistsAtPath(fullPath, isDirectory: &isDir) {
+            if FileManager.default.fileExists(atPath: fullPath, isDirectory: &isDir) {
                 
-                if !isDir {
+                if !isDir.boolValue {
                     
                     // If file write file
-                    entries.append(ZZArchiveEntry(fileName: destPath, compress: false, dataBlock: { (error) -> NSData! in
+                    entries.append(ZZArchiveEntry(fileName: destPath, compress: false, dataBlock: { (error) -> Data! in
                         
                         // TODO: Error handling?
-                        return NSData(contentsOfFile: fullPath)!
+                        return (try! Data(contentsOf: URL(fileURLWithPath: fullPath)))
                     }))
                 } else {
                     
@@ -86,15 +86,15 @@ private class CopyCommand: BackgroundCommand {
         self.to = to
     }
     
-    private override func backgroundTask() throws {
-        try NSFileManager.defaultManager().copyItemAtPath(from, toPath: to)
+    fileprivate override func backgroundTask() throws {
+        try FileManager.default.copyItem(atPath: from, toPath: to)
     }
 }
 
 class BackgroundCommand: NSObject, ACCommand {
     
-    func startWithCallback(callback: ACCommandCallback!) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
+    func start(with callback: ACCommandCallback!) {
+        DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.default).async { () -> Void in
             do {
                 try self.backgroundTask()
                 callback.onResult(nil)

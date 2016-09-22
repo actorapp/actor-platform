@@ -4,12 +4,12 @@
 
 import Foundation
 
-public class AAWebActionController: AAViewController, UIWebViewDelegate {
+open class AAWebActionController: AAViewController, UIWebViewDelegate {
     
-    private var webView = UIWebView()
+    fileprivate var webView = UIWebView()
     
-    private let regex: AARegex
-    private let desc: ACWebActionDescriptor
+    fileprivate let regex: AARegex
+    fileprivate let desc: ACWebActionDescriptor
     
     public init(desc: ACWebActionDescriptor) {
         self.desc = desc
@@ -21,29 +21,29 @@ public class AAWebActionController: AAViewController, UIWebViewDelegate {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func viewDidLoad() {
+    open override func viewDidLoad() {
         super.viewDidLoad()
         
         webView.delegate = self
         
         view.addSubview(webView)
         
-        webView.loadRequest(NSURLRequest(URL: NSURL(string: desc.getUri())!))
+        webView.loadRequest(URLRequest(url: URL(string: desc.getUri())!))
     }
     
-    public override func viewDidLayoutSubviews() {
+    open override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
         webView.frame = view.bounds
     }
     
-    public func webView(webView: UIWebView, shouldStartLoadWithRequest request: NSURLRequest, navigationType: UIWebViewNavigationType) -> Bool {
-        if let url = request.URL {
+    open func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebViewNavigationType) -> Bool {
+        if let url = request.url {
             let rawUrl = url.absoluteString
             
             // Match end url
             if regex.test(rawUrl) {
-                self.executeSafe(Actor.completeWebActionWithHash(desc.getActionHash(), withUrl: rawUrl)) { (val) -> Void in
+                self.executeSafe(Actor.completeWebAction(withHash: desc.getActionHash(), withUrl: rawUrl)) { (val) -> Void in
                     self.dismiss()
                 }
                 return false

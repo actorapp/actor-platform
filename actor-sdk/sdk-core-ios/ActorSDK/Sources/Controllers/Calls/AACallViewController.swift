@@ -5,14 +5,14 @@
 import Foundation
 import AVFoundation
 
-public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
+open class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
     
-    public let binder = AABinder()
-    public let callId: jlong
-    public let call: ACCallVM
-    public let senderAvatar: AAAvatarView = AAAvatarView()
-    public let peerTitle = UILabel()
-    public let callState = UILabel()
+    open let binder = AABinder()
+    open let callId: jlong
+    open let call: ACCallVM
+    open let senderAvatar: AAAvatarView = AAAvatarView()
+    open let peerTitle = UILabel()
+    open let callState = UILabel()
     
     var remoteView = RTCEAGLVideoView()
     var remoteVideoSize: CGSize!
@@ -22,16 +22,16 @@ public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
     var localVideoTrack: RTCVideoTrack!
     var remoteVideoTrack: RTCVideoTrack!
     
-    public let answerCallButton = UIButton()
-    public let answerCallButtonText = UILabel()
-    public let declineCallButton = UIButton()
-    public let declineCallButtonText = UILabel()
+    open let answerCallButton = UIButton()
+    open let answerCallButtonText = UILabel()
+    open let declineCallButton = UIButton()
+    open let declineCallButtonText = UILabel()
     
-    public let muteButton = AACircleButton(size: 72)
+    open let muteButton = AACircleButton(size: 72)
     // public let videoButton = AACircleButton(size: 72)
     
     var isScheduledDispose = false
-    var timer: NSTimer?
+    var timer: Timer?
     
     public init(callId: jlong) {
         self.callId = callId
@@ -44,7 +44,7 @@ public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func viewDidLoad() {
+    open override func viewDidLoad() {
         super.viewDidLoad()
         
         self.view.backgroundColor = UIColor(rgb: 0x2a4463)
@@ -53,28 +53,28 @@ public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
         // Buttons
         //
         
-        answerCallButton.setImage(UIImage.bundled("ic_call_answer_44")!.tintImage(UIColor.whiteColor()), forState: .Normal)
-        answerCallButton.setBackgroundImage(Imaging.roundedImage(UIColor(red: 61/255.0, green: 217/255.0, blue: 90/255.0, alpha: 1.0), size: CGSizeMake(74, 74), radius: 37), forState: .Normal)
+        answerCallButton.setImage(UIImage.bundled("ic_call_answer_44")!.tintImage(UIColor.white), for: UIControlState())
+        answerCallButton.setBackgroundImage(Imaging.roundedImage(UIColor(red: 61/255.0, green: 217/255.0, blue: 90/255.0, alpha: 1.0), size: CGSize(width: 74, height: 74), radius: 37), for: UIControlState())
         answerCallButton.viewDidTap = {
-            Actor.answerCallWithCallId(self.callId)
+            Actor.answerCall(withCallId: self.callId)
         }
         answerCallButtonText.font = UIFont.thinSystemFontOfSize(16)
-        answerCallButtonText.textColor = UIColor.whiteColor()
-        answerCallButtonText.textAlignment = NSTextAlignment.Center
+        answerCallButtonText.textColor = UIColor.white
+        answerCallButtonText.textAlignment = NSTextAlignment.center
         answerCallButtonText.text = AALocalized("CallsAnswer")
-        answerCallButtonText.bounds = CGRectMake(0, 0, 72, 44)
+        answerCallButtonText.bounds = CGRect(x: 0, y: 0, width: 72, height: 44)
         answerCallButtonText.numberOfLines = 2
         
-        declineCallButton.setImage(UIImage.bundled("ic_call_end_44")!.tintImage(UIColor.whiteColor()), forState: .Normal)
-        declineCallButton.setBackgroundImage(Imaging.roundedImage(UIColor(red: 217/255.0, green: 80/255.0, blue:61/255.0, alpha: 1.0), size: CGSizeMake(74, 74), radius: 37), forState: .Normal)
+        declineCallButton.setImage(UIImage.bundled("ic_call_end_44")!.tintImage(UIColor.white), for: UIControlState())
+        declineCallButton.setBackgroundImage(Imaging.roundedImage(UIColor(red: 217/255.0, green: 80/255.0, blue:61/255.0, alpha: 1.0), size: CGSize(width: 74, height: 74), radius: 37), for: UIControlState())
         declineCallButton.viewDidTap = {
-            Actor.endCallWithCallId(self.callId)
+            Actor.endCall(withCallId: self.callId)
         }
         declineCallButtonText.font = UIFont.thinSystemFontOfSize(16)
-        declineCallButtonText.textColor = UIColor.whiteColor()
-        declineCallButtonText.textAlignment = NSTextAlignment.Center
+        declineCallButtonText.textColor = UIColor.white
+        declineCallButtonText.textAlignment = NSTextAlignment.center
         declineCallButtonText.text = AALocalized("CallsDecline")
-        declineCallButtonText.bounds = CGRectMake(0, 0, 72, 44)
+        declineCallButtonText.bounds = CGRect(x: 0, y: 0, width: 72, height: 44)
         declineCallButtonText.numberOfLines = 2
         
         
@@ -86,7 +86,7 @@ public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
         muteButton.title = AALocalized("CallsMute")
         muteButton.alpha = 0
         muteButton.button.viewDidTap = {
-            Actor.toggleCallMuteWithCallId(self.callId)
+            Actor.toggleCallMute(withCallId: self.callId)
         }
         
         // videoButton.image = UIImage.bundled("ic_video_44")
@@ -102,33 +102,33 @@ public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
         // Video ViewPorts
         //
         
-        localView.backgroundColor = UIColor.whiteColor()
+        localView.backgroundColor = UIColor.white
         localView.alpha = 0
         localView.layer.cornerRadius = 15
         localView.layer.borderWidth = 1
-        localView.layer.borderColor = UIColor.grayColor().CGColor
+        localView.layer.borderColor = UIColor.gray.cgColor
         localView.layer.shadowRadius = 1
         localView.clipsToBounds = true
-        localView.contentMode = .ScaleAspectFit
+        localView.contentMode = .scaleAspectFit
         
         remoteView.alpha = 0
-        remoteView.backgroundColor = UIColor.blackColor()
+        remoteView.backgroundColor = UIColor.black
         remoteView.delegate = self
-        remoteView.contentMode = .ScaleAspectFit
+        remoteView.contentMode = .scaleAspectFit
         
         
         //
         // Peer Info
         //
         
-        peerTitle.textColor = UIColor.whiteColor().alpha(0.87)
-        peerTitle.textAlignment = NSTextAlignment.Center
+        peerTitle.textColor = UIColor.white.alpha(0.87)
+        peerTitle.textAlignment = NSTextAlignment.center
         peerTitle.font = UIFont.thinSystemFontOfSize(42)
         peerTitle.minimumScaleFactor = 0.3
         
-        callState.textColor = UIColor.whiteColor()
-        callState.textAlignment = NSTextAlignment.Center
-        callState.font = UIFont.systemFontOfSize(19)
+        callState.textColor = UIColor.white
+        callState.textAlignment = NSTextAlignment.center
+        callState.font = UIFont.systemFont(ofSize: 19)
         
         
         self.view.addSubview(senderAvatar)
@@ -144,18 +144,18 @@ public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
         self.view.addSubview(localView)
     }
     
-    public override func viewWillLayoutSubviews() {
+    open override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         
-        senderAvatar.frame = CGRectMake((self.view.width - 104) / 2, 60, 108, 108)
-        peerTitle.frame = CGRectMake(22, senderAvatar.bottom + 22, view.width - 44, 42)
-        callState.frame = CGRectMake(0, peerTitle.bottom + 8, view.width, 22)
+        senderAvatar.frame = CGRect(x: (self.view.width - 104) / 2, y: 60, width: 108, height: 108)
+        peerTitle.frame = CGRect(x: 22, y: senderAvatar.bottom + 22, width: view.width - 44, height: 42)
+        callState.frame = CGRect(x: 0, y: peerTitle.bottom + 8, width: view.width, height: 22)
         
         layoutButtons()
         layoutVideo()
     }
     
-    public func videoView(videoView: RTCEAGLVideoView!, didChangeVideoSize size: CGSize) {
+    open func videoView(_ videoView: RTCEAGLVideoView!, didChangeVideoSize size: CGSize) {
         if videoView == remoteView {
             self.remoteVideoSize = size
         } else if videoView == localView {
@@ -165,9 +165,9 @@ public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
         layoutVideo()
     }
     
-    private func layoutButtons() {
+    fileprivate func layoutButtons() {
         
-        muteButton.frame = CGRectMake((self.view.width / 3 - 84) / 2, self.view.height - 72 - 49, 84, 72 + 5 + 44)
+        muteButton.frame = CGRect(x: (self.view.width / 3 - 84) / 2, y: self.view.height - 72 - 49, width: 84, height: 72 + 5 + 44)
 //        videoButton.frame = CGRectMake(2 * self.view.width / 3 +  (self.view.width / 3 - 84) / 2, self.view.height - 72 - 49, 84, 72 + 5 + 44)
 //        if call.isVideoPreferred.boolValue {
 //            videoButton.hidden = true
@@ -175,42 +175,42 @@ public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
 //            videoButton.hidden = false
 //        }
         
-        if !declineCallButton.hidden || !answerCallButton.hidden {
-            if !declineCallButton.hidden && !answerCallButton.hidden {
-                declineCallButton.frame = CGRectMake(25, self.view.height - 72 - 49, 72, 72)
+        if !declineCallButton.isHidden || !answerCallButton.isHidden {
+            if !declineCallButton.isHidden && !answerCallButton.isHidden {
+                declineCallButton.frame = CGRect(x: 25, y: self.view.height - 72 - 49, width: 72, height: 72)
                 declineCallButtonText.under(declineCallButton.frame, offset: 5)
-                answerCallButton.frame = CGRectMake(self.view.width - 72 - 25, self.view.height - 72 - 49, 72, 72)
+                answerCallButton.frame = CGRect(x: self.view.width - 72 - 25, y: self.view.height - 72 - 49, width: 72, height: 72)
                 answerCallButtonText.under(answerCallButton.frame, offset: 5)
             } else {
-                if !answerCallButton.hidden {
-                    answerCallButton.frame = CGRectMake((self.view.width - 72) / 2, self.view.height - 72 - 49, 72, 72)
+                if !answerCallButton.isHidden {
+                    answerCallButton.frame = CGRect(x: (self.view.width - 72) / 2, y: self.view.height - 72 - 49, width: 72, height: 72)
                     answerCallButtonText.under(answerCallButton.frame, offset: 5)
                 }
-                if !declineCallButton.hidden {
+                if !declineCallButton.isHidden {
                     // declineCallButton.frame = CGRectMake((self.view.width - 72) / 2, self.view.height - 72 - 49, 72, 72)
-                    declineCallButton.frame = CGRectMake(self.view.width - 72 - 25, self.view.height - 72 - 49, 72, 72)
+                    declineCallButton.frame = CGRect(x: self.view.width - 72 - 25, y: self.view.height - 72 - 49, width: 72, height: 72)
                     declineCallButtonText.under(declineCallButton.frame, offset: 5)
                 }
             }
         }
     }
     
-    private func layoutVideo() {
+    fileprivate func layoutVideo() {
         if self.remoteVideoSize == nil {
-            remoteView.frame = CGRectMake(0, 0, self.view.width, self.view.height)
+            remoteView.frame = CGRect(x: 0, y: 0, width: self.view.width, height: self.view.height)
         } else {
-            remoteView.frame = AVMakeRectWithAspectRatioInsideRect(remoteVideoSize, view.bounds)
+            remoteView.frame = AVMakeRect(aspectRatio: remoteVideoSize, insideRect: view.bounds)
         }
         
         if self.localVideoSize == nil {
-            localView.frame = CGRectMake(self.view.width - 100 - 10, 10, 100, 120)
+            localView.frame = CGRect(x: self.view.width - 100 - 10, y: 10, width: 100, height: 120)
         } else {
-            let rect = AVMakeRectWithAspectRatioInsideRect(localVideoSize, CGRectMake(0, 0, 120, 120))
-            localView.frame = CGRectMake(self.view.width - rect.width - 10, 10, rect.width, rect.height)
+            let rect = AVMakeRect(aspectRatio: localVideoSize, insideRect: CGRect(x: 0, y: 0, width: 120, height: 120))
+            localView.frame = CGRect(x: self.view.width - rect.width - 10, y: 10, width: rect.width, height: rect.height)
         }
     }
     
-    private func CGSizeAspectFit(aspectRatio:CGSize, boundingSize:CGSize) -> CGSize {
+    fileprivate func CGSizeAspectFit(_ aspectRatio:CGSize, boundingSize:CGSize) -> CGSize {
         var aspectFitSize = boundingSize
         let mW = boundingSize.width / aspectRatio.width
         let mH = boundingSize.height / aspectRatio.height
@@ -225,7 +225,7 @@ public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
         return aspectFitSize
     }
     
-    private func CGSizeAspectFill(aspectRatio:CGSize, minimumSize:CGSize) -> CGSize {
+    fileprivate func CGSizeAspectFill(_ aspectRatio:CGSize, minimumSize:CGSize) -> CGSize {
         var aspectFillSize = minimumSize
         let mW = minimumSize.width / aspectRatio.width
         let mH = minimumSize.height / aspectRatio.height
@@ -240,83 +240,83 @@ public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
         return aspectFillSize
     }
     
-    public override func viewWillAppear(animated: Bool) {
+    open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         // UI Configuration
         
-        UIApplication.sharedApplication().setStatusBarStyle(UIStatusBarStyle.LightContent, animated: true)
+        UIApplication.shared.setStatusBarStyle(UIStatusBarStyle.lightContent, animated: true)
         
-        UIDevice.currentDevice().proximityMonitoringEnabled = true
+        UIDevice.current.isProximityMonitoringEnabled = true
         
         //
         // Binding State
         //
         
-        binder.bind(call.isAudioEnabled) { (value: JavaLangBoolean!) -> () in
-            self.muteButton.filled = !value.booleanValue()
+        binder.bind(call.isAudioEnabled) { (value: JavaLangBoolean?) -> () in
+            self.muteButton.filled = !value!.booleanValue()
         }
         
-        binder.bind(call.state) { (value: ACCallState!) -> () in
-            if (ACCallState_Enum.RINGING == value.toNSEnum()) {
+        binder.bind(call.state) { (value: ACCallState?) -> () in
+            if (ACCallState_Enum.RINGING == value!.toNSEnum()) {
                 if (self.call.isOutgoing) {
                     
                     self.muteButton.showViewAnimated()
                     // self.videoButton.showViewAnimated()
                     
-                    self.answerCallButton.hidden = true
-                    self.answerCallButtonText.hidden = true
-                    self.declineCallButton.hidden = false
-                    self.declineCallButtonText.hidden = true
+                    self.answerCallButton.isHidden = true
+                    self.answerCallButtonText.isHidden = true
+                    self.declineCallButton.isHidden = false
+                    self.declineCallButtonText.isHidden = true
                     
                     self.callState.text = AALocalized("CallStateRinging")
                 } else {
-                    self.answerCallButton.hidden = false
-                    self.answerCallButtonText.hidden = false
-                    self.declineCallButton.hidden = false
-                    self.declineCallButtonText.hidden = false
+                    self.answerCallButton.isHidden = false
+                    self.answerCallButtonText.isHidden = false
+                    self.declineCallButton.isHidden = false
+                    self.declineCallButtonText.isHidden = false
                     self.callState.text = AALocalized("CallStateIncoming")
                 }
                 
                 self.layoutButtons()
                 
-            } else if (ACCallState_Enum.CONNECTING == value.toNSEnum()) {
+            } else if (ACCallState_Enum.CONNECTING == value!.toNSEnum()) {
                 
                 self.muteButton.showViewAnimated()
                 // self.videoButton.showViewAnimated()
                 
-                self.answerCallButton.hidden = true
-                self.answerCallButtonText.hidden = true
-                self.declineCallButton.hidden = false
-                self.declineCallButtonText.hidden = true
+                self.answerCallButton.isHidden = true
+                self.answerCallButtonText.isHidden = true
+                self.declineCallButton.isHidden = false
+                self.declineCallButtonText.isHidden = true
                 
                 self.callState.text = AALocalized("CallStateConnecting")
                 
                 self.layoutButtons()
                 
-            } else if (ACCallState_Enum.IN_PROGRESS == value.toNSEnum()) {
+            } else if (ACCallState_Enum.IN_PROGRESS == value!.toNSEnum()) {
                 
                 self.muteButton.showViewAnimated()
                 // self.videoButton.showViewAnimated()
                 
-                self.answerCallButton.hidden = true
-                self.answerCallButtonText.hidden = true
-                self.declineCallButton.hidden = false
-                self.declineCallButtonText.hidden = true
+                self.answerCallButton.isHidden = true
+                self.answerCallButtonText.isHidden = true
+                self.declineCallButton.isHidden = false
+                self.declineCallButtonText.isHidden = true
                 
                 self.startTimer()
                 
                 self.layoutButtons()
                 
-            } else if (ACCallState_Enum.ENDED == value.toNSEnum()) {
+            } else if (ACCallState_Enum.ENDED == value!.toNSEnum()) {
                 
                 self.muteButton.hideViewAnimated()
                 // self.videoButton.hideViewAnimated()
                 
-                self.answerCallButton.hidden = true
-                self.answerCallButtonText.hidden = true
-                self.declineCallButton.hidden = true
-                self.declineCallButtonText.hidden = true
+                self.answerCallButton.isHidden = true
+                self.answerCallButtonText.isHidden = true
+                self.declineCallButton.isHidden = true
+                self.declineCallButtonText.isHidden = true
                 
                 self.stopTimer()
                 
@@ -340,18 +340,18 @@ public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
         
         if (call.peer.peerType.toNSEnum() == ACPeerType_Enum.PRIVATE) {
             let user = Actor.getUserWithUid(call.peer.peerId)
-            binder.bind(user.getNameModel(), closure: { (value: String!) -> () in
+            binder.bind(user.getNameModel(), closure: { (value: String?) -> () in
                 self.peerTitle.text = value
             })
-            binder.bind(user.getAvatarModel(), closure: { (value: ACAvatar!) -> () in
+            binder.bind(user.getAvatarModel(), closure: { (value: ACAvatar?) -> () in
                 self.senderAvatar.bind(user.getNameModel().get(), id: Int(user.getId()), avatar: value)
             })
         } else if (call.peer.peerType.toNSEnum() == ACPeerType_Enum.GROUP) {
             let group = Actor.getGroupWithGid(call.peer.peerId)
-            binder.bind(group.getNameModel(), closure: { (value: String!) -> () in
+            binder.bind(group.getNameModel(), closure: { (value: String?) -> () in
                 self.peerTitle.text = value
             })
-            binder.bind(group.getAvatarModel(), closure: { (value: ACAvatar!) -> () in
+            binder.bind(group.getAvatarModel(), closure: { (value: ACAvatar?) -> () in
                 self.senderAvatar.bind(group.getNameModel().get(), id: Int(group.getId()), avatar: value)
             })
         }
@@ -370,24 +370,24 @@ public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
 //            }
             
             // Local Video can be only one, so we can just keep active track reference and handle changes
-            binder.bind(call.ownVideoTracks, closure: { (videoTracks: ACArrayListMediaTrack!) in
+            binder.bind(call.ownVideoTracks, closure: { (videoTracks: ACArrayListMediaTrack?) in
                 var needUnbind = true
-                if videoTracks.size() > 0 {
+                if videoTracks!.size() > 0 {
                     
-                   let track = (videoTracks.getWithInt(0) as! CocoaVideoTrack).videoTrack
+                   let track = (videoTracks!.getWith(0) as! CocoaVideoTrack).videoTrack
                     if self.localVideoTrack != track {
                         if self.localVideoTrack != nil {
-                            self.localVideoTrack.removeRenderer(self.localView)
+                            self.localVideoTrack.remove(self.localView)
                         }
                         self.localVideoTrack = track
                         self.localView.showViewAnimated()
-                        track.addRenderer(self.localView)
+                        track.add(self.localView)
                     }
                     needUnbind = false
                 }
                 if needUnbind {
                     if self.localVideoTrack != nil {
-                        self.localVideoTrack.removeRenderer(self.localView)
+                        self.localVideoTrack.remove(self.localView)
                         self.localVideoTrack = nil
                     }
                     self.localView.hideViewAnimated()
@@ -396,26 +396,26 @@ public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
 
             // In Private Calls we can have only one video stream from other side
             // We will assume only one active peer connection
-            binder.bind(call.theirVideoTracks, closure: { (videoTracks: ACArrayListMediaTrack!) in
+            binder.bind(call.theirVideoTracks, closure: { (videoTracks: ACArrayListMediaTrack?) in
                 var needUnbind = true
-                if videoTracks.size() > 0 {
+                if videoTracks!.size() > 0 {
                     
-                    let track = (videoTracks.getWithInt(0) as! CocoaVideoTrack).videoTrack
+                    let track = (videoTracks!.getWith(0) as! CocoaVideoTrack).videoTrack
                     if self.remoteVideoTrack != track {
                         if self.remoteVideoTrack != nil {
-                            self.remoteVideoTrack.removeRenderer(self.remoteView)
+                            self.remoteVideoTrack.remove(self.remoteView)
                         }
                         self.remoteVideoTrack = track
                         self.remoteView.showViewAnimated()
                         self.senderAvatar.hideViewAnimated()
                         self.peerTitle.hideViewAnimated()
-                        track.addRenderer(self.remoteView)
+                        track.add(self.remoteView)
                     }
                     needUnbind = false
                 }
                 if needUnbind {
                     if self.remoteVideoTrack != nil {
-                        self.remoteVideoTrack.removeRenderer(self.remoteView)
+                        self.remoteVideoTrack.remove(self.remoteView)
                         self.remoteVideoTrack = nil
                     }
                     self.remoteView.hideViewAnimated()
@@ -430,11 +430,11 @@ public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
         }
     }
     
-    public override func viewWillDisappear(animated: Bool) {
+    open override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        UIDevice.currentDevice().proximityMonitoringEnabled = false
-        UIApplication.sharedApplication().setStatusBarStyle(ActorSDK.sharedActor().style.vcStatusBarStyle, animated: true)
+        UIDevice.current.isProximityMonitoringEnabled = false
+        UIApplication.shared.setStatusBarStyle(ActorSDK.sharedActor().style.vcStatusBarStyle, animated: true)
         
         binder.unbindAll()
     }
@@ -446,13 +446,13 @@ public class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
     
     func startTimer() {
         timer?.invalidate()
-        timer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(AACallViewController.updateTimer), userInfo: nil, repeats: true)
+        timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(AACallViewController.updateTimer), userInfo: nil, repeats: true)
         updateTimer()
     }
     
     func updateTimer() {
         if call.callStart > 0 {
-            let end = call.callEnd > 0 ? call.callEnd : jlong(NSDate().timeIntervalSince1970 * 1000)
+            let end = call.callEnd > 0 ? call.callEnd : jlong(Date().timeIntervalSince1970 * 1000)
             let secs = Int((end - call.callStart) / 1000)
             
             let seconds = secs % 60

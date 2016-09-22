@@ -1936,6 +1936,7 @@
 					066A50D11BC4AE63000E606E = {
 						CreatedOnToolsVersion = 7.0;
 						DevelopmentTeam = HVJR44Y5B6;
+						LastSwiftMigration = 0800;
 					};
 				};
 			};
@@ -2462,6 +2463,7 @@
 				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/ActorSDK/Sources/Libs/CommonCrypto $(PROJECT_DIR)/IDZSwiftCommonCrypto/Frameworks/$(PLATFORM_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 				VALID_ARCHS = "arm64 armv7";
 				WARNING_CFLAGS = "-Wno-nullability-completeness";
 			};
@@ -2517,6 +2519,7 @@
 				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/ActorSDK/Sources/Libs/CommonCrypto $(PROJECT_DIR)/IDZSwiftCommonCrypto/Frameworks/$(PLATFORM_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
 				VALID_ARCHS = "arm64 armv7";
 				WARNING_CFLAGS = "-Wno-nullability-completeness";
 			};

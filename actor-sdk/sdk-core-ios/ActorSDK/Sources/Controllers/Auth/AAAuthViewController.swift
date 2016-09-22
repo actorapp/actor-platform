@@ -4,62 +4,62 @@
 
 import Foundation
 
-public class AAAuthViewController: AAViewController {
+open class AAAuthViewController: AAViewController {
     
-    public let nextBarButton = UIButton()
-    private var keyboardHeight: CGFloat = 0
+    open let nextBarButton = UIButton()
+    fileprivate var keyboardHeight: CGFloat = 0
     
-    override public func viewDidLoad() {
+    override open func viewDidLoad() {
         super.viewDidLoad()
         
-        nextBarButton.setTitle(AALocalized("NavigationNext"), forState: .Normal)
-        nextBarButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
-        nextBarButton.setBackgroundImage(Imaging.roundedImage(UIColor(red: 94, green: 142, blue: 192), radius: 4), forState: .Normal)
-        nextBarButton.setBackgroundImage(Imaging.roundedImage(UIColor(red: 94, green: 142, blue: 192).alpha(0.7), radius: 4), forState: .Highlighted)
-        nextBarButton.addTarget(self, action: #selector(AAAuthViewController.nextDidTap), forControlEvents: .TouchUpInside)
+        nextBarButton.setTitle(AALocalized("NavigationNext"), for: UIControlState())
+        nextBarButton.setTitleColor(UIColor.white, for: UIControlState())
+        nextBarButton.setBackgroundImage(Imaging.roundedImage(UIColor(red: 94, green: 142, blue: 192), radius: 4), for: UIControlState())
+        nextBarButton.setBackgroundImage(Imaging.roundedImage(UIColor(red: 94, green: 142, blue: 192).alpha(0.7), radius: 4), for: .highlighted)
+        nextBarButton.addTarget(self, action: #selector(AAAuthViewController.nextDidTap), for: .touchUpInside)
 
         view.addSubview(nextBarButton)
     }
     
-    override public func viewDidLayoutSubviews() {
+    override open func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         layoutNextBar()
     }
     
-    override public func viewWillAppear(animated: Bool) {
+    override open func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         // Forcing initial layout before keyboard show to avoid weird animations
         layoutNextBar()
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AAAuthViewController.keyboardWillAppearInt(_:)), name: UIKeyboardWillShowNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AAAuthViewController.keyboardWillDisappearInt(_:)), name: UIKeyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(AAAuthViewController.keyboardWillAppearInt(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(AAAuthViewController.keyboardWillDisappearInt(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
     
-    private func layoutNextBar() {
-        nextBarButton.frame = CGRectMake(view.width - 95, view.height - 44 - keyboardHeight + 6, 85, 32)
+    fileprivate func layoutNextBar() {
+        nextBarButton.frame = CGRect(x: view.width - 95, y: view.height - 44 - keyboardHeight + 6, width: 85, height: 32)
     }
     
-    func keyboardWillAppearInt(notification: NSNotification) {
-        let dict = notification.userInfo!
-        let rect = dict[UIKeyboardFrameBeginUserInfoKey]!.CGRectValue
+    func keyboardWillAppearInt(_ notification: Notification) {
+        let dict = (notification as NSNotification).userInfo!
+        let rect = (dict[UIKeyboardFrameBeginUserInfoKey]! as AnyObject).cgRectValue
         
-        let orientation = UIApplication.sharedApplication().statusBarOrientation
-        let frameInWindow = self.view.superview!.convertRect(view.bounds, toView: nil)
+        let orientation = UIApplication.shared.statusBarOrientation
+        let frameInWindow = self.view.superview!.convert(view.bounds, to: nil)
         let windowBounds = view.window!.bounds
         
-        let keyboardTop: CGFloat = windowBounds.size.height - rect.height
+        let keyboardTop: CGFloat = windowBounds.size.height - rect!.height
         let heightCoveredByKeyboard: CGFloat
         if AADevice.isiPad {
-            if orientation == .LandscapeLeft || orientation == .LandscapeRight {
+            if orientation == .landscapeLeft || orientation == .landscapeRight {
                 heightCoveredByKeyboard = frameInWindow.maxY - keyboardTop - 52 /*???*/
-            } else if orientation == .Portrait || orientation == .PortraitUpsideDown {
-                heightCoveredByKeyboard = CGRectGetMaxY(frameInWindow) - keyboardTop
+            } else if orientation == .portrait || orientation == .portraitUpsideDown {
+                heightCoveredByKeyboard = frameInWindow.maxY - keyboardTop
             } else {
                 heightCoveredByKeyboard = 0
             }
         } else {
-            heightCoveredByKeyboard = rect.height
+            heightCoveredByKeyboard = (rect?.height)!
         }
         
         keyboardHeight = max(0, heightCoveredByKeyboard)
@@ -68,34 +68,34 @@ public class AAAuthViewController: AAViewController {
     }
     
     
-    func keyboardWillDisappearInt(notification: NSNotification) {
+    func keyboardWillDisappearInt(_ notification: Notification) {
         keyboardHeight = 0
         layoutNextBar()
         keyboardWillDisappear()
     }
     
-    public func keyboardWillAppear(height: CGFloat) {
+    open func keyboardWillAppear(_ height: CGFloat) {
         
     }
     
-    public func keyboardWillDisappear() {
+    open func keyboardWillDisappear() {
         
     }
     
-    override public func viewWillDisappear(animated: Bool) {
+    override open func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
         keyboardHeight = 0
         layoutNextBar()
     }
     
     /// Call this method when authentication successful
-    public func onAuthenticated() {
+    open func onAuthenticated() {
         ActorSDK.sharedActor().didLoggedIn()
     }
     
-    public func nextDidTap() {
+    open func nextDidTap() {
         
     }
 }

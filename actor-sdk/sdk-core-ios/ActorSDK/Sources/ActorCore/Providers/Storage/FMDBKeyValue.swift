@@ -40,7 +40,7 @@ import Foundation
         super.init()
     }
     
-    private func checkTable() {
+    fileprivate func checkTable() {
         if (isTableChecked) {
             return
         }
@@ -53,37 +53,37 @@ import Foundation
         }
     }
     
-    func addOrUpdateItems(values: JavaUtilList!) {
+    func addOrUpdateItems(_ values: JavaUtilList!) {
         checkTable()
         
         db.beginTransaction()
         for i in 0..<values.size() {
-            let record = values.getWithInt(i) as! ARKeyValueRecord
-            db.executeUpdate(queryAdd, record.getId().toNSNumber(),record.getData().toNSData())
+            let record = values.getWith(i) as! ARKeyValueRecord
+            db.executeUpdate(queryAdd, record.getId().toNSNumber(),record.getData().toNSData() as AnyObject)
         }
         db.commit()
     }
     
-    func addOrUpdateItemWithKey(key: jlong, withData data: IOSByteArray!) {
+    func addOrUpdateItem(withKey key: jlong, withData data: IOSByteArray!) {
         checkTable()
         
         db.beginTransaction()
-        db.executeUpdate(queryAdd, key.toNSNumber(), data!.toNSData())
+        db.executeUpdate(queryAdd, key.toNSNumber(), data!.toNSData() as AnyObject)
         db.commit()
     }
     
-    func removeItemsWithKeys(keys: IOSLongArray!) {
+    func removeItems(withKeys keys: IOSLongArray!) {
         checkTable()
         
         db.beginTransaction()
         for i in 0..<keys.length() {
-            let key = keys.longAtIndex(UInt(i));
+            let key = keys.long(at: UInt(i));
             db.executeUpdate(queryDelete, key.toNSNumber())
         }
         db.commit()
     }
     
-    func removeItemWithKey(key: jlong) {
+    func removeItem(withKey key: jlong) {
         checkTable()
         
         db.beginTransaction()
@@ -91,14 +91,14 @@ import Foundation
         db.commit()
     }
     
-    func loadItemWithKey(key: jlong) -> IOSByteArray! {
+    func loadItem(withKey key: jlong) -> IOSByteArray! {
         checkTable()
         
         let result = db.dataForQuery(queryItem, key.toNSNumber())
         if (result == nil) {
             return nil
         }
-        return result.toJavaBytes()
+        return result!.toJavaBytes()
     }
     
     func loadAllItems() -> JavaUtilList! {
@@ -108,28 +108,28 @@ import Foundation
         
         if let result = db.executeQuery(queryAll) {
             while(result.next()) {
-                res.addWithId(ARKeyValueRecord(key: jlong(result.longLongIntForColumn("ID")), withData: result.dataForColumn("BYTES").toJavaBytes()))
+                res!.add(withId: ARKeyValueRecord(key: jlong(result.longLongInt(forColumn: "ID")), withData: result.data(forColumn: "BYTES").toJavaBytes()))
             }
         }
         
         return res
     }
     
-    func loadItems(keys: IOSLongArray!) -> JavaUtilList! {
+    func loadItems(_ keys: IOSLongArray!) -> JavaUtilList! {
         checkTable()
         
         // Converting to NSNumbers
         var ids = [NSNumber]()
         for i in 0..<keys.length() {
-            ids.append(keys.longAtIndex(UInt(i)).toNSNumber())
+            ids.append(keys.long(at: UInt(i)).toNSNumber())
         }
         
         let res = JavaUtilArrayList()
         
-        if let result = db.executeQuery(queryItems, ids) {
+        if let result = db.executeQuery(queryItems, ids as AnyObject) {
             while(result.next()) {
                 // TODO: Optimize lookup
-                res.addWithId(ARKeyValueRecord(key: jlong(result.longLongIntForColumn("ID")), withData: result.dataForColumn("BYTES").toJavaBytes()))
+                res!.add(withId: ARKeyValueRecord(key: jlong(result.longLongInt(forColumn: "ID")), withData: result.data(forColumn: "BYTES").toJavaBytes()))
             }
         }
         

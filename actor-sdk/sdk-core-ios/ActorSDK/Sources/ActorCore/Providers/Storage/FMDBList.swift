@@ -90,32 +90,32 @@ class FMDBList : NSObject, ARListStorageDisplayEx {
         }
     }
     
-    func updateOrAddWithValue(valueContainer: ARListEngineRecord!) {
+    func updateOrAdd(withValue valueContainer: ARListEngineRecord!) {
         checkTable();
         
-        let start = NSDate()
+        let start = Date()
         
         // db!.beginTransaction()
-        db!.executeUpdate(queryAdd, withArgumentsInArray: [valueContainer.getKey().toNSNumber(), valueContainer.dbQuery(), valueContainer.getOrder().toNSNumber(),
+        db!.executeUpdate(queryAdd, withArgumentsIn: [valueContainer.getKey().toNSNumber(), valueContainer.dbQuery(), valueContainer.getOrder().toNSNumber(),
             valueContainer.getData().toNSData()])
         // db!.commit()
         
-        log("updateOrAddWithValue \(tableName): \(valueContainer.getData().length()) in \(Int((NSDate().timeIntervalSinceDate(start)*1000)))")
+        log("updateOrAddWithValue \(tableName): \(valueContainer.getData().length()) in \(Int((Date().timeIntervalSince(start)*1000)))")
     }
     
-    func updateOrAddWithList(items: JavaUtilList!) {
+    func updateOrAdd(with items: JavaUtilList!) {
         checkTable();
         
         db!.beginTransaction()
         for i in 0..<items.size() {
-            let record = items.getWithInt(i) as! ARListEngineRecord;
+            let record = items.getWith(i) as! ARListEngineRecord;
             db!.executeUpdate(queryAdd, record.getKey().toNSNumber(), record.dbQuery(), record.getOrder().toNSNumber(),
-                record.getData().toNSData())
+                record.getData().toNSData() as AnyObject)
         }
         db!.commit()
     }
     
-    func deleteWithKey(key: jlong) {
+    func delete(withKey key: jlong) {
         checkTable();
         
         db!.beginTransaction()
@@ -123,12 +123,12 @@ class FMDBList : NSObject, ARListStorageDisplayEx {
         db!.commit()
     }
 
-    func deleteWithKeys(keys: IOSLongArray!) {
+    func delete(withKeys keys: IOSLongArray!) {
         checkTable();
         
         db!.beginTransaction()
         for i in 0..<keys.length() {
-            let k = keys.longAtIndex(UInt(i));
+            let k = keys.long(at: UInt(i));
             db!.executeUpdate(queryDelete, k.toNSNumber());
         }
         db!.commit()
@@ -142,7 +142,7 @@ class FMDBList : NSObject, ARListStorageDisplayEx {
             return 0;
         }
         if (result!.next()) {
-            let res = jint(result!.intForColumnIndex(0))
+            let res = jint(result!.int(forColumnIndex: 0))
             result?.close()
             return res
         } else {
@@ -160,7 +160,7 @@ class FMDBList : NSObject, ARListStorageDisplayEx {
             return false;
         }
         if (result!.next()) {
-            let res = result!.intForColumnIndex(0)
+            let res = result!.int(forColumnIndex: 0)
             result?.close()
             return res > 0
         } else {
@@ -178,7 +178,7 @@ class FMDBList : NSObject, ARListStorageDisplayEx {
         db!.commit()
     }
     
-    func loadItemWithKey(key: jlong) -> ARListEngineRecord! {
+    func loadItem(withKey key: jlong) -> ARListEngineRecord! {
         checkTable();
         
         let result = db!.executeQuery(queryItem, key.toNSNumber());
@@ -186,11 +186,11 @@ class FMDBList : NSObject, ARListStorageDisplayEx {
             return nil
         }
         if (result!.next()) {
-            var query: AnyObject! = result!.objectForColumnName("QUERY");
+            var query: AnyObject! = result!.object(forColumnName: "QUERY") as AnyObject!;
             if (query is NSNull){
                 query = nil
             }
-            let res = ARListEngineRecord(key: jlong(result!.longLongIntForColumn("ID")), withOrder: jlong(result!.longLongIntForColumn("SORT_KEY")), withQuery: query as! String?, withData: result!.dataForColumn("BYTES").toJavaBytes())
+            let res = ARListEngineRecord(key: jlong(result!.longLongInt(forColumn: "ID")), withOrder: jlong(result!.longLongInt(forColumn: "SORT_KEY")), withQuery: query as! String?, withData: result!.data(forColumn: "BYTES").toJavaBytes())
             result?.close()
             return res;
         } else {
@@ -205,7 +205,7 @@ class FMDBList : NSObject, ARListStorageDisplayEx {
         return res
     }
     
-    func loadForwardWithSortKey(sortingKey: JavaLangLong!, withLimit limit: jint) -> JavaUtilList! {
+    func loadForward(withSortKey sortingKey: JavaLangLong!, withLimit limit: jint) -> JavaUtilList! {
         checkTable();
         var result : FMResultSet? = nil;
         if (sortingKey == nil) {
@@ -221,41 +221,41 @@ class FMDBList : NSObject, ARListStorageDisplayEx {
         
         let res: JavaUtilArrayList = JavaUtilArrayList();
         
-        let queryIndex = result!.columnIndexForName("QUERY")
-        let idIndex = result!.columnIndexForName("ID")
-        let sortKeyIndex = result!.columnIndexForName("SORT_KEY")
-        let bytesIndex = result!.columnIndexForName("BYTES")
+        let queryIndex = result!.columnIndex(forName: "QUERY")
+        let idIndex = result!.columnIndex(forName: "ID")
+        let sortKeyIndex = result!.columnIndex(forName: "SORT_KEY")
+        let bytesIndex = result!.columnIndex(forName: "BYTES")
         var dataSize = 0
         var rowCount = 0
         
         while(result!.next()) {
-            let key = jlong(result!.longLongIntForColumnIndex(idIndex))
-            let order = jlong(result!.longLongIntForColumnIndex(sortKeyIndex))
-            var query: AnyObject! = result!.objectForColumnIndex(queryIndex)
+            let key = jlong(result!.longLongInt(forColumnIndex: idIndex))
+            let order = jlong(result!.longLongInt(forColumnIndex: sortKeyIndex))
+            var query: AnyObject! = result!.object(forColumnIndex: queryIndex) as AnyObject!
             if (query is NSNull) {
                 query = nil
             }
-            let data = result!.dataForColumnIndex(bytesIndex).toJavaBytes()
+            let data = result!.data(forColumnIndex: bytesIndex).toJavaBytes()
             dataSize += Int(data.length())
             rowCount += 1
             
             let record = ARListEngineRecord(key: key, withOrder: order, withQuery: query as! String?, withData: data)
-            res.addWithId(record)
+            res.add(withId: record)
         }
         result!.close()
         
         return res;
     }
     
-    func loadForwardWithQuery(query: String!, withSortKey sortingKey: JavaLangLong!, withLimit limit: jint) -> JavaUtilList! {
+    func loadForward(withQuery query: String!, withSortKey sortingKey: JavaLangLong!, withLimit limit: jint) -> JavaUtilList! {
         checkTable();
         
         var result : FMResultSet? = nil;
-        if (sortingKey == nil) {
-            result = db!.executeQuery(queryForwardFilterFirst, query + "%", "% " + query + "%", limit.toNSNumber());
-        } else {
-            result = db!.executeQuery(queryForwardFilterMore, query + "%", "% " + query + "%", sortingKey!.toNSNumber(), limit.toNSNumber());
-        }
+//        if (sortingKey == nil) {
+//            result = db!.executeQuery(queryForwardFilterFirst, query + "%", "% " + query + "%", limit.toNSNumber());
+//        } else {
+//            result = db!.executeQuery(queryForwardFilterMore, query + "%", "% " + query + "%", sortingKey!.toNSNumber(), limit.toNSNumber());
+//        }
         if (result == nil) {
             NSLog(db!.lastErrorMessage())
             return nil
@@ -264,12 +264,12 @@ class FMDBList : NSObject, ARListStorageDisplayEx {
         let res: JavaUtilArrayList = JavaUtilArrayList();
         
         while(result!.next()) {
-            var query: AnyObject! = result!.objectForColumnName("QUERY");
+            var query: AnyObject! = result!.object(forColumnName: "QUERY") as AnyObject!;
             if (query is NSNull) {
                 query = nil
             }
-            let record = ARListEngineRecord(key: jlong(result!.longLongIntForColumn("ID")), withOrder: jlong(result!.longLongIntForColumn("SORT_KEY")), withQuery: query as! String?, withData: result!.dataForColumn("BYTES").toJavaBytes())
-            res.addWithId(record)
+            let record = ARListEngineRecord(key: jlong(result!.longLongInt(forColumn: "ID")), withOrder: jlong(result!.longLongInt(forColumn: "SORT_KEY")), withQuery: query as! String?, withData: result!.data(forColumn: "BYTES").toJavaBytes())
+            res.add(withId: record)
         }
         result!.close()
         
@@ -277,7 +277,7 @@ class FMDBList : NSObject, ARListStorageDisplayEx {
 
     }
     
-    func loadBackwardWithSortKey(sortingKey: JavaLangLong!, withLimit limit: jint) -> JavaUtilList! {
+    func loadBackward(withSortKey sortingKey: JavaLangLong!, withLimit limit: jint) -> JavaUtilList! {
         checkTable();
         var result : FMResultSet? = nil;
         if (sortingKey == nil) {
@@ -293,26 +293,26 @@ class FMDBList : NSObject, ARListStorageDisplayEx {
         let res: JavaUtilArrayList = JavaUtilArrayList();
         
         while(result!.next()) {
-            var query: AnyObject! = result!.objectForColumnName("QUERY");
+            var query: AnyObject! = result!.object(forColumnName: "QUERY") as AnyObject!;
             if (query is NSNull) {
                 query = nil
             }
-            let record = ARListEngineRecord(key: jlong(result!.longLongIntForColumn("ID")), withOrder: jlong(result!.longLongIntForColumn("SORT_KEY")), withQuery: query as! String?, withData: result!.dataForColumn("BYTES").toJavaBytes())
-            res.addWithId(record)
+            let record = ARListEngineRecord(key: jlong(result!.longLongInt(forColumn: "ID")), withOrder: jlong(result!.longLongInt(forColumn: "SORT_KEY")), withQuery: query as! String?, withData: result!.data(forColumn: "BYTES").toJavaBytes())
+            res.add(withId: record)
         }
         result!.close()
         return res;
     }
     
-    func loadBackwardWithQuery(query: String!, withSortKey sortingKey: JavaLangLong!, withLimit limit: jint) -> JavaUtilList! {
+    func loadBackward(withQuery query: String!, withSortKey sortingKey: JavaLangLong!, withLimit limit: jint) -> JavaUtilList! {
         checkTable();
         
         var result : FMResultSet? = nil;
-        if (sortingKey == nil) {
-            result = db!.executeQuery(queryBackwardFilterFirst, query + "%", "% " + query + "%", limit.toNSNumber());
-        } else {
-            result = db!.executeQuery(queryBackwardFilterMore, query + "%", "% " + query + "%", sortingKey!.toNSNumber(), limit.toNSNumber());
-        }
+//        if (sortingKey == nil) {
+//            result = db!.executeQuery(queryBackwardFilterFirst, query + "%", "% " + query + "%", limit.toNSNumber());
+//        } else {
+//            result = db!.executeQuery(queryBackwardFilterMore, query + "%", "% " + query + "%", sortingKey!.toNSNumber(), limit.toNSNumber());
+//        }
         if (result == nil) {
             NSLog(db!.lastErrorMessage())
             return nil
@@ -321,28 +321,28 @@ class FMDBList : NSObject, ARListStorageDisplayEx {
         let res: JavaUtilArrayList = JavaUtilArrayList();
         
         while(result!.next()) {
-            var query: AnyObject! = result!.objectForColumnName("QUERY");
+            var query: AnyObject! = result!.object(forColumnName: "QUERY") as AnyObject!;
             if (query is NSNull) {
                 query = nil
             }
-            let record = ARListEngineRecord(key: jlong(result!.longLongIntForColumn("ID")), withOrder: jlong(result!.longLongIntForColumn("SORT_KEY")), withQuery: query as! String?, withData: result!.dataForColumn("BYTES").toJavaBytes())
-            res.addWithId(record)
+            let record = ARListEngineRecord(key: jlong(result!.longLongInt(forColumn: "ID")), withOrder: jlong(result!.longLongInt(forColumn: "SORT_KEY")), withQuery: query as! String?, withData: result!.data(forColumn: "BYTES").toJavaBytes())
+            res.add(withId: record)
         }
         result!.close()
         
         return res;
     }
     
-    func loadCenterWithSortKey(centerSortKey: JavaLangLong!, withLimit limit: jint) -> JavaUtilList! {
+    func loadCenter(withSortKey centerSortKey: JavaLangLong!, withLimit limit: jint) -> JavaUtilList! {
         checkTable();
         
         let res: JavaUtilArrayList = JavaUtilArrayList();
-        res.addAllWithJavaUtilCollection(loadSlise(db!.executeQuery(queryCenterBackward, centerSortKey.toNSNumber(), limit.toNSNumber())))
-        res.addAllWithJavaUtilCollection(loadSlise(db!.executeQuery(queryCenterForward, centerSortKey.toNSNumber(), limit.toNSNumber())))
+        res.addAll(with: loadSlise(db!.executeQuery(queryCenterBackward, centerSortKey.toNSNumber(), limit.toNSNumber())))
+        res.addAll(with: loadSlise(db!.executeQuery(queryCenterForward, centerSortKey.toNSNumber(), limit.toNSNumber())))
         return res
     }
     
-    func loadSlise(result: FMResultSet?) -> JavaUtilList! {
+    func loadSlise(_ result: FMResultSet?) -> JavaUtilList! {
         if (result == nil) {
             NSLog(db!.lastErrorMessage())
             return nil
@@ -351,12 +351,12 @@ class FMDBList : NSObject, ARListStorageDisplayEx {
         let res: JavaUtilArrayList = JavaUtilArrayList();
         
         while(result!.next()) {
-            var query: AnyObject! = result!.objectForColumnName("QUERY");
+            var query: AnyObject! = result!.object(forColumnName: "QUERY") as AnyObject!;
             if (query is NSNull) {
                 query = nil
             }
-            let record = ARListEngineRecord(key: jlong(result!.longLongIntForColumn("ID")), withOrder: jlong(result!.longLongIntForColumn("SORT_KEY")), withQuery: query as! String?, withData: result!.dataForColumn("BYTES").toJavaBytes())
-            res.addWithId(record)
+            let record = ARListEngineRecord(key: jlong(result!.longLongInt(forColumn: "ID")), withOrder: jlong(result!.longLongInt(forColumn: "SORT_KEY")), withQuery: query as! String?, withData: result!.data(forColumn: "BYTES").toJavaBytes())
+            res.add(withId: record)
         }
         result!.close()
         return res;
