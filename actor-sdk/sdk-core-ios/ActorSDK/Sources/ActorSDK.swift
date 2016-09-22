@@ -7,6 +7,7 @@ import JDStatusBarNotification
 import PushKit
 import SafariServices
 import DZNWebViewController
+import ReachabilitySwift
 
 @objc open class ActorSDK: NSObject, PKPushRegistryDelegate {
 
@@ -208,7 +209,7 @@ import DZNWebViewController
     fileprivate(set) open var bindedToWindow: UIWindow!
     
     // Reachability
-    // fileprivate var reachability: Reachability!
+    fileprivate var reachability: Reachability!
     
     public override init() {
         
@@ -227,65 +228,65 @@ import DZNWebViewController
         
         AAActorRuntime.configureRuntime()
         
-        let builder = ACConfigurationBuilder()
+        let builder = ACConfigurationBuilder()!
         
         // Api Connections
         let deviceKey = UUID().uuidString
         let deviceName = UIDevice.current.name
         let appTitle = "Actor iOS"
         for url in endpoints {
-            builder?.addEndpoint(url)
+            builder.addEndpoint(url)
         }
         for key in trustedKeys {
-            builder?.addTrustedKey(key)
+            builder.addTrustedKey(key)
         }
-        builder?.setApiConfiguration(ACApiConfiguration(appTitle: appTitle, withAppId: jint(apiId), withAppKey: apiKey, withDeviceTitle: deviceName, withDeviceId: deviceKey))
+        builder.setApiConfiguration(ACApiConfiguration(appTitle: appTitle, withAppId: jint(apiId), withAppKey: apiKey, withDeviceTitle: deviceName, withDeviceId: deviceKey))
         
         // Providers
-        builder?.setPhoneBookProvider(PhoneBookProvider())
-        builder?.setNotificationProvider(iOSNotificationProvider())
-        builder?.setCallsProvider(iOSCallsProvider())
+        builder.setPhoneBookProvider(PhoneBookProvider())
+        builder.setNotificationProvider(iOSNotificationProvider())
+        builder.setCallsProvider(iOSCallsProvider())
         
         // Stats
-        builder?.setPlatformType(ACPlatformType.ios())
-        builder?.setDeviceCategory(ACDeviceCategory.mobile())
+        builder.setPlatformType(ACPlatformType.ios())
+        builder.setDeviceCategory(ACDeviceCategory.mobile())
         
         // Locale
         for lang in Locale.preferredLanguages {
             log("Found locale :\(lang)")
-            builder?.addPreferredLanguage(lang)
+            builder.addPreferredLanguage(lang)
         }
         
         // TimeZone
         let timeZone = TimeZone.current.identifier
         log("Found time zone :\(timeZone)")
-        builder?.setTimeZone(timeZone)
+        builder.setTimeZone(timeZone)
   
         // AutoJoin
         for s in autoJoinGroups {
-            builder?.addAutoJoinGroup(withToken: s)
+            builder.addAutoJoinGroup(withToken: s)
         }
         if autoJoinOnReady {
-            builder?.setAutoJoinType(ACAutoJoinType.after_INIT())
+            builder.setAutoJoinType(ACAutoJoinType.after_INIT())
         } else {
-            builder?.setAutoJoinType(ACAutoJoinType.immediately())
+            builder.setAutoJoinType(ACAutoJoinType.immediately())
         }
         
         // Logs
         // builder.setEnableFilesLogging(true)
         
         // Application name
-        builder?.setCustomAppName(appName)
+        builder.setCustomAppName(appName)
         
         // Config
-        builder?.setPhoneBookImportEnabled(jboolean(enablePhoneBookImport))
-        builder?.setVoiceCallsEnabled(jboolean(enableCalls))
-        builder?.setVideoCallsEnabled(jboolean(enableCalls))
-        builder?.setIsEnabledGroupedChatList(false)
+        builder.setPhoneBookImportEnabled(jboolean(enablePhoneBookImport))
+        builder.setVoiceCallsEnabled(jboolean(enableCalls))
+        builder.setVideoCallsEnabled(jboolean(enableCalls))
+        builder.setIsEnabledGroupedChatList(false)
         // builder.setEnableFilesLogging(true)
         
         // Creating messenger
-        messenger = ACCocoaMessenger(configuration: (builder?.build())!)
+        messenger = ACCocoaMessenger(configuration: builder.build())
         
         // Configure bubbles
         AABubbles.layouters = delegate.actorConfigureBubbleLayouters(AABubbles.builtInLayouters)
@@ -331,23 +332,21 @@ import DZNWebViewController
         
         // Subscribe to network changes
         
-//        do {
-//            reachability = try Reachability.reachabilityForInternetConnection()
-//            NotificationCenter.default.addObserver(self, selector: #selector(ActorSDK.reachabilityChanged(_:)), name: NSNotification.Name(rawValue: ReachabilityChangedNotification), object: reachability)
-//            try reachability.startNotifier()
-//        } catch {
-//            print("Unable to create Reachability")
-//            return
-//        }
+        reachability = Reachability()!
+        if reachability != nil {
+            reachability.whenReachable = { reachability in
+                self.messenger.forceNetworkCheck()
+            }
+            
+            do {
+                try reachability.startNotifier()
+            } catch {
+                print("Unable to start Reachability")
+            }
+        } else {
+            print("Unable to create Reachability")
+        }
     }
-    
-//    @objc func reachabilityChanged(_ note: Notification) {
-//        print("reachabilityChanged (\(reachability.isReachable()))")
-//        
-//        if reachability.isReachable() {
-//            messenger.forceNetworkCheck()
-//        }
-//    }
     
     func didLoggedIn() {
         
