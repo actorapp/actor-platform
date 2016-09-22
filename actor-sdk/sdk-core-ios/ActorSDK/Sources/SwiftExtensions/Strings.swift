@@ -97,17 +97,17 @@ public extension String {
     public func rangesOfString(_ text: String) -> [Range<String.Index>] {
         var res = [Range<String.Index>]()
         
-//        var searchRange = (self.characters.indices)
-//        while true {
-//            let found = self.range(of: text, options: NSString.CompareOptions.caseInsensitive, range: searchRange, locale: nil)
-//            if found != nil {
-//                res.append(found!)
-//                searchRange = (found!.upperBound ..< self.endIndex)
-//            } else {
-//                break
-//            }
-//        }
-//        
+        var searchRange = (self.startIndex ..< self.endIndex)
+        while true {
+            let found = self.range(of: text, options: String.CompareOptions.caseInsensitive, range: searchRange, locale: nil)
+            if found != nil {
+                res.append(found!)
+                searchRange = (found!.upperBound ..< self.endIndex)
+            } else {
+                break
+            }
+        }
+        
         return res
     }
     
@@ -141,15 +141,15 @@ public extension String {
 
 public extension NSAttributedString {
     
-    public func append(_ text: NSAttributedString) -> NSAttributedString {
+    public func appendMutate(_ text: NSAttributedString) -> NSAttributedString {
         let res = NSMutableAttributedString()
-        // res.append(self)
-        // res.append(text)
+        res.append(self)
+        res.append(text)
         return res
     }
     
-    public func append(_ text: String, font: UIFont) -> NSAttributedString {
-        return append(NSAttributedString(string: text, attributes: [NSFontAttributeName: font]))
+    public func appendMutate(_ text: String, font: UIFont) -> NSAttributedString {
+        return self.appendMutate(NSAttributedString(string: text, attributes: [NSFontAttributeName: font]))
     }
     
     public convenience init(string: String, font: UIFont) {

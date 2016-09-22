@@ -271,19 +271,6 @@ class AAFileCallback : NSObject, ACFileCallback {
 // Markdown
 //
 
-//public class ARMDFormattedText {
-//    
-//    public let isTrivial: Bool
-//    public let attributedText: NSAttributedString
-//    public let code: [String]
-//    
-//    public init(attributedText: NSAttributedString, isTrivial: Bool, code: [String]) {
-//        self.attributedText = attributedText
-//        self.code = code
-//        self.isTrivial = isTrivial
-//    }
-//}
-
 open class TextParser {
     
     open let textColor: UIColor
@@ -316,7 +303,7 @@ open class TextParser {
         var isFirst = true
         for s in sections {
             if !isFirst {
-                // nAttrText.append(NSAttributedString(string: "\n"))
+                nAttrText.append(NSAttributedString(string: "\n"))
             }
             isFirst = false
             
@@ -331,13 +318,13 @@ open class TextParser {
                 str.yy_setFont(UIFont.textFontOfSize(fontSize), range: range)
                 str.yy_setColor(linkColor, range: range)
                 
-                // nAttrText.append(str)
+                nAttrText.append(str)
                 
                 sources.append(s.getCode().getCode())
             } else if s.getType() == ARMDSection_TYPE_TEXT {
                 let child: [ARMDText] = s.getText().toSwiftArray()
                 for c in child {
-                    // nAttrText.append(buildText(c, fontSize: fontSize))
+                    nAttrText.append(buildText(c, fontSize: fontSize))
                 }
             } else {
                 fatalError("Unsupported section type")
@@ -363,7 +350,7 @@ open class TextParser {
             // Processing child texts
             let child: [ARMDText] = span.getChild().toSwiftArray()
             for c in child {
-                // res.append(buildText(c, fontSize: fontSize))
+                res.append(buildText(c, fontSize: fontSize))
             }
             
             // Setting span elements
@@ -418,116 +405,7 @@ open class ParsedText {
         self.isTrivial = isTrivial
     }
 }
-//
-//public extension ARMarkdownParser {
-//    
-//    public func parse(text: String, textColor: UIColor, fontSize: CGFloat) -> ARMDFormattedText {
-//        
-//        let doc = self.processDocumentWithNSString(text)
-//        if doc.isTrivial() {
-//            let nAttrText = NSMutableAttributedString(string: text)
-//            let range = NSRange(location: 0, length: nAttrText.length)
-//            nAttrText.yy_setColor(textColor, range: range)
-//            nAttrText.yy_setFont(UIFont.textFontOfSize(fontSize), range: range)
-//            return ARMDFormattedText(attributedText: nAttrText, isTrivial: true, code: [])
-//        }
-//        
-//        var sources = [String]()
-//        
-//        let sections: [ARMDSection] = doc.getSections().toSwiftArray()
-//        let nAttrText = NSMutableAttributedString()
-//        var isFirst = true
-//        for s in sections {
-//            if !isFirst {
-//                nAttrText.appendAttributedString(NSAttributedString(string: "\n"))
-//            }
-//            isFirst = false
-//            
-//            if s.getType() == ARMDSection_TYPE_CODE {
-//                let attributes = [NSLinkAttributeName: NSURL(string: "source:///\(sources.count)") as! AnyObject,
-//                    NSFontAttributeName: UIFont.textFontOfSize(fontSize)]
-//                nAttrText.appendAttributedString(NSAttributedString(string: "Open Code", attributes: attributes))
-//                sources.append(s.getCode().getCode())
-//            } else if s.getType() == ARMDSection_TYPE_TEXT {
-//                let child: [ARMDText] = s.getText().toSwiftArray()
-//                for c in child {
-//                    nAttrText.appendAttributedString(buildText(c, fontSize: fontSize))
-//                }
-//            } else {
-//                fatalError("Unsupported section type")
-//            }
-//        }
-//        
-////        let range = NSRange(location: 0, length: nAttrText.length)
-//        
-////        nAttrText.yy_setColor(textColor, range: range)
-////        nAttrText.yy_setFont(UIFont.textFontOfSize(fontSize), range: range)
-//
-////        nAttrText.enumerateAttributesInRange(range, options:  NSAttributedStringEnumerationOptions.LongestEffectiveRangeNotRequired) { (attrs, range, objBool) -> Void in
-////            var attributeDictionary = NSDictionary(dictionary: attrs)
-////            
-////            for k in attributeDictionary.allKeys {
-////                let v = attributeDictionary.objectForKey(k)
-////                
-////                print("attr: \(k) -> \(v) at \(range)")
-////            }
-////        }
-////        
-//        return ARMDFormattedText(attributedText: nAttrText, isTrivial: false, code: sources)
-//    }
-//    
-//    private func buildText(text: ARMDText, fontSize: CGFloat) -> NSAttributedString {
-//        if let raw = text as? ARMDRawText {
-////            let res = NSMutableAttributedString(string: raw.getRawText())
-////            res.yy_setFont(UIFont.textFontOfSize(fontSize), range: NSRange(location: 0, length: raw.getRawText().length))
-////            return res
-//            return NSAttributedString(string: raw.getRawText(), font: UIFont.textFontOfSize(fontSize))
-//        } else if let span = text as? ARMDSpan {
-//            let res = NSMutableAttributedString()
-//            res.beginEditing()
-//            
-//            // Processing child texts
-//            let child: [ARMDText] = span.getChild().toSwiftArray()
-//            for c in child {
-//                res.appendAttributedString(buildText(c, fontSize: fontSize))
-//            }
-//            
-//            // Setting span elements
-//            if span.getSpanType() == ARMDSpan_TYPE_BOLD {
-//                res.appendFont(UIFont.boldSystemFontOfSize(fontSize))
-//            } else if span.getSpanType() == ARMDSpan_TYPE_ITALIC {
-//                res.appendFont(UIFont.italicSystemFontOfSize(fontSize))
-//            } else {
-//                fatalError("Unsupported span type")
-//            }
-//            
-//            res.endEditing()
-//            return res
-//        } else if let url = text as? ARMDUrl {
-//            
-//            // Parsing url element
-//            let nsUrl = NSURL(string: url.getUrl())
-//            if nsUrl != nil {
-//                let res = NSMutableAttributedString(string:  url.getUrlTitle())
-//                let range = NSRange(location: 0, length: res.length)
-//                let highlight = YYTextHighlight()
-////                res.yy_setFont(UIFont.textFontOfSize(fontSize), range: range)
-////                res.yy_setTextHighlightRange(range, color: UIColor.redColor(), backgroundColor: nil, tapAction: nil)
-//                // res.yy_setColor(UIColor.greenColor(), range: range)
-//                return res
-////                let attributes = [NSLinkAttributeName: nsUrl as! AnyObject,
-////                    NSFontAttributeName: UIFont.textFontOfSize(fontSize)]
-////                return NSAttributedString(string: url.getUrlTitle(), attributes: attributes)
-//            } else {
-//                // Unable to parse: show as text
-//                return NSAttributedString(string: url.getUrlTitle(), font: UIFont.textFontOfSize(fontSize))
-//            }
-//        } else {
-//            fatalError("Unsupported text type")
-//        }
-//    }
-//}
-//
+
 //
 // Promises
 //
