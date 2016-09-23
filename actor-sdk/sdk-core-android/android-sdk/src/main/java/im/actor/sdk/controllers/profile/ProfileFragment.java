@@ -115,7 +115,7 @@ public class ProfileFragment extends BaseFragment {
         //
 
         avatarView = (AvatarView) res.findViewById(R.id.avatar);
-        avatarView.init(Screen.dp(96), 44);
+        avatarView.init(Screen.dp(48), 22);
         avatarView.bind(user.getAvatar().get(), user.getName().get(), user.getId());
         avatarView.setOnClickListener(v -> {
             startActivity(ViewAvatarActivity.viewAvatar(user.getId(), getActivity()));
@@ -207,6 +207,7 @@ public class ProfileFragment extends BaseFragment {
         // Voice Call
         //
 
+        View voiceCallDivider = res.findViewById(R.id.voiceCallDivider);
         View voiceCallView = res.findViewById(R.id.voiceCall);
         if (ActorSDK.sharedActor().isCallsEnabled() && !user.isBot()) {
             ImageView voiceViewIcon = (ImageView) voiceCallView.findViewById(R.id.actionIcon);
@@ -221,6 +222,7 @@ public class ProfileFragment extends BaseFragment {
             });
         } else {
             voiceCallView.setVisibility(View.GONE);
+            voiceCallDivider.setVisibility(View.GONE);
         }
 
         //
@@ -228,6 +230,7 @@ public class ProfileFragment extends BaseFragment {
         //
 
 
+        View videoCallDivider = res.findViewById(R.id.videoCallDivider);
         View videoCallView = res.findViewById(R.id.videoCall);
         if (ActorSDK.sharedActor().isCallsEnabled() && !user.isBot()) {
             ImageView voiceViewIcon = (ImageView) videoCallView.findViewById(R.id.videoCallIcon);
@@ -242,6 +245,7 @@ public class ProfileFragment extends BaseFragment {
             });
         } else {
             videoCallView.setVisibility(View.GONE);
+            videoCallDivider.setVisibility(View.GONE);
         }
 
 
