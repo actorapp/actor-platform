@@ -6,21 +6,21 @@ import Foundation
 
 // Edit Row
 
-public class AAEditRow: AAManagedRow, UITextFieldDelegate {
+open class AAEditRow: AAManagedRow, UITextFieldDelegate {
     
-    public var prefix: String?
-    public var text: String?
-    public var placeholder: String?
-    public var returnKeyType = UIReturnKeyType.Default
-    public var autocorrectionType = UITextAutocorrectionType.Default
-    public var autocapitalizationType = UITextAutocapitalizationType.Sentences
-    public var returnAction: (()->())?
+    open var prefix: String?
+    open var text: String?
+    open var placeholder: String?
+    open var returnKeyType = UIReturnKeyType.default
+    open var autocorrectionType = UITextAutocorrectionType.default
+    open var autocapitalizationType = UITextAutocapitalizationType.sentences
+    open var returnAction: (()->())?
     
-    public override func rangeCellHeightForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> CGFloat {
+    open override func rangeCellHeightForItem(_ table: AAManagedTable, indexPath: AARangeIndexPath) -> CGFloat {
         return 44
     }
     
-    public override func rangeCellForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> UITableViewCell {
+    open override func rangeCellForItem(_ table: AAManagedTable, indexPath: AARangeIndexPath) -> UITableViewCell {
         let res = table.dequeueCell(indexPath.indexPath) as AAEditCell
         res.textField.text = text
         
@@ -35,28 +35,28 @@ public class AAEditRow: AAManagedRow, UITextFieldDelegate {
         res.textField.returnKeyType = returnKeyType
         res.textField.autocapitalizationType = autocapitalizationType
         res.textField.delegate = self
-        res.textField.removeTarget(nil, action: nil, forControlEvents: .AllEvents)
-        res.textField.addTarget(self, action: #selector(AAEditRow.textFieldDidChange(_:)), forControlEvents: .EditingChanged)
+        res.textField.removeTarget(nil, action: nil, for: .allEvents)
+        res.textField.addTarget(self, action: #selector(AAEditRow.textFieldDidChange(_:)), for: .editingChanged)
         
         if prefix != nil {
             res.textPrefix.text = prefix
-            res.textPrefix.hidden = false
+            res.textPrefix.isHidden = false
         } else {
-            res.textPrefix.hidden = true
+            res.textPrefix.isHidden = true
         }
         
         return res
     }
     
-    public func textFieldDidChange(textField: UITextField) {
+    open func textFieldDidChange(_ textField: UITextField) {
         text = textField.text
     }
     
-    @objc public func textFieldDidEndEditing(textField: UITextField) {
+    @objc open func textFieldDidEndEditing(_ textField: UITextField) {
         text = textField.text
     }
     
-    public func textFieldShouldReturn(textField: UITextField) -> Bool {
+    open func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         returnAction?()
         return false
     }
@@ -64,10 +64,10 @@ public class AAEditRow: AAManagedRow, UITextFieldDelegate {
 
 public extension AAManagedSection {
     
-    public func edit(@noescape closure: (r: AAEditRow) -> ()) -> AAEditRow {
+    public func edit(_ closure: (_ r: AAEditRow) -> ()) -> AAEditRow {
         let r = AAEditRow()
         regions.append(r)
-        closure(r: r)
+        closure(r)
         r.initTable(self.table)
         return r
     }
@@ -75,29 +75,29 @@ public extension AAManagedSection {
 
 // Titled Row
 
-public class AATitledRow: AAManagedRow {
+open class AATitledRow: AAManagedRow {
     
-    public var title: String?
-    public var subtitle: String?
+    open var title: String?
+    open var subtitle: String?
     
-    public var isAction: Bool = false
-    public var accessoryType = UITableViewCellAccessoryType.None
+    open var isAction: Bool = false
+    open var accessoryType = UITableViewCellAccessoryType.none
     
-    public var bindAction: ((r: AATitledRow)->())?
+    open var bindAction: ((_ r: AATitledRow)->())?
     
     // Cell
     
-    public override func rangeCellHeightForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> CGFloat {
+    open override func rangeCellHeightForItem(_ table: AAManagedTable, indexPath: AARangeIndexPath) -> CGFloat {
         return 55
     }
     
-    public override func rangeCellForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> UITableViewCell {
+    open override func rangeCellForItem(_ table: AAManagedTable, indexPath: AARangeIndexPath) -> UITableViewCell {
         let res = table.dequeueTitledCell(indexPath.indexPath)
         bindCell(res)
         return res
     }
     
-    public func bindCell(res: AATitledCell) {
+    open func bindCell(_ res: AATitledCell) {
         res.titleLabel.text = title
         res.contentLabel.text = subtitle
         res.accessoryType = accessoryType
@@ -112,18 +112,18 @@ public class AATitledRow: AAManagedRow {
     
     // Copy
     
-    public override func rangeCopyData(table: AAManagedTable, indexPath: AARangeIndexPath) -> String? {
+    open override func rangeCopyData(_ table: AAManagedTable, indexPath: AARangeIndexPath) -> String? {
         return isAction ? nil : subtitle
     }
     
     // Binding
     
-    public override func reload() {
+    open override func reload() {
         
-        bindAction?(r: self)
+        bindAction?(self)
         
         if let p = indexPath, let s = section {
-            if let cell = s.table.tableView.cellForRowAtIndexPath(p) as? AATitledCell {
+            if let cell = s.table.tableView.cellForRow(at: p) as? AATitledCell {
                 bindCell(cell)
             }
         }
@@ -132,32 +132,32 @@ public class AATitledRow: AAManagedRow {
 
 public extension AAManagedSection {
     
-    private func titled() -> AATitledRow {
+    fileprivate func titled() -> AATitledRow {
         let r = AATitledRow()
         let itemsCount = numberOfItems(table)
         regions.append(r)
-        r.indexPath = NSIndexPath(forRow: itemsCount, inSection: index)
+        r.indexPath = IndexPath(row: itemsCount, section: index)
         r.section = self
         r.initTable(self.table)
         return r
     }
 
-    public func titled(@noescape closure: (r: AATitledRow) -> ()) -> AATitledRow {
+    public func titled(_ closure: (_ r: AATitledRow) -> ()) -> AATitledRow {
         let r = titled()
-        closure(r: r)
+        closure(r)
         r.initTable(self.table)
         return r
     }
     
-    public func titled(title: String, @noescape closure: (r: AATitledRow) -> ()) -> AATitledRow {
+    public func titled(_ title: String, closure: (_ r: AATitledRow) -> ()) -> AATitledRow {
         let r = titled()
         r.title = AALocalized(title)
-        closure(r: r)
+        closure(r)
         r.initTable(self.table)
         return r
     }
     
-    public func titled(title: String, content: String) -> AATitledRow {
+    public func titled(_ title: String, content: String) -> AATitledRow {
         let r = titled()
         r.title = AALocalized(title)
         r.subtitle = content
@@ -168,44 +168,44 @@ public extension AAManagedSection {
 
 // Text Row
 
-public class AATextRow: AAManagedRow {
+open class AATextRow: AAManagedRow {
     
-    public var title: String?
-    public var content: String?
+    open var title: String?
+    open var content: String?
     
-    public var isAction: Bool = false
-    public var navigate: Bool = false
+    open var isAction: Bool = false
+    open var navigate: Bool = false
     
-    public var bindAction: ((r: AATextRow)->())?
+    open var bindAction: ((_ r: AATextRow)->())?
     
     // Cell
     
-    public override func rangeCellHeightForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> CGFloat {
+    open override func rangeCellHeightForItem(_ table: AAManagedTable, indexPath: AARangeIndexPath) -> CGFloat {
         return AATextCell.measure(title, text: content!, width: table.tableView.width, enableNavigation: navigate)
     }
     
-    public override func rangeCellForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> UITableViewCell {
+    open override func rangeCellForItem(_ table: AAManagedTable, indexPath: AARangeIndexPath) -> UITableViewCell {
         let res = table.dequeueTextCell(indexPath.indexPath)
         res.setContent(title, content: content, isAction: isAction)
         if navigate {
-            res.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
+            res.accessoryType = UITableViewCellAccessoryType.disclosureIndicator
         } else {
-            res.accessoryType = UITableViewCellAccessoryType.None
+            res.accessoryType = UITableViewCellAccessoryType.none
         }
         return res
     }
     
     // Copy
     
-    public override func rangeCopyData(table: AAManagedTable, indexPath: AARangeIndexPath) -> String? {
+    open override func rangeCopyData(_ table: AAManagedTable, indexPath: AARangeIndexPath) -> String? {
         return isAction ? nil : content
     }
     
     // Binding
     
-    public override func reload() {
+    open override func reload() {
         
-        bindAction?(r: self)
+        bindAction?(self)
         
         super.reload()
     }
@@ -213,42 +213,46 @@ public class AATextRow: AAManagedRow {
 
 public extension AAManagedSection {
     
-    private func text() -> AATextRow {
+    fileprivate func text() -> AATextRow {
         let r = AATextRow()
         let itemsCount = numberOfItems(table)
         regions.append(r)
-        r.indexPath = NSIndexPath(forRow: itemsCount, inSection: index)
+        r.indexPath = IndexPath(row: itemsCount, section: index)
         r.section = self
         r.initTable(self.table)
         return r
     }
     
-    public func text(@noescape closure: (r: AATextRow) -> ()) -> AATextRow {
+    public func text(_ closure: (_ r: AATextRow) -> ()) -> AATextRow {
         let r = text()
-        closure(r: r)
-        r.bindAction?(r: r)
+        closure(r)
+        r.bindAction?(r)
         r.initTable(self.table)
         return r
     }
     
-    public func text(title: String?, @noescape closure: (r: AATextRow) -> ()) -> AATextRow {
+    public func text(_ title: String?, closure: (_ r: AATextRow) -> ()) -> AATextRow {
         let r = text()
-        r.title = AALocalized(title)
-        closure(r: r)
-        r.bindAction?(r: r)
+        if title != nil {
+            r.title = AALocalized(title!)
+        }
+        closure(r)
+        r.bindAction?(r)
         r.initTable(self.table)
         return r
     }
     
-    public func text(title: String?, content: String) -> AATextRow {
+    public func text(_ title: String?, content: String) -> AATextRow {
         let r = text()
-        r.title = AALocalized(title)
+        if title != nil {
+            r.title = AALocalized(title!)
+        }
         r.content = content
         r.initTable(self.table)
         return r
     }
     
-    public func text(content: String) -> AATextRow {
+    public func text(_ content: String) -> AATextRow {
         let r = text()
         r.title = nil
         r.content = content
@@ -260,30 +264,30 @@ public extension AAManagedSection {
 
 // Header Row
 
-public class AAHeaderRow: AAManagedRow {
+open class AAHeaderRow: AAManagedRow {
     
-    public var height: CGFloat = 40
-    public var title: String?
-    public var icon: UIImage?
+    open var height: CGFloat = 40
+    open var title: String?
+    open var icon: UIImage?
     
-    public override func rangeCellHeightForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> CGFloat {
+    open override func rangeCellHeightForItem(_ table: AAManagedTable, indexPath: AARangeIndexPath) -> CGFloat {
         return height
     }
     
-    public override func rangeCellForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> UITableViewCell {
+    open override func rangeCellForItem(_ table: AAManagedTable, indexPath: AARangeIndexPath) -> UITableViewCell {
         let res = table.dequeueCell(indexPath.indexPath) as AAHeaderCell
         
         if title == nil {
-            res.titleView.hidden = true
+            res.titleView.isHidden = true
         } else {
             res.titleView.text = title
-            res.titleView.hidden = false
+            res.titleView.isHidden = false
         }
         
         if icon == nil {
-            res.iconView.hidden = true
+            res.iconView.isHidden = true
         } else {
-            res.iconView.hidden = false
+            res.iconView.isHidden = false
             res.iconView.image = icon!.tintImage(ActorSDK.sharedActor().style.cellHeaderColor)
         }
         
@@ -293,7 +297,7 @@ public class AAHeaderRow: AAManagedRow {
 
 public extension AAManagedSection {
     
-    private func header() -> AAHeaderRow {
+    fileprivate func header() -> AAHeaderRow {
         let r = AAHeaderRow()
         regions.append(r)
         r.section = self
@@ -301,7 +305,7 @@ public extension AAManagedSection {
         return r
     }
     
-    public func header(title: String) -> AAHeaderRow {
+    public func header(_ title: String) -> AAHeaderRow {
         let r = header()
         r.title = title
         r.initTable(self.table)
@@ -312,31 +316,31 @@ public extension AAManagedSection {
 
 // Common Row
 
-public class AACommonRow: AAManagedRow {
+open class AACommonRow: AAManagedRow {
     
-    public var style: AACommonCellStyle = .Normal
-    public var hint: String?
-    public var content: String?
-    public var switchOn: Bool = false
-    public var switchAction: ((v: Bool) -> ())?
+    open var style: AACommonCellStyle = .normal
+    open var hint: String?
+    open var content: String?
+    open var switchOn: Bool = false
+    open var switchAction: ((_ v: Bool) -> ())?
     
-    public var bindAction: ((r: AACommonRow)->())?
+    open var bindAction: ((_ r: AACommonRow)->())?
     
-    public var contentInset: CGFloat = 15
+    open var contentInset: CGFloat = 15
     
     // Cell
     
-    public override func rangeCellHeightForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> CGFloat {
+    open override func rangeCellHeightForItem(_ table: AAManagedTable, indexPath: AARangeIndexPath) -> CGFloat {
         return 44
     }
     
-    public override func rangeCellForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> UITableViewCell {
+    open override func rangeCellForItem(_ table: AAManagedTable, indexPath: AARangeIndexPath) -> UITableViewCell {
         let res = table.dequeueCommonCell(indexPath.indexPath)
         bindCell(res)
         return res
     }
     
-    public func bindCell(res: AACommonCell) {
+    open func bindCell(_ res: AACommonCell) {
         res.style = style
         res.setContent(content)
         res.setHint(hint)
@@ -345,31 +349,31 @@ public class AACommonRow: AAManagedRow {
         res.contentInset = contentInset
         
         if selectAction != nil {
-            res.selectionStyle = .Default
+            res.selectionStyle = .default
         } else {
-            res.selectionStyle = .None
+            res.selectionStyle = .none
         }
     }
     
     // Binding
     
-    public func rangeBind(table: AAManagedTable, binder: AABinder) {
-        bindAction?(r: self)
+    open func rangeBind(_ table: AAManagedTable, binder: AABinder) {
+        bindAction?(self)
     }
     
-    public override func reload() {
+    open override func reload() {
         
-        bindAction?(r: self)
+        bindAction?(self)
         
         if let p = indexPath, let s = section {
-            if let cell = s.table.tableView.cellForRowAtIndexPath(p) as? AACommonCell {
+            if let cell = s.table.tableView.cellForRow(at: p) as? AACommonCell {
                 bindCell(cell)
             }
         }
     }
     
-    public func rebind() {
-        bindAction?(r: self)
+    open func rebind() {
+        bindAction?(self)
     }
 }
 
@@ -377,100 +381,100 @@ public extension AAManagedSection {
 
     // Common cell
     
-    private func common() -> AACommonRow {
+    fileprivate func common() -> AACommonRow {
         let r = AACommonRow()
         let itemsCount = numberOfItems(table)
         regions.append(r)
-        r.indexPath = NSIndexPath(forRow: itemsCount, inSection: index)
+        r.indexPath = IndexPath(row: itemsCount, section: index)
         r.section = self
         r.initTable(self.table)
         return r
     }
     
-    public func common(@noescape closure: (r: AACommonRow) -> ()) -> AACommonRow {
+    public func common(_ closure: (_ r: AACommonRow) -> ()) -> AACommonRow {
         let r = common()
-        closure(r: r)
-        r.bindAction?(r: r)
+        closure(r)
+        r.bindAction?(r)
         r.initTable(self.table)
         return r
     }
     
     // Action cell
     
-    public func action(@noescape closure: (r: AACommonRow) -> ()) -> AACommonRow {
+    public func action(_ closure: (_ r: AACommonRow) -> ()) -> AACommonRow {
         let r = common()
-        r.style = .Action
-        closure(r: r)
-        r.bindAction?(r: r)
+        r.style = .action
+        closure(r)
+        r.bindAction?(r)
         r.initTable(self.table)
         return r
     }
     
-    public func action(content: String, @noescape closure: (r: AACommonRow) -> ()) -> AACommonRow {
+    public func action(_ content: String, closure: (_ r: AACommonRow) -> ()) -> AACommonRow {
         let r = common()
         r.content = AALocalized(content)
-        r.style = .Action
-        closure(r: r)
-        r.bindAction?(r: r)
+        r.style = .action
+        closure(r)
+        r.bindAction?(r)
         r.initTable(self.table)
         return r
     }
     
     // Navigation cell
     
-    public func navigate(@noescape closure: (r: AACommonRow) -> ()) -> AACommonRow {
+    public func navigate(_ closure: (_ r: AACommonRow) -> ()) -> AACommonRow {
         let r = common()
-        r.style = .Navigation
-        closure(r: r)
-        r.bindAction?(r: r)
+        r.style = .navigation
+        closure(r)
+        r.bindAction?(r)
         r.initTable(self.table)
         return r
     }
     
-    public func navigate(content: String, @noescape closure: (r: AACommonRow) -> ()) -> AACommonRow {
+    public func navigate(_ content: String, closure: (_ r: AACommonRow) -> ()) -> AACommonRow {
         let r = common()
         r.content = AALocalized(content)
-        r.style = .Navigation
-        closure(r: r)
-        r.bindAction?(r: r)
+        r.style = .navigation
+        closure(r)
+        r.bindAction?(r)
         r.initTable(self.table)
         return r
     }
     
-    public func navigate(content: String, controller: UIViewController.Type) -> AACommonRow {
+    public func navigate(_ content: String, controller: UIViewController.Type) -> AACommonRow {
         let r = common()
         r.content = AALocalized(content)
-        r.style = .Navigation
+        r.style = .navigation
         r.selectAction = { () -> Bool in
             self.table.controller.navigateNext(controller.init())
             return false
         }
-        r.bindAction?(r: r)
+        r.bindAction?(r)
         r.initTable(self.table)
         return r
     }
     
     // Danger
     
-    public func danger(content: String, @noescape closure: (r: AACommonRow) -> ()) -> AACommonRow {
+    public func danger(_ content: String, closure: (_ r: AACommonRow) -> ()) -> AACommonRow {
         let r = common()
         r.content = AALocalized(content)
-        r.style = .Destructive
-        closure(r: r)
-        r.bindAction?(r: r)
+        r.style = .destructive
+        closure(r)
+        r.bindAction?(r)
         r.initTable(self.table)
         return r
     }
     
     // Content
     
-    func url(content: String, url: String) -> AACommonRow {
+    func url(_ content: String, url: String) -> AACommonRow {
         let r = common()
         r.content = AALocalized(content)
-        r.style = .Navigation
+        r.style = .navigation
         r.selectAction = { () -> Bool in
-            if let u = NSURL(string: url) {
-                UIApplication.sharedApplication().openURL(u)
+            if let u = URL(string: url) {
+                UIApplication.shared.openURL(u)
             }
             return true
         }
@@ -478,11 +482,11 @@ public extension AAManagedSection {
         return r
     }
     
-    public func hint(content: String) -> AACommonRow {
+    public func hint(_ content: String) -> AACommonRow {
         let r = common()
         r.content = AALocalized(content)
-        r.style = .Hint
-        r.bindAction?(r: r)
+        r.style = .hint
+        r.bindAction?(r)
         r.initTable(self.table)
         return r
     }
@@ -491,34 +495,34 @@ public extension AAManagedSection {
 
 // Custom cell
 
-public class AACustomRow<T where T: UITableViewCell>: AAManagedRow {
+open class AACustomRow<T>: AAManagedRow where T: UITableViewCell {
     
-    public var height: CGFloat = 44
-    public var closure: ((cell: T) -> ())?
+    open var height: CGFloat = 44
+    open var closure: ((_ cell: T) -> ())?
     
-    public var bindAction: ((r: AACustomRow<T>)->())?
+    open var bindAction: ((_ r: AACustomRow<T>)->())?
     
     // Cell
     
-    public override func rangeCellHeightForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> CGFloat {
+    open override func rangeCellHeightForItem(_ table: AAManagedTable, indexPath: AARangeIndexPath) -> CGFloat {
         return height
     }
     
-    public override func rangeCellForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> UITableViewCell {
+    open override func rangeCellForItem(_ table: AAManagedTable, indexPath: AARangeIndexPath) -> UITableViewCell {
         let res: T = table.dequeueCell(indexPath.indexPath)
         rangeBindCellForItem(table, indexPath: indexPath, cell: res)
         return res
     }
     
-    public func rangeBindCellForItem(table: AAManagedTable, indexPath: AARangeIndexPath, cell: T) {
-        closure?(cell: cell)
+    open func rangeBindCellForItem(_ table: AAManagedTable, indexPath: AARangeIndexPath, cell: T) {
+        closure?(cell)
     }
     
     // Binding
     
-    public override func reload() {
+    open override func reload() {
         
-        bindAction?(r: self)
+        bindAction?(self)
         
         super.reload()
     }
@@ -526,20 +530,20 @@ public class AACustomRow<T where T: UITableViewCell>: AAManagedRow {
 
 public extension AAManagedSection {
     
-    private func custom<T where T: UITableViewCell>() -> AACustomRow<T> {
+    fileprivate func custom<T>() -> AACustomRow<T> where T: UITableViewCell {
         let r = AACustomRow<T>()
         let itemsCount = numberOfItems(table)
         regions.append(r)
-        r.indexPath = NSIndexPath(forRow: itemsCount, inSection: index)
+        r.indexPath = IndexPath(row: itemsCount, section: index)
         r.section = self
         r.initTable(self.table)
         return r
     }
     
-    public func custom<T where T: UITableViewCell>(@noescape closure: (r: AACustomRow<T>) -> ()) -> AACustomRow<T> {
+    public func custom<T>(_ closure: (_ r: AACustomRow<T>) -> ()) -> AACustomRow<T> where T: UITableViewCell {
         let r: AACustomRow<T> = custom()
-        closure(r: r)
-        r.bindAction?(r: r)
+        closure(r)
+        r.bindAction?(r)
         r.initTable(self.table)
         return r
     }
@@ -547,39 +551,39 @@ public extension AAManagedSection {
 
 // Avatar Row
 
-public class AAAvatarRow: AAManagedRow {
+open class AAAvatarRow: AAManagedRow {
     
-    public var id: Int?
-    public var title: String?
+    open var id: Int?
+    open var title: String?
     
-    public var avatar: ACAvatar?
-    public var avatarPath: String?
-    public var avatarLoading: Bool = false
+    open var avatar: ACAvatar?
+    open var avatarPath: String?
+    open var avatarLoading: Bool = false
     
-    public var subtitleHidden: Bool = false
-    public var subtitle: String?
-    public var subtitleColor: UIColor?
+    open var subtitleHidden: Bool = false
+    open var subtitle: String?
+    open var subtitleColor: UIColor?
     
-    public var bindAction: ((r: AAAvatarRow)->())?
+    open var bindAction: ((_ r: AAAvatarRow)->())?
     
-    public var avatarDidTap: ((view: UIView) -> ())?
+    open var avatarDidTap: ((_ view: UIView) -> ())?
     
     // Cell
     
-    public override func rangeCellHeightForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> CGFloat {
+    open override func rangeCellHeightForItem(_ table: AAManagedTable, indexPath: AARangeIndexPath) -> CGFloat {
         return 92
     }
     
-    public override func rangeCellForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> UITableViewCell {
+    open override func rangeCellForItem(_ table: AAManagedTable, indexPath: AARangeIndexPath) -> UITableViewCell {
         let res: AAAvatarCell = table.dequeueCell(indexPath.indexPath)
         bindCell(res)
         return res
     }
     
-    public func bindCell(res: AAAvatarCell) {
+    open func bindCell(_ res: AAAvatarCell) {
         res.titleLabel.text = title
         
-        res.subtitleLabel.hidden = subtitleHidden
+        res.subtitleLabel.isHidden = subtitleHidden
         res.subtitleLabel.text = subtitle
         
         if avatarPath != nil {
@@ -594,7 +598,7 @@ public class AAAvatarRow: AAManagedRow {
             res.subtitleLabel.textColor = ActorSDK.sharedActor().style.cellTextColor
         }
         
-        res.progress.hidden = !avatarLoading
+        res.progress.isHidden = !avatarLoading
         if avatarLoading {
             res.progress.startAnimating()
         } else {
@@ -606,9 +610,9 @@ public class AAAvatarRow: AAManagedRow {
     
     // Binding
     
-    public override func reload() {
+    open override func reload() {
         
-        bindAction?(r: self)
+        bindAction?(self)
         
         if let p = indexPath, let s = section {
             if let cell = s.table.tableView.visibleCellForIndexPath(p) as? AAAvatarCell {
@@ -620,20 +624,20 @@ public class AAAvatarRow: AAManagedRow {
 
 public extension AAManagedSection {
     
-    private func addAvatar() -> AAAvatarRow {
+    fileprivate func addAvatar() -> AAAvatarRow {
         let r = AAAvatarRow()
         let itemsCount = numberOfItems(table)
         regions.append(r)
-        r.indexPath = NSIndexPath(forRow: itemsCount, inSection: index)
+        r.indexPath = IndexPath(row: itemsCount, section: index)
         r.section = self
         r.initTable(self.table)
         return r
     }
     
-    public func avatar(@noescape closure: (r: AAAvatarRow) -> ()) -> AAAvatarRow {
+    public func avatar(_ closure: (_ r: AAAvatarRow) -> ()) -> AAAvatarRow {
         let r: AAAvatarRow = addAvatar()
-        closure(r: r)
-        r.bindAction?(r: r)
+        closure(r)
+        r.bindAction?(r)
         r.initTable(self.table)
         return r
     }
@@ -641,88 +645,88 @@ public extension AAManagedSection {
 
 // Arrays
 
-public class AAManagedArrayRows<T, R where R: UITableViewCell>: AAManagedRange {
+open class AAManagedArrayRows<T, R>: AAManagedRange where R: UITableViewCell {
     
-    public var height: CGFloat = 44
-    public var selectAction: ((t: T) -> Bool)?
-    public var bindCopy: ((t: T) -> String?)?
-    public var section: AAManagedSection?
+    open var height: CGFloat = 44
+    open var selectAction: ((_ t: T) -> Bool)?
+    open var bindCopy: ((_ t: T) -> String?)?
+    open var section: AAManagedSection?
     
-    public var bindData: ((cell: R, item: T) -> ())?
+    open var bindData: ((_ cell: R, _ item: T) -> ())?
     
-    public var itemShown: ((index: Int, item: T) -> ())?
+    open var itemShown: ((_ index: Int, _ item: T) -> ())?
     
-    public var data = [T]()
+    open var data = [T]()
     
-    public func initTable(table: AAManagedTable) {
+    open func initTable(_ table: AAManagedTable) {
         
     }
     
     // Number of items
     
-    public func rangeNumberOfItems(table: AAManagedTable) -> Int {
+    open func rangeNumberOfItems(_ table: AAManagedTable) -> Int {
         return data.count
     }
     
     // Cells
     
-    public func rangeCellHeightForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> CGFloat {
+    open func rangeCellHeightForItem(_ table: AAManagedTable, indexPath: AARangeIndexPath) -> CGFloat {
         return height
     }
     
-    public func rangeCellForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> UITableViewCell {
+    open func rangeCellForItem(_ table: AAManagedTable, indexPath: AARangeIndexPath) -> UITableViewCell {
         let res: R = table.dequeueCell(indexPath.indexPath)
         let item = data[indexPath.item]
         rangeBindData(table, indexPath: indexPath, cell: res, item: item)
         
         if let shown = itemShown {
-            shown(index: indexPath.item, item: item)
+            shown(indexPath.item, item)
         }
         
         return res
     }
     
-    public func rangeBindData(table: AAManagedTable, indexPath: AARangeIndexPath, cell: R, item: T) {
-        bindData?(cell: cell, item: item)
+    open func rangeBindData(_ table: AAManagedTable, indexPath: AARangeIndexPath, cell: R, item: T) {
+        bindData?(cell, item)
     }
     
     // Selection
     
-    public func rangeCanSelect(table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool {
+    open func rangeCanSelect(_ table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool {
         return selectAction != nil
     }
     
-    public func rangeSelect(table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool {
-        return selectAction!(t: data[indexPath.item])
+    open func rangeSelect(_ table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool {
+        return selectAction!(data[indexPath.item])
     }
     
     // Copy
     
-    public func rangeCanCopy(table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool {
+    open func rangeCanCopy(_ table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool {
         if bindCopy != nil {
-            return bindCopy!(t: data[indexPath.item]) != nil
+            return bindCopy!(data[indexPath.item]) != nil
         }
         return false
     }
     
-    public func rangeCopy(table: AAManagedTable, indexPath: AARangeIndexPath) {
-        if let s = bindCopy!(t: data[indexPath.item]) {
-            UIPasteboard.generalPasteboard().string = s
+    open func rangeCopy(_ table: AAManagedTable, indexPath: AARangeIndexPath) {
+        if let s = bindCopy!(data[indexPath.item]) {
+            UIPasteboard.general.string = s
         }
     }
     
     // Reloading
     
-    public func reload() {
+    open func reload() {
         if let s = section {
-            s.table.tableView.reloadSections(NSIndexSet(index: s.index), withRowAnimation: .Automatic)
+            s.table.tableView.reloadSections(IndexSet(integer: s.index), with: .automatic)
         }
     }
 }
 
 public extension AAManagedSection {
     
-    private func addArrays<T, R where R: UITableViewCell>() -> AAManagedArrayRows<T, R> {
+    fileprivate func addArrays<T, R>() -> AAManagedArrayRows<T, R> where R: UITableViewCell {
         let r = AAManagedArrayRows<T, R>()
         regions.append(r)
         r.section = self
@@ -730,9 +734,9 @@ public extension AAManagedSection {
         return r
     }
     
-    public func arrays<T, R where R: UITableViewCell>(@noescape closure: (r: AAManagedArrayRows<T,R>) -> ()) -> AAManagedArrayRows<T, R> {
+    public func arrays<T, R>(_ closure: (_ r: AAManagedArrayRows<T,R>) -> ()) -> AAManagedArrayRows<T, R> where R: UITableViewCell {
         let res: AAManagedArrayRows<T, R> = addArrays()
-        closure(r: res)
+        closure(res)
         res.initTable(self.table)
         return res
     }
@@ -741,60 +745,60 @@ public extension AAManagedSection {
 
 // Single item row
 
-public class AAManagedRow: NSObject, AAManagedRange {
+open class AAManagedRow: NSObject, AAManagedRange {
     
-    public var selectAction: (() -> Bool)?
+    open var selectAction: (() -> Bool)?
     
-    public var section: AAManagedSection?
-    public var indexPath: NSIndexPath?
+    open var section: AAManagedSection?
+    open var indexPath: IndexPath?
     
-    public func initTable(table: AAManagedTable) {
+    open func initTable(_ table: AAManagedTable) {
         
     }
     
     // Number of items
     
-    public func rangeNumberOfItems(table: AAManagedTable) -> Int {
+    open func rangeNumberOfItems(_ table: AAManagedTable) -> Int {
         return 1
     }
     
     // Cells
     
-    public func rangeCellHeightForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> CGFloat {
+    open func rangeCellHeightForItem(_ table: AAManagedTable, indexPath: AARangeIndexPath) -> CGFloat {
         return 44
     }
     
-    public func rangeCellForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> UITableViewCell {
+    open func rangeCellForItem(_ table: AAManagedTable, indexPath: AARangeIndexPath) -> UITableViewCell {
         fatalError("Not implemented")
     }
     
     // Selection
     
-    public func rangeCanSelect(table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool {
+    open func rangeCanSelect(_ table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool {
         return selectAction != nil
     }
     
-    public func rangeSelect(table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool {
+    open func rangeSelect(_ table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool {
         return selectAction!()
     }
     
     // Copying
     
-    public func rangeCanCopy(table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool {
+    open func rangeCanCopy(_ table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool {
         return rangeCopyData(table, indexPath: indexPath) != nil
     }
     
-    public func rangeCopy(table: AAManagedTable, indexPath: AARangeIndexPath) {
-        UIPasteboard.generalPasteboard().string = rangeCopyData(table, indexPath: indexPath)
+    open func rangeCopy(_ table: AAManagedTable, indexPath: AARangeIndexPath) {
+        UIPasteboard.general.string = rangeCopyData(table, indexPath: indexPath)
     }
     
-    public func rangeCopyData(table: AAManagedTable, indexPath: AARangeIndexPath) -> String? {
+    open func rangeCopyData(_ table: AAManagedTable, indexPath: AARangeIndexPath) -> String? {
         return nil
     }
     
-    public func reload() {
+    open func reload() {
         if let p = indexPath, let s = section {
-            s.table.tableView.reloadRowsAtIndexPaths([p], withRowAnimation: .Automatic)
+            s.table.tableView.reloadRows(at: [p], with: .automatic)
         }
     }
 }

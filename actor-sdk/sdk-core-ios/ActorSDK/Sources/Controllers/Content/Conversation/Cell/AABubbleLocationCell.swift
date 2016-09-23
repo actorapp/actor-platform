@@ -8,27 +8,27 @@ import MapKit
 private let mapWidth: CGFloat = 200
 private let mapHeight: CGFloat = 160
 
-public class AABubbleLocationCell: AABubbleCell {
+open class AABubbleLocationCell: AABubbleCell {
     
-    private let map = AAMapFastView(mapWidth: mapWidth, mapHeight: mapHeight)
+    fileprivate let map = AAMapFastView(mapWidth: mapWidth, mapHeight: mapHeight)
     
-    private let pin = UIImageView()
-    private let timeBg = UIImageView()
-    private let timeLabel = UILabel()
-    private let statusView = UIImageView()
+    fileprivate let pin = UIImageView()
+    fileprivate let timeBg = UIImageView()
+    fileprivate let timeLabel = UILabel()
+    fileprivate let statusView = UIImageView()
     
-    private var bindedLat: Double? = nil
-    private var bindedLon: Double? = nil
+    fileprivate var bindedLat: Double? = nil
+    fileprivate var bindedLon: Double? = nil
     
     public init(frame: CGRect) {
         super.init(frame: frame, isFullSize: false)
         
         timeBg.image = ActorSDK.sharedActor().style.statusBackgroundImage
         
-        timeLabel.font = UIFont.italicSystemFontOfSize(11)
+        timeLabel.font = UIFont.italicSystemFont(ofSize: 11)
         timeLabel.textColor = appStyle.chatMediaDateColor
         
-        statusView.contentMode = UIViewContentMode.Center
+        statusView.contentMode = UIViewContentMode.center
 
         pin.image = UIImage.bundled("LocationPin")
         
@@ -42,7 +42,7 @@ public class AABubbleLocationCell: AABubbleCell {
         contentInsets = UIEdgeInsets(top: 1, left: 1, bottom: 1, right: 1)
 
         map.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(AABubbleLocationCell.mapDidTap)))
-        map.userInteractionEnabled = true
+        map.isUserInteractionEnabled = true
     }
 
     public required init(coder aDecoder: NSCoder) {
@@ -52,10 +52,10 @@ public class AABubbleLocationCell: AABubbleCell {
     func mapDidTap() {
         let url = "http://maps.apple.com/?q=\(bindedLat!),\(bindedLon!)"
         // print("url: \(url)")
-        UIApplication.sharedApplication().openURL(NSURL(string: url)!)
+        UIApplication.shared.openURL(URL(string: url)!)
     }
     
-    public override func bind(message: ACMessage, receiveDate: jlong, readDate: jlong, reuse: Bool, cellLayout: AACellLayout, setting: AACellSetting) {
+    open override func bind(_ message: ACMessage, receiveDate: jlong, readDate: jlong, reuse: Bool, cellLayout: AACellLayout, setting: AACellSetting) {
         
         let layout = cellLayout as! AALocationCellLayout
         
@@ -72,9 +72,9 @@ public class AABubbleLocationCell: AABubbleCell {
             
             // Bind bubble
             if (self.isOut) {
-                bindBubbleType(BubbleType.MediaOut, isCompact: false)
+                bindBubbleType(BubbleType.mediaOut, isCompact: false)
             } else {
-                bindBubbleType(BubbleType.MediaIn, isCompact: false)
+                bindBubbleType(BubbleType.mediaIn, isCompact: false)
             }
         }
         
@@ -85,7 +85,7 @@ public class AABubbleLocationCell: AABubbleCell {
         
         // Update status
         if (isOut) {
-            statusView.hidden = false
+            statusView.isHidden = false
             switch(message.messageState.toNSEnum()) {
             case .SENT:
                 if message.sortDate <= readDate {
@@ -112,43 +112,43 @@ public class AABubbleLocationCell: AABubbleCell {
                 break
             }
         } else {
-            statusView.hidden = true
+            statusView.isHidden = true
         }
     }
     
-    public override func layoutContent(maxWidth: CGFloat, offsetX: CGFloat) {
+    open override func layoutContent(_ maxWidth: CGFloat, offsetX: CGFloat) {
         let insets = fullContentInsets
         let contentWidth = self.contentView.frame.width
         
         layoutBubble(mapWidth, contentHeight: mapHeight)
         
         if isOut {
-            map.frame = CGRectMake(contentWidth - insets.right - mapWidth , insets.top, mapWidth, mapHeight)
+            map.frame = CGRect(x: contentWidth - insets.right - mapWidth , y: insets.top, width: mapWidth, height: mapHeight)
         } else {
-            map.frame = CGRectMake(insets.left, insets.top, mapWidth, mapHeight)
+            map.frame = CGRect(x: insets.left, y: insets.top, width: mapWidth, height: mapHeight)
         }
         
-        timeLabel.frame = CGRectMake(0, 0, 1000, 1000)
+        timeLabel.frame = CGRect(x: 0, y: 0, width: 1000, height: 1000)
         timeLabel.sizeToFit()
         
         let timeWidth = (isOut ? 23 : 0) + timeLabel.bounds.width
         let timeHeight: CGFloat = 20
         
-        timeLabel.frame = CGRectMake(map.frame.maxX - timeWidth - 18, map.frame.maxY - timeHeight - 6, timeLabel.frame.width, timeHeight)
+        timeLabel.frame = CGRect(x: map.frame.maxX - timeWidth - 18, y: map.frame.maxY - timeHeight - 6, width: timeLabel.frame.width, height: timeHeight)
         
         if (isOut) {
-            statusView.frame = CGRectMake(timeLabel.frame.maxX, timeLabel.frame.minY, 23, timeHeight)
+            statusView.frame = CGRect(x: timeLabel.frame.maxX, y: timeLabel.frame.minY, width: 23, height: timeHeight)
         }
         
-        pin.frame = CGRectMake((map.width - pin.image!.size.width)/2, (map.height / 2 - pin.image!.size.height),
-            pin.image!.size.width, pin.image!.size.height)
+        pin.frame = CGRect(x: (map.width - pin.image!.size.width)/2, y: (map.height / 2 - pin.image!.size.height),
+            width: pin.image!.size.width, height: pin.image!.size.height)
         
-        timeBg.frame = CGRectMake(timeLabel.frame.minX - 4, timeLabel.frame.minY - 1, timeWidth + 8, timeHeight + 2)
+        timeBg.frame = CGRect(x: timeLabel.frame.minX - 4, y: timeLabel.frame.minY - 1, width: timeWidth + 8, height: timeHeight + 2)
         
     }
 }
 
-public class AALocationCellLayout: AACellLayout {
+open class AALocationCellLayout: AACellLayout {
     
     let latitude: Double
     let longitude: Double
@@ -160,21 +160,21 @@ public class AALocationCellLayout: AACellLayout {
     }
 }
 
-public class AABubbleLocationCellLayouter: AABubbleLayouter {
+open class AABubbleLocationCellLayouter: AABubbleLayouter {
     
-    public func isSuitable(message: ACMessage) -> Bool {
+    open func isSuitable(_ message: ACMessage) -> Bool {
         if (message.content is ACLocationContent) {
             return true
         }
         return false
     }
     
-    public func buildLayout(peer: ACPeer, message: ACMessage) -> AACellLayout {
+    open func buildLayout(_ peer: ACPeer, message: ACMessage) -> AACellLayout {
         let content = message.content as! ACLocationContent
         return AALocationCellLayout(latitude: Double(content.getLatitude()), longitude: Double(content.getLongitude()), date: Int64(message.date), layouter: self)
     }
     
-    public func cellClass() -> AnyClass {
+    open func cellClass() -> AnyClass {
         return AABubbleLocationCell.self
     }
 }

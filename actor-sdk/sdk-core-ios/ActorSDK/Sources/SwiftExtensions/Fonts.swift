@@ -6,25 +6,25 @@ import Foundation
 
 public extension UIFont {
     
-    public class func thinSystemFontOfSize(size: CGFloat) -> UIFont {
+    public class func thinSystemFontOfSize(_ size: CGFloat) -> UIFont {
         if #available(iOS 8.2, *) {
-            return UIFont.systemFontOfSize(size, weight: UIFontWeightThin)
+            return UIFont.systemFont(ofSize: size, weight: UIFontWeightThin)
         } else {
             return UIFont(name: "HelveticaNeue-Thin", size: size)!
         }
     }
     
-    public class func lightSystemFontOfSize(size: CGFloat) -> UIFont {
+    public class func lightSystemFontOfSize(_ size: CGFloat) -> UIFont {
         if #available(iOS 8.2, *) {
-            return UIFont.systemFontOfSize(size, weight: UIFontWeightLight)
+            return UIFont.systemFont(ofSize: size, weight: UIFontWeightLight)
         } else {
             return UIFont(name: "HelveticaNeue-Light", size: size)!
         }
     }
     
-    public class func mediumSystemFontOfSize(size: CGFloat) -> UIFont {
+    public class func mediumSystemFontOfSize(_ size: CGFloat) -> UIFont {
         if #available(iOS 8.2, *) {
-            return UIFont.systemFontOfSize(size, weight: UIFontWeightMedium)
+            return UIFont.systemFont(ofSize: size, weight: UIFontWeightMedium)
         } else {
             return UIFont(name: "HelveticaNeue-Medium", size: size)!
         }
@@ -32,15 +32,15 @@ public extension UIFont {
     
     // Texts
     
-    public class func textFontOfSize(size: CGFloat) -> UIFont {
+    public class func textFontOfSize(_ size: CGFloat) -> UIFont {
         return UIFont(name: "HelveticaNeue", size: size)!
     }
     
-    public class func italicTextFontOfSize(size: CGFloat) -> UIFont {
+    public class func italicTextFontOfSize(_ size: CGFloat) -> UIFont {
         return UIFont(name: "HelveticaNeue-Italic", size: size)!
     }
     
-    public class func boldTextFontOfSize(size: CGFloat) -> UIFont {
+    public class func boldTextFontOfSize(_ size: CGFloat) -> UIFont {
         return UIFont(name: "HelveticaNeue-Medium", size: size)!
     }
 }

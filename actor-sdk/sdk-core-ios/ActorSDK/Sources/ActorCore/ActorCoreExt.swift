@@ -13,41 +13,41 @@ public var Actor : ACCocoaMessenger {
 
 public extension ACCocoaMessenger {
     
-    public func sendUIImage(image: NSData, peer: ACPeer, animated:Bool) {
+    public func sendUIImage(_ image: Data, peer: ACPeer, animated:Bool) {
         
         let imageFromData = UIImage(data:image)
         let thumb = imageFromData!.resizeSquare(90, maxH: 90);
         let resized = imageFromData!.resizeOptimize(1200 * 1200);
         
         let thumbData = UIImageJPEGRepresentation(thumb, 0.55);
-        let fastThumb = ACFastThumb(int: jint(thumb.size.width), withInt: jint(thumb.size.height), withByteArray: thumbData!.toJavaBytes())
+        let fastThumb = ACFastThumb(int: jint(thumb.size.width), with: jint(thumb.size.height), with: thumbData!.toJavaBytes())
         
-        let descriptor = "/tmp/"+NSUUID().UUIDString
+        let descriptor = "/tmp/"+UUID().uuidString
         let path = CocoaFiles.pathFromDescriptor(descriptor);
         
-        animated ? image.writeToFile(path, atomically: true) : UIImageJPEGRepresentation(resized, 0.80)!.writeToFile(path, atomically: true)
+        animated ? ((try? image.write(to: URL(fileURLWithPath: path), options: [.atomic])) != nil) : ((try? UIImageJPEGRepresentation(resized, 0.80)!.write(to: URL(fileURLWithPath: path), options: [.atomic])) != nil)
         
-        animated ? sendAnimationWithPeer(peer, withName: "image.gif", withW: jint(resized.size.width), withH:jint(resized.size.height), withThumb: fastThumb, withDescriptor: descriptor) : sendPhotoWithPeer(peer, withName: "image.jpg", withW: jint(resized.size.width), withH: jint(resized.size.height), withThumb: fastThumb, withDescriptor: descriptor)
+        animated ? sendAnimation(with: peer, withName: "image.gif", withW: jint(resized.size.width), withH:jint(resized.size.height), with: fastThumb, withDescriptor: descriptor) : sendPhoto(with: peer, withName: "image.jpg", withW: jint(resized.size.width), withH: jint(resized.size.height), with: fastThumb, withDescriptor: descriptor)
     }
     
-    public func sendVideo(url: NSURL, peer: ACPeer) {
+    public func sendVideo(_ url: URL, peer: ACPeer) {
         
-        if let videoData = NSData(contentsOfURL: url) { // if data have on this local path url go to upload
+        if let videoData = try? Data(contentsOf: url) { // if data have on this local path url go to upload
             
-            let descriptor = "/tmp/"+NSUUID().UUIDString
+            let descriptor = "/tmp/"+UUID().uuidString
             let path = CocoaFiles.pathFromDescriptor(descriptor);
             
-            videoData.writeToFile(path, atomically: true) // write to file
+            try? videoData.write(to: URL(fileURLWithPath: path), options: [.atomic]) // write to file
             
             // get video duration
             
-            let assetforduration = AVURLAsset(URL: url)
+            let assetforduration = AVURLAsset(url: url)
             let videoDuration = assetforduration.duration
             let videoDurationSeconds = CMTimeGetSeconds(videoDuration)
             
             // get thubnail and upload
             
-            let movieAsset = AVAsset(URL: url) // video asset
+            let movieAsset = AVAsset(url: url) // video asset
             let imageGenerator = AVAssetImageGenerator(asset: movieAsset)
             var thumbnailTime = movieAsset.duration
             thumbnailTime.value = 25
@@ -55,8 +55,8 @@ public extension ACCocoaMessenger {
             let orientation = movieAsset.videoOrientation()
             
             do {
-                let imageRef = try imageGenerator.copyCGImageAtTime(thumbnailTime, actualTime: nil)
-                let thumbnail = UIImage(CGImage: imageRef)
+                let imageRef = try imageGenerator.copyCGImage(at: thumbnailTime, actualTime: nil)
+                let thumbnail = UIImage(cgImage: imageRef)
                 var thumb = thumbnail.resizeSquare(90, maxH: 90);
                 let resized = thumbnail.resizeOptimize(1200 * 1200);
                 
@@ -65,7 +65,7 @@ public extension ACCocoaMessenger {
                 }
                 
                 let thumbData = UIImageJPEGRepresentation(thumb, 0.55); // thumbnail binary data
-                let fastThumb = ACFastThumb(int: jint(resized.size.width), withInt: jint(resized.size.height), withByteArray: thumbData!.toJavaBytes())
+                let fastThumb = ACFastThumb(int: jint(resized.size.width), with: jint(resized.size.height), with: thumbData!.toJavaBytes())
                 
                 print("video upload imageRef = \(imageRef)")
                 print("video upload thumbnail = \(thumbnail)")
@@ -76,9 +76,9 @@ public extension ACCocoaMessenger {
                 print("video upload height = \(thumbnail.size.height)")
                 
                 if (orientation.orientation.isPortrait == true) {
-                    sendVideoWithPeer(peer, withName: "video.mp4", withW: jint(thumbnail.size.height/2), withH: jint(thumbnail.size.width/2), withDuration: jint(videoDurationSeconds), withThumb: fastThumb, withDescriptor: descriptor)
+                    self.sendVideo(with: peer, withName: "video.mp4", withW: jint(thumbnail.size.height/2), withH: jint(thumbnail.size.width/2), withDuration: jint(videoDurationSeconds), with: fastThumb, withDescriptor: descriptor)
                 } else {
-                    sendVideoWithPeer(peer, withName: "video.mp4", withW: jint(thumbnail.size.width), withH: jint(thumbnail.size.height), withDuration: jint(videoDurationSeconds), withThumb: fastThumb, withDescriptor: descriptor)
+                    self.sendVideo(with: peer, withName: "video.mp4", withW: jint(thumbnail.size.width), withH: jint(thumbnail.size.height), withDuration: jint(videoDurationSeconds), with: fastThumb, withDescriptor: descriptor)
                 }
                 
                 
@@ -91,30 +91,30 @@ public extension ACCocoaMessenger {
 
     }
     
-    private func prepareAvatar(image: UIImage) -> String {
-        let res = "/tmp/" + NSUUID().UUIDString
+    fileprivate func prepareAvatar(_ image: UIImage) -> String {
+        let res = "/tmp/" + UUID().uuidString
         let avatarPath = CocoaFiles.pathFromDescriptor(res)
         let thumb = image.resizeSquare(800, maxH: 800);
-        UIImageJPEGRepresentation(thumb, 0.8)!.writeToFile(avatarPath, atomically: true)
+        try? UIImageJPEGRepresentation(thumb, 0.8)!.write(to: URL(fileURLWithPath: avatarPath), options: [.atomic])
         return res
     }
     
-    public func changeOwnAvatar(image: UIImage) {
-        changeMyAvatarWithDescriptor(prepareAvatar(image))
+    public func changeOwnAvatar(_ image: UIImage) {
+        changeMyAvatar(withDescriptor: prepareAvatar(image))
     }
     
-    public func changeGroupAvatar(gid: jint, image: UIImage) -> String {
+    public func changeGroupAvatar(_ gid: jint, image: UIImage) -> String {
         let fileName = prepareAvatar(image)
-        changeGroupAvatarWithGid(gid, withDescriptor: fileName)
+        self.changeGroupAvatar(withGid: gid, withDescriptor: fileName)
         return fileName
     }
     
-    public func requestFileState(fileId: jlong, notDownloaded: (()->())?, onDownloading: ((progress: Double) -> ())?, onDownloaded: ((reference: String) -> ())?) {
-        Actor.requestStateWithFileId(fileId, withCallback: AAFileCallback(notDownloaded: notDownloaded, onDownloading: onDownloading, onDownloaded: onDownloaded))
+    public func requestFileState(_ fileId: jlong, notDownloaded: (()->())?, onDownloading: ((_ progress: Double) -> ())?, onDownloaded: ((_ reference: String) -> ())?) {
+        Actor.requestState(withFileId: fileId, with: AAFileCallback(notDownloaded: notDownloaded, onDownloading: onDownloading, onDownloaded: onDownloaded))
     }
     
-    public func requestFileState(fileId: jlong, onDownloaded: ((reference: String) -> ())?) {
-        Actor.requestStateWithFileId(fileId, withCallback: AAFileCallback(notDownloaded: nil, onDownloading: nil, onDownloaded: onDownloaded))
+    public func requestFileState(_ fileId: jlong, onDownloaded: ((_ reference: String) -> ())?) {
+        Actor.requestState(withFileId: fileId, with: AAFileCallback(notDownloaded: nil, onDownloading: nil, onDownloaded: onDownloaded))
     }
 }
 
@@ -122,10 +122,10 @@ public extension ACCocoaMessenger {
 // Collcections
 //
 
-extension JavaUtilAbstractCollection : SequenceType {
+extension JavaUtilAbstractCollection : Sequence {
     
-    public func generate() -> NSFastGenerator {
-        return NSFastGenerator(self)
+    public func makeIterator() -> NSFastEnumerationIterator {
+        return NSFastEnumerationIterator(self)
     }
 }
 
@@ -134,7 +134,7 @@ public extension JavaUtilList {
     public func toSwiftArray<T>() -> [T] {
         var res = [T]()
         for i in 0..<self.size() {
-            res.append(self.getWithInt(i) as! T)
+            res.append(self.getWith(i) as! T)
         }
         return res
     }
@@ -144,15 +144,15 @@ public extension IOSObjectArray {
     public func toSwiftArray<T>() -> [T] {
         var res = [T]()
         for i in 0..<self.length() {
-            res.append(self.objectAtIndex(UInt(i)) as! T)
+            res.append(self.object(at: UInt(i)) as! T)
         }
         return res
     }
 }
 
-public extension NSData {
+public extension Data {
     public func toJavaBytes() -> IOSByteArray {
-        return IOSByteArray(bytes: UnsafePointer<jbyte>(self.bytes), count: UInt(self.length))
+        return IOSByteArray(bytes: (self as NSData).bytes.bindMemory(to: jbyte.self, capacity: self.count), count: UInt(self.count))
     }
 }
 
@@ -164,13 +164,13 @@ public extension ACPeer {
     
     public var isGroup: Bool {
         get {
-            return self.peerType.ordinal() == ACPeerType.GROUP().ordinal()
+            return self.peerType.ordinal() == ACPeerType.group().ordinal()
         }
     }
     
     public var isPrivate: Bool {
         get {
-            return self.peerType.ordinal() == ACPeerType.PRIVATE().ordinal()
+            return self.peerType.ordinal() == ACPeerType.private().ordinal()
         }
     }
 }
@@ -188,35 +188,35 @@ public extension ACMessage {
 // Callbacks
 //
 
-public class AACommandCallback: NSObject, ACCommandCallback {
+open class AACommandCallback: NSObject, ACCommandCallback {
     
-    public var resultClosure: ((val: AnyObject!) -> ())?;
-    public var errorClosure: ((val:JavaLangException!) -> ())?;
+    open var resultClosure: ((_ val: Any?) -> ())?;
+    open var errorClosure: ((_ val:JavaLangException?) -> ())?;
     
-    public init<T>(result: ((val:T?) -> ())?, error: ((val:JavaLangException!) -> ())?) {
+    public init<T>(result: ((_ val:T?) -> ())?, error: ((_ val:JavaLangException?) -> ())?) {
         super.init()
-        self.resultClosure = { (val: AnyObject!) -> () in
-            result?(val: val as? T)
+        self.resultClosure = { (val: Any!) -> () in
+            (result?(val as? T))!
         }
         self.errorClosure = error
     }
     
-    public func onResult(res: AnyObject!) {
-        resultClosure?(val: res)
+    open func onResult(_ res: Any!) {
+        resultClosure?(res)
     }
     
-    public func onError(e: JavaLangException!) {
-        errorClosure?(val: e)
+    open func onError(_ e: JavaLangException!) {
+        errorClosure?(e)
     }
 }
 
 class AAUploadFileCallback : NSObject, ACUploadFileCallback {
     
     let notUploaded: (()->())?
-    let onUploading: ((progress: Double) -> ())?
+    let onUploading: ((_ progress: Double) -> ())?
     let onUploadedClosure: (() -> ())?
     
-    init(notUploaded: (()->())?, onUploading: ((progress: Double) -> ())?, onUploadedClosure: (() -> ())?) {
+    init(notUploaded: (()->())?, onUploading: ((_ progress: Double) -> ())?, onUploadedClosure: (() -> ())?) {
         self.onUploading = onUploading
         self.notUploaded = notUploaded
         self.onUploadedClosure = onUploadedClosure;
@@ -230,24 +230,24 @@ class AAUploadFileCallback : NSObject, ACUploadFileCallback {
         self.onUploadedClosure?()
     }
     
-    func onUploading(progress: jfloat) {
-        self.onUploading?(progress: Double(progress))
+    func onUploading(_ progress: jfloat) {
+        self.onUploading?(Double(progress))
     }
 }
 
 class AAFileCallback : NSObject, ACFileCallback {
     
     let notDownloaded: (()->())?
-    let onDownloading: ((progress: Double) -> ())?
-    let onDownloaded: ((fileName: String) -> ())?
+    let onDownloading: ((_ progress: Double) -> ())?
+    let onDownloaded: ((_ fileName: String) -> ())?
     
-    init(notDownloaded: (()->())?, onDownloading: ((progress: Double) -> ())?, onDownloaded: ((reference: String) -> ())?) {
+    init(notDownloaded: (()->())?, onDownloading: ((_ progress: Double) -> ())?, onDownloaded: ((_ reference: String) -> ())?) {
         self.notDownloaded = notDownloaded;
         self.onDownloading = onDownloading;
         self.onDownloaded = onDownloaded;
     }
     
-    init(onDownloaded: (reference: String) -> ()) {
+    init(onDownloaded: @escaping (_ reference: String) -> ()) {
         self.notDownloaded = nil;
         self.onDownloading = nil;
         self.onDownloaded = onDownloaded;
@@ -257,12 +257,12 @@ class AAFileCallback : NSObject, ACFileCallback {
         self.notDownloaded?();
     }
     
-    func onDownloading(progress: jfloat) {
-        self.onDownloading?(progress: Double(progress));
+    func onDownloading(_ progress: jfloat) {
+        self.onDownloading?(Double(progress));
     }
     
-    func onDownloaded(reference: ARFileSystemReference!) {
-        self.onDownloaded?(fileName: reference!.getDescriptor());
+    func onDownloaded(_ reference: ARFileSystemReference!) {
+        self.onDownloaded?(reference!.getDescriptor());
     }
 }
 
@@ -271,26 +271,13 @@ class AAFileCallback : NSObject, ACFileCallback {
 // Markdown
 //
 
-//public class ARMDFormattedText {
-//    
-//    public let isTrivial: Bool
-//    public let attributedText: NSAttributedString
-//    public let code: [String]
-//    
-//    public init(attributedText: NSAttributedString, isTrivial: Bool, code: [String]) {
-//        self.attributedText = attributedText
-//        self.code = code
-//        self.isTrivial = isTrivial
-//    }
-//}
-
-public class TextParser {
+open class TextParser {
     
-    public let textColor: UIColor
-    public let linkColor: UIColor
-    public let fontSize: CGFloat
+    open let textColor: UIColor
+    open let linkColor: UIColor
+    open let fontSize: CGFloat
     
-    private let markdownParser = ARMarkdownParser(int: ARMarkdownParser_MODE_FULL)
+    fileprivate let markdownParser = ARMarkdownParser(int: ARMarkdownParser_MODE_FULL)
     
     public init(textColor: UIColor, linkColor: UIColor, fontSize: CGFloat) {
         self.textColor = textColor
@@ -298,10 +285,10 @@ public class TextParser {
         self.fontSize = fontSize
     }
     
-    public func parse(text: String) -> ParsedText {
-        let doc = markdownParser.processDocumentWithNSString(text)
+    open func parse(_ text: String) -> ParsedText {
+        let doc = markdownParser?.processDocument(with: text)
         
-        if doc.isTrivial() {
+        if (doc?.isTrivial())! {
             let nAttrText = NSMutableAttributedString(string: text)
             let range = NSRange(location: 0, length: nAttrText.length)
             nAttrText.yy_setColor(textColor, range: range)
@@ -311,12 +298,12 @@ public class TextParser {
         
         var sources = [String]()
         
-        let sections: [ARMDSection] = doc.getSections().toSwiftArray()
+        let sections: [ARMDSection] = doc!.getSections().toSwiftArray()
         let nAttrText = NSMutableAttributedString()
         var isFirst = true
         for s in sections {
             if !isFirst {
-                nAttrText.appendAttributedString(NSAttributedString(string: "\n"))
+                nAttrText.append(NSAttributedString(string: "\n"))
             }
             isFirst = false
             
@@ -331,13 +318,13 @@ public class TextParser {
                 str.yy_setFont(UIFont.textFontOfSize(fontSize), range: range)
                 str.yy_setColor(linkColor, range: range)
                 
-                nAttrText.appendAttributedString(str)
+                nAttrText.append(str)
                 
                 sources.append(s.getCode().getCode())
             } else if s.getType() == ARMDSection_TYPE_TEXT {
                 let child: [ARMDText] = s.getText().toSwiftArray()
                 for c in child {
-                    nAttrText.appendAttributedString(buildText(c, fontSize: fontSize))
+                    nAttrText.append(buildText(c, fontSize: fontSize))
                 }
             } else {
                 fatalError("Unsupported section type")
@@ -347,7 +334,7 @@ public class TextParser {
         return ParsedText(attributedText: nAttrText, isTrivial: false, code: sources)
     }
     
-    private func buildText(text: ARMDText, fontSize: CGFloat) -> NSAttributedString {
+    fileprivate func buildText(_ text: ARMDText, fontSize: CGFloat) -> NSAttributedString {
         if let raw = text as? ARMDRawText {
             let res = NSMutableAttributedString(string: raw.getRawText())
             let range = NSRange(location: 0, length: res.length)
@@ -363,14 +350,14 @@ public class TextParser {
             // Processing child texts
             let child: [ARMDText] = span.getChild().toSwiftArray()
             for c in child {
-                res.appendAttributedString(buildText(c, fontSize: fontSize))
+                res.append(buildText(c, fontSize: fontSize))
             }
             
             // Setting span elements
-            if span.getSpanType() == ARMDSpan_TYPE_BOLD {
-                res.appendFont(UIFont.boldSystemFontOfSize(fontSize))
-            } else if span.getSpanType() == ARMDSpan_TYPE_ITALIC {
-                res.appendFont(UIFont.italicSystemFontOfSize(fontSize))
+            if span.getType() == ARMDSpan_TYPE_BOLD {
+                res.appendFont(UIFont.boldSystemFont(ofSize: fontSize))
+            } else if span.getType() == ARMDSpan_TYPE_ITALIC {
+                res.appendFont(UIFont.italicSystemFont(ofSize: fontSize))
             } else {
                 fatalError("Unsupported span type")
             }
@@ -380,9 +367,9 @@ public class TextParser {
         } else if let url = text as? ARMDUrl {
             
             // Parsing url element
-            let nsUrl = NSURL(string: url.getUrl())
+            let nsUrl = URL(string: url.getUrl())
             if nsUrl != nil {
-                let res = NSMutableAttributedString(string:  url.getUrlTitle())
+                let res = NSMutableAttributedString(string:  url.getTitle())
                 let range = NSRange(location: 0, length: res.length)
                 let highlight = YYTextHighlight()
                 highlight.userInfo = ["url" : url.getUrl()]
@@ -392,7 +379,7 @@ public class TextParser {
                 return res
             } else {
                 // Unable to parse: show as text
-                let res = NSMutableAttributedString(string: url.getUrlTitle())
+                let res = NSMutableAttributedString(string: url.getTitle())
                 let range = NSRange(location: 0, length: res.length)
                 res.beginEditing()
                 res.yy_setFont(UIFont.textFontOfSize(fontSize), range: range)
@@ -406,11 +393,11 @@ public class TextParser {
     }
 }
 
-public class ParsedText {
+open class ParsedText {
     
-    public let isTrivial: Bool
-    public let attributedText: NSAttributedString
-    public let code: [String]
+    open let isTrivial: Bool
+    open let attributedText: NSAttributedString
+    open let code: [String]
     
     public init(attributedText: NSAttributedString, isTrivial: Bool, code: [String]) {
         self.attributedText = attributedText
@@ -418,134 +405,25 @@ public class ParsedText {
         self.isTrivial = isTrivial
     }
 }
-//
-//public extension ARMarkdownParser {
-//    
-//    public func parse(text: String, textColor: UIColor, fontSize: CGFloat) -> ARMDFormattedText {
-//        
-//        let doc = self.processDocumentWithNSString(text)
-//        if doc.isTrivial() {
-//            let nAttrText = NSMutableAttributedString(string: text)
-//            let range = NSRange(location: 0, length: nAttrText.length)
-//            nAttrText.yy_setColor(textColor, range: range)
-//            nAttrText.yy_setFont(UIFont.textFontOfSize(fontSize), range: range)
-//            return ARMDFormattedText(attributedText: nAttrText, isTrivial: true, code: [])
-//        }
-//        
-//        var sources = [String]()
-//        
-//        let sections: [ARMDSection] = doc.getSections().toSwiftArray()
-//        let nAttrText = NSMutableAttributedString()
-//        var isFirst = true
-//        for s in sections {
-//            if !isFirst {
-//                nAttrText.appendAttributedString(NSAttributedString(string: "\n"))
-//            }
-//            isFirst = false
-//            
-//            if s.getType() == ARMDSection_TYPE_CODE {
-//                let attributes = [NSLinkAttributeName: NSURL(string: "source:///\(sources.count)") as! AnyObject,
-//                    NSFontAttributeName: UIFont.textFontOfSize(fontSize)]
-//                nAttrText.appendAttributedString(NSAttributedString(string: "Open Code", attributes: attributes))
-//                sources.append(s.getCode().getCode())
-//            } else if s.getType() == ARMDSection_TYPE_TEXT {
-//                let child: [ARMDText] = s.getText().toSwiftArray()
-//                for c in child {
-//                    nAttrText.appendAttributedString(buildText(c, fontSize: fontSize))
-//                }
-//            } else {
-//                fatalError("Unsupported section type")
-//            }
-//        }
-//        
-////        let range = NSRange(location: 0, length: nAttrText.length)
-//        
-////        nAttrText.yy_setColor(textColor, range: range)
-////        nAttrText.yy_setFont(UIFont.textFontOfSize(fontSize), range: range)
-//
-////        nAttrText.enumerateAttributesInRange(range, options:  NSAttributedStringEnumerationOptions.LongestEffectiveRangeNotRequired) { (attrs, range, objBool) -> Void in
-////            var attributeDictionary = NSDictionary(dictionary: attrs)
-////            
-////            for k in attributeDictionary.allKeys {
-////                let v = attributeDictionary.objectForKey(k)
-////                
-////                print("attr: \(k) -> \(v) at \(range)")
-////            }
-////        }
-////        
-//        return ARMDFormattedText(attributedText: nAttrText, isTrivial: false, code: sources)
-//    }
-//    
-//    private func buildText(text: ARMDText, fontSize: CGFloat) -> NSAttributedString {
-//        if let raw = text as? ARMDRawText {
-////            let res = NSMutableAttributedString(string: raw.getRawText())
-////            res.yy_setFont(UIFont.textFontOfSize(fontSize), range: NSRange(location: 0, length: raw.getRawText().length))
-////            return res
-//            return NSAttributedString(string: raw.getRawText(), font: UIFont.textFontOfSize(fontSize))
-//        } else if let span = text as? ARMDSpan {
-//            let res = NSMutableAttributedString()
-//            res.beginEditing()
-//            
-//            // Processing child texts
-//            let child: [ARMDText] = span.getChild().toSwiftArray()
-//            for c in child {
-//                res.appendAttributedString(buildText(c, fontSize: fontSize))
-//            }
-//            
-//            // Setting span elements
-//            if span.getSpanType() == ARMDSpan_TYPE_BOLD {
-//                res.appendFont(UIFont.boldSystemFontOfSize(fontSize))
-//            } else if span.getSpanType() == ARMDSpan_TYPE_ITALIC {
-//                res.appendFont(UIFont.italicSystemFontOfSize(fontSize))
-//            } else {
-//                fatalError("Unsupported span type")
-//            }
-//            
-//            res.endEditing()
-//            return res
-//        } else if let url = text as? ARMDUrl {
-//            
-//            // Parsing url element
-//            let nsUrl = NSURL(string: url.getUrl())
-//            if nsUrl != nil {
-//                let res = NSMutableAttributedString(string:  url.getUrlTitle())
-//                let range = NSRange(location: 0, length: res.length)
-//                let highlight = YYTextHighlight()
-////                res.yy_setFont(UIFont.textFontOfSize(fontSize), range: range)
-////                res.yy_setTextHighlightRange(range, color: UIColor.redColor(), backgroundColor: nil, tapAction: nil)
-//                // res.yy_setColor(UIColor.greenColor(), range: range)
-//                return res
-////                let attributes = [NSLinkAttributeName: nsUrl as! AnyObject,
-////                    NSFontAttributeName: UIFont.textFontOfSize(fontSize)]
-////                return NSAttributedString(string: url.getUrlTitle(), attributes: attributes)
-//            } else {
-//                // Unable to parse: show as text
-//                return NSAttributedString(string: url.getUrlTitle(), font: UIFont.textFontOfSize(fontSize))
-//            }
-//        } else {
-//            fatalError("Unsupported text type")
-//        }
-//    }
-//}
-//
+
 //
 // Promises
 //
 
-public class AAPromiseFunc: NSObject, ARPromiseFunc {
+open class AAPromiseFunc: NSObject, ARPromiseFunc {
     
-    let closure: (resolver: ARPromiseResolver) -> ()
-    init(closure: (resolver: ARPromiseResolver) -> ()){
+    let closure: (_ resolver: ARPromiseResolver) -> ()
+    init(closure: @escaping (_ resolver: ARPromiseResolver) -> ()){
         self.closure = closure
     }
     
-    public func exec(resolver: ARPromiseResolver) {
-        closure(resolver: resolver)
+    open func exec(_ resolver: ARPromiseResolver) {
+        closure(resolver)
     }
 }
 
 extension ARPromise {
-    convenience init(closure: (resolver: ARPromiseResolver) -> ()) {
+    convenience init(closure: @escaping (_ resolver: ARPromiseResolver) -> ()) {
         self.init(executor: AAPromiseFunc(closure: closure))
     }
 }
@@ -554,77 +432,77 @@ extension ARPromise {
 // Data Binding
 //
 
-public class AABinder {
+open class AABinder {
     
-    private var bindings : [BindHolder] = []
+    fileprivate var bindings : [BindHolder] = []
     
     public init() {
         
     }
     
-    public func bind<T1,T2,T3>(valueModel1:ARValue, valueModel2:ARValue, valueModel3:ARValue, closure: (value1:T1!, value2:T2!, value3:T3!) -> ()) {
+    open func bind<T1,T2,T3>(_ valueModel1:ARValue, valueModel2:ARValue, valueModel3:ARValue, closure: @escaping (_ value1:T1?, _ value2:T2?, _ value3:T3?) -> ()) {
         
         let listener1 = BindListener { (_value1) -> () in
-            closure(value1: _value1 as? T1, value2: valueModel2.get() as? T2, value3: valueModel3.get() as? T3)
+            closure(_value1 as? T1, valueModel2.get() as? T2, valueModel3.get() as? T3)
         };
         let listener2 = BindListener { (_value2) -> () in
-            closure(value1: valueModel1.get() as? T1, value2: _value2 as? T2, value3: valueModel3.get() as? T3)
+            closure(valueModel1.get() as? T1, _value2 as? T2, valueModel3.get() as? T3)
         };
         let listener3 = BindListener { (_value3) -> () in
-            closure(value1: valueModel1.get() as? T1,  value2: valueModel2.get() as? T2, value3: _value3 as? T3)
+            closure(valueModel1.get() as? T1,  valueModel2.get() as? T2, _value3 as? T3)
         };
         bindings.append(BindHolder(valueModel: valueModel1, listener: listener1))
         bindings.append(BindHolder(valueModel: valueModel2, listener: listener2))
         bindings.append(BindHolder(valueModel: valueModel3, listener: listener3))
-        valueModel1.subscribeWithListener(listener1, notify: false)
-        valueModel2.subscribeWithListener(listener2, notify: false)
-        valueModel3.subscribeWithListener(listener3, notify: false)
-        closure(value1: valueModel1.get() as? T1, value2: valueModel2.get() as? T2, value3: valueModel3.get() as? T3)
+        valueModel1.subscribe(with: listener1, notify: false)
+        valueModel2.subscribe(with: listener2, notify: false)
+        valueModel3.subscribe(with: listener3, notify: false)
+        closure(valueModel1.get() as? T1, valueModel2.get() as? T2, valueModel3.get() as? T3)
     }
     
     
-    public func bind<T1,T2>(valueModel1:ARValue, valueModel2:ARValue, closure: (value1:T1!, value2:T2!) -> ()) {
+    open func bind<T1,T2>(_ valueModel1:ARValue, valueModel2:ARValue, closure: @escaping (_ value1:T1?, _ value2:T2?) -> ()) {
         let listener1 = BindListener { (_value1) -> () in
-            closure(value1: _value1 as? T1, value2: valueModel2.get() as? T2)
+            closure(_value1 as? T1, valueModel2.get() as? T2)
         };
         let listener2 = BindListener { (_value2) -> () in
-            closure(value1: valueModel1.get() as? T1, value2: _value2 as? T2)
+            closure(valueModel1.get() as? T1, _value2 as? T2)
         };
         bindings.append(BindHolder(valueModel: valueModel1, listener: listener1))
         bindings.append(BindHolder(valueModel: valueModel2, listener: listener2))
-        valueModel1.subscribeWithListener(listener1, notify: false)
-        valueModel2.subscribeWithListener(listener2, notify: false)
-        closure(value1: valueModel1.get() as? T1, value2: valueModel2.get() as? T2)
+        valueModel1.subscribe(with: listener1, notify: false)
+        valueModel2.subscribe(with: listener2, notify: false)
+        closure(valueModel1.get() as? T1, valueModel2.get() as? T2)
     }
     
-    public func bind<T>(value:ARValue, closure: (value: T!)->()) {
+    open func bind<T>(_ value:ARValue, closure: @escaping (_ value: T?)->()) {
         let listener = BindListener { (value2) -> () in
-            closure(value: value2 as? T)
+            closure(value2 as? T)
         };
         let holder = BindHolder(valueModel: value, listener: listener)
         bindings.append(holder)
-        value.subscribeWithListener(listener)
+        value.subscribe(with: listener)
     }
     
-    public func unbindAll() {
+    open func unbindAll() {
         for holder in bindings {
-            holder.valueModel.unsubscribeWithListener(holder.listener)
+            holder.valueModel.unsubscribe(with: holder.listener)
         }
-        bindings.removeAll(keepCapacity: true)
+        bindings.removeAll(keepingCapacity: true)
     }
     
 }
 
 class BindListener: NSObject, ARValueChangedListener {
     
-    var closure: ((value: AnyObject?)->())?
+    var closure: ((_ value: Any?)->())?
     
-    init(closure: (value: AnyObject?)->()) {
+    init(closure: @escaping (_ value: Any?)->()) {
         self.closure = closure
     }
     
-    func onChanged(val: AnyObject!, withModel valueModel: ARValue!) {
-        closure?(value: val)
+    func onChanged(_ val: Any!, withModel valueModel: ARValue!) {
+        closure?(val)
     }
 }
 

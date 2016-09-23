@@ -5,20 +5,20 @@
 import Foundation
 import MapKit
 
-public class AALocationPickerController: AAViewController, CLLocationManagerDelegate, MKMapViewDelegate {
+open class AALocationPickerController: AAViewController, CLLocationManagerDelegate, MKMapViewDelegate {
 
-    public var delegate: AALocationPickerControllerDelegate? = nil
+    open var delegate: AALocationPickerControllerDelegate? = nil
     
-    private let locationManager = CLLocationManager()
-    private let map = MKMapView()
-    private let pinPoint = AAMapPinPointView()
-    private let locationPinOffset = CGPointMake(0.0, 33.0)
+    fileprivate let locationManager = CLLocationManager()
+    fileprivate let map = MKMapView()
+    fileprivate let pinPoint = AAMapPinPointView()
+    fileprivate let locationPinOffset = CGPoint(x: 0.0, y: 33.0)
     
     override init() {
        super.init()
         
         navigationItem.title = AALocalized("LocationTitle")
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: .Plain, target: self, action: #selector(AALocationPickerController.cancellDidTap))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: .plain, target: self, action: #selector(AALocationPickerController.cancellDidTap))
         
         updateAuthStatus(CLLocationManager.authorizationStatus())
         
@@ -46,11 +46,11 @@ public class AALocationPickerController: AAViewController, CLLocationManagerDele
 //        
 //    }
     
-    public func mapView(mapView: MKMapView, regionWillChangeAnimated animated: Bool) {
+    open func mapView(_ mapView: MKMapView, regionWillChangeAnimated animated: Bool) {
         pinPoint.risePin(true, animated: true)
     }
     
-    public func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+    open func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
         pinPoint.risePin(false, animated: true)
     }
     
@@ -62,40 +62,40 @@ public class AALocationPickerController: AAViewController, CLLocationManagerDele
         delegate?.locationPickerDidPicked(self, latitude: map.centerCoordinate.latitude, longitude:  map.centerCoordinate.longitude)
     }
     
-    func updateAuthStatus(status: CLAuthorizationStatus) {
-        if (status == CLAuthorizationStatus.Denied) {
+    func updateAuthStatus(_ status: CLAuthorizationStatus) {
+        if (status == CLAuthorizationStatus.denied) {
             // User explictly denied access to maps
             showPlaceholderWithImage(UIImage.bundled("location_placeholder"), title: AALocalized("Placeholder_Location_Title"), subtitle: AALocalized("Placeholder_Location_Message"))
-            map.hidden = true
-            pinPoint.hidden = true
+            map.isHidden = true
+            pinPoint.isHidden = true
             navigationItem.rightBarButtonItem = nil
-        } else if (status == CLAuthorizationStatus.Restricted || status == CLAuthorizationStatus.NotDetermined) {
+        } else if (status == CLAuthorizationStatus.restricted || status == CLAuthorizationStatus.notDetermined) {
             // App doesn't complete auth request
-            map.hidden = false
-            pinPoint.hidden = false
-            navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationDone"), style: .Done, target: self, action: #selector(AALocationPickerController.doneDidTap))
+            map.isHidden = false
+            pinPoint.isHidden = false
+            navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationDone"), style: .done, target: self, action: #selector(AALocationPickerController.doneDidTap))
             hidePlaceholder()
         } else {
             // Authorised
-            map.hidden = false
-            pinPoint.hidden = false
-            navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationDone"), style: .Done, target: self, action: #selector(AALocationPickerController.doneDidTap))
+            map.isHidden = false
+            pinPoint.isHidden = false
+            navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationDone"), style: .done, target: self, action: #selector(AALocationPickerController.doneDidTap))
             hidePlaceholder()
         }
     }
     
-    override public func viewDidLayoutSubviews() {
+    override open func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
         map.frame = self.view.bounds
         pinPoint.centerIn(self.view.bounds)
     }
     
-    public func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+    open func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         updateAuthStatus(status)
     }
     
-    public func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    open func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let location = locations.first!
         map.setRegion(MKCoordinateRegion(center: location.coordinate, span: MKCoordinateSpanMake(0.05, 0.05)), animated: true)
         locationManager.stopUpdatingLocation()
@@ -103,6 +103,6 @@ public class AALocationPickerController: AAViewController, CLLocationManagerDele
 }
 
 public protocol AALocationPickerControllerDelegate {
-    func locationPickerDidPicked(controller: AALocationPickerController, latitude: Double, longitude: Double)
-    func locationPickerDidCancelled(controller: AALocationPickerController)
+    func locationPickerDidPicked(_ controller: AALocationPickerController, latitude: Double, longitude: Double)
+    func locationPickerDidCancelled(_ controller: AALocationPickerController)
 }

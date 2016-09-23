@@ -4,18 +4,18 @@
 
 import UIKit
 
-public class AAAuthCountryCell: UITableViewCell {
+open class AAAuthCountryCell: UITableViewCell {
     
     // MARK: - 
     // MARK: Private vars
 
-    private var titleLabel: UILabel!
-    private var codeLabel: UILabel!
+    fileprivate var titleLabel: UILabel!
+    fileprivate var codeLabel: UILabel!
     
     // MARK: -
     // MARK: Public vars
     
-    public var searchMode: Bool!
+    open var searchMode: Bool!
     
     // MARK: -
     // MARK: Constructors
@@ -24,19 +24,19 @@ public class AAAuthCountryCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         titleLabel = UILabel()
-        titleLabel.autoresizingMask = UIViewAutoresizing.FlexibleWidth
-        titleLabel.font = UIFont.systemFontOfSize(17.0)
-        titleLabel.textColor = UIColor.blackColor()
-        titleLabel.backgroundColor = UIColor.whiteColor()
+        titleLabel.autoresizingMask = UIViewAutoresizing.flexibleWidth
+        titleLabel.font = UIFont.systemFont(ofSize: 17.0)
+        titleLabel.textColor = UIColor.black
+        titleLabel.backgroundColor = UIColor.white
         contentView.addSubview(titleLabel)
         
         codeLabel = UILabel()
-        codeLabel.font = UIFont.boldSystemFontOfSize(17)
-        codeLabel.backgroundColor = UIColor.whiteColor()
-        codeLabel.textColor = UIColor.blackColor()
-        codeLabel.autoresizingMask = UIViewAutoresizing.FlexibleLeftMargin
-        codeLabel.contentMode = UIViewContentMode.Right
-        codeLabel.textAlignment = NSTextAlignment.Right
+        codeLabel.font = UIFont.boldSystemFont(ofSize: 17)
+        codeLabel.backgroundColor = UIColor.white
+        codeLabel.textColor = UIColor.black
+        codeLabel.autoresizingMask = UIViewAutoresizing.flexibleLeftMargin
+        codeLabel.contentMode = UIViewContentMode.right
+        codeLabel.textAlignment = NSTextAlignment.right
         contentView.addSubview(codeLabel)
     }
 
@@ -47,15 +47,15 @@ public class AAAuthCountryCell: UITableViewCell {
     // MARK: -
     // MARK: Setters
     
-    public func setTitle(title: String) {
+    open func setTitle(_ title: String) {
         titleLabel.text = title
     }
     
-    public func setCode(code: String) {
+    open func setCode(_ code: String) {
         codeLabel.text = code
     }
     
-    public func setSearchMode(searchMode: Bool) {
+    open func setSearchMode(_ searchMode: Bool) {
         self.searchMode = searchMode
         
         let codeLabelWidth: CGFloat = 50.0

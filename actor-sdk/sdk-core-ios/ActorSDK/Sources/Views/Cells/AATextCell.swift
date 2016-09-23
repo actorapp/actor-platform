@@ -4,24 +4,24 @@
 
 import Foundation
 
-public class AATextCell: AATableViewCell {
+open class AATextCell: AATableViewCell {
 
-    public var titleLabel: UILabel = UILabel()
-    public var contentLabel: UILabel = UILabel()
+    open var titleLabel: UILabel = UILabel()
+    open var contentLabel: UILabel = UILabel()
     
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        titleLabel.font = UIFont.systemFontOfSize(14.0)
+        titleLabel.font = UIFont.systemFont(ofSize: 14.0)
         titleLabel.text = " "
         titleLabel.sizeToFit()
         titleLabel.textColor = appStyle.cellTintColor
         contentView.addSubview(titleLabel)
         
-        contentLabel.font = UIFont.systemFontOfSize(17.0)
+        contentLabel.font = UIFont.systemFont(ofSize: 17.0)
         contentLabel.text = " "
         contentLabel.textColor = appStyle.cellTextColor
-        contentLabel.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        contentLabel.lineBreakMode = NSLineBreakMode.byWordWrapping
         contentLabel.numberOfLines = 0
         contentLabel.sizeToFit()
         contentView.addSubview(contentLabel)
@@ -31,9 +31,9 @@ public class AATextCell: AATableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public func setContent(title: String?, content: String?, isAction: Bool) {
+    open func setContent(_ title: String?, content: String?, isAction: Bool) {
         titleLabel.text = title
-        titleLabel.hidden = title == nil
+        titleLabel.isHidden = title == nil
         contentLabel.text = content
         
         if isAction {
@@ -43,10 +43,10 @@ public class AATextCell: AATableViewCell {
         }
     }
     
-    public override func layoutSubviews() {
+    open override func layoutSubviews() {
         super.layoutSubviews()
         
-        if titleLabel.hidden {
+        if titleLabel.isHidden {
             contentLabel.frame = CGRect(x: 15, y: 8, width: contentView.bounds.width - 30, height: contentView.height - 16)
         } else {
             titleLabel.frame = CGRect(x: 15, y: 7, width: contentView.bounds.width - 30, height: titleLabel.bounds.height)
@@ -55,7 +55,7 @@ public class AATextCell: AATableViewCell {
         }
     }
     
-    public class func measure(title: String?, text: String, width: CGFloat, enableNavigation: Bool) -> CGFloat {
+    open class func measure(_ title: String?, text: String, width: CGFloat, enableNavigation: Bool) -> CGFloat {
         let size = UIViewMeasure.measureText(text, width: width - 30 - (enableNavigation ? 30 : 0), fontSize: 17)
         
         if title != nil {

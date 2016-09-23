@@ -4,20 +4,20 @@
 
 import Foundation
 
-public class AAEditFieldControllerConfig {
+open class AAEditFieldControllerConfig {
     
-    public var title: String!
-    public var actionTitle: String!
-    public var hint: String!
-    public var initialText: String!
+    open var title: String!
+    open var actionTitle: String!
+    open var hint: String!
+    open var initialText: String!
     
-    public var fieldReturnKey: UIReturnKeyType = .Default
-    public var fieldHint: String!
-    public var fieldAutocorrectionType = UITextAutocorrectionType.Default
-    public var fieldAutocapitalizationType = UITextAutocapitalizationType.Sentences
+    open var fieldReturnKey: UIReturnKeyType = .default
+    open var fieldHint: String!
+    open var fieldAutocorrectionType = UITextAutocorrectionType.default
+    open var fieldAutocapitalizationType = UITextAutocapitalizationType.sentences
     
-    public var didDismissTap: ((c: AAEditFieldController)->())?
-    public var didDoneTap: ((t: String, c: AAEditFieldController)->())?
+    open var didDismissTap: ((_ c: AAEditFieldController)->())?
+    open var didDoneTap: ((_ t: String, _ c: AAEditFieldController)->())?
     
     func check() {
         if title == nil {
@@ -26,25 +26,25 @@ public class AAEditFieldControllerConfig {
     }
 }
 
-public class AAEditFieldController: AAContentTableController {
+open class AAEditFieldController: AAContentTableController {
     
-    public var fieldCell: AAEditRow!
+    open var fieldCell: AAEditRow!
     
-    public let config: AAEditFieldControllerConfig
+    open let config: AAEditFieldControllerConfig
     
     public init(config: AAEditFieldControllerConfig) {
         
         self.config = config
         
-        super.init(style: .SettingsGrouped)
+        super.init(style: .settingsGrouped)
         
         navigationItem.title = AALocalized(config.title)
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: .Plain, target: self, action: #selector(AAEditFieldController.doDismiss))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: .plain, target: self, action: #selector(AAEditFieldController.doDismiss))
         
         if config.actionTitle != nil {
-            navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized(config.actionTitle), style: .Done, target: self, action: #selector(AAEditFieldController.doAction))
+            navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized(config.actionTitle), style: .done, target: self, action: #selector(AAEditFieldController.doAction))
         } else {
-            navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationDone"), style: .Done, target: self, action: #selector(AAEditFieldController.doAction))
+            navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationDone"), style: .done, target: self, action: #selector(AAEditFieldController.doAction))
         }
     }
     
@@ -52,7 +52,7 @@ public class AAEditFieldController: AAContentTableController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func tableDidLoad() {
+    open override func tableDidLoad() {
         
         section { (s) -> () in
             
@@ -83,29 +83,29 @@ public class AAEditFieldController: AAContentTableController {
         }
         
         let text = fieldCell.text!.trim()
-        config.didDoneTap?(t: text, c: self)
+        config.didDoneTap?(text, self)
     }
     
     func doDismiss() {
         if config.didDismissTap != nil {
-            config.didDismissTap!(c: self)
+            config.didDismissTap!(self)
         } else {
-            dismiss()
+            dismissController()
         }
     }
     
-    public override func viewWillAppear(animated: Bool) {
+    open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        if let c = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as? AAEditCell {
+        if let c = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? AAEditCell {
             c.textField.becomeFirstResponder()
         }
     }
     
-    public override func viewWillDisappear(animated: Bool) {
+    open override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        if let c = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as? AAEditCell {
+        if let c = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? AAEditCell {
             c.textField.resignFirstResponder()
         }
     }

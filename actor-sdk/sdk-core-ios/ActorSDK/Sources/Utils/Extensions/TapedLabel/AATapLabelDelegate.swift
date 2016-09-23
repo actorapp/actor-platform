@@ -6,6 +6,6 @@ import Foundation
 
 public protocol AATapLabelDelegate: class {
     
-    func tapLabel(tapLabel: TapLabel, didSelectLink link: String)
+    func tapLabel(_ tapLabel: TapLabel, didSelectLink link: String)
     
 }

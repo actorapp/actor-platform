@@ -7,11 +7,11 @@ import Foundation
 public protocol ActorSDKAnalytics {
     
     /// Called when page visible
-    func analyticsPageVisible(page: ACPage)
+    func analyticsPageVisible(_ page: ACPage)
     
     /// Called when page hidden
-    func analyticsPageHidden(page: ACPage)
+    func analyticsPageHidden(_ page: ACPage)
     
     /// Called when event occurs
-    func analyticsEvent(event: ACEvent)
+    func analyticsEvent(_ event: ACEvent)
 }

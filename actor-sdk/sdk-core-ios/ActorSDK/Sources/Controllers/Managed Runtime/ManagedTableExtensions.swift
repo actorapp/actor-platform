@@ -6,22 +6,22 @@ import Foundation
 
 public extension AAManagedTable {
     
-    public func dequeueCell<T where T: UITableViewCell>(indexPath: NSIndexPath) -> T {
+    public func dequeueCell<T>(_ indexPath: IndexPath) -> T where T: UITableViewCell {
         return self.tableView.dequeueCell(indexPath)
     }
 }
 
 public extension AAManagedTable {
     
-    public func dequeueTextCell(indexPath: NSIndexPath) -> AATextCell {
+    public func dequeueTextCell(_ indexPath: IndexPath) -> AATextCell {
         return dequeueCell(indexPath)
     }
     
-    public func dequeueTitledCell(indexPath: NSIndexPath) -> AATitledCell {
+    public func dequeueTitledCell(_ indexPath: IndexPath) -> AATitledCell {
         return dequeueCell(indexPath)
     }
     
-    public func dequeueCommonCell(indexPath: NSIndexPath) -> AACommonCell {
+    public func dequeueCommonCell(_ indexPath: IndexPath) -> AACommonCell {
         return dequeueCell(indexPath)
     }
 }

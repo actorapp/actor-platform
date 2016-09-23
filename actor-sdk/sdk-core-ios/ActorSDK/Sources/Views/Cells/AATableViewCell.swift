@@ -4,12 +4,12 @@
 
 import Foundation
 
-public class AATableViewCell: UITableViewCell {
+open class AATableViewCell: UITableViewCell {
     
-    private static let separatorColor = ActorSDK.sharedActor().style.vcSeparatorColor
+    fileprivate static let separatorColor = ActorSDK.sharedActor().style.vcSeparatorColor
     
-    private var topSeparator: UIView = UIView()
-    private var bottomSeparator: UIView = UIView()
+    fileprivate var topSeparator: UIView = UIView()
+    fileprivate var bottomSeparator: UIView = UIView()
     
     var appStyle: ActorStyle {
         get {
@@ -35,18 +35,18 @@ public class AATableViewCell: UITableViewCell {
     }
     
     
-    public var topSeparatorLeftInset: CGFloat = 0.0 {
+    open var topSeparatorLeftInset: CGFloat = 0.0 {
         didSet {
             setNeedsLayout()
         }
     }
-    public var bottomSeparatorLeftInset: CGFloat = 0.0 {
+    open var bottomSeparatorLeftInset: CGFloat = 0.0 {
         didSet {
             setNeedsLayout()
         }
     }
     
-    public var topSeparatorVisible: Bool = false {
+    open var topSeparatorVisible: Bool = false {
         didSet {
             if topSeparatorVisible == oldValue {
                 return
@@ -54,7 +54,7 @@ public class AATableViewCell: UITableViewCell {
             
             if topSeparatorVisible {
                 contentView.addSubview(topSeparator)
-                contentView.bringSubviewToFront(topSeparator)
+                contentView.bringSubview(toFront: topSeparator)
             } else {
                 topSeparator.removeFromSuperview()
             }
@@ -63,7 +63,7 @@ public class AATableViewCell: UITableViewCell {
         }
     }
     
-    public var bottomSeparatorVisible: Bool = false {
+    open var bottomSeparatorVisible: Bool = false {
         didSet {
             if bottomSeparatorVisible == oldValue {
                 return
@@ -80,22 +80,22 @@ public class AATableViewCell: UITableViewCell {
         }
     }
     
-    public override func layoutSubviews() {
+    open override func layoutSubviews() {
         super.layoutSubviews()
         
         if topSeparatorVisible {
             topSeparator.frame = CGRect(x: topSeparatorLeftInset, y: 0, width: bounds.width - topSeparatorLeftInset, height: 0.5)
-            contentView.bringSubviewToFront(topSeparator)
+            contentView.bringSubview(toFront: topSeparator)
         }
         
         if bottomSeparatorVisible {
             bottomSeparator.frame = CGRect(x: bottomSeparatorLeftInset, y: contentView.bounds.height - 0.5, width: bounds.width - bottomSeparatorLeftInset, height: 0.5)
-            contentView.bringSubviewToFront(bottomSeparator)
+            contentView.bringSubview(toFront: bottomSeparator)
         }
     }
     
-    public override func setHighlighted(highlighted: Bool, animated: Bool) {
-        if self.highlighted != highlighted {
+    open override func setHighlighted(_ highlighted: Bool, animated: Bool) {
+        if self.isHighlighted != highlighted {
             super.setHighlighted(highlighted, animated: animated)
         }
         
@@ -109,8 +109,8 @@ public class AATableViewCell: UITableViewCell {
         }
     }
     
-    public override func setSelected(selected: Bool, animated: Bool) {
-        if self.selected != selected {
+    open override func setSelected(_ selected: Bool, animated: Bool) {
+        if self.isSelected != selected {
             super.setSelected(selected, animated: animated)
         }
         

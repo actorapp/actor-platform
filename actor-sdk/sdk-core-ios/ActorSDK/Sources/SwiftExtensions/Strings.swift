@@ -11,47 +11,47 @@ public extension String {
     
     public var length: Int { return self.characters.count }
     
-    public func indexOf(str: String) -> Int? {
-        if let range = rangeOfString(str) {
-            return startIndex.distanceTo(range.startIndex)
+    public func indexOf(_ str: String) -> Int? {
+        if let range = range(of: str) {
+            return characters.distance(from: startIndex, to: range.lowerBound)
         } else {
             return nil
         }
     }
     
     public func trim() -> String {
-        return stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet());
+        return trimmingCharacters(in: CharacterSet.whitespaces);
     }
     
     public subscript (i: Int) -> Character {
-        return self[self.startIndex.advancedBy(i)]
+        return self[self.characters.index(self.startIndex, offsetBy: i)]
     }
     
     public subscript (i: Int) -> String {
         return String(self[i] as Character)
     }
     
-    public func first(count: Int) -> String {
+    public func first(_ count: Int) -> String {
         let realCount = min(count, length);
-        return substringToIndex(startIndex.advancedBy(realCount));
+        return substring(to: characters.index(startIndex, offsetBy: realCount));
     }
     
-    public func skip(count: Int) -> String {
+    public func skip(_ count: Int) -> String {
         let realCount = min(count, length);
-        return substringFromIndex(startIndex.advancedBy(realCount))
+        return substring(from: characters.index(startIndex, offsetBy: realCount))
     }
     
     
-    public func strip(set: NSCharacterSet) -> String {
-        return componentsSeparatedByCharactersInSet(set).joinWithSeparator("")
+    public func strip(_ set: CharacterSet) -> String {
+        return components(separatedBy: set).joined(separator: "")
     }
     
-    public func replace(src: String, dest:String) -> String {
-        return stringByReplacingOccurrencesOfString(src, withString: dest, options: NSStringCompareOptions(), range: nil)
+    public func replace(_ src: String, dest:String) -> String {
+        return replacingOccurrences(of: src, with: dest, options: NSString.CompareOptions(), range: nil)
     }
     
     public func toLong() -> Int64? {
-        return NSNumberFormatter().numberFromString(self)?.longLongValue
+        return NumberFormatter().number(from: self)?.int64Value
     }
     
     public func toJLong() -> jlong {
@@ -63,46 +63,46 @@ public extension String {
         if (trimmed.isEmpty){
             return "#";
         }
-        let letters = NSCharacterSet.letterCharacterSet()
+        let letters = CharacterSet.letters
         let res: String = self[0];
-        if (res.rangeOfCharacterFromSet(letters) != nil) {
-            return res.uppercaseString;
+        if (res.rangeOfCharacter(from: letters) != nil) {
+            return res.uppercased();
         } else {
             return "#";
         }
     }
     
-    public func hasPrefixInWords(prefix: String) -> Bool {
-        var components = self.componentsSeparatedByString(" ")
+    public func hasPrefixInWords(_ prefix: String) -> Bool {
+        var components = self.components(separatedBy: " ")
         for i in 0..<components.count {
-            if components[i].lowercaseString.hasPrefix(prefix.lowercaseString) {
+            if components[i].lowercased().hasPrefix(prefix.lowercased()) {
                 return true
             }
         }
         return false
     }
     
-    public func contains(text: String) -> Bool {
-        return self.rangeOfString(text, options: NSStringCompareOptions.CaseInsensitiveSearch, range: nil, locale: nil) != nil
+    public func contains(_ text: String) -> Bool {
+        return self.range(of: text, options: NSString.CompareOptions.caseInsensitive, range: nil, locale: nil) != nil
     }
     
-    public func startsWith(text: String) -> Bool {
-        let range = rangeOfString(text)
+    public func startsWith(_ text: String) -> Bool {
+        let range = self.range(of: text)
         if range != nil {
-            return range!.startIndex == startIndex
+            return range!.lowerBound == startIndex
         }
         return false
     }
     
-    public func rangesOfString(text: String) -> [Range<String.Index>] {
+    public func rangesOfString(_ text: String) -> [Range<String.Index>] {
         var res = [Range<String.Index>]()
         
-        var searchRange = Range<String.Index>(start: self.startIndex, end: self.endIndex)
+        var searchRange = (self.startIndex ..< self.endIndex)
         while true {
-            let found = self.rangeOfString(text, options: NSStringCompareOptions.CaseInsensitiveSearch, range: searchRange, locale: nil)
+            let found = self.range(of: text, options: String.CompareOptions.caseInsensitive, range: searchRange, locale: nil)
             if found != nil {
                 res.append(found!)
-                searchRange = Range<String.Index>(start: found!.endIndex, end: self.endIndex)
+                searchRange = (found!.upperBound ..< self.endIndex)
             } else {
                 break
             }
@@ -111,7 +111,7 @@ public extension String {
         return res
     }
     
-    public func repeatString(count: Int) -> String {
+    public func repeatString(_ count: Int) -> String {
         var res = ""
         for _ in 0..<count {
             res += self
@@ -120,8 +120,8 @@ public extension String {
     }
         
     public func isValidUrl () -> Bool {
-            if let url = NSURL(string: self) {
-                return UIApplication.sharedApplication().canOpenURL(url)
+            if let url = URL(string: self) {
+                return UIApplication.shared.canOpenURL(url)
             }
         return false
     }
@@ -141,15 +141,15 @@ public extension String {
 
 public extension NSAttributedString {
     
-    public func append(text: NSAttributedString) -> NSAttributedString {
+    public func appendMutate(_ text: NSAttributedString) -> NSAttributedString {
         let res = NSMutableAttributedString()
-        res.appendAttributedString(self)
-        res.appendAttributedString(text)
+        res.append(self)
+        res.append(text)
         return res
     }
     
-    public func append(text: String, font: UIFont) -> NSAttributedString {
-        return append(NSAttributedString(string: text, attributes: [NSFontAttributeName: font]))
+    public func appendMutate(_ text: String, font: UIFont) -> NSAttributedString {
+        return self.appendMutate(NSAttributedString(string: text, attributes: [NSFontAttributeName: font]))
     }
     
     public convenience init(string: String, font: UIFont) {
@@ -159,12 +159,12 @@ public extension NSAttributedString {
 
 public extension NSMutableAttributedString {
     
-    public func appendFont(font: UIFont) {
+    public func appendFont(_ font: UIFont) {
         self.addAttribute(NSFontAttributeName, value: font, range: NSMakeRange(0, self.length))
     }
     
-    public func appendColor(color: UIColor) {
-        self.addAttribute(NSForegroundColorAttributeName, value: color.CGColor, range: NSMakeRange(0, self.length))
+    public func appendColor(_ color: UIColor) {
+        self.addAttribute(NSForegroundColorAttributeName, value: color.cgColor, range: NSMakeRange(0, self.length))
     }
 }
 
