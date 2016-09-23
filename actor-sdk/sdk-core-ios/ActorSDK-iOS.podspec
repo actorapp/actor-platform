@@ -35,7 +35,7 @@ Pod::Spec.new do |s|
   s.dependency 'TTTAttributedLabel'
   s.dependency 'M13ProgressSuite'
 
-  s.preserve_paths = 'Frameworks'
+  s.preserve_paths = '{Frameworks,ActorSDK.framework}'
   s.vendored_framework = 'ActorSDK.framework'
 
   s.xcconfig = { 
