@@ -5,20 +5,20 @@
 import Foundation
 
 
-public class AABackgroundCellRenderer<P, T where T: AnyObject, P: AnyObject, P: Equatable> {
+open class AABackgroundCellRenderer<P, T> where T: AnyObject, P: AnyObject, P: Equatable {
     
-    private var generation = 0
-    private var wasPresented: Bool = false
-    private var requestedConfig: P? = nil
-    private let renderer: (config: P)-> T!
-    private let receiver: (T!) -> ()
+    fileprivate var generation = 0
+    fileprivate var wasPresented: Bool = false
+    fileprivate var requestedConfig: P? = nil
+    fileprivate let renderer: (_ config: P)-> T!
+    fileprivate let receiver: (T!) -> ()
     
-    public init(renderer: (config: P) -> T!, receiver: (T!) -> ()) {
+    public init(renderer: @escaping (_ config: P) -> T!, receiver: @escaping (T!) -> ()) {
         self.renderer = renderer
         self.receiver = receiver
     }
 
-    func requestRender(config: P) -> Bool {
+    func requestRender(_ config: P) -> Bool {
         // Ignore if not resized
         if requestedConfig == config {
             return false
@@ -44,7 +44,7 @@ public class AABackgroundCellRenderer<P, T where T: AnyObject, P: AnyObject, P: 
                 if curGen != self.generation {
                     return
                 }
-                let res = self.renderer(config: config)
+                let res = self.renderer(config)
                 if curGen != self.generation {
                     return
                 }
@@ -60,7 +60,7 @@ public class AABackgroundCellRenderer<P, T where T: AnyObject, P: AnyObject, P: 
         return wasConfig
     }
     
-    func render(config: P) {
+    func render(_ config: P) {
         // Ignore if not resized
         if requestedConfig == config {
             return
@@ -69,10 +69,10 @@ public class AABackgroundCellRenderer<P, T where T: AnyObject, P: AnyObject, P: 
         requestedConfig = config
         generation += 1
         wasPresented = true
-        receiver(renderer(config: config))
+        receiver(renderer(config))
     }
     
-    func cancelRender(wasPresented: Bool = false) {
+    func cancelRender(_ wasPresented: Bool = false) {
         generation += 1
         let oldConfig = requestedConfig
         requestedConfig = nil

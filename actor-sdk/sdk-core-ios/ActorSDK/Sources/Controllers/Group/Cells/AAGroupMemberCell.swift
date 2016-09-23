@@ -4,18 +4,18 @@
 
 import UIKit
 
-public class AAGroupMemberCell: AATableViewCell {
+open class AAGroupMemberCell: AATableViewCell {
 
     // Views
     
-    public var nameLabel = UILabel()
-    public var onlineLabel = UILabel()
-    public var avatarView = AAAvatarView()
-    public var adminLabel = UILabel()
+    open var nameLabel = UILabel()
+    open var onlineLabel = UILabel()
+    open var avatarView = AAAvatarView()
+    open var adminLabel = UILabel()
     
     // Binder
     
-    public var binder = AABinder()
+    open var binder = AABinder()
     
     // Contstructors
     
@@ -27,14 +27,14 @@ public class AAGroupMemberCell: AATableViewCell {
         
         contentView.addSubview(avatarView)
         
-        nameLabel.font = UIFont.systemFontOfSize(18.0)
+        nameLabel.font = UIFont.systemFont(ofSize: 18.0)
         nameLabel.textColor = appStyle.cellTextColor
         contentView.addSubview(nameLabel)
         
-        onlineLabel.font = UIFont.systemFontOfSize(14.0)
+        onlineLabel.font = UIFont.systemFont(ofSize: 14.0)
         contentView.addSubview(onlineLabel)
         
-        adminLabel.font = UIFont.systemFontOfSize(14.0)
+        adminLabel.font = UIFont.systemFont(ofSize: 14.0)
         adminLabel.textColor = appStyle.cellDestructiveColor
         contentView.addSubview(adminLabel)
     }
@@ -45,19 +45,19 @@ public class AAGroupMemberCell: AATableViewCell {
     
     // Binding
     
-    public func setUsername(username: String) {
+    open func setUsername(_ username: String) {
         nameLabel.text = username
     }
     
-    public func bind(user: ACUserVM, isAdmin: Bool) {
+    open func bind(_ user: ACUserVM, isAdmin: Bool) {
         
         // Bind name and avatar
-        let name = user.getNameModel().get()
+        let name = user.getNameModel().get()!
         nameLabel.text = name
         avatarView.bind(name, id: Int(user.getId()), avatar: user.getAvatarModel().get())
         
         // Bind admin flag
-        adminLabel.hidden = !isAdmin
+        adminLabel.isHidden = !isAdmin
         
         // Bind onlines
         
@@ -70,8 +70,8 @@ public class AAGroupMemberCell: AATableViewCell {
                 
                 if value != nil {
                     self.onlineLabel.showView()
-                    self.onlineLabel.text = Actor.getFormatter().formatPresence(value!, withSex: user.getSex())
-                    if value!.state.ordinal() == ACUserPresence_State.ONLINE().ordinal() {
+                    self.onlineLabel.text = Actor.getFormatter().formatPresence(value!, with: user.getSex())
+                    if value!.state.ordinal() == ACUserPresence_State.online().ordinal() {
                         self.onlineLabel.textColor = self.appStyle.userOnlineColor
                     } else {
                         self.onlineLabel.textColor = self.appStyle.userOfflineColor
@@ -84,14 +84,14 @@ public class AAGroupMemberCell: AATableViewCell {
         }
     }
     
-    public override func prepareForReuse() {
+    open override func prepareForReuse() {
         super.prepareForReuse()
         binder.unbindAll()
     }
     
     // Layouting
     
-    public override func layoutSubviews() {
+    open override func layoutSubviews() {
         super.layoutSubviews()
         
         let userAvatarViewFrameSize: CGFloat = CGFloat(44)
@@ -99,7 +99,7 @@ public class AAGroupMemberCell: AATableViewCell {
         
         var w: CGFloat = contentView.bounds.size.width - 65.0 - 8.0
         
-        if !adminLabel.hidden {
+        if !adminLabel.isHidden {
             adminLabel.frame = CGRect(x: contentView.width - adminLabel.width - 8, y: 5, width: adminLabel.width, height: 42)
             w -= adminLabel.width + 8
         }

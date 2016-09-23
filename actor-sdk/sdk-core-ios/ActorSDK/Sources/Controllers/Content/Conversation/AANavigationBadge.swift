@@ -6,38 +6,38 @@ import Foundation
 
 class AANavigationBadge {
     
-    private static var binder = AABinder()
-    private static let badgeView = UIImageView()
-    private static var badgeCount = 0
-    private static var isBadgeVisible = false
+    fileprivate static var binder = AABinder()
+    fileprivate static let badgeView = UIImageView()
+    fileprivate static var badgeCount = 0
+    fileprivate static var isBadgeVisible = false
     
-    private static var isInited = false
+    fileprivate static var isInited = false
     
-    class private func start() {
+    class fileprivate func start() {
         if isInited {
             return
         }
         isInited = true
         
-        badgeView.image = Imaging.roundedImage(UIColor(rgb: 0xfe0000), size: CGSizeMake(16, 16), radius: 8)
+        badgeView.image = Imaging.roundedImage(UIColor(rgb: 0xfe0000), size: CGSize(width: 16, height: 16), radius: 8)
         // badgeView.frame = CGRectMake(16, 22, 32, 16)
         badgeView.alpha = 0
         
         let badgeText = UILabel()
         badgeText.text = "0"
-        badgeText.textColor = UIColor.whiteColor()
+        badgeText.textColor = UIColor.white
         // badgeText.frame = CGRectMake(0, 0, 32, 16)
-        badgeText.font = UIFont.systemFontOfSize(12)
-        badgeText.textAlignment = NSTextAlignment.Center
+        badgeText.font = UIFont.systemFont(ofSize: 12)
+        badgeText.textAlignment = NSTextAlignment.center
         badgeView.addSubview(badgeText)
         
         
-        UIApplication.sharedApplication().windows.first!.addSubview(badgeView)
+        UIApplication.shared.windows.first!.addSubview(badgeView)
         
         // Bind badge counter
         binder.bind(Actor.getGlobalState().globalCounter, closure: { (value: JavaLangInteger?) -> () in
             if let v = value {
-                self.badgeCount = Int(v.integerValue)
+                self.badgeCount = Int(v.intValue)
             } else {
                 self.badgeCount = 0
             }
@@ -49,13 +49,13 @@ class AANavigationBadge {
                 self.badgeView.hideView()
             }
             
-            badgeText.frame = CGRectMake(0, 0, 128, 16)
+            badgeText.frame = CGRect(x: 0, y: 0, width: 128, height: 16)
             badgeText.sizeToFit()
             
             if badgeText.frame.width < 8 {
-                self.badgeView.frame = CGRectMake(16, 22, 16, 16)
+                self.badgeView.frame = CGRect(x: 16, y: 22, width: 16, height: 16)
             } else {
-                self.badgeView.frame = CGRectMake(16, 22, badgeText.frame.width + 8, 16)
+                self.badgeView.frame = CGRect(x: 16, y: 22, width: badgeText.frame.width + 8, height: 16)
             }
             badgeText.frame = self.badgeView.bounds
         })

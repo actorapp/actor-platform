@@ -8,8 +8,8 @@ private let ENABLE_LOGS = false
 
 class AAMessagesFlowLayout : UICollectionViewLayout {
     
-    var deletedIndexPaths = [NSIndexPath]()
-    var insertedIndexPaths = [NSIndexPath]()
+    var deletedIndexPaths = [IndexPath]()
+    var insertedIndexPaths = [IndexPath]()
     var items = [AALayoutItem?]()
     var frames = [CGRect?]()
     var isLoadMore: Bool = false
@@ -29,18 +29,18 @@ class AAMessagesFlowLayout : UICollectionViewLayout {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func beginUpdates(isLoadMore: Bool, list: AAPreprocessedList?, unread: jlong?) {
+    func beginUpdates(_ isLoadMore: Bool, list: AAPreprocessedList?, unread: jlong?) {
         
         self.isLoadMore = isLoadMore
         self.list = list
         self.unread = unread
         
         // Saving current visible cells
-        currentItems.removeAll(keepCapacity: true)
-        let visibleItems = self.collectionView!.indexPathsForVisibleItems()
+        currentItems.removeAll(keepingCapacity: true)
+        let visibleItems = self.collectionView!.indexPathsForVisibleItems
         let currentOffset = self.collectionView!.contentOffset.y
         for indexPath in visibleItems {
-            let index = indexPath.item
+            let index = (indexPath as NSIndexPath).item
             let topOffset = items[index]!.attrs.frame.origin.y - currentOffset
             let id = items[index]!.id
             currentItems.append(AACachedLayout(id: id, offset: topOffset))
@@ -49,15 +49,15 @@ class AAMessagesFlowLayout : UICollectionViewLayout {
         isScrolledToEnd = self.collectionView!.contentOffset.y < 8
     }
     
-    override func prepareLayout() {
-        super.prepareLayout()
+    override func prepare() {
+        super.prepare()
         
         autoreleasepool {
             
             // Validate sections
-            let sectionsCount = self.collectionView!.numberOfSections()
+            let sectionsCount = self.collectionView!.numberOfSections
             if sectionsCount == 0 {
-                items.removeAll(keepCapacity: false)
+                items.removeAll(keepingCapacity: false)
                 contentHeight = 0.0
                 return
             }
@@ -72,8 +72,8 @@ class AAMessagesFlowLayout : UICollectionViewLayout {
             }
             // items.removeAll(keepCapacity: false)
             // frames.removeAll(keepCapacity: false)
-            items.removeAll(keepCapacity: true)
-            frames.removeAll(keepCapacity: true)
+            items.removeAll(keepingCapacity: true)
+            frames.removeAll(keepingCapacity: true)
             
             if list != nil {
                 
@@ -86,14 +86,14 @@ class AAMessagesFlowLayout : UICollectionViewLayout {
                     if itemId == unread {
                         height += AABubbleCell.newMessageSize
                     }
-                    let itemSize = CGSizeMake(self.collectionView!.bounds.width, height)
+                    let itemSize = CGSize(width: self.collectionView!.bounds.width, height: height)
                     
-                    let frame = CGRect(origin: CGPointMake(0, contentHeight), size: itemSize)
+                    let frame = CGRect(origin: CGPoint(x: 0, y: contentHeight), size: itemSize)
                     var item = AALayoutItem(id: itemId)
                     
                     item.size = itemSize
                     
-                    let attrs = UICollectionViewLayoutAttributes(forCellWithIndexPath: NSIndexPath(forRow: i, inSection: 0))
+                    let attrs = UICollectionViewLayoutAttributes(forCellWith: IndexPath(row: i, section: 0))
                     attrs.frame = frame
                     item.attrs = attrs
                     
@@ -115,33 +115,33 @@ class AAMessagesFlowLayout : UICollectionViewLayout {
         }
     }
     
-    override func collectionViewContentSize() -> CGSize {
+    override var collectionViewContentSize : CGSize {
         return CGSize(width: self.collectionView!.bounds.width, height: contentHeight)
     }
     
-    override func layoutAttributesForElementsInRect(rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
+    override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
         var res = [UICollectionViewLayoutAttributes]()
         for i in 0..<items.count {
-            if CGRectIntersectsRect(rect, frames[i]!) {
+            if rect.intersects(frames[i]!) {
                 res.append(items[i]!.attrs)
             }
         }
         return res
     }
     
-    override func prepareForCollectionViewUpdates(updateItems: [UICollectionViewUpdateItem]) {
+    override func prepare(forCollectionViewUpdates updateItems: [UICollectionViewUpdateItem]) {
         let start = CFAbsoluteTimeGetCurrent()
-        super.prepareForCollectionViewUpdates(updateItems)
+        super.prepare(forCollectionViewUpdates: updateItems)
         
         if !isLoadMore {
             
-            insertedIndexPaths.removeAll(keepCapacity: true)
-            deletedIndexPaths.removeAll(keepCapacity: true)
+            insertedIndexPaths.removeAll(keepingCapacity: true)
+            deletedIndexPaths.removeAll(keepingCapacity: true)
             
             for update in updateItems {
-                if update.updateAction == .Insert {
+                if update.updateAction == .insert {
                     insertedIndexPaths.append(update.indexPathAfterUpdate!)
-                } else if update.updateAction == .Delete {
+                } else if update.updateAction == .delete {
                     deletedIndexPaths.append(update.indexPathBeforeUpdate!)
                 }
             }
@@ -150,15 +150,15 @@ class AAMessagesFlowLayout : UICollectionViewLayout {
         if ENABLE_LOGS { NSLog("🙇 prepareForCollectionViewUpdates: \(CFAbsoluteTimeGetCurrent() - start)") }
     }
 
-    override func layoutAttributesForItemAtIndexPath(indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
-        return items[indexPath.item]!.attrs
+    override func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
+        return items[(indexPath as NSIndexPath).item]!.attrs
     }    
     
-    override func initialLayoutAttributesForAppearingItemAtIndexPath(itemIndexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
-        let res = super.initialLayoutAttributesForAppearingItemAtIndexPath(itemIndexPath)
+    override func initialLayoutAttributesForAppearingItem(at itemIndexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
+        let res = super.initialLayoutAttributesForAppearingItem(at: itemIndexPath)
         if !isLoadMore && insertedIndexPaths.contains(itemIndexPath) {
             res?.alpha = 0
-            res?.transform = CGAffineTransformTranslate(CGAffineTransformIdentity, 0, -44)
+            res?.transform = CGAffineTransform.identity.translatedBy(x: 0, y: -44)
         } else {
             res?.alpha = 1
         }
@@ -184,7 +184,7 @@ class AAMessagesFlowLayout : UICollectionViewLayout {
             }
             
             if delta != nil {
-                self.collectionView!.contentOffset = CGPointMake(0, self.collectionView!.contentOffset.y - delta)
+                self.collectionView!.contentOffset = CGPoint(x: 0, y: self.collectionView!.contentOffset.y - delta)
             }
         }
         
@@ -215,7 +215,7 @@ struct AACachedLayout {
 }
 
 @objc enum AAMessageGravity: Int {
-    case Left
-    case Right
-    case Center
+    case left
+    case right
+    case center
 }

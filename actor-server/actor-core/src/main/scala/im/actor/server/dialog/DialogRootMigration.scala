@@ -5,6 +5,7 @@ import java.time.Instant
 import akka.actor.Status
 import akka.pattern.pipe
 import akka.persistence.SnapshotMetadata
+import com.github.ghik.silencer.silent
 import im.actor.server.cqrs.{ Event, Processor }
 import im.actor.server.db.DbExtension
 import im.actor.server.model.DialogObsolete
@@ -58,7 +59,7 @@ trait DialogRootMigration extends Processor[DialogRootState] {
     context.become(migrating)
 
     (for {
-      models ← DbExtension(context.system).db.run(DialogRepo.fetchDialogs(userId))
+      models ← DbExtension(context.system).db.run(DialogRepo.fetchDialogs(userId): @silent)
     } yield CreateEvents(models)) pipeTo self
   }
 

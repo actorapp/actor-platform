@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import AVFoundation
 
-public class AARingtonesViewController: AATableViewController {
+open class AARingtonesViewController: AATableViewController {
     
     var audioPlayer: AVAudioPlayer!
     var selectedRingtone: String = ""
@@ -21,21 +21,21 @@ public class AARingtonesViewController: AATableViewController {
     var soundFiles: [(directory: String, files: [String])] = []
    
     init() {
-        super.init(style: UITableViewStyle.Plain)
+        super.init(style: UITableViewStyle.plain)
         
         self.title = AALocalized("Ringtones")
         
-        let cancelButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: UIBarButtonItemStyle.Plain, target: self, action: Selector("dismiss"))
-        let doneButtonItem = UIBarButtonItem(title: AALocalized("NavigationDone"), style: UIBarButtonItemStyle.Plain, target: self, action: Selector("dismiss"))
-        self.navigationItem.setLeftBarButtonItem(cancelButtonItem, animated: false)
-        self.navigationItem.setRightBarButtonItem(doneButtonItem, animated: false)
+        let cancelButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: UIBarButtonItemStyle.plain, target: self, action: Selector("dismiss"))
+        let doneButtonItem = UIBarButtonItem(title: AALocalized("NavigationDone"), style: UIBarButtonItemStyle.plain, target: self, action: Selector("dismiss"))
+        self.navigationItem.setLeftBarButton(cancelButtonItem, animated: false)
+        self.navigationItem.setRightBarButton(doneButtonItem, animated: false)
     }
     
     required public init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override public func viewDidLoad() {
+    override open func viewDidLoad() {
         super.viewDidLoad()
         for directory in rootSoundDirectories {
             directories.append(directory)
@@ -45,38 +45,38 @@ public class AARingtonesViewController: AATableViewController {
         }
         
         getDirectories()
-        loadSoundFiles()
+        // loadSoundFiles()
         tableView.rowHeight = 44.0
-        tableView.sectionIndexBackgroundColor = UIColor.clearColor()
+        tableView.sectionIndexBackgroundColor = UIColor.clear
     }
     
-    override public func viewWillDisappear(animated: Bool) {
+    override open func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
-        if(audioPlayer != nil && audioPlayer.playing){
+        if(audioPlayer != nil && audioPlayer.isPlaying){
             audioPlayer.stop()
         }
     }
     
-    public override func viewDidDisappear(animated: Bool) {
+    open override func viewDidDisappear(_ animated: Bool) {
         completion(selectedRingtone)
     }
 
-    override public func didReceiveMemoryWarning() {
+    override open func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
 
     func getDirectories() {
-        let fileManager: NSFileManager = NSFileManager()
+        let fileManager: FileManager = FileManager()
         for directory in rootSoundDirectories {
-            let directoryURL: NSURL = NSURL(fileURLWithPath: "\(directory)", isDirectory: true)
+            let directoryURL: URL = URL(fileURLWithPath: "\(directory)", isDirectory: true)
             
             do {
-                if let URLs: [NSURL] = try fileManager.contentsOfDirectoryAtURL(directoryURL, includingPropertiesForKeys: [NSURLIsDirectoryKey], options: NSDirectoryEnumerationOptions()) {
+                if let URLs: [URL] = try fileManager.contentsOfDirectory(at: directoryURL, includingPropertiesForKeys: [URLResourceKey.isDirectoryKey], options: FileManager.DirectoryEnumerationOptions()) {
                     var urlIsaDirectory: ObjCBool = ObjCBool(false)
                     for url in URLs {
-                        if fileManager.fileExistsAtPath(url.path!, isDirectory: &urlIsaDirectory) {
-                            if urlIsaDirectory {
-                                let directory: String = "\(url.relativePath!)"
+                        if fileManager.fileExists(atPath: url.path, isDirectory: &urlIsaDirectory) {
+                            if urlIsaDirectory.boolValue {
+                                let directory: String = "\(url.relativePath)"
                                 let files: [String] = []
                                 let newSoundFile: (directory: String, files: [String]) = (directory, files)
                                 directories.append("\(directory)")
@@ -91,79 +91,79 @@ public class AARingtonesViewController: AATableViewController {
         }
     }
     
-    func loadSoundFiles() {
+//    func loadSoundFiles() {
     
-        for i in 0...directories.count-1 {
-            let fileManager: NSFileManager = NSFileManager()
-            let directoryURL: NSURL = NSURL(fileURLWithPath: directories[i], isDirectory: true)
-            
-            do {
-                if let URLs: [NSURL] = try fileManager.contentsOfDirectoryAtURL(directoryURL, includingPropertiesForKeys: [NSURLIsDirectoryKey], options: NSDirectoryEnumerationOptions()) {
-                    var urlIsaDirectory: ObjCBool = ObjCBool(false)
-                    for url in URLs {
-                        if fileManager.fileExistsAtPath(url.path!, isDirectory: &urlIsaDirectory) {
-                            if !urlIsaDirectory {
-                                soundFiles[i].files.append("\(url.lastPathComponent!)")
-                            }
-                        }
-                    }
-                }
-            } catch {
-                debugPrint("\(error)")
-            }
-        }
-    }
+//        for i in 0...directories.count-1 {
+//            let fileManager: FileManager = FileManager()
+//            let directoryURL: URL = URL(fileURLWithPath: directories[i], isDirectory: true)
+//            
+//            do {
+//                if let URLs: [URL] = try fileManager.contentsOfDirectory(at: directoryURL, includingPropertiesForKeys: [URLResourceKey.isDirectoryKey], options: FileManager.DirectoryEnumerationOptions()) {
+//                    var urlIsaDirectory: ObjCBool = ObjCBool(false)
+//                    for url in URLs {
+//                        if fileManager.fileExists(atPath: url.path, isDirectory: &urlIsaDirectory) {
+//                            if !urlIsaDirectory {
+//                                soundFiles[i].files.append("\(url.lastPathComponent)")
+//                            }
+//                        }
+//                    }
+//                }
+//            } catch {
+//                debugPrint("\(error)")
+//            }
+//        }
+//    }
 
-    override public func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
-    }
+//    override open func numberOfSections(in tableView: UITableView) -> Int {
+//        return 1
+//    }
+//    
+//    override open func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//        return soundFiles[section].files.count
+//    }
     
-    override public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return soundFiles[section].files.count
-    }
-    
-    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return "Ringtones"
     }
     
-    func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: IndexPath) -> CGFloat {
         return 44
     }
     
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForRowAtIndexPath indexPath: IndexPath) -> CGFloat {
         return UITableViewAutomaticDimension
     }
     
-    override public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+//    override open func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//    
+//        let fileName: String = soundFiles[(indexPath as NSIndexPath).section].files[(indexPath as NSIndexPath).row]
+//        let cell: AACommonCell = tableView.dequeueCell(indexPath)
+//        cell.style = .normal
+//        let name = fileName.components(separatedBy: ".m4r")
+//        cell.textLabel?.text = name.first
+//        return cell
+//    }
     
-        let fileName: String = soundFiles[indexPath.section].files[indexPath.row]
-        let cell: AACommonCell = tableView.dequeueCell(indexPath)
-        cell.style = .Normal
-        let name = fileName.componentsSeparatedByString(".m4r")
-        cell.textLabel?.text = name.first
-        return cell
-    }
-    
-    func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
-        if let cell = tableView.cellForRowAtIndexPath(indexPath) as? AACommonCell {
-            cell.style = .Normal
+    func tableView(_ tableView: UITableView, didDeselectRowAtIndexPath indexPath: IndexPath) {
+        if let cell = tableView.cellForRow(at: indexPath) as? AACommonCell {
+            cell.style = .normal
         }
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAtIndexPath indexPath: IndexPath) {
 
-        let directory: String = soundFiles[indexPath.section].directory
-        let fileName: String = soundFiles[indexPath.section].files[indexPath.row]
-        let fileURL: NSURL = NSURL(fileURLWithPath: "\(directory)/\(fileName)")
+        let directory: String = soundFiles[(indexPath as NSIndexPath).section].directory
+        let fileName: String = soundFiles[(indexPath as NSIndexPath).section].files[(indexPath as NSIndexPath).row]
+        let fileURL: URL = URL(fileURLWithPath: "\(directory)/\(fileName)")
         do {
-            audioPlayer = try AVAudioPlayer(contentsOfURL: fileURL)
+            audioPlayer = try AVAudioPlayer(contentsOf: fileURL)
             audioPlayer.play()
         } catch {
             debugPrint("\(error)")
             selectedRingtone = ""
         }
-        let cell = tableView.cellForRowAtIndexPath(indexPath) as! AACommonCell
-        selectedRingtone = soundFiles[indexPath.section].files[indexPath.row]
-        cell.style = .Checkmark
+        let cell = tableView.cellForRow(at: indexPath) as! AACommonCell
+        selectedRingtone = soundFiles[(indexPath as NSIndexPath).section].files[(indexPath as NSIndexPath).row]
+        cell.style = .checkmark
     }
 }

@@ -3,7 +3,7 @@ package im.actor.concurrent
 import akka.http.scaladsl.util.FastFuture
 import cats.data.Xor._
 import cats.data.{ Xor, XorT }
-import cats.std.{ EitherInstances, FutureInstances }
+import cats.instances.{ EitherInstances, FutureInstances }
 import cats.syntax.all._
 
 import scala.concurrent.{ ExecutionContext, Future }

@@ -4,15 +4,15 @@
 
 import Foundation
 
-public class AAWallpapperPreviewController: AAViewController {
+open class AAWallpapperPreviewController: AAViewController {
     
-    private let imageView = UIImageView()
-    private let cancelButton = UIButton()
-    private let setButton = UIButton()
+    fileprivate let imageView = UIImageView()
+    fileprivate let cancelButton = UIButton()
+    fileprivate let setButton = UIButton()
     
-    private let imageName: String
-    private let selectedImage: UIImage
-    private var fromName: Bool
+    fileprivate let imageName: String
+    fileprivate let selectedImage: UIImage
+    fileprivate var fromName: Bool
     
     public init(imageName: String) {
         self.imageName = imageName
@@ -20,16 +20,16 @@ public class AAWallpapperPreviewController: AAViewController {
         self.fromName = true
         super.init()
         imageView.image = UIImage.bundled(imageName)!
-        imageView.contentMode = .ScaleAspectFill
+        imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         cancelButton.backgroundColor = appStyle.vcPanelBgColor
-        cancelButton.addTarget(self, action: #selector(AAWallpapperPreviewController.cancelDidTap), forControlEvents: .TouchUpInside)
-        cancelButton.setTitle(AALocalized("AlertCancel"), forState: .Normal)
-        cancelButton.setTitleColor(appStyle.tabUnselectedTextColor, forState: .Normal)
+        cancelButton.addTarget(self, action: #selector(AAWallpapperPreviewController.cancelDidTap), for: .touchUpInside)
+        cancelButton.setTitle(AALocalized("AlertCancel"), for: UIControlState())
+        cancelButton.setTitleColor(appStyle.tabUnselectedTextColor, for: UIControlState())
         setButton.backgroundColor = appStyle.vcPanelBgColor
-        setButton.addTarget(self, action: #selector(AAWallpapperPreviewController.setDidTap), forControlEvents: .TouchUpInside)
-        setButton.setTitle(AALocalized("AlertSet"), forState: .Normal)
-        setButton.setTitleColor(appStyle.tabUnselectedTextColor, forState: .Normal)
+        setButton.addTarget(self, action: #selector(AAWallpapperPreviewController.setDidTap), for: .touchUpInside)
+        setButton.setTitle(AALocalized("AlertSet"), for: UIControlState())
+        setButton.setTitleColor(appStyle.tabUnselectedTextColor, for: UIControlState())
     }
     
     public init(selectedImage: UIImage) {
@@ -38,33 +38,33 @@ public class AAWallpapperPreviewController: AAViewController {
         self.fromName = false
         super.init()
         imageView.image = selectedImage
-        imageView.contentMode = .ScaleAspectFill
+        imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         cancelButton.backgroundColor = appStyle.vcPanelBgColor
-        cancelButton.addTarget(self, action: #selector(AAWallpapperPreviewController.cancelDidTap), forControlEvents: .TouchUpInside)
-        cancelButton.setTitle(AALocalized("AlertCancel"), forState: .Normal)
-        cancelButton.setTitleColor(appStyle.tabUnselectedTextColor, forState: .Normal)
+        cancelButton.addTarget(self, action: #selector(AAWallpapperPreviewController.cancelDidTap), for: .touchUpInside)
+        cancelButton.setTitle(AALocalized("AlertCancel"), for: UIControlState())
+        cancelButton.setTitleColor(appStyle.tabUnselectedTextColor, for: UIControlState())
         setButton.backgroundColor = appStyle.vcPanelBgColor
-        setButton.addTarget(self, action: #selector(AAWallpapperPreviewController.setDidTap), forControlEvents: .TouchUpInside)
-        setButton.setTitle(AALocalized("AlertSet"), forState: .Normal)
-        setButton.setTitleColor(appStyle.tabUnselectedTextColor, forState: .Normal)
+        setButton.addTarget(self, action: #selector(AAWallpapperPreviewController.setDidTap), for: .touchUpInside)
+        setButton.setTitle(AALocalized("AlertSet"), for: UIControlState())
+        setButton.setTitleColor(appStyle.tabUnselectedTextColor, for: UIControlState())
     }
 
     public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func viewDidLoad() {
+    open override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.edgesForExtendedLayout = UIRectEdge.Top
+        self.edgesForExtendedLayout = UIRectEdge.top
         
         view.addSubview(imageView)
         view.addSubview(cancelButton)
         view.addSubview(setButton)
     }
     
-    public override func viewDidLayoutSubviews() {
+    open override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
         imageView.frame = view.bounds
@@ -74,11 +74,11 @@ public class AAWallpapperPreviewController: AAViewController {
     }
     
     func cancelDidTap() {
-        self.dismissViewControllerAnimated(true, completion: nil)
+        self.dismiss(animated: true, completion: nil)
     }
     
     func setDidTap() {
-        self.dismissViewControllerAnimated(true, completion: nil)
+        self.dismiss(animated: true, completion: nil)
         
         if self.fromName == true {
             Actor.changeSelectedWallpaper("local:\(imageName)")
@@ -89,7 +89,7 @@ public class AAWallpapperPreviewController: AAViewController {
                 let descriptor = "/tmp/customWallpaperImage"
                 let path = CocoaFiles.pathFromDescriptor(descriptor)
                 
-                UIImageJPEGRepresentation(self.selectedImage, 1.00)!.writeToFile(path, atomically: true)
+                try? UIImageJPEGRepresentation(self.selectedImage, 1.00)!.write(to: URL(fileURLWithPath: path), options: [.atomic])
                 
                 Actor.changeSelectedWallpaper("file:\(descriptor)")
             })

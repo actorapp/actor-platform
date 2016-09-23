@@ -9,54 +9,54 @@ class AAPeerConnectionDelegate: NSObject, RTCPeerConnectionDelegate {
     var onCandidateReceived: ((RTCICECandidate)->())?
     var onStreamAdded: ((RTCMediaStream) -> ())?
     
-    func peerConnection(peerConnection: RTCPeerConnection!, signalingStateChanged stateChanged: RTCSignalingState) {
+    func peerConnection(_ peerConnection: RTCPeerConnection!, signalingStateChanged stateChanged: RTCSignalingState) {
         
     }
     
-    func peerConnection(peerConnection: RTCPeerConnection!, addedStream stream: RTCMediaStream!) {
+    func peerConnection(_ peerConnection: RTCPeerConnection!, addedStream stream: RTCMediaStream!) {
         onStreamAdded?(stream)
     }
     
-    func peerConnection(peerConnection: RTCPeerConnection!, removedStream stream: RTCMediaStream!) {
+    func peerConnection(_ peerConnection: RTCPeerConnection!, removedStream stream: RTCMediaStream!) {
         
     }
     
-    func peerConnectionOnRenegotiationNeeded(peerConnection: RTCPeerConnection!) {
+    func peerConnection(onRenegotiationNeeded peerConnection: RTCPeerConnection!) {
         
     }
     
-    func peerConnection(peerConnection: RTCPeerConnection!, iceConnectionChanged newState: RTCICEConnectionState) {
+    func peerConnection(_ peerConnection: RTCPeerConnection!, iceConnectionChanged newState: RTCICEConnectionState) {
         
     }
     
-    func peerConnection(peerConnection: RTCPeerConnection!, iceGatheringChanged newState: RTCICEGatheringState) {
+    func peerConnection(_ peerConnection: RTCPeerConnection!, iceGatheringChanged newState: RTCICEGatheringState) {
         
     }
     
-    func peerConnection(peerConnection: RTCPeerConnection!, gotICECandidate candidate: RTCICECandidate!) {
+    func peerConnection(_ peerConnection: RTCPeerConnection!, gotICECandidate candidate: RTCICECandidate!) {
         onCandidateReceived?(candidate)
     }
     
-    func peerConnection(peerConnection: RTCPeerConnection!, didOpenDataChannel dataChannel: RTCDataChannel!) {
+    func peerConnection(_ peerConnection: RTCPeerConnection!, didOpen dataChannel: RTCDataChannel!) {
         
     }
 }
 
 class AASessionDescriptionCreateDelegate: NSObject, RTCSessionDescriptionDelegate {
     
-    let didCreate: (RTCSessionDescription!, NSError!) -> ()
+    let didCreate: (RTCSessionDescription?, Error?) -> ()
     let peerConnection: RTCPeerConnection
     
-    init(didCreate: (RTCSessionDescription!, NSError!) -> (), peerConnection: RTCPeerConnection) {
+    init(didCreate: @escaping (RTCSessionDescription?, Error?) -> (), peerConnection: RTCPeerConnection) {
         self.didCreate = didCreate
         self.peerConnection = peerConnection
     }
 
-    func peerConnection(peerConnection: RTCPeerConnection!, didCreateSessionDescription sdp: RTCSessionDescription!, error: NSError!) {
+    func peerConnection(_ peerConnection: RTCPeerConnection!, didCreateSessionDescription sdp: RTCSessionDescription!, error: Error!) {
         didCreate(sdp!, error)
     }
     
-    func peerConnection(peerConnection: RTCPeerConnection!, didSetSessionDescriptionWithError error: NSError!) {
+    func peerConnection(_ peerConnection: RTCPeerConnection!, didSetSessionDescriptionWithError error: Error!) {
         
     }
 }
@@ -65,10 +65,10 @@ class AASessionDescriptionCreateDelegate: NSObject, RTCSessionDescriptionDelegat
 private var sessionSetTarget = "descTarget"
 class AASessionDescriptionSetDelegate: NSObject, RTCSessionDescriptionDelegate {
     
-    let didSet: (NSError!) -> ()
+    let didSet: (Error!) -> ()
     let peerConnection: RTCPeerConnection
     
-    init(didSet: (NSError!) -> (), peerConnection: RTCPeerConnection) {
+    init(didSet: @escaping (Error!) -> (), peerConnection: RTCPeerConnection) {
         self.didSet = didSet
         self.peerConnection = peerConnection
         super.init()
@@ -76,11 +76,11 @@ class AASessionDescriptionSetDelegate: NSObject, RTCSessionDescriptionDelegate {
         setAssociatedObject(peerConnection, value: self, associativeKey: &sessionSetTarget)
     }
     
-    func peerConnection(peerConnection: RTCPeerConnection!, didCreateSessionDescription sdp: RTCSessionDescription!, error: NSError!) {
+    func peerConnection(_ peerConnection: RTCPeerConnection!, didCreateSessionDescription sdp: RTCSessionDescription!, error: Error!) {
 
     }
     
-    func peerConnection(peerConnection: RTCPeerConnection!, didSetSessionDescriptionWithError error: NSError!) {
+    func peerConnection(_ peerConnection: RTCPeerConnection!, didSetSessionDescriptionWithError error: Error!) {
         
         setAssociatedObject(peerConnection, value: "", associativeKey: &sessionSetTarget)
         
@@ -109,7 +109,7 @@ extension RTCPeerConnection {
         }
     }
     
-    private func intDelegate() -> AAPeerConnectionDelegate {
+    fileprivate func intDelegate() -> AAPeerConnectionDelegate {
         let stored = self.delegate as? AAPeerConnectionDelegate
         if (stored != nil) {
             return stored!
@@ -121,20 +121,20 @@ extension RTCPeerConnection {
         return nDelegate
     }
     
-    func createAnswer(constraints: RTCMediaConstraints, didCreate: (RTCSessionDescription!, NSError!) -> ()) {
-        createAnswerWithDelegate(AASessionDescriptionCreateDelegate(didCreate: didCreate, peerConnection: self), constraints: constraints)
+    func createAnswer(_ constraints: RTCMediaConstraints, didCreate: @escaping (RTCSessionDescription?, Error?) -> ()) {
+        self.createAnswer(with: AASessionDescriptionCreateDelegate(didCreate: didCreate, peerConnection: self), constraints: constraints)
     }
     
-    func createOffer(constraints: RTCMediaConstraints, didCreate: (RTCSessionDescription!, NSError!) -> ()) {
-        createOfferWithDelegate(AASessionDescriptionCreateDelegate(didCreate: didCreate, peerConnection: self), constraints: constraints)
+    func createOffer(_ constraints: RTCMediaConstraints, didCreate: @escaping (RTCSessionDescription?, Error?) -> ()) {
+        self.createOffer(with: AASessionDescriptionCreateDelegate(didCreate: didCreate, peerConnection: self), constraints: constraints)
     }
     
-    func setLocalDescription(sdp: RTCSessionDescription, didSet: (NSError!) -> ()) {
-        setLocalDescriptionWithDelegate(AASessionDescriptionSetDelegate(didSet: didSet, peerConnection: self), sessionDescription: sdp)
+    func setLocalDescription(_ sdp: RTCSessionDescription, didSet: @escaping (Error!) -> ()) {
+        setLocalDescriptionWith(AASessionDescriptionSetDelegate(didSet: didSet, peerConnection: self), sessionDescription: sdp)
     }
     
-    func setRemoteDescription(sdp: RTCSessionDescription, didSet: (NSError!) -> ()) {
-        setRemoteDescriptionWithDelegate(AASessionDescriptionSetDelegate(didSet: didSet, peerConnection: self), sessionDescription: sdp)
+    func setRemoteDescription(_ sdp: RTCSessionDescription, didSet: @escaping (Error!) -> ()) {
+        setRemoteDescriptionWith(AASessionDescriptionSetDelegate(didSet: didSet, peerConnection: self), sessionDescription: sdp)
     }
 }
 

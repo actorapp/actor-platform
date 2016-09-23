@@ -4,25 +4,25 @@
 
 import Foundation
 
-public class AABubbleServiceCell : AABubbleCell {
+open class AABubbleServiceCell : AABubbleCell {
     
-    private static let serviceBubbleFont = UIFont.boldSystemFontOfSize(12)
-    private static let maxServiceTextWidth: CGFloat = 260
+    fileprivate static let serviceBubbleFont = UIFont.boldSystemFont(ofSize: 12)
+    fileprivate static let maxServiceTextWidth: CGFloat = 260
     
-    private let serviceText = YYLabel()
+    fileprivate let serviceText = YYLabel()
     
-    private var bindedLayout: ServiceCellLayout!
+    fileprivate var bindedLayout: ServiceCellLayout!
     
     public init(frame: CGRect) {
         super.init(frame: frame, isFullSize: true)
        
         // Configuring service label
         serviceText.font = AABubbleServiceCell.serviceBubbleFont;
-        serviceText.lineBreakMode = .ByWordWrapping;
+        serviceText.lineBreakMode = .byWordWrapping;
         serviceText.numberOfLines = 0;
         serviceText.textColor = appStyle.chatServiceTextColor
-        serviceText.contentMode = UIViewContentMode.Center
-        serviceText.textAlignment = NSTextAlignment.Center
+        serviceText.contentMode = UIViewContentMode.center
+        serviceText.textAlignment = NSTextAlignment.center
         contentView.addSubview(serviceText)
         
         // Setting content and bubble insets
@@ -30,14 +30,14 @@ public class AABubbleServiceCell : AABubbleCell {
         bubbleInsets = UIEdgeInsets(top: 3, left: 0, bottom: 3, right: 0)
         
         // Setting bubble background
-        bindBubbleType(.Service, isCompact: false)
+        bindBubbleType(.service, isCompact: false)
     }
     
     public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func bind(message: ACMessage, receiveDate: jlong, readDate: jlong, reuse: Bool, cellLayout: AACellLayout, setting: AACellSetting) {
+    open override func bind(_ message: ACMessage, receiveDate: jlong, readDate: jlong, reuse: Bool, cellLayout: AACellLayout, setting: AACellSetting) {
         self.bindedLayout = cellLayout as! ServiceCellLayout
         
         if (!reuse) {
@@ -45,20 +45,20 @@ public class AABubbleServiceCell : AABubbleCell {
         }
     }
     
-    public override func layoutContent(maxWidth: CGFloat, offsetX: CGFloat) {
+    open override func layoutContent(_ maxWidth: CGFloat, offsetX: CGFloat) {
 
         let insets = fullContentInsets
         let contentWidth = self.contentView.frame.width
         let serviceWidth = bindedLayout.textSize.width
         let serviceHeight = bindedLayout.textSize.height
         
-        serviceText.frame = CGRectMake((contentWidth - serviceWidth) / 2.0, insets.top, serviceWidth, serviceHeight);
+        serviceText.frame = CGRect(x: (contentWidth - serviceWidth) / 2.0, y: insets.top, width: serviceWidth, height: serviceHeight);
         
         layoutBubble(serviceWidth, contentHeight: serviceHeight)
     }
 }
 
-public class ServiceCellLayout: AACellLayout {
+open class ServiceCellLayout: AACellLayout {
 
     var text: String
     var textSize: CGSize
@@ -76,27 +76,27 @@ public class ServiceCellLayout: AACellLayout {
     }
 }
 
-public class AABubbleServiceCellLayouter: AABubbleLayouter {
+open class AABubbleServiceCellLayouter: AABubbleLayouter {
     
-    public func isSuitable(message: ACMessage) -> Bool {
+    open func isSuitable(_ message: ACMessage) -> Bool {
         return message.content is ACServiceContent
     }
     
-    public func buildLayout(peer: ACPeer, message: ACMessage) -> AACellLayout {
+    open func buildLayout(_ peer: ACPeer, message: ACMessage) -> AACellLayout {
         
         let isChannel: Bool
         if peer.isGroup {
-            isChannel = Actor.getGroupWithGid(peer.peerId).groupType == ACGroupType.CHANNEL()
+            isChannel = Actor.getGroupWithGid(peer.peerId).groupType == ACGroupType.channel()
         } else {
             isChannel = false
         }
         
-        let serviceText = Actor.getFormatter().formatFullServiceMessageWithSenderId(message.senderId, withContent: message.content as! ACServiceContent, withIsChannel: isChannel)
+        let serviceText = Actor.getFormatter().formatFullServiceMessage(withSenderId: message.senderId, with: message.content as! ACServiceContent, withIsChannel: isChannel)
         
-        return ServiceCellLayout(text: serviceText, date: Int64(message.date), layouter: self)
+        return ServiceCellLayout(text: serviceText!, date: Int64(message.date), layouter: self)
     }
     
-    public func cellClass() -> AnyClass {
+    open func cellClass() -> AnyClass {
         return AABubbleServiceCell.self
     }
 }

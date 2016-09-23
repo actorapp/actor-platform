@@ -4,22 +4,22 @@
 
 import Foundation
 
-public class AAContactsListContentController: AAContentTableController {
+open class AAContactsListContentController: AAContentTableController {
     
-    public var delegate: AAContactsListContentControllerDelegate?
-    public var isSearchAutoHide: Bool = true
-    public var contactRows: AABindedRows<AAContactCell>!
-    public var searchEnabled: Bool = true
+    open var delegate: AAContactsListContentControllerDelegate?
+    open var isSearchAutoHide: Bool = true
+    open var contactRows: AABindedRows<AAContactCell>!
+    open var searchEnabled: Bool = true
     
     public init() {
-        super.init(style: .Plain)
+        super.init(style: .plain)
     }
 
     public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func tableDidLoad() {
+    open override func tableDidLoad() {
         
         if searchEnabled {
             search(AAContactCell.self) { (s) -> () in
@@ -78,7 +78,7 @@ public class AAContactsListContentController: AAContentTableController {
             action2Selector: nil)
     }
     
-    public override func viewWillAppear(animated: Bool) {
+    open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         binder.bind(Actor.getAppState().isContactsEmpty, closure: { (value: Any?) -> () in

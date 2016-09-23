@@ -18,6 +18,7 @@ Pod::Spec.new do |s|
   s.dependency 'RegexKitLite'
   s.dependency 'zipzap'
   s.dependency 'J2ObjC-Framework'
+  s.dependency 'ReachabilitySwift'
 
   # UI
   s.dependency 'VBFPopFlatButton'
@@ -34,8 +35,8 @@ Pod::Spec.new do |s|
   s.dependency 'TTTAttributedLabel'
   s.dependency 'M13ProgressSuite'
 
-  s.preserve_paths = 'Frameworks'
-  s.vendored_framework = 'Frameworks/ActorSDK.framework'
+  s.preserve_paths = '{Frameworks,ActorSDK.framework,ActorSDK.framework.dSYM}'
+  s.vendored_framework = 'ActorSDK.framework'
 
   s.xcconfig = { 
      "SWIFT_INCLUDE_PATHS" => "$(PROJECT_DIR)/ActorSDK-iOS/Frameworks/",

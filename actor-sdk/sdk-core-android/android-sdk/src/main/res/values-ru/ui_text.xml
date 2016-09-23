@@ -78,8 +78,8 @@
     <string name="auth_switch_to_email">Использовать email для регистрации</string>
     <string name="auth_switch_to_phone">Использовать телефон для регистрации</string>
 
-    <string name="auth_privacy_index">Политика Конфиденциальности</string>
-    <string name="auth_tos_index"> Условия Использования</string>
+    <string name="auth_privacy_index">Privacy Policy</string>
+    <string name="auth_tos_index">Terms of Service</string>
 
     <string name="auth_change_endpoint">Использовать альтернативный сервер</string>
     <string name="auth_reset_default_endpoint">По умолчанию</string>
@@ -567,6 +567,13 @@
 
     <string name="settings_chat_markdown">Markdown</string>
     <string name="settings_chat_markdown_subtitle">Использование разметки markdown</string>
+
+
+    <string name="settings_animation_download_title">Автоматически загружать анимации</string>
+    <string name="settings_image_download_title">Автоматически загружать изобажения</string>
+    <string name="settings_video_download_title">Автоматически загружать видео</string>
+    <string name="settings_audio_download_title">Автоматически загружать аудио</string>
+    <string name="settings_doc_download_title">Автоматически загружать документы</string>
 
 
     <!-- Security -->

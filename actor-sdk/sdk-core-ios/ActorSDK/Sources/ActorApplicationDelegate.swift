@@ -4,7 +4,7 @@
 
 import Foundation
 
-public class ActorApplicationDelegate: ActorSDKDelegateDefault, UIApplicationDelegate {
+open class ActorApplicationDelegate: ActorSDKDelegateDefault, UIApplicationDelegate {
     
     public override init() {
         super.init()
@@ -12,57 +12,57 @@ public class ActorApplicationDelegate: ActorSDKDelegateDefault, UIApplicationDel
         ActorSDK.sharedActor().delegate = self
     }
     
-    public func applicationDidFinishLaunching(application: UIApplication) {
+    open func applicationDidFinishLaunching(_ application: UIApplication) {
         ActorSDK.sharedActor().applicationDidFinishLaunching(application)
     }
     
-    public func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
+    open func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         ActorSDK.sharedActor().applicationDidFinishLaunching(application)
         return true
     }
     
-    public func applicationDidBecomeActive(application: UIApplication) {
+    open func applicationDidBecomeActive(_ application: UIApplication) {
         ActorSDK.sharedActor().applicationDidBecomeActive(application)
     }
     
-    public func applicationWillEnterForeground(application: UIApplication) {
+    open func applicationWillEnterForeground(_ application: UIApplication) {
         ActorSDK.sharedActor().applicationWillEnterForeground(application)
     }
     
-    public func applicationDidEnterBackground(application: UIApplication) {
+    open func applicationDidEnterBackground(_ application: UIApplication) {
         ActorSDK.sharedActor().applicationDidEnterBackground(application)
     }
     
-    public func applicationWillResignActive(application: UIApplication) {
+    open func applicationWillResignActive(_ application: UIApplication) {
         ActorSDK.sharedActor().applicationWillResignActive(application)
     }
     
-    public func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
+    open func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) {
         ActorSDK.sharedActor().application(application, didReceiveRemoteNotification: userInfo)
     }
     
-    public func application(application: UIApplication, didRegisterUserNotificationSettings notificationSettings: UIUserNotificationSettings) {
+    open func application(_ application: UIApplication, didRegister notificationSettings: UIUserNotificationSettings) {
         ActorSDK.sharedActor().application(application, didRegisterUserNotificationSettings: notificationSettings)
     }
     
-    public func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
+    open func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         let tokenString = "\(deviceToken)".replace(" ", dest: "").replace("<", dest: "").replace(">", dest: "")
         ActorSDK.sharedActor().pushRegisterToken(tokenString)
     }
     
-    public func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+    open func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         ActorSDK.sharedActor().application(application, didReceiveRemoteNotification: userInfo, fetchCompletionHandler: completionHandler)
     }
     
-    public func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+    open func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         ActorSDK.sharedActor().application(application, performFetchWithCompletionHandler: completionHandler)
     }
     
-    public func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
-        return ActorSDK.sharedActor().application(application, openURL: url, sourceApplication: sourceApplication, annotation: annotation)
+    open func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
+        return ActorSDK.sharedActor().application(application, openURL: url, sourceApplication: sourceApplication, annotation: annotation as AnyObject)
     }
     
-    public func application(application: UIApplication, handleOpenURL url: NSURL) -> Bool {
+    open func application(_ application: UIApplication, handleOpen url: URL) -> Bool {
         return ActorSDK.sharedActor().application(application, handleOpenURL: url)
     }
 }

@@ -10,17 +10,17 @@ import UIKit
 */
 public enum BubbleType {
     // Outcome text bubble
-    case TextOut
+    case textOut
     // Income text bubble
-    case TextIn
+    case textIn
     // Outcome media bubble
-    case MediaOut
+    case mediaOut
     // Income media bubble
-    case MediaIn
+    case mediaIn
     // Service bubble
-    case Service
+    case service
     // Sticker bubble
-    case Sticker
+    case sticker
 }
 
 /**
@@ -28,9 +28,9 @@ public enum BubbleType {
 */
 public protocol AABubbleLayouter  {
     
-    func isSuitable(message: ACMessage) -> Bool
+    func isSuitable(_ message: ACMessage) -> Bool
     
-    func buildLayout(peer: ACPeer, message: ACMessage) -> AACellLayout
+    func buildLayout(_ peer: ACPeer, message: ACMessage) -> AACellLayout
     
     func cellClass() -> AnyClass
 }
@@ -44,52 +44,52 @@ extension AABubbleLayouter {
 /**
     Root class for bubble cells
 */
-public class AABubbleCell: UICollectionViewCell {
+open class AABubbleCell: UICollectionViewCell {
     
-    public static let bubbleContentTop: CGFloat = 6
-    public static let bubbleContentBottom: CGFloat = 6
-    public static let bubbleTop: CGFloat = 3
-    public static let bubbleTopCompact: CGFloat = 1
-    public static let bubbleBottom: CGFloat = 3
-    public static let bubbleBottomCompact: CGFloat = 1
-    public static let avatarPadding: CGFloat = 39
-    public static let dateSize: CGFloat = 30
-    public static let newMessageSize: CGFloat = 30
+    open static let bubbleContentTop: CGFloat = 6
+    open static let bubbleContentBottom: CGFloat = 6
+    open static let bubbleTop: CGFloat = 3
+    open static let bubbleTopCompact: CGFloat = 1
+    open static let bubbleBottom: CGFloat = 3
+    open static let bubbleBottomCompact: CGFloat = 1
+    open static let avatarPadding: CGFloat = 39
+    open static let dateSize: CGFloat = 30
+    open static let newMessageSize: CGFloat = 30
     
     //
     // Cached text bubble images
     //
     
-    private static var cachedOutTextBg = UIImage.tinted("BubbleOutgoingFull", color: ActorSDK.sharedActor().style.chatTextBubbleOutColor)
+    fileprivate static var cachedOutTextBg = UIImage.tinted("BubbleOutgoingFull", color: ActorSDK.sharedActor().style.chatTextBubbleOutColor)
     
-    private static var cachedOutTextBgShadow = ActorSDK.sharedActor().style.bubbleShadowEnabled ? UIImage.tinted("BubbleOutgoingFull", color: ActorSDK.sharedActor().style.chatTextBubbleShadowColor) : UIImage()
+    fileprivate static var cachedOutTextBgShadow = ActorSDK.sharedActor().style.bubbleShadowEnabled ? UIImage.tinted("BubbleOutgoingFull", color: ActorSDK.sharedActor().style.chatTextBubbleShadowColor) : UIImage()
     
-    private static var cachedOutTextBgBorder = UIImage.tinted("BubbleOutgoingFullBorder", color: ActorSDK.sharedActor().style.chatTextBubbleOutBorderColor)
-    private static var cachedOutTextCompactBg = UIImage.tinted("BubbleOutgoingPartial", color: ActorSDK.sharedActor().style.chatTextBubbleOutColor)
-    private static var cachedOutTextCompactBgShadow = ActorSDK.sharedActor().style.bubbleShadowEnabled ? UIImage.tinted("BubbleOutgoingPartial", color: ActorSDK.sharedActor().style.chatTextBubbleShadowColor) : UIImage()
-    private static var cachedOutTextCompactSelectedBg = UIImage.tinted("BubbleOutgoingPartial", color: ActorSDK.sharedActor().style.chatTextBubbleOutSelectedColor)
-    private static var cachedOutTextCompactBgBorder = UIImage.tinted("BubbleOutgoingPartialBorder", color: ActorSDK.sharedActor().style.chatTextBubbleOutBorderColor)
+    fileprivate static var cachedOutTextBgBorder = UIImage.tinted("BubbleOutgoingFullBorder", color: ActorSDK.sharedActor().style.chatTextBubbleOutBorderColor)
+    fileprivate static var cachedOutTextCompactBg = UIImage.tinted("BubbleOutgoingPartial", color: ActorSDK.sharedActor().style.chatTextBubbleOutColor)
+    fileprivate static var cachedOutTextCompactBgShadow = ActorSDK.sharedActor().style.bubbleShadowEnabled ? UIImage.tinted("BubbleOutgoingPartial", color: ActorSDK.sharedActor().style.chatTextBubbleShadowColor) : UIImage()
+    fileprivate static var cachedOutTextCompactSelectedBg = UIImage.tinted("BubbleOutgoingPartial", color: ActorSDK.sharedActor().style.chatTextBubbleOutSelectedColor)
+    fileprivate static var cachedOutTextCompactBgBorder = UIImage.tinted("BubbleOutgoingPartialBorder", color: ActorSDK.sharedActor().style.chatTextBubbleOutBorderColor)
 
-    private static var cachedInTextBg = UIImage.tinted("BubbleIncomingFull", color: ActorSDK.sharedActor().style.chatTextBubbleInColor)
-    private static var cachedInTextBgShadow = ActorSDK.sharedActor().style.bubbleShadowEnabled ? UIImage.tinted("BubbleIncomingFull", color: ActorSDK.sharedActor().style.chatTextBubbleShadowColor) : UIImage()
-    private static var cachedInTextBgBorder = UIImage.tinted("BubbleIncomingFullBorder", color: ActorSDK.sharedActor().style.chatTextBubbleInBorderColor)
-    private static var cachedInTextCompactBg = UIImage.tinted("BubbleIncomingPartial", color: ActorSDK.sharedActor().style.chatTextBubbleInColor)
-    private static var cachedInTextCompactBgShadow = ActorSDK.sharedActor().style.bubbleShadowEnabled ?UIImage.tinted("BubbleIncomingPartial", color: ActorSDK.sharedActor().style.chatTextBubbleShadowColor) : UIImage()
-    private static var cachedInTextCompactSelectedBg = UIImage.tinted("BubbleIncomingPartial", color: ActorSDK.sharedActor().style.chatTextBubbleInSelectedColor)
-    private static var cachedInTextCompactBgBorder = UIImage.tinted("BubbleIncomingPartialBorder", color: ActorSDK.sharedActor().style.chatTextBubbleInBorderColor)
+    fileprivate static var cachedInTextBg = UIImage.tinted("BubbleIncomingFull", color: ActorSDK.sharedActor().style.chatTextBubbleInColor)
+    fileprivate static var cachedInTextBgShadow = ActorSDK.sharedActor().style.bubbleShadowEnabled ? UIImage.tinted("BubbleIncomingFull", color: ActorSDK.sharedActor().style.chatTextBubbleShadowColor) : UIImage()
+    fileprivate static var cachedInTextBgBorder = UIImage.tinted("BubbleIncomingFullBorder", color: ActorSDK.sharedActor().style.chatTextBubbleInBorderColor)
+    fileprivate static var cachedInTextCompactBg = UIImage.tinted("BubbleIncomingPartial", color: ActorSDK.sharedActor().style.chatTextBubbleInColor)
+    fileprivate static var cachedInTextCompactBgShadow = ActorSDK.sharedActor().style.bubbleShadowEnabled ?UIImage.tinted("BubbleIncomingPartial", color: ActorSDK.sharedActor().style.chatTextBubbleShadowColor) : UIImage()
+    fileprivate static var cachedInTextCompactSelectedBg = UIImage.tinted("BubbleIncomingPartial", color: ActorSDK.sharedActor().style.chatTextBubbleInSelectedColor)
+    fileprivate static var cachedInTextCompactBgBorder = UIImage.tinted("BubbleIncomingPartialBorder", color: ActorSDK.sharedActor().style.chatTextBubbleInBorderColor)
     
     //
     // Cached media bubble images
     //
     
-    private static let cachedMediaBg = UIImage.tinted("BubbleOutgoingPartial", color: ActorSDK.sharedActor().style.chatMediaBubbleColor)
-    private static var cachedMediaBgBorder = UIImage.tinted("BubbleOutgoingPartialBorder", color: ActorSDK.sharedActor().style.chatMediaBubbleBorderColor)
+    fileprivate static let cachedMediaBg = UIImage.tinted("BubbleOutgoingPartial", color: ActorSDK.sharedActor().style.chatMediaBubbleColor)
+    fileprivate static var cachedMediaBgBorder = UIImage.tinted("BubbleOutgoingPartialBorder", color: ActorSDK.sharedActor().style.chatMediaBubbleBorderColor)
 
     //
     // Cached Service bubble images
     //
     
-    private static var cachedServiceBg:UIImage = Imaging.roundedImage(ActorSDK.sharedActor().style.chatServiceBubbleColor, size: CGSizeMake(18, 18), radius: 9)
+    fileprivate static var cachedServiceBg:UIImage = Imaging.roundedImage(ActorSDK.sharedActor().style.chatServiceBubbleColor, size: CGSize(width: 18, height: 18), radius: 9)
 
     //
     // Cached Date bubble images
@@ -97,28 +97,28 @@ public class AABubbleCell: UICollectionViewCell {
     
 //    private static var dateBgImage = Imaging.roundedImage(ActorSDK.sharedActor().style.chatDateBubbleColor, size: CGSizeMake(18, 18), radius: 9)
     
-    private static var dateBgImage = ActorSDK.sharedActor().style.statusBackgroundImage
+    fileprivate static var dateBgImage = ActorSDK.sharedActor().style.statusBackgroundImage
     
     // MARK: -
     // MARK: Public vars
     
     // Views
-    public let avatarView = AAAvatarView()
-    public var avatarAdded: Bool = false
+    open let avatarView = AAAvatarView()
+    open var avatarAdded: Bool = false
     
-    public let bubble = UIImageView()
-    public let bubbleShadow = UIImageView()
-    public let bubbleBorder = UIImageView()
+    open let bubble = UIImageView()
+    open let bubbleShadow = UIImageView()
+    open let bubbleBorder = UIImageView()
     
-    private let dateText = UILabel()
-    private let dateBg = UIImageView()
+    fileprivate let dateText = UILabel()
+    fileprivate let dateBg = UIImageView()
     
-    private let newMessage = UILabel()
+    fileprivate let newMessage = UILabel()
     
     // Layout
-    public var contentInsets : UIEdgeInsets = UIEdgeInsets()
-    public var bubbleInsets : UIEdgeInsets = UIEdgeInsets()
-    public var fullContentInsets : UIEdgeInsets {
+    open var contentInsets : UIEdgeInsets = UIEdgeInsets()
+    open var bubbleInsets : UIEdgeInsets = UIEdgeInsets()
+    open var fullContentInsets : UIEdgeInsets {
         get {
             return UIEdgeInsets(
                 top: contentInsets.top + bubbleInsets.top + (isShowDate ? AABubbleCell.dateSize : 0) + (isShowNewMessages ? AABubbleCell.newMessageSize : 0),
@@ -127,26 +127,26 @@ public class AABubbleCell: UICollectionViewCell {
                 right: contentInsets.right + bubbleInsets.right)
         }
     }
-    public var needLayout: Bool = true
+    open var needLayout: Bool = true
     
-    public let groupContentInsetY = 20.0
-    public let groupContentInsetX = 40.0
-    public var bubbleVerticalSpacing: CGFloat = 6.0
-    public let bubblePadding: CGFloat = 6;
-    public let bubbleMediaPadding: CGFloat = 10;
+    open let groupContentInsetY = 20.0
+    open let groupContentInsetX = 40.0
+    open var bubbleVerticalSpacing: CGFloat = 6.0
+    open let bubblePadding: CGFloat = 6;
+    open let bubbleMediaPadding: CGFloat = 10;
     
     // Binded data
-    public var peer: ACPeer!
-    public weak var controller: AAConversationContentController!
-    public var isGroup: Bool = false
-    public var isFullSize: Bool!
-    public var bindedSetting: AACellSetting?
+    open var peer: ACPeer!
+    open weak var controller: AAConversationContentController!
+    open var isGroup: Bool = false
+    open var isFullSize: Bool!
+    open var bindedSetting: AACellSetting?
     
-    public var bindedMessage: ACMessage? = nil
-    public var bubbleType:BubbleType? = nil
-    public var isOut: Bool = false
-    public var isShowDate: Bool = false
-    public var isShowNewMessages: Bool = false
+    open var bindedMessage: ACMessage? = nil
+    open var bubbleType:BubbleType? = nil
+    open var isOut: Bool = false
+    open var isShowDate: Bool = false
+    open var isShowNewMessages: Bool = false
     
     var appStyle: ActorStyle {
         get {
@@ -165,19 +165,19 @@ public class AABubbleCell: UICollectionViewCell {
         dateBg.image = AABubbleCell.dateBgImage
         dateText.font = UIFont.mediumSystemFontOfSize(12)
         dateText.textColor = appStyle.chatDateTextColor
-        dateText.contentMode = UIViewContentMode.Center
-        dateText.textAlignment = NSTextAlignment.Center
+        dateText.contentMode = UIViewContentMode.center
+        dateText.textAlignment = NSTextAlignment.center
         
         newMessage.font = UIFont.mediumSystemFontOfSize(14)
         newMessage.textColor = appStyle.chatUnreadTextColor
-        newMessage.contentMode = UIViewContentMode.Center
-        newMessage.textAlignment = NSTextAlignment.Center
+        newMessage.contentMode = UIViewContentMode.center
+        newMessage.textAlignment = NSTextAlignment.center
         newMessage.backgroundColor = appStyle.chatUnreadBgColor
         newMessage.text = AALocalized("ChatNewMessages")
         
         //"New Messages"
         
-        contentView.transform = CGAffineTransformMake(1, 0, 0, -1, 0, 0)
+        contentView.transform = CGAffineTransform(a: 1, b: 0, c: 0, d: -1, tx: 0, ty: 0)
         
         if appStyle.bubbleShadowEnabled {
             contentView.addSubview(bubbleShadow)
@@ -190,9 +190,9 @@ public class AABubbleCell: UICollectionViewCell {
         
         avatarView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(AABubbleCell.avatarDidTap)))
         
-        avatarView.userInteractionEnabled = true
+        avatarView.isUserInteractionEnabled = true
         
-        backgroundColor = UIColor.clearColor()
+        backgroundColor = UIColor.clear
         
         // Speed up animations
         self.layer.speed = 1.5
@@ -207,7 +207,7 @@ public class AABubbleCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setConfig(peer: ACPeer, controller: AAConversationContentController) {
+    func setConfig(_ peer: ACPeer, controller: AAConversationContentController) {
         self.peer = peer
         self.controller = controller
         if (peer.isGroup && !isFullSize) {
@@ -215,22 +215,22 @@ public class AABubbleCell: UICollectionViewCell {
         }
     }
     
-    public override func canBecomeFirstResponder() -> Bool {
+    open override var canBecomeFirstResponder : Bool {
         return false
     }
 
-    public override func canPerformAction(action: Selector, withSender sender: AnyObject?) -> Bool {
-        if action == #selector(NSObject.delete(_:)) {
-            return true
-        }
-        return false
-    }
+//    open override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
+//        if action == #selector(Object.delete(_:)) {
+//            return true
+//        }
+//        return false
+//    }
     
-    public override func delete(sender: AnyObject?) {
-        let rids = IOSLongArray(length: 1)
-        rids.replaceLongAtIndex(0, withLong: bindedMessage!.rid)
-        Actor.deleteMessagesWithPeer(self.peer, withRids: rids)
-    }
+//    open override func delete(_ sender: Any?) {
+//        let rids = IOSLongArray(length: 1)
+//        rids?.replaceLong(at: 0, withLong: bindedMessage!.rid)
+//        Actor.deleteMessages(with: self.peer, withRids: rids)
+//    }
     
     func avatarDidTap() {
         if bindedMessage != nil {
@@ -238,7 +238,7 @@ public class AABubbleCell: UICollectionViewCell {
         }
     }
     
-    public func performBind(message: ACMessage, receiveDate: jlong, readDate: jlong, setting: AACellSetting, isShowNewMessages: Bool, layout: AACellLayout) {
+    open func performBind(_ message: ACMessage, receiveDate: jlong, readDate: jlong, setting: AACellSetting, isShowNewMessages: Bool, layout: AACellLayout) {
         
         var reuse = false
         if (bindedMessage != nil && bindedMessage?.rid == message.rid) {
@@ -257,11 +257,11 @@ public class AABubbleCell: UICollectionViewCell {
                     let group = Actor.getGroupWithGid(self.peer.peerId)
                     let avatar: ACAvatar? = group.getAvatarModel().get()
                     let name = group.getNameModel().get()
-                    avatarView.bind(name, id: Int(user.getId()), avatar: avatar)
+                    avatarView.bind(name!, id: Int(user.getId()), avatar: avatar)
                 } else {
                     let avatar: ACAvatar? = user.getAvatarModel().get()
                     let name = user.getNameModel().get()
-                    avatarView.bind(name, id: Int(user.getId()), avatar: avatar)
+                    avatarView.bind(name!, id: Int(user.getId()), avatar: avatar)
                 }
                 if !avatarAdded {
                     contentView.addSubview(avatarView)
@@ -290,16 +290,16 @@ public class AABubbleCell: UICollectionViewCell {
         }
     }
     
-    public func bind(message: ACMessage, receiveDate: jlong, readDate: jlong, reuse: Bool, cellLayout: AACellLayout, setting: AACellSetting) {
+    open func bind(_ message: ACMessage, receiveDate: jlong, readDate: jlong, reuse: Bool, cellLayout: AACellLayout, setting: AACellSetting) {
         fatalError("bind(message:) has not been implemented")
     }
     
-    public func bindBubbleType(type: BubbleType, isCompact: Bool) {
+    open func bindBubbleType(_ type: BubbleType, isCompact: Bool) {
         self.bubbleType = type
         
         // Update Bubble background images
         switch(type) {
-            case BubbleType.TextIn:
+            case BubbleType.textIn:
                 if (isCompact) {
                     bubble.image = AABubbleCell.cachedInTextCompactBg
                     bubbleBorder.image = AABubbleCell.cachedInTextCompactBgBorder
@@ -310,7 +310,7 @@ public class AABubbleCell: UICollectionViewCell {
                     bubbleShadow.image = AABubbleCell.cachedInTextBgShadow
                 }
             break
-            case BubbleType.TextOut:
+            case BubbleType.textOut:
                 if (isCompact) {
                     bubble.image =  AABubbleCell.cachedOutTextCompactBg
                     bubbleBorder.image =  AABubbleCell.cachedOutTextCompactBgBorder
@@ -321,22 +321,22 @@ public class AABubbleCell: UICollectionViewCell {
                     bubbleShadow.image = AABubbleCell.cachedOutTextBgShadow
                 }
             break
-            case BubbleType.MediaIn:
+            case BubbleType.mediaIn:
                 bubble.image =  AABubbleCell.cachedMediaBg
                 bubbleBorder.image =  AABubbleCell.cachedMediaBgBorder
                 bubbleShadow.image = nil
             break
-            case BubbleType.MediaOut:
+            case BubbleType.mediaOut:
                 bubble.image =  AABubbleCell.cachedMediaBg
                 bubbleBorder.image =  AABubbleCell.cachedMediaBgBorder
                 bubbleShadow.image = nil
             break
-            case BubbleType.Service:
+            case BubbleType.service:
                 bubble.image = AABubbleCell.cachedServiceBg
                 bubbleBorder.image = nil
                 bubbleShadow.image = nil
             break
-            case BubbleType.Sticker:
+            case BubbleType.sticker:
                 bubble.image = nil;
                 bubbleBorder.image = nil
                 bubbleShadow.image = nil
@@ -347,7 +347,7 @@ public class AABubbleCell: UICollectionViewCell {
     func updateView() {
         let type = self.bubbleType! as BubbleType
         switch (type) {
-        case BubbleType.TextIn:
+        case BubbleType.textIn:
             if (!isFullSize!) {
                 bubble.image = AABubbleCell.cachedInTextCompactBg
                 bubbleBorder.image = AABubbleCell.cachedInTextCompactBgBorder
@@ -358,7 +358,7 @@ public class AABubbleCell: UICollectionViewCell {
                 bubbleShadow.image = AABubbleCell.cachedInTextBgShadow
             }
             break
-        case BubbleType.TextOut:
+        case BubbleType.textOut:
             if (!isFullSize!) {
                 bubble.image =  AABubbleCell.cachedOutTextCompactBg
                 bubbleBorder.image =  AABubbleCell.cachedOutTextCompactBgBorder
@@ -369,22 +369,22 @@ public class AABubbleCell: UICollectionViewCell {
                 bubbleShadow.image = AABubbleCell.cachedOutTextBgShadow
             }
             break
-        case BubbleType.MediaIn:
+        case BubbleType.mediaIn:
             bubble.image =  AABubbleCell.cachedMediaBg
             bubbleBorder.image =  AABubbleCell.cachedMediaBgBorder
             bubbleShadow.image = nil
             break
-        case BubbleType.MediaOut:
+        case BubbleType.mediaOut:
             bubble.image =  AABubbleCell.cachedMediaBg
             bubbleBorder.image =  AABubbleCell.cachedMediaBgBorder
             bubbleShadow.image = nil
             break
-        case BubbleType.Service:
+        case BubbleType.service:
             bubble.image = AABubbleCell.cachedServiceBg
             bubbleBorder.image = nil
             bubbleShadow.image = nil
             break
-        case BubbleType.Sticker:
+        case BubbleType.sticker:
             bubble.image = nil;
             bubbleBorder.image = nil
             bubbleShadow.image = nil
@@ -395,7 +395,7 @@ public class AABubbleCell: UICollectionViewCell {
     // MARK: -
     // MARK: Layout
     
-    public override func layoutSubviews() {
+    open override func layoutSubviews() {
         super.layoutSubviews()
         
         UIView.performWithoutAnimation { () -> Void in
@@ -412,17 +412,17 @@ public class AABubbleCell: UICollectionViewCell {
     
     func layoutAnchor() {
         if (isShowDate) {
-            dateText.frame = CGRectMake(0, 0, 1000, 1000)
+            dateText.frame = CGRect(x: 0, y: 0, width: 1000, height: 1000)
             dateText.sizeToFit()
-            dateText.frame = CGRectMake(
-                (self.contentView.frame.size.width-dateText.frame.width)/2, 8, dateText.frame.width, 18)
-            dateBg.frame = CGRectMake(dateText.frame.minX - 8, dateText.frame.minY, dateText.frame.width + 16, 18)
+            dateText.frame = CGRect(
+                x: (self.contentView.frame.size.width-dateText.frame.width)/2, y: 8, width: dateText.frame.width, height: 18)
+            dateBg.frame = CGRect(x: dateText.frame.minX - 8, y: dateText.frame.minY, width: dateText.frame.width + 16, height: 18)
             
-            dateText.hidden = false
-            dateBg.hidden = false
+            dateText.isHidden = false
+            dateBg.isHidden = false
         } else {
-            dateText.hidden = true
-            dateBg.hidden = true
+            dateText.isHidden = true
+            dateBg.isHidden = true
         }
         
         if (isShowNewMessages) {
@@ -430,14 +430,14 @@ public class AABubbleCell: UICollectionViewCell {
             if (isShowDate) {
                 top += AABubbleCell.dateSize
             }
-            newMessage.hidden = false
-            newMessage.frame = CGRectMake(0, top + CGFloat(2), self.contentView.frame.width, AABubbleCell.newMessageSize - CGFloat(4))
+            newMessage.isHidden = false
+            newMessage.frame = CGRect(x: 0, y: top + CGFloat(2), width: self.contentView.frame.width, height: AABubbleCell.newMessageSize - CGFloat(4))
         } else {
-            newMessage.hidden = true
+            newMessage.isHidden = true
         }
     }
     
-    public func layoutContent(maxWidth: CGFloat, offsetX: CGFloat) {
+    open func layoutContent(_ maxWidth: CGFloat, offsetX: CGFloat) {
         
     }
     
@@ -448,7 +448,7 @@ public class AABubbleCell: UICollectionViewCell {
     
     // Need to be called in child cells
     
-    public func layoutBubble(contentWidth: CGFloat, contentHeight: CGFloat) {
+    open func layoutBubble(_ contentWidth: CGFloat, contentHeight: CGFloat) {
         let fullWidth = contentView.bounds.width
         let bubbleW = contentWidth + contentInsets.left + contentInsets.right
         let bubbleH = contentHeight + contentInsets.top + contentInsets.bottom
@@ -491,13 +491,13 @@ public class AABubbleCell: UICollectionViewCell {
             height: bubbleH)
     }
     
-    public func layoutBubble(frame: CGRect) {
+    open func layoutBubble(_ frame: CGRect) {
         bubble.frame = frame
         bubbleBorder.frame = frame
         bubbleShadow.frame = frame
     }
     
-    public override func preferredLayoutAttributesFittingAttributes(layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
+    open override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
         return layoutAttributes
     }
 }

@@ -1120,7 +1120,7 @@ public class Messenger {
     @ObjectiveCName("loadLastMessageDate:")
     @Deprecated
     public long loadLastMessageDate(Peer peer) {
-        return getConversationVM(peer).getLastMessageDate();
+        return getConversationVM(peer).getLastReadMessageDate();
     }
 
     /**
@@ -2437,6 +2437,106 @@ public class Messenger {
     @ObjectiveCName("changeAnimationAutoPlayEnabled:")
     public void changeAnimationAutoPlayEnabled(boolean val) {
         modules.getSettingsModule().setAnimationAutoPlayEnabled(val);
+    }
+
+    /**
+     * Is animation content auto download enabled
+     *
+     * @return is animation auto download enabled
+     */
+    @ObjectiveCName("isAnimationAutoDownloadEnabled")
+    public boolean isAnimationAutoDownloadEnabled() {
+        return modules.getSettingsModule().isAnimationAutoDownloadEnabled();
+    }
+
+    /**
+     * Change animation auto download enabled
+     *
+     * @param val is auto download enabled
+     */
+    @ObjectiveCName("changeAnimationAutoDownloadEnabled:")
+    public void changeAnimationAutoDownloadEnabled(boolean val) {
+        modules.getSettingsModule().setAnimationAutoDownloadEnabled(val);
+    }
+
+    /**
+     * Is image content auto download enabled
+     *
+     * @return is image auto download enabled
+     */
+    @ObjectiveCName("isImageAutoDownloadEnabled")
+    public boolean isImageAutoDownloadEnabled() {
+        return modules.getSettingsModule().isImageAutoDownloadEnabled();
+    }
+
+    /**
+     * Change image auto download enabled
+     *
+     * @param val is auto download enabled
+     */
+    @ObjectiveCName("changeImageAutoDownloadEnabled:")
+    public void changeImageAutoDownloadEnabled(boolean val) {
+        modules.getSettingsModule().setImageAutoDownloadEnabled(val);
+    }
+
+    /**
+     * Is video content auto download enabled
+     *
+     * @return is video auto download enabled
+     */
+    @ObjectiveCName("isVideoAutoDownloadEnabled")
+    public boolean isVideoAutoDownloadEnabled() {
+        return modules.getSettingsModule().isVideoAutoDownloadEnabled();
+    }
+
+    /**
+     * Change video auto download enabled
+     *
+     * @param val is auto download enabled
+     */
+    @ObjectiveCName("changeVideoAutoDownloadEnabled:")
+    public void changeVideoAutoDownloadEnabled(boolean val) {
+        modules.getSettingsModule().setVideoAutoDownloadEnabled(val);
+    }
+
+    /**
+     * Is audio content auto download enabled
+     *
+     * @return is audio auto download enabled
+     */
+    @ObjectiveCName("isAudioAutoDownloadEnabled")
+    public boolean isAudioAutoDownloadEnabled() {
+        return modules.getSettingsModule().isAudioAutoDownloadEnabled();
+    }
+
+    /**
+     * Change audio auto download enabled
+     *
+     * @param val is auto download enabled
+     */
+    @ObjectiveCName("changeAudioAutoDownloadEnabled:")
+    public void changeAudioAutoDownloadEnabled(boolean val) {
+        modules.getSettingsModule().setAudioAutoDownloadEnabled(val);
+    }
+
+    /**
+     * Is doc content auto download enabled
+     *
+     * @return is doc auto download enabled
+     */
+    @ObjectiveCName("isDocAutoDownloadEnabled")
+    public boolean isDocAutoDownloadEnabled() {
+        return modules.getSettingsModule().isDocAutoDownloadEnabled();
+    }
+
+    /**
+     * Change doc auto download enabled
+     *
+     * @param val is auto download enabled
+     */
+    @ObjectiveCName("changeDocAutoDownloadEnabled:")
+    public void changeDocAutoDownloadEnabled(boolean val) {
+        modules.getSettingsModule().setDocAutoDownloadEnabled(val);
     }
 
 

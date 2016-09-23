@@ -123,7 +123,9 @@ public class Application extends ActorSDKApplication {
                     text.append("\n\n" + message.getSortDate());
                 }
             }));
-//            layouters.add(0, new DefaultLayouter(DefaultLayouter.TEXT_HOLDER, CensoredTextHolderEx::new));
+
+            layouters.add(0, new DefaultLayouter(DefaultLayouter.TEXT_HOLDER, CensoredTextHolderEx::new));
+
             layouters.add(0, new XmlBubbleLayouter(content -> content instanceof PhotoContent, R.layout.adapter_dialog_photo, (adapter1, root1, peer1) -> new PhotoHolder(adapter1, root1, peer1) {
                 @Override
                 protected void onConfigureViewHolder() {

@@ -548,6 +548,12 @@
     <string name="settings_chat_markdown">Markdown</string>
     <string name="settings_chat_markdown_subtitle">Is markdown enabled</string>
 
+    <string name="settings_animation_download_title">Auto download animations</string>
+    <string name="settings_image_download_title">Auto download images</string>
+    <string name="settings_video_download_title">Auto download videos</string>
+    <string name="settings_audio_download_title">Auto download audio</string>
+    <string name="settings_doc_download_title">Auto download documents</string>
+
     <!-- Security -->
     <string name="security_title">Security and Privacy</string>
     <string name="security_terminate_title">Terminate all sessions</string>

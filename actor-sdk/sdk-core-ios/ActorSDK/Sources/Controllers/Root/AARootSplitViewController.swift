@@ -4,13 +4,13 @@
 
 import Foundation
 
-public class AARootSplitViewController: UISplitViewController {
+open class AARootSplitViewController: UISplitViewController {
     
     public init() {
         super.init(nibName: nil, bundle: nil)
         
-        preferredDisplayMode = .AllVisible
-        if (interfaceOrientation == UIInterfaceOrientation.Portrait || interfaceOrientation == UIInterfaceOrientation.PortraitUpsideDown) {
+        preferredDisplayMode = .allVisible
+        if (interfaceOrientation == UIInterfaceOrientation.portrait || interfaceOrientation == UIInterfaceOrientation.portraitUpsideDown) {
             minimumPrimaryColumnWidth = CGFloat(300.0)
             maximumPrimaryColumnWidth = CGFloat(300.0)
         } else {
@@ -23,10 +23,10 @@ public class AARootSplitViewController: UISplitViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func willRotateToInterfaceOrientation(toInterfaceOrientation: UIInterfaceOrientation, duration: NSTimeInterval) {
-        super.willRotateToInterfaceOrientation(toInterfaceOrientation, duration: duration)
+    open override func willRotate(to toInterfaceOrientation: UIInterfaceOrientation, duration: TimeInterval) {
+        super.willRotate(to: toInterfaceOrientation, duration: duration)
         
-        if (toInterfaceOrientation == UIInterfaceOrientation.Portrait || toInterfaceOrientation == UIInterfaceOrientation.PortraitUpsideDown) {
+        if (toInterfaceOrientation == UIInterfaceOrientation.portrait || toInterfaceOrientation == UIInterfaceOrientation.portraitUpsideDown) {
             minimumPrimaryColumnWidth = CGFloat(300.0)
             maximumPrimaryColumnWidth = CGFloat(300.0)
         } else {
@@ -35,7 +35,7 @@ public class AARootSplitViewController: UISplitViewController {
         }
     }
     
-    public override func preferredStatusBarStyle() -> UIStatusBarStyle {
+    open override var preferredStatusBarStyle : UIStatusBarStyle {
         return ActorSDK.sharedActor().style.vcStatusBarStyle
     }
 }

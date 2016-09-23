@@ -595,8 +595,7 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
             icon.setImageResource(R.drawable.ic_image_black_24dp);
             icon.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             icon.setColorFilter(ActorSDK.sharedActor().style.getSettingsIconColor(), PorterDuff.Mode.SRC_IN);
-            icon.setPadding(Screen.dp(16), 0, 0, 0);
-            fl.addView(icon, new FrameLayout.LayoutParams(Screen.dp(40), Screen.dp(85), Gravity.CENTER_VERTICAL | Gravity.LEFT));
+            fl.addView(icon, new FrameLayout.LayoutParams(Screen.dp(72), Screen.dp(85), Gravity.CENTER));
             fl.setLayoutParams(new ViewGroup.LayoutParams(Screen.dp(72), Screen.dp(85)));
             wallpaperAdapter.addHeaderView(fl);
             wallpapers.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));

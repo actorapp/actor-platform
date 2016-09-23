@@ -8,17 +8,17 @@ import TTTAttributedLabel
 class AAAutoCompleteCell: AATableViewCell {
     
     var avatarView = AAAvatarView()
-    var nickView = TTTAttributedLabel(frame: CGRectZero)
-    var nameView = TTTAttributedLabel(frame: CGRectZero)
+    var nickView = TTTAttributedLabel(frame: CGRect.zero)
+    var nameView = TTTAttributedLabel(frame: CGRect.zero)
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(style: UITableViewCellStyle.Default, reuseIdentifier: reuseIdentifier)
+        super.init(style: UITableViewCellStyle.default, reuseIdentifier: reuseIdentifier)
         
         // avatarView.enableAnimation = false
-        nickView.font = UIFont.systemFontOfSize(14)
+        nickView.font = UIFont.systemFont(ofSize: 14)
         nickView.textColor = ActorSDK.sharedActor().style.cellTextColor
         
-        nameView.font = UIFont.systemFontOfSize(14)
+        nameView.font = UIFont.systemFont(ofSize: 14)
         nameView.textColor = ActorSDK.sharedActor().style.cellHintColor
         
         self.contentView.addSubview(avatarView)
@@ -30,7 +30,7 @@ class AAAutoCompleteCell: AATableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func bindData(user: ACMentionFilterResult, highlightWord: String) {
+    func bindData(_ user: ACMentionFilterResult, highlightWord: String) {
         
         avatarView.bind(user.mentionString, id: Int(user.uid), avatar: user.avatar)
         
@@ -47,21 +47,21 @@ class AAAutoCompleteCell: AATableViewCell {
         let nickAttrs = NSMutableAttributedString(string: nickText)
         let nameAttrs = NSMutableAttributedString(string: nameText)
         
-        nickAttrs.addAttribute(NSFontAttributeName, value: UIFont.systemFontOfSize(14), range: NSMakeRange(0, nickText.length))
+        nickAttrs.addAttribute(NSFontAttributeName, value: UIFont.systemFont(ofSize: 14), range: NSMakeRange(0, nickText.length))
         nickAttrs.addAttribute(NSForegroundColorAttributeName, value: ActorSDK.sharedActor().style.cellTextColor, range: NSMakeRange(0, nickText.length))
         
-        nameAttrs.addAttribute(NSFontAttributeName, value: UIFont.systemFontOfSize(14), range: NSMakeRange(0, nameText.length))
+        nameAttrs.addAttribute(NSFontAttributeName, value: UIFont.systemFont(ofSize: 14), range: NSMakeRange(0, nameText.length))
         nameAttrs.addAttribute(NSForegroundColorAttributeName, value: ActorSDK.sharedActor().style.cellHintColor, range: NSMakeRange(0, nameText.length))
         
         for i in 0..<user.mentionMatches.size() {
-            let match = user.mentionMatches.getWithInt(i) as! ACStringMatch
+            let match = user.mentionMatches.getWith(i) as! ACStringMatch
             let nsRange = NSMakeRange(Int(match.getStart()), Int(match.getLength()))
             nickAttrs.addAttribute(NSForegroundColorAttributeName, value: appStyle.chatAutocompleteHighlight, range: nsRange)
         }
         
         if user.originalString != nil {
             for i in 0..<user.originalMatches.size() {
-                let match = user.originalMatches.getWithInt(i) as! ACStringMatch
+                let match = user.originalMatches.getWith(i) as! ACStringMatch
                 let nsRange = NSMakeRange(Int(match.getStart()) + 3, Int(match.getLength()))
                 nameAttrs.addAttribute(NSForegroundColorAttributeName, value: appStyle.chatAutocompleteHighlight, range: nsRange)
             }
@@ -74,12 +74,12 @@ class AAAutoCompleteCell: AATableViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        avatarView.frame = CGRectMake(6, 6, 38, 38)
-        nickView.frame = CGRectMake(44, 6, 100, 32)
+        avatarView.frame = CGRect(x: 6, y: 6, width: 38, height: 38)
+        nickView.frame = CGRect(x: 44, y: 6, width: 100, height: 32)
         nickView.sizeToFit()
-        nickView.frame = CGRectMake(44, 6, nickView.frame.width, 32)
+        nickView.frame = CGRect(x: 44, y: 6, width: nickView.frame.width, height: 32)
         
         let left = 44 + nickView.frame.width
-        nameView.frame = CGRectMake(left, 6, self.contentView.frame.width - left, 32)
+        nameView.frame = CGRect(x: left, y: 6, width: self.contentView.frame.width - left, height: 32)
     }
 }

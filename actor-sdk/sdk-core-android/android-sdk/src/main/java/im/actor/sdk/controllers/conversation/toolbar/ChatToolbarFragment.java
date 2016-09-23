@@ -223,6 +223,7 @@ public class ChatToolbarFragment extends BaseFragment {
         super.onCreateOptionsMenu(menu, inflater);
 
         // Inflating menu
+        menu.clear();
         inflater.inflate(R.menu.chat_menu, menu);
 
         // Show menu for opening chat contact

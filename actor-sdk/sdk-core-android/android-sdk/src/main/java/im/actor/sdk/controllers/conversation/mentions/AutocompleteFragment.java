@@ -148,7 +148,6 @@ public class AutocompleteFragment extends BaseFragment {
                 return;
             }
 
-
             list.setMinHeight(newRowsCount == 0 ? 0 : newRowsCount == 1 ? Screen.dp(48) + 1 : newRowsCount == 2 ? Screen.dp(96) + 2 : Screen.dp(122));
             list.setVisibility(View.VISIBLE);
 //        Animation a = new ExpandAnimation(list, targetHeight, initialHeight);
@@ -158,40 +157,6 @@ public class AutocompleteFragment extends BaseFragment {
 //        list.startAnimation(a);
         });
 
-    }
-
-    private static class ExpandAnimation extends Animation {
-
-        private final View v;
-        private final int targetHeight;
-        private final int initialHeight;
-        private int currentHeight;
-
-        public ExpandAnimation(View v, int targetHeight, int initialHeight) {
-            this.v = v;
-            this.targetHeight = targetHeight;
-            this.initialHeight = initialHeight;
-            this.currentHeight = initialHeight;
-        }
-
-        @Override
-        protected void applyTransformation(float interpolatedTime, Transformation t) {
-            if (targetHeight > initialHeight) {
-                currentHeight =
-                        (int) ((targetHeight * interpolatedTime) - initialHeight * interpolatedTime + initialHeight);
-            } else {
-                currentHeight =
-                        (int) (initialHeight - (initialHeight * interpolatedTime) - targetHeight * (1f - interpolatedTime) + targetHeight);
-            }
-
-            v.getLayoutParams().height = currentHeight;
-            v.requestLayout();
-        }
-
-        @Override
-        public boolean willChangeBounds() {
-            return true;
-        }
     }
 
     public void setUnderlyingView(View underlyingView) {
