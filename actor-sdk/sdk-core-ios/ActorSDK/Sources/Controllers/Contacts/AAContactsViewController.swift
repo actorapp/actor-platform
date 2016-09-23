@@ -184,14 +184,14 @@ open class AAContactsViewController: AAContactsListContentController, AAContacts
                             } else {
                                 self.navigateDetail(ConversationViewController(peer: ACPeer_userWithInt_(user!.getId())))
                             }
-                            c.dismiss()
+                            c.dismissController()
                         }, failureBlock: { (val) -> Void in
                             if let customController = ActorSDK.sharedActor().delegate.actorControllerForConversation(ACPeer_userWithInt_(user!.getId())) {
                                 self.navigateDetail(customController)
                             } else {
                                 self.navigateDetail(ConversationViewController(peer: ACPeer_userWithInt_(user!.getId())))
                             }
-                            c.dismiss()
+                            c.dismissController()
                         })
                     } else {
                         c.alertUser("FindNotFound")

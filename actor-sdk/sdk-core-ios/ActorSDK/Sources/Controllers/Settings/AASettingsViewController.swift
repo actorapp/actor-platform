@@ -132,7 +132,7 @@ open class AASettingsViewController: AAContentTableController {
                             }
                             
                             c.executeSafeOnlySuccess(Actor.editMyNameCommand(withName: t)!) { (val) -> Void in
-                                c.dismiss()
+                                c.dismissController()
                             }
                         }
                     }
@@ -220,7 +220,7 @@ open class AASettingsViewController: AAContentTableController {
                                 nNick = nil
                             }
                             c.executeSafeOnlySuccess(Actor.editMyNickCommand(withNick: nNick)!, successBlock: { (val) -> Void in
-                                c.dismiss()
+                                c.dismissController()
                             })
                         }
                     }
@@ -261,7 +261,7 @@ open class AASettingsViewController: AAContentTableController {
                                 updatedText = nil
                             }
                             controller.executeSafeOnlySuccess(Actor.editMyAboutCommand(withNick: updatedText)!, successBlock: { (val) -> Void in
-                                controller.dismiss()
+                                controller.dismissController()
                             })
                         }
                     }

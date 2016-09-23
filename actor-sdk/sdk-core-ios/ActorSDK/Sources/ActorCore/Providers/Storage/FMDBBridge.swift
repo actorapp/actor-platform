@@ -33,9 +33,7 @@ extension JavaLangLong {
 }
 
 extension Data {
-    
     func readNSData(_ offset: Int, len: Int) -> Data {
-        // return self.subdata(in: Int(offset)...Int(offset + len))
-        return self
+        return self.subdata(in: self.startIndex.advanced(by: Int(offset))..<self.startIndex.advanced(by: Int(offset + len)))
     }
 }

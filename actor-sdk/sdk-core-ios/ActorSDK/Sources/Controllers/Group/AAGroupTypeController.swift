@@ -163,7 +163,7 @@ open class AAGroupTypeViewController: AAContentTableController {
                     } else {
                         self.navigateDetail(ConversationViewController(peer: ACPeer.group(with: jint(self.gid))))
                     }
-                    self.dismiss()
+                    self.dismissController()
                 } else {
                     self.navigateBack()
                 }
@@ -175,7 +175,7 @@ open class AAGroupTypeViewController: AAContentTableController {
                 } else {
                     self.navigateDetail(ConversationViewController(peer: ACPeer.group(with: jint(self.gid))))
                 }
-                self.dismiss()
+                self.dismissController()
             } else {
                 navigateBack()
             }

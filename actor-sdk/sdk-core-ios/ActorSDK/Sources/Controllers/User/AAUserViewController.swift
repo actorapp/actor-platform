@@ -237,7 +237,7 @@ class AAUserViewController: AAContentTableController {
                                         return
                                     }
                                     c.executeSafeOnlySuccess(Actor.editNameCommand(withUid: jint(self.uid), withName: d)!, successBlock: { (val) -> Void in
-                                        c.dismiss()
+                                        c.dismissController()
                                     })
                                 }
                             }

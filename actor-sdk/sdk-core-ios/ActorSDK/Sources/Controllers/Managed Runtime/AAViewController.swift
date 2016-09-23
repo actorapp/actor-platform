@@ -166,7 +166,7 @@ open class AAViewController: UIViewController, UINavigationControllerDelegate, U
         }
     }
     
-    open func dismiss() {
+    open func dismissController() {
         self.dismiss(animated: true, completion: nil)
     }
     
@@ -235,8 +235,9 @@ open class AAViewController: UIViewController, UINavigationControllerDelegate, U
             controller.modalPresentationStyle = .formSheet
             present(controller, animated: true, completion: nil) 
         } else {
-            controller.modalPresentationStyle = .custom
-            controller.transitioningDelegate = self
+            // controller.modalPresentationStyle = .custom
+            // controller.modalPresentationStyle = .custom
+            // controller.transitioningDelegate = self
             present(controller, animated: true, completion: nil)
         }
     }

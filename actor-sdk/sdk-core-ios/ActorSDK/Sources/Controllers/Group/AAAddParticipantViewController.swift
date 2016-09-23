@@ -51,7 +51,7 @@ open class AAAddParticipantViewController: AAContactsListContentController, AACo
         
         if !isAlreadyMember(contact.uid) {
             self.executeSafeOnlySuccess(Actor.inviteMemberCommand(withGid: jint(gid), withUid: jint(contact.uid))) { (val) -> () in
-                self.dismiss()
+                self.dismissController()
             }
         }
         return true

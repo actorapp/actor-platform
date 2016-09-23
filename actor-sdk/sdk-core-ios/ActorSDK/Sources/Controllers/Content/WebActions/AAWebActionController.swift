@@ -44,7 +44,7 @@ open class AAWebActionController: AAViewController, UIWebViewDelegate {
             // Match end url
             if regex.test(rawUrl) {
                 self.executeSafe(Actor.completeWebAction(withHash: desc.getActionHash(), withUrl: rawUrl)) { (val) -> Void in
-                    self.dismiss()
+                    self.dismissController()
                 }
                 return false
             }

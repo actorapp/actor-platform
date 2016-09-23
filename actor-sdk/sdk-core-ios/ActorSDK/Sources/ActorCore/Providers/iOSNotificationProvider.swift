@@ -24,7 +24,7 @@ import AudioToolbox.AudioServices
             var path = Bundle.framework.url(forResource: "notification", withExtension: "caf")
             
             if let fileURL: URL = URL(fileURLWithPath: "/Library/Ringtones/\(soundFile)") {
-                   path = fileURL
+                path = fileURL
             }
             
             AudioServicesCreateSystemSoundID(path! as CFURL, &internalMessage)

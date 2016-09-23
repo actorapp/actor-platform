@@ -60,13 +60,13 @@ public extension UIViewController {
         let controller = UIAlertController(title: title, message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
         
         if cancelButton != nil {
-            controller.addAction(UIAlertAction(title: AALocalized(cancelButton), style: UIAlertActionStyle.cancel, handler: { (alertView) -> () in
+            controller.addAction(UIAlertAction(title: AALocalized(cancelButton!), style: UIAlertActionStyle.cancel, handler: { (alertView) -> () in
                 tapClosure(-1)
             }))
         }
         
         if destructButton != nil {
-            controller.addAction(UIAlertAction(title: AALocalized(destructButton), style: UIAlertActionStyle.destructive, handler: { (alertView) -> () in
+            controller.addAction(UIAlertAction(title: AALocalized(destructButton!), style: UIAlertActionStyle.destructive, handler: { (alertView) -> () in
                 tapClosure(-2)
             }))
         }

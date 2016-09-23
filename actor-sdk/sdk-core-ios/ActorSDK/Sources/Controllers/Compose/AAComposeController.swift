@@ -15,7 +15,7 @@ open class AAComposeController: AAContactsListContentController, AAContactsListC
         self.navigationItem.title = AALocalized("ComposeTitle")
         
         if AADevice.isiPad {
-//            self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: UIBarButtonItemStyle.plain, target: self, action: #selector(AAViewController.dismiss))
+            self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: UIBarButtonItemStyle.plain, target: self, action: #selector(self.dismissController))
         }
     }
 

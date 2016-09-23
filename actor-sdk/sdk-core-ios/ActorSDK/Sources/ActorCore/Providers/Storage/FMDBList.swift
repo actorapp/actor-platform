@@ -251,11 +251,11 @@ class FMDBList : NSObject, ARListStorageDisplayEx {
         checkTable();
         
         var result : FMResultSet? = nil;
-//        if (sortingKey == nil) {
-//            result = db!.executeQuery(queryForwardFilterFirst, query + "%", "% " + query + "%", limit.toNSNumber());
-//        } else {
-//            result = db!.executeQuery(queryForwardFilterMore, query + "%", "% " + query + "%", sortingKey!.toNSNumber(), limit.toNSNumber());
-//        }
+        if (sortingKey == nil) {
+            result = db!.executeQuery(queryForwardFilterFirst, query + "%", "% " + query + "%", limit.toNSNumber());
+        } else {
+            result = db!.executeQuery(queryForwardFilterMore, query + "%", "% " + query + "%", sortingKey!.toNSNumber(), limit.toNSNumber());
+        }
         if (result == nil) {
             NSLog(db!.lastErrorMessage())
             return nil
@@ -308,11 +308,11 @@ class FMDBList : NSObject, ARListStorageDisplayEx {
         checkTable();
         
         var result : FMResultSet? = nil;
-//        if (sortingKey == nil) {
-//            result = db!.executeQuery(queryBackwardFilterFirst, query + "%", "% " + query + "%", limit.toNSNumber());
-//        } else {
-//            result = db!.executeQuery(queryBackwardFilterMore, query + "%", "% " + query + "%", sortingKey!.toNSNumber(), limit.toNSNumber());
-//        }
+        if (sortingKey == nil) {
+            result = db!.executeQuery(queryBackwardFilterFirst, query + "%", "% " + query + "%", limit.toNSNumber())
+        } else {
+            result = db!.executeQuery(queryBackwardFilterMore, query + "%", "% " + query + "%", sortingKey!.toNSNumber(), limit.toNSNumber())
+        }
         if (result == nil) {
             NSLog(db!.lastErrorMessage())
             return nil

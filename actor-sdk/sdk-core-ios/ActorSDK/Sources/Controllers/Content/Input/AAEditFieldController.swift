@@ -90,7 +90,7 @@ open class AAEditFieldController: AAContentTableController {
         if config.didDismissTap != nil {
             config.didDismissTap!(self)
         } else {
-            dismiss()
+            dismissController()
         }
     }
     

@@ -25,7 +25,7 @@ open class AAGroupCreateViewController: AAViewController, UITextFieldDelegate {
             self.navigationItem.title = AALocalized("CreateGroupTitle")
         }
         if AADevice.isiPad {
-//            self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: UIBarButtonItemStyle.plain, target: self, action: #selector(AAViewController.dismiss))
+            self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: UIBarButtonItemStyle.plain, target: self, action: #selector(self.dismissController))
         }
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationNext"), style: UIBarButtonItemStyle.done, target: self, action: #selector(AAGroupCreateViewController.doNext))
     }

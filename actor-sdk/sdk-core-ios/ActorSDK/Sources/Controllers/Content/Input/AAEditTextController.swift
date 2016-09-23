@@ -88,7 +88,7 @@ open class AAEditTextController: AAViewController {
         if self.config.didDismissTap != nil {
            self.config.didDismissTap!(self)
         } else {
-            dismiss()
+            dismissController()
         }
     }
     

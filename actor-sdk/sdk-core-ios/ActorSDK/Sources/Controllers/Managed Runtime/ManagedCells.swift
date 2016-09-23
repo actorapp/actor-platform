@@ -233,7 +233,9 @@ public extension AAManagedSection {
     
     public func text(_ title: String?, closure: (_ r: AATextRow) -> ()) -> AATextRow {
         let r = text()
-        r.title = AALocalized(title)
+        if title != nil {
+            r.title = AALocalized(title!)
+        }
         closure(r)
         r.bindAction?(r)
         r.initTable(self.table)
@@ -242,7 +244,9 @@ public extension AAManagedSection {
     
     public func text(_ title: String?, content: String) -> AATextRow {
         let r = text()
-        r.title = AALocalized(title)
+        if title != nil {
+            r.title = AALocalized(title!)
+        }
         r.content = content
         r.initTable(self.table)
         return r

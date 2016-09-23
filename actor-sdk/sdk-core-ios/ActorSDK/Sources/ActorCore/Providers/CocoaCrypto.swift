@@ -44,10 +44,11 @@ class SHA256Digest: NSObject, ARDigest {
     
     func doFinal(_ dest: IOSByteArray!, withOffset destOffset: jint) {
         
-//        let pointer = UnsafeMutablePointer<UInt8>(dest.buffer())
-//            .advanced(by: Int(destOffset))
-//        
-//        CC_SHA256_Final(pointer, context)
+        let pointer = dest.buffer()
+            .advanced(by: Int(destOffset))
+            .bindMemory(to: UInt8.self, capacity: Int(CC_SHA256_DIGEST_LENGTH))
+        
+        CC_SHA256_Final(pointer, context)
     }
     
     func getSize() -> jint {

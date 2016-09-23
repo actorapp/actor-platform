@@ -84,7 +84,7 @@ open class AAAuthEmailViewController: AAAuthViewController {
             // Terms Of Service
             //
             if showTos {
-                let tosRange = NSRange(location: hintText.indexOf(tosText!)!, length: tosText!.length)
+                let tosRange = NSRange(location: hintText.indexOf(tosText)!, length: tosText.length)
                 let tosLink = YYTextHighlight()
                 tosLink.setColor(ActorSDK.sharedActor().style.authTintColor.alpha(0.56))
                 tosLink.tapAction = { (container, text, range, rect) in
@@ -99,7 +99,7 @@ open class AAAuthEmailViewController: AAAuthViewController {
             // Privacy Policy
             //
             if showPrivacy {
-                let privacyRange = NSRange(location: hintText.indexOf(privacyText!)!, length: privacyText!.length)
+                let privacyRange = NSRange(location: hintText.indexOf(privacyText)!, length: privacyText.length)
                 let privacyLink = YYTextHighlight()
                 privacyLink.setColor(ActorSDK.sharedActor().style.authTintColor.alpha(0.56))
                 privacyLink.tapAction = { (container, text, range, rect) in

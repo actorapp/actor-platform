@@ -25,7 +25,7 @@ open class GroupMembersController: AAContactsListContentController, AAContactsLi
         navigationItem.title = AALocalized("CreateGroupMembersTitle")
         
         if AADevice.isiPad {
-//            self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: UIBarButtonItemStyle.plain, target: self, action: #selector(self.dismiss))
+            self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: UIBarButtonItemStyle.plain, target: self, action: #selector(self.dismissController))
         }
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationDone"), style: UIBarButtonItemStyle.done, target: self, action: #selector(GroupMembersController.doNext))
@@ -45,7 +45,7 @@ open class GroupMembersController: AAContactsListContentController, AAContactsLi
         tokenView.tintColor = appStyle.vcTokenTintColor
         tokenView.fieldName = ""
         
-        let placeholder = AALocalized("CreateGroupMembersPlaceholders")!
+        let placeholder = AALocalized("CreateGroupMembersPlaceholders")
         let attributedPlaceholder = NSMutableAttributedString(string: placeholder)
         attributedPlaceholder.addAttribute(NSForegroundColorAttributeName, value: appStyle.vcHintColor, range: NSRange(location: 0, length: placeholder.length))
         tokenView.placeholderAttributedText = attributedPlaceholder
@@ -91,7 +91,7 @@ open class GroupMembersController: AAContactsListContentController, AAContactsLi
             } else {
                 self.navigateDetail(ConversationViewController(peer: ACPeer.group(with: gid)))
             }
-            self.dismiss()
+            self.dismissController()
         }
     }
     

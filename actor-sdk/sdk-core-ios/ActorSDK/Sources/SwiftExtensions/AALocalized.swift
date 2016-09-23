@@ -6,10 +6,7 @@ import Foundation
 
 // Shorter helper for localized strings
 
-public func AALocalized(_ text: String!) -> String! {
-    if text == nil {
-        return nil
-    }
+public func AALocalized(_ text: String) -> String {
     
     let appRes = NSLocalizedString(text, comment: "")
     

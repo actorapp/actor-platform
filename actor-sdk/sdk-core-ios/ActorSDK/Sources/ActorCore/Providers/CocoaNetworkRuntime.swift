@@ -72,12 +72,12 @@ class CocoaTcpConnection: ARAsyncConnection, GCDAsyncSocketDelegate {
     }
     
     // On connection closed
-    func socketDidDisconnect(_ sock: GCDAsyncSocket!, withError err: NSError!) {
+    func socketDidDisconnect(_ sock: GCDAsyncSocket!, withError err: Error?) {
         //        NSLog("\(TAG) Connection closed...")
         onClosed()
     }
     
-    func socket(_ sock: GCDAsyncSocket!, didRead data: Data!, withTag tag: Int) {
+    func socket(_ sock: GCDAsyncSocket, didRead data: Data, withTag tag: Int) {
         if (tag == READ_HEADER) {
             //            NSLog("\(TAG) Header received")
             self.header = data
@@ -86,12 +86,12 @@ class CocoaTcpConnection: ARAsyncConnection, GCDAsyncSocketDelegate {
             gcdSocket?.readData(toLength: UInt(size + 4), withTimeout: -1, tag: READ_BODY)
         } else if (tag == READ_BODY) {
             //            NSLog("\(TAG) Body received")
-            let package = NSMutableData()
+            var package = Data()
             package.append(self.header!)
             package.append(data)
-            // package.readUInt32(0) // IGNORE: package id
+            package.readUInt32(0) // IGNORE: package id
             self.header = nil
-            // onReceived(package.toJavaBytes())
+            onReceived(package.toJavaBytes())
             
             gcdSocket?.readData(toLength: UInt(9), withTimeout: -1, tag: READ_HEADER)
         } else {

@@ -102,13 +102,13 @@ class AAAuthPhoneViewController: AAAuthViewController, AACountryViewControllerDe
             //
             if showTos {
                 let tosLink = YYTextHighlight()
-                let tosRange = NSRange(location: hintText.indexOf(tosText!)!, length: tosText!.length)
+                let tosRange = NSRange(location: hintText.indexOf(tosText)!, length: tosText.length)
                 tosLink.setColor(ActorSDK.sharedActor().style.authTintColor.alpha(0.56))
                 tosLink.tapAction = { (container, text, range, rect) in
                     if let url = ActorSDK.sharedActor().termsOfServiceUrl {
                         self.openUrl(url)
                     } else if let text = ActorSDK.sharedActor().termsOfServiceText {
-                        self.present(AABigAlertController(alertTitle: tosText!, alertMessage: text), animated: true, completion: nil)
+                        self.present(AABigAlertController(alertTitle: tosText, alertMessage: text), animated: true, completion: nil)
                     }
                 }
                 attributedTerms.yy_setColor(ActorSDK.sharedActor().style.authTintColor, range: tosRange)
@@ -121,13 +121,13 @@ class AAAuthPhoneViewController: AAAuthViewController, AACountryViewControllerDe
             //
             if showPrivacy {
                 let privacyLink = YYTextHighlight()
-                let privacyRange = NSRange(location: hintText.indexOf(privacyText!)!, length: privacyText!.length)
+                let privacyRange = NSRange(location: hintText.indexOf(privacyText)!, length: privacyText.length)
                 privacyLink.setColor(ActorSDK.sharedActor().style.authTintColor.alpha(0.56))
                 privacyLink.tapAction = { (container, text, range, rect) in
                     if let url = ActorSDK.sharedActor().privacyPolicyUrl {
                         self.openUrl(url)
                     } else if let text = ActorSDK.sharedActor().privacyPolicyText {
-                        self.present(AABigAlertController(alertTitle: privacyText!, alertMessage: text), animated: true, completion: nil)
+                        self.present(AABigAlertController(alertTitle: privacyText, alertMessage: text), animated: true, completion: nil)
                     }
                 }
                 attributedTerms.yy_setColor(ActorSDK.sharedActor().style.authTintColor, range: privacyRange)

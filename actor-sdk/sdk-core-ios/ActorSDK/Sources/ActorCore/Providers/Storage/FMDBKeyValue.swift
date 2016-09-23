@@ -104,11 +104,11 @@ import Foundation
     func loadAllItems() -> JavaUtilList! {
         checkTable()
         
-        let res = JavaUtilArrayList()
+        let res = JavaUtilArrayList()!
         
         if let result = db.executeQuery(queryAll) {
             while(result.next()) {
-                res!.add(withId: ARKeyValueRecord(key: jlong(result.longLongInt(forColumn: "ID")), withData: result.data(forColumn: "BYTES").toJavaBytes()))
+                res.add(withId: ARKeyValueRecord(key: jlong(result.longLongInt(forColumn: "ID")), withData: result.data(forColumn: "BYTES").toJavaBytes()))
             }
         }
         

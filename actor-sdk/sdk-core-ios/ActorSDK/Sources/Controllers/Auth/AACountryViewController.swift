@@ -20,7 +20,7 @@ open class AACountryViewController: AATableViewController {
         
         self.title = AALocalized("AuthCountryTitle")
         
-        let cancelButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: UIBarButtonItemStyle.plain, target: self, action: Selector("dismiss"))
+        let cancelButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: UIBarButtonItemStyle.plain, target: self, action: #selector(AAViewController.dismissController))
         self.navigationItem.setLeftBarButton(cancelButtonItem, animated: false)
         
         self.content = ACAllEvents_Auth.auth_PICK_COUNTRY()
@@ -58,9 +58,11 @@ open class AACountryViewController: AATableViewController {
     }
     
     fileprivate func letters() -> Array<String> {
-//        if (_letters == nil) {
-//            _letters = (countries().allKeys as Array).sortedArray(using: #selector(YYTextPosition.compare(_:)))
-//        }
+        if (_letters == nil) {
+            _letters = (countries().allKeys as! [String]).sorted(by: { (a: String, b: String) -> Bool in
+              return a < b
+            })
+        }
         return _letters
     }
     
@@ -77,12 +79,14 @@ open class AACountryViewController: AATableViewController {
     }
     
     open override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return (countries()[letters()[section] as! String] as! NSArray).count
+        let letter = letters()[section]
+        let cs = countries().object(forKey: letter) as! NSArray
+        return cs.count
     }
     
     open override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: AAAuthCountryCell = tableView.dequeueCell(indexPath)
-        let letter = letters()[(indexPath as NSIndexPath).section] as! String
+        let letter = letters()[(indexPath as NSIndexPath).section]
         let countryData = (countries().object(forKey: letter) as! NSArray)[(indexPath as NSIndexPath).row] as! [String]
         
         cell.setTitle(countryData[0])
@@ -95,12 +99,12 @@ open class AACountryViewController: AATableViewController {
     open func tableView(_ tableView: UITableView, didSelectRowAtIndexPath indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        let letter = letters()[(indexPath as NSIndexPath).section] as! String
+        let letter = letters()[(indexPath as NSIndexPath).section]
         let countryData = (countries().object(forKey: letter) as! NSArray)[(indexPath as NSIndexPath).row] as! [String]
         
         delegate?.countriesController(self, didChangeCurrentIso: countryData[1])
 
-        dismiss()
+        dismissController()
     }
     
     open func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -108,7 +112,7 @@ open class AACountryViewController: AATableViewController {
     }
     
     open func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return letters()[section] as? String
+        return letters()[section]
     }
     
     open override func viewWillDisappear(_ animated: Bool) {

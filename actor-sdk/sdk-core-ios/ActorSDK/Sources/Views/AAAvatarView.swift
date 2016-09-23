@@ -147,7 +147,7 @@ open class AAAvatarView: UIView, YYAsyncLayerDelegate, ACFileEventCallback {
                 
                 context.setFillColor(color)
                 
-                // context.addArc(r, r, r, CGFloat(M_PI * 0), CGFloat(M_PI * 2), 0)
+                context.addEllipse(in: CGRect(x: 0, y: 0, width: r * 2, height: r * 2))
                 
                 if isCancelled() {
                     return
@@ -206,7 +206,7 @@ open class AAAvatarView: UIView, YYAsyncLayerDelegate, ACFileEventCallback {
                     // Clean BG
                     context.setFillColor(UIColor.white.cgColor)
                     
-                    // context.addArc(r, r, r, CGFloat(M_PI * 0), CGFloat(M_PI * 2), 0)
+                    context.addEllipse(in: CGRect(x: 0, y: 0, width: r * 2, height: r * 2))
                     
                     if isCancelled() {
                         return
@@ -226,7 +226,7 @@ open class AAAvatarView: UIView, YYAsyncLayerDelegate, ACFileEventCallback {
                     return
                 }
                 
-                // context.addArc(r, r, r, CGFloat(M_PI * 0), CGFloat(M_PI * 2), 0)
+                context.addEllipse(in: CGRect(x: 0, y: 0, width: r * 2, height: r * 2))
                 
                 if isCancelled() {
                     return
@@ -247,7 +247,7 @@ open class AAAvatarView: UIView, YYAsyncLayerDelegate, ACFileEventCallback {
                 return
             }
             
-            // context.addArc(r, r, r, CGFloat(M_PI * 0), CGFloat(M_PI * 2), 0)
+            context.addEllipse(in: CGRect(x: 0, y: 0, width: r * 2, height: r * 2))
             
             if isCancelled() {
                 return

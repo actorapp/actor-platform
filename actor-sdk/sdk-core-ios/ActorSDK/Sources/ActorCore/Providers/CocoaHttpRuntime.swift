@@ -19,7 +19,7 @@ class CocoaHttpRuntime: NSObject, ARHttpRuntime {
             request.setValue(header, forHTTPHeaderField: "Range")
             request.httpMethod = "GET"
             
-            NSURLConnection.sendAsynchronousRequest(request as URLRequest, queue: self.queue, completionHandler:{ (response: URLResponse?, data: Data?, error: NSError?) -> Void in
+            NSURLConnection.sendAsynchronousRequest(request as URLRequest, queue: self.queue, completionHandler:{ (response: URLResponse?, data: Data?, error: Error?) -> Void in
                 if let respHttp = response as? HTTPURLResponse {
                     if (respHttp.statusCode >= 200 && respHttp.statusCode < 300) {
                         resolver.result(ARHTTPResponse(code: jint(respHttp.statusCode), withContent: data!.toJavaBytes()))
@@ -29,7 +29,7 @@ class CocoaHttpRuntime: NSObject, ARHttpRuntime {
                 } else {
                     resolver.error(ARHTTPError(int: 0))
                 }
-            } as! (URLResponse?, Data?, Error?) -> Void)
+            })
         }
     }
     
@@ -42,7 +42,7 @@ class CocoaHttpRuntime: NSObject, ARHttpRuntime {
             request.httpBody = contents.toNSData()
             request.setValue("application/octet-stream", forHTTPHeaderField: "Content-Type")
             
-            NSURLConnection.sendAsynchronousRequest(request as URLRequest, queue: self.queue, completionHandler:{ (response: URLResponse?, data: Data?, error: NSError?) -> Void in
+            NSURLConnection.sendAsynchronousRequest(request as URLRequest, queue: self.queue, completionHandler:{ (response: URLResponse?, data: Data?, error: Error?) -> Void in
                 if let respHttp = response as? HTTPURLResponse {
                     if (respHttp.statusCode >= 200 && respHttp.statusCode < 300) {
                         resolver.result(ARHTTPResponse(code: jint(respHttp.statusCode), withContent: nil))
@@ -52,7 +52,7 @@ class CocoaHttpRuntime: NSObject, ARHttpRuntime {
                 } else {
                     resolver.error(ARHTTPError(int: 0))
                 }
-            } as! (URLResponse?, Data?, Error?) -> Void)
+            })
         }
     }
 }

@@ -150,7 +150,7 @@ open class AAGroupEditInfoController: AAViewController, UITextViewDelegate {
     func cancelEdit() {
         nameInput.resignFirstResponder()
         descriptionView.resignFirstResponder()
-        dismiss()
+        dismissController()
     }
     
     open func textViewDidChange(_ textView: UITextView) {

@@ -325,7 +325,7 @@ open class AACallViewController: AAViewController, RTCEAGLVideoViewDelegate {
                 if (!self.isScheduledDispose) {
                     self.isScheduledDispose = true
                     dispatchAfterOnUi(0.8) {
-                        self.dismiss()
+                        self.dismissController()
                     }
                 }
             } else {
