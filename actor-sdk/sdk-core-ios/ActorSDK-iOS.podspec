@@ -36,7 +36,7 @@ Pod::Spec.new do |s|
   s.dependency 'M13ProgressSuite'
 
   s.preserve_paths = 'Frameworks'
-  s.vendored_framework = 'Frameworks/ActorSDK.framework'
+  s.vendored_framework = 'ActorSDK.framework'
 
   s.xcconfig = { 
      "SWIFT_INCLUDE_PATHS" => "$(PROJECT_DIR)/ActorSDK-iOS/Frameworks/",
