@@ -21,9 +21,9 @@ public func ==(lhs: AACellSetting, rhs: AACellSetting) -> Bool {
     return lhs.showDate == rhs.showDate && lhs.clenchTop == rhs.clenchTop && lhs.clenchBottom == rhs.clenchBottom
 }
 
-private let dateFormatter = NSDateFormatter().initDateFormatter()
+private let dateFormatter = DateFormatter().initDateFormatter()
 
-public class AACellLayout {
+open class AACellLayout {
     
     let layouter: AABubbleLayouter
     let key: String
@@ -39,11 +39,11 @@ public class AACellLayout {
         self.layouter = layouter
     }
     
-    public class func formatDate(date: Int64) -> String {
-        return dateFormatter.stringFromDate(NSDate(timeIntervalSince1970: NSTimeInterval(Double(date) / 1000.0)))
+    open class func formatDate(_ date: Int64) -> String {
+        return dateFormatter.string(from: Date(timeIntervalSince1970: TimeInterval(Double(date) / 1000.0)))
     }
     
-    public class func pickApproriateSize(width: CGFloat, height: CGFloat) -> CGSize {
+    open class func pickApproriateSize(_ width: CGFloat, height: CGFloat) -> CGSize {
         let maxW: CGFloat
         let maxH: CGFloat
         if AADevice.isiPad {
@@ -65,8 +65,8 @@ public class AACellLayout {
     }
 }
 
-extension NSDateFormatter {
-    func initDateFormatter() -> NSDateFormatter {
+extension DateFormatter {
+    func initDateFormatter() -> DateFormatter {
         dateFormat = "HH:mm"
         return self
     }

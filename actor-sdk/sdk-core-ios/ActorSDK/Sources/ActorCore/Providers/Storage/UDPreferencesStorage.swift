@@ -6,41 +6,41 @@ import Foundation
 
 @objc class UDPreferencesStorage: NSObject, ARPreferencesStorage {
     
-    let prefs = NSUserDefaults.standardUserDefaults()
+    let prefs = UserDefaults.standard
     
     var cachedPrefs = [String: AnyObject?]()
     
-    func putLongWithKey(key: String!, withValue v: jlong) {
-        setObject(key, obj: NSNumber(longLong: v))
+    func putLong(withKey key: String!, withValue v: jlong) {
+        setObject(key, obj: NSNumber(value: v as Int64))
     }
 
-    func getLongWithKey(key: String!, withDefault def: jlong) -> jlong {
+    func getLongWithKey(_ key: String!, withDefault def: jlong) -> jlong {
         let val = fetchObj(key)
         if (val == nil || !(val is NSNumber)) {
             return def;
         } else {
-            return (val as! NSNumber).longLongValue
+            return (val as! NSNumber).int64Value
         }
     }
     
-    func putIntWithKey(key: String!, withValue v: jint) {
-        setObject(key, obj: Int(v))
+    func putInt(withKey key: String!, withValue v: jint) {
+        setObject(key, obj: Int(v) as AnyObject?)
     }
     
-    func getIntWithKey(key: String!, withDefault def: jint) -> jint {
+    func getIntWithKey(_ key: String!, withDefault def: jint) -> jint {
         let val: AnyObject? = fetchObj(key)
         if (val == nil || !(val is NSNumber)) {
             return def;
         } else {
-            return (val as! NSNumber).intValue
+            return (val as! NSNumber).int32Value
         }
     }
     
-    func putBoolWithKey(key: String!, withValue v: Bool) {
-        setObject(key, obj: v)
+    func putBool(withKey key: String!, withValue v: Bool) {
+        setObject(key, obj: v as AnyObject?)
     }
     
-    func getBoolWithKey(key: String!, withDefault def: Bool) -> Bool {
+    func getBoolWithKey(_ key: String!, withDefault def: Bool) -> Bool {
         let val: AnyObject? = fetchObj(key);
         if (val == nil || (!(val is Bool))) {
             return def
@@ -49,28 +49,28 @@ import Foundation
         }
     }
     
-    func putBytesWithKey(key: String!, withValue v: IOSByteArray!) {
+    func putBytes(withKey key: String!, withValue v: IOSByteArray!) {
         if (v == nil) {
             setObject(key, obj: nil)
         } else {
-            setObject(key, obj: v.toNSData())
+            setObject(key, obj: v.toNSData() as AnyObject?)
         }
     }
     
-    func getBytesWithKey(key: String!) -> IOSByteArray! {
+    func getBytesWithKey(_ key: String!) -> IOSByteArray! {
         let val = fetchObj(key);
         if (val == nil || !(val is NSData)){
             return nil
         } else {
-            return (val as! NSData).toJavaBytes()
+            return (val as! Data).toJavaBytes()
         }
     }
     
-    func putStringWithKey(key: String!, withValue v: String!) {
-        setObject(key, obj: v)
+    func putString(withKey key: String!, withValue v: String!) {
+        setObject(key, obj: v as AnyObject?)
     }
     
-    func getStringWithKey(key: String!) -> String! {
+    func getStringWithKey(_ key: String!) -> String! {
         let val = fetchObj(key);
         if (val == nil || !(val is String)) {
             return nil
@@ -80,8 +80,8 @@ import Foundation
     }
     
     func clear() {
-        let appDomain = NSBundle.mainBundle().bundleIdentifier!
-        prefs.removePersistentDomainForName(appDomain)
+        let appDomain = Bundle.main.bundleIdentifier!
+        prefs.removePersistentDomain(forName: appDomain)
     }
     
     
@@ -89,23 +89,23 @@ import Foundation
     // Interface
     //
     
-    private func setObject(key: String, obj: AnyObject?) {
+    fileprivate func setObject(_ key: String, obj: AnyObject?) {
         if obj != nil {
-            prefs.setObject(obj, forKey: key)
+            prefs.set(obj, forKey: key)
             cachedPrefs[key] = obj
         } else {
-            prefs.removeObjectForKey(key)
-            cachedPrefs.removeValueForKey(key)
+            prefs.removeObject(forKey: key)
+            cachedPrefs.removeValue(forKey: key)
         }
         prefs.synchronize()
     }
     
-    private func fetchObj(key: String) -> AnyObject? {
+    fileprivate func fetchObj(_ key: String) -> AnyObject? {
         if let obj = cachedPrefs[key] {
            return obj
         }
-        let res = prefs.objectForKey(key)
-        cachedPrefs[key] = res
-        return res
+        let res = prefs.object(forKey: key)
+        cachedPrefs[key] = res as AnyObject??
+        return res as AnyObject?
     }
 }

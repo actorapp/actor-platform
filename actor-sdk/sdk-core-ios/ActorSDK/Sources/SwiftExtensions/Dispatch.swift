@@ -4,36 +4,36 @@
 
 import Foundation
 
-private let backgroundQueue = dispatch_queue_create("im.actor.background", DISPATCH_QUEUE_SERIAL)
+private let backgroundQueue = DispatchQueue(label: "im.actor.background", attributes: [])
 
-public func dispatchOnUi(closure: () -> Void) {
-    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+public func dispatchOnUi(_ closure: @escaping () -> Void) {
+    DispatchQueue.main.async(execute: { () -> Void in
         closure()
     })
 }
 
-public func dispatchOnUiSync(closure: () -> Void) {
-    dispatch_sync(dispatch_get_main_queue(), { () -> Void in
+public func dispatchOnUiSync(_ closure: () -> Void) {
+    DispatchQueue.main.sync(execute: { () -> Void in
         closure()
     })
 }
 
 
-public func dispatchAfterOnUi(delay: Double, closure: () -> Void) {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(delay * Double(NSEC_PER_SEC))), dispatch_get_main_queue()) { () -> Void in
+public func dispatchAfterOnUi(_ delay: Double, closure: @escaping () -> Void) {
+    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(delay * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)) { () -> Void in
         closure()
     }
 }
 
-public func dispatchBackground(closure: () -> Void) {
-    dispatch_async(backgroundQueue) {
+public func dispatchBackground(_ closure: @escaping () -> Void) {
+    backgroundQueue.async {
         closure()
     }
 }
 
 
-public func dispatchBackgroundDelayed(delay: Double, closure: () -> Void) {
-     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(delay * Double(NSEC_PER_SEC))), backgroundQueue) {
+public func dispatchBackgroundDelayed(_ delay: Double, closure: @escaping () -> Void) {
+     backgroundQueue.asyncAfter(deadline: DispatchTime.now() + Double(Int64(delay * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)) {
         closure()
     }
 }

@@ -14,6 +14,7 @@ target 'ActorApp' do
     pod 'RegexKitLite'
     # pod 'CocoaAsyncSocket'
     pod 'zipzap'
+    pod 'ReachabilitySwift', '~> 3'
 
     # Main UI
     pod 'TTTAttributedLabel'
@@ -47,6 +48,7 @@ target 'ActorSDK' do
     pod 'RegexKitLite'
     # pod 'CocoaAsyncSocket'
     pod 'zipzap'
+    pod 'ReachabilitySwift', '~> 3'
 
     # Main UI
     pod 'TTTAttributedLabel'

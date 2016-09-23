@@ -4,22 +4,22 @@
 
 import Foundation
 
-public class AAGroupViewMembersController: AAContentTableController {
+open class AAGroupViewMembersController: AAContentTableController {
     
-    private var membersRow: AAManagedArrayRows<ACGroupMember, AAGroupMemberCell>!
+    fileprivate var membersRow: AAManagedArrayRows<ACGroupMember, AAGroupMemberCell>!
     
-    private var isLoaded = false
-    private var isLoading = false
-    private var next: IOSByteArray! = nil
+    fileprivate var isLoaded = false
+    fileprivate var isLoading = false
+    open var nextBatch: IOSByteArray! = nil
     
     public init(gid: Int) {
-        super.init(style: .Plain)
+        super.init(style: .plain)
         self.gid = gid
         
         navigationItem.title = AALocalized("GroupViewMembers")
         
         if group.isCanInviteMembers.get().booleanValue() {
-            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Add, target: self, action: #selector(didAddPressed))
+            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.add, target: self, action: #selector(didAddPressed))
         }
     }
     
@@ -27,7 +27,7 @@ public class AAGroupViewMembersController: AAContentTableController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func tableDidLoad() {
+    open override func tableDidLoad() {
         section { (s) in
             self.membersRow = s.arrays({ (r: AAManagedArrayRows<ACGroupMember, AAGroupMemberCell>) -> () in
                 r.height = 48
@@ -38,7 +38,7 @@ public class AAGroupViewMembersController: AAContentTableController {
                     c.bind(user, isAdmin: d.isAdministrator)
                     
                     // Notify to request onlines
-                    Actor.onUserVisibleWithUid(d.uid)
+                    Actor.onUserVisible(withUid: d.uid)
                 }
                 
                 r.itemShown = { (index, d) in
@@ -66,26 +66,26 @@ public class AAGroupViewMembersController: AAContentTableController {
                         }
                         
                         a.action("GroupMemberWrite") { () -> () in
-                            if let customController = ActorSDK.sharedActor().delegate.actorControllerForConversation(ACPeer.userWithInt(user.getId())) {
+                            if let customController = ActorSDK.sharedActor().delegate.actorControllerForConversation(ACPeer.user(with: user.getId())) {
                                 self.navigateDetail(customController)
                             } else {
-                                self.navigateDetail(ConversationViewController(peer: ACPeer.userWithInt(user.getId())))
+                                self.navigateDetail(ConversationViewController(peer: ACPeer.user(with: user.getId())))
                             }
-                            self.popover?.dismissPopoverAnimated(true)
+                            self.popover?.dismiss(animated: true)
                         }
                         
                         a.action("GroupMemberCall", closure: { () -> () in
-                            let phones = user.getPhonesModel().get()
+                            let phones = user.getPhonesModel().get()!
                             if phones.size() == 0 {
                                 self.alertUser("GroupMemberCallNoPhones")
                             } else if phones.size() == 1 {
-                                let number = phones.getWithInt(0)
+                                let number = phones.getWith(0)!
                                 ActorSDK.sharedActor().openUrl("telprompt://+\(number.phone)")
                             } else {
                                 
                                 var numbers = [String]()
                                 for i in 0..<phones.size() {
-                                    let p = phones.getWithInt(i)
+                                    let p = phones.getWith(i)!
                                     numbers.append("\(p.title): +\(p.phone)")
                                 }
                                 self.showActionSheet(numbers,
@@ -95,7 +95,7 @@ public class AAGroupViewMembersController: AAContentTableController {
                                     sourceRect: self.view.bounds,
                                     tapClosure: { (index) -> () in
                                         if (index >= 0) {
-                                            let number = phones.getWithInt(jint(index))
+                                            let number = phones.getWith(jint(index))!
                                             ActorSDK.sharedActor().openUrl("telprompt://+\(number.phone)")
                                         }
                                 })
@@ -111,8 +111,8 @@ public class AAGroupViewMembersController: AAContentTableController {
                             let name = Actor.getUserWithUid(d.uid).getNameModel().get()
                             a.destructive("GroupMemberKick") { () -> () in
                                 self.confirmDestructive(AALocalized("GroupMemberKickMessage")
-                                    .replace("{name}", dest: name), action: AALocalized("GroupMemberKickAction")) {
-                                        self.executeSafe(Actor.kickMemberCommandWithGid(jint(self.gid), withUid: user.getId()))
+                                    .replace("{name}", dest: name!), action: AALocalized("GroupMemberKickAction")) {
+                                        self.executeSafe(Actor.kickMemberCommand(withGid: jint(self.gid), withUid: user.getId()))
                                 }
                             }
                         }
@@ -126,7 +126,7 @@ public class AAGroupViewMembersController: AAContentTableController {
         loadMore()
     }
     
-    private func loadMore() {
+    fileprivate func loadMore() {
         if isLoading {
             return
         }
@@ -135,13 +135,13 @@ public class AAGroupViewMembersController: AAContentTableController {
         }
         
         isLoading = true
-        Actor.loadMembersWithGid(jint(gid), withLimit: 20, withNext: next).then { (slice: ACGroupMembersSlice!) in
+        Actor.loadMembers(withGid: jint(gid), withLimit: 20, withNext: nextBatch).then { (slice: ACGroupMembersSlice!) in
             for i in 0..<slice.members.size() {
-                self.membersRow.data.append(slice.members.getWithInt(i) as! ACGroupMember)
+                self.membersRow.data.append(slice.members.getWith(i) as! ACGroupMember)
             }
             self.tableView.reloadData()
             if slice.next == nil {
-                self.next = nil
+                self.nextBatch = nil
                 self.isLoaded = true
             }
             self.isLoading = false

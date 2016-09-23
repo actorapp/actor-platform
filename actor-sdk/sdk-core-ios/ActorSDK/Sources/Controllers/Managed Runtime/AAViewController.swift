@@ -8,24 +8,24 @@ import RSKImageCropper
 import DZNWebViewController
 import SafariServices
 
-public class AAViewController: UIViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate, RSKImageCropViewControllerDelegate, UIViewControllerTransitioningDelegate  {
+open class AAViewController: UIViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate, RSKImageCropViewControllerDelegate, UIViewControllerTransitioningDelegate  {
     
     // MARK: -
     // MARK: Public vars
     
     var placeholder = AABigPlaceholderView(topOffset: 0)
     
-    var pendingPickClosure: ((image: UIImage) -> ())?
+    var pendingPickClosure: ((_ image: UIImage) -> ())?
     
     var popover: UIPopoverController?
     
     // Content type for view tracking
     
-    public var content: ACPage?
+    open var content: ACPage?
     
     // Data for views
     
-    public var autoTrack: Bool = false {
+    open var autoTrack: Bool = false {
         didSet {
             if self.autoTrack {
                 if let u = self.uid {
@@ -38,29 +38,29 @@ public class AAViewController: UIViewController, UINavigationControllerDelegate,
         }
     }
     
-    public var uid: Int! {
+    open var uid: Int! {
         didSet {
             if self.uid != nil {
                 self.user = Actor.getUserWithUid(jint(self.uid))
-                self.isBot = user.isBot().boolValue
+                self.isBot = user.isBot()
             }
         }
     }
-    public var user: ACUserVM!
-    public var isBot: Bool!
+    open var user: ACUserVM!
+    open var isBot: Bool!
     
-    public var gid: Int! {
+    open var gid: Int! {
         didSet {
             if self.gid != nil {
                 self.group = Actor.getGroupWithGid(jint(self.gid))
             }
         }
     }
-    public var group: ACGroupVM!
+    open var group: ACGroupVM!
     
     // Style
     
-    public var appStyle: ActorStyle {
+    open var appStyle: ActorStyle {
         get {
             return ActorSDK.sharedActor().style
         }
@@ -69,42 +69,42 @@ public class AAViewController: UIViewController, UINavigationControllerDelegate,
     public init() {
         super.init(nibName: nil, bundle: nil)
         
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: UIBarButtonItemStyle.plain, target: nil, action: nil)
     }
     
-    public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
+    public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: UIBarButtonItemStyle.plain, target: nil, action: nil)
     }
 
     public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func preferredStatusBarStyle() -> UIStatusBarStyle {
+    open override var preferredStatusBarStyle : UIStatusBarStyle {
         return ActorSDK.sharedActor().style.vcStatusBarStyle
     }
     
-    public func showPlaceholderWithImage(image: UIImage?, title: String?, subtitle: String?) {
+    open func showPlaceholderWithImage(_ image: UIImage?, title: String?, subtitle: String?) {
         placeholder.setImage(image, title: title, subtitle: subtitle)
         showPlaceholder()
     }
     
-    public func showPlaceholder() {
+    open func showPlaceholder() {
         if placeholder.superview == nil {
             placeholder.frame = view.bounds
             view.addSubview(placeholder)
         }
     }
     
-    public func hidePlaceholder() {
+    open func hidePlaceholder() {
         if placeholder.superview != nil {
             placeholder.removeFromSuperview()
         }
     }
     
-    public func shakeView(view: UIView, originalX: CGFloat) {
+    open func shakeView(_ view: UIView, originalX: CGFloat) {
         var r = view.frame
         r.origin.x = originalX
         let originalFrame = r
@@ -112,11 +112,11 @@ public class AAViewController: UIViewController, UINavigationControllerDelegate,
         rFirst.origin.x = r.origin.x + 4
         r.origin.x = r.origin.x - 4
         
-        UIView.animateWithDuration(0.05, delay: 0.0, options: .Autoreverse, animations: { () -> Void in
+        UIView.animate(withDuration: 0.05, delay: 0.0, options: .autoreverse, animations: { () -> Void in
             view.frame = rFirst
             }) { (finished) -> Void in
                 if (finished) {
-                    UIView.animateWithDuration(0.05, delay: 0.0, options: [.Repeat, .Autoreverse], animations: { () -> Void in
+                    UIView.animate(withDuration: 0.05, delay: 0.0, options: [.repeat, .autoreverse], animations: { () -> Void in
                         UIView.setAnimationRepeatCount(3)
                         view.frame = r
                         }, completion: { (finished) -> Void in
@@ -128,116 +128,117 @@ public class AAViewController: UIViewController, UINavigationControllerDelegate,
         }
     }
     
-    public func pickAvatar(takePhoto:Bool, closure: (image: UIImage) -> ()) {
+    open func pickAvatar(_ takePhoto:Bool, closure: @escaping (_ image: UIImage) -> ()) {
         self.pendingPickClosure = closure
         
         let pickerController = AAImagePickerController()
-        pickerController.sourceType = (takePhoto ? UIImagePickerControllerSourceType.Camera : UIImagePickerControllerSourceType.PhotoLibrary)
+        pickerController.sourceType = (takePhoto ? UIImagePickerControllerSourceType.camera : UIImagePickerControllerSourceType.photoLibrary)
         pickerController.mediaTypes = [kUTTypeImage as String]
         pickerController.delegate = self
-        self.navigationController!.presentViewController(pickerController, animated: true, completion: nil)
+        self.navigationController!.present(pickerController, animated: true, completion: nil)
     }
     
-    public override func viewWillLayoutSubviews() {
+    open override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
 
-        placeholder.frame = CGRectMake(0, 64, view.bounds.width, view.bounds.height - 64)
+        placeholder.frame = CGRect(x: 0, y: 64, width: view.bounds.width, height: view.bounds.height - 64)
     }
     
-    public override func viewWillAppear(animated: Bool) {
+    open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         if let c = content {
             ActorSDK.sharedActor().trackPageVisible(c)
         }
         if let u = uid {
-            Actor.onProfileOpenWithUid(jint(u))
+            Actor.onProfileOpen(withUid: jint(u))
         }
     }
     
-    public override func viewWillDisappear(animated: Bool) {
+    open override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         if let c = content {
             ActorSDK.sharedActor().trackPageHidden(c)
         }
         if let u = uid {
-            Actor.onProfileClosedWithUid(jint(u))
+            Actor.onProfileClosed(withUid: jint(u))
         }
     }
     
-    public func dismiss() {
-        dismissViewControllerAnimated(true, completion: nil)
+    open func dismissController() {
+        self.dismiss(animated: true, completion: nil)
     }
     
-    public func presentInNavigation(controller: UIViewController) {
+    open func presentInNavigation(_ controller: UIViewController) {
         let navigation = AANavigationController()
         navigation.viewControllers = [controller]
-        presentViewController(navigation, animated: true, completion: nil)
+        present(navigation, animated: true, completion: nil)
     }
     
-    public func openUrl(url: String) {
-        if let url = NSURL(string: url) {
+    open func openUrl(_ url: String) {
+        if let url = URL(string: url) {
             if #available(iOS 9.0, *) {
-                self.presentElegantViewController(SFSafariViewController(URL: url))
+                self.presentElegantViewController(SFSafariViewController(url: url))
             } else {
-                self.presentElegantViewController(AANavigationController(rootViewController: DZNWebViewController(URL: url)))
+                self.presentElegantViewController(AANavigationController(rootViewController: DZNWebViewController(url: url)))
             }
         }
     }
     
     // Image pick and crop
     
-    public func cropImage(image: UIImage) {
+    open func cropImage(_ image: UIImage) {
         let cropController = RSKImageCropViewController(image: image)
         cropController.delegate = self
-        navigationController!.presentViewController(UINavigationController(rootViewController: cropController), animated: true, completion: nil)
+        navigationController!.present(UINavigationController(rootViewController: cropController), animated: true, completion: nil)
     }
     
-    public func imageCropViewController(controller: RSKImageCropViewController, didCropImage croppedImage: UIImage, usingCropRect cropRect: CGRect) {
+    open func imageCropViewController(_ controller: RSKImageCropViewController, didCropImage croppedImage: UIImage, usingCropRect cropRect: CGRect) {
         if (pendingPickClosure != nil){
-            pendingPickClosure!(image: croppedImage)
+            pendingPickClosure!(croppedImage)
         }
         pendingPickClosure = nil
-        navigationController!.dismissViewControllerAnimated(true, completion: nil)
+        navigationController!.dismiss(animated: true, completion: nil)
     }
     
-    public func imageCropViewControllerDidCancelCrop(controller: RSKImageCropViewController) {
+    open func imageCropViewControllerDidCancelCrop(_ controller: RSKImageCropViewController) {
         pendingPickClosure = nil
-        navigationController!.dismissViewControllerAnimated(true, completion: nil)
+        navigationController!.dismiss(animated: true, completion: nil)
     }
     
     
-    public func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
-        navigationController!.dismissViewControllerAnimated(true, completion: { () -> Void in
+    open func imagePickerController(_ picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
+        navigationController!.dismiss(animated: true, completion: { () -> Void in
             self.cropImage(image)
         })
     }
     
-    public func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
+    open func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         let image = info[UIImagePickerControllerOriginalImage] as! UIImage
-        navigationController!.dismissViewControllerAnimated(true, completion: { () -> Void in
+        navigationController!.dismiss(animated: true, completion: { () -> Void in
             self.cropImage(image)
         })
     }
     
-    public func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+    open func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         pendingPickClosure = nil
-        self.dismissViewControllerAnimated(true, completion: nil)
+        self.dismiss(animated: true, completion: nil)
     }
     
-    public func presentationControllerForPresentedViewController(presented: UIViewController, presentingViewController presenting: UIViewController, sourceViewController source: UIViewController) -> UIPresentationController? {
-        return ElegantPresentations.controller(presentedViewController: presented, presentingViewController: presenting, options: [])
+    open func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
+        return ElegantPresentations.controller(presentedViewController: presented, presentingViewController: presenting!, options: [])
     }
     
-    public func presentElegantViewController(controller: UIViewController) {
+    open func presentElegantViewController(_ controller: UIViewController) {
         if AADevice.isiPad {
-            controller.modalPresentationStyle = .FormSheet
-            presentViewController(controller, animated: true, completion: nil) 
+            controller.modalPresentationStyle = .formSheet
+            present(controller, animated: true, completion: nil) 
         } else {
-            controller.modalPresentationStyle = .Custom
-            controller.transitioningDelegate = self
-            presentViewController(controller, animated: true, completion: nil)
+            // controller.modalPresentationStyle = .custom
+            // controller.modalPresentationStyle = .custom
+            // controller.transitioningDelegate = self
+            present(controller, animated: true, completion: nil)
         }
     }
 }

@@ -4,7 +4,7 @@
 
 import Foundation
 
-public class AAAuthLogInViewController: AAAuthViewController {
+open class AAAuthLogInViewController: AAAuthViewController {
     
     let scrollView = UIScrollView()
     
@@ -17,41 +17,41 @@ public class AAAuthLogInViewController: AAAuthViewController {
     public override init() {
         super.init(nibName: nil, bundle: nil)
         
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: .Plain, target: self, action: #selector(AAViewController.dismiss))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: .plain, target: self, action: #selector(AAViewController.dismissController))
     }
 
     public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func viewDidLoad() {
+    open override func viewDidLoad() {
      
-        view.backgroundColor = UIColor.whiteColor()
+        view.backgroundColor = UIColor.white
         
-        scrollView.keyboardDismissMode = .OnDrag
-        scrollView.scrollEnabled = true
+        scrollView.keyboardDismissMode = .onDrag
+        scrollView.isScrollEnabled = true
         scrollView.alwaysBounceVertical = true
         
         welcomeLabel.font = UIFont.lightSystemFontOfSize(23)
         welcomeLabel.text = AALocalized("AuthLoginTitle").replace("{app_name}", dest: ActorSDK.sharedActor().appName)
         welcomeLabel.textColor = ActorSDK.sharedActor().style.authTitleColor
-        welcomeLabel.textAlignment = .Center
+        welcomeLabel.textAlignment = .center
         
-        if ActorSDK.sharedActor().authStrategy == .PhoneOnly {
+        if ActorSDK.sharedActor().authStrategy == .phoneOnly {
             field.placeholder = AALocalized("AuthLoginPhone")
-            field.keyboardType = .PhonePad
-        } else if ActorSDK.sharedActor().authStrategy == .EmailOnly {
+            field.keyboardType = .phonePad
+        } else if ActorSDK.sharedActor().authStrategy == .emailOnly {
             field.placeholder = AALocalized("AuthLoginEmail")
-            field.keyboardType = .EmailAddress
-        } else if ActorSDK.sharedActor().authStrategy == .PhoneEmail {
+            field.keyboardType = .emailAddress
+        } else if ActorSDK.sharedActor().authStrategy == .phoneEmail {
             field.placeholder = AALocalized("AuthLoginPhoneEmail")
-            field.keyboardType = .Default
+            field.keyboardType = .default
         }
-        field.autocapitalizationType = .None
-        field.autocorrectionType = .No
+        field.autocapitalizationType = .none
+        field.autocorrectionType = .no
         
         fieldLine.backgroundColor = ActorSDK.sharedActor().style.authSeparatorColor
-        fieldLine.opaque = false
+        fieldLine.isOpaque = false
         
         scrollView.addSubview(welcomeLabel)
         scrollView.addSubview(field)
@@ -61,19 +61,19 @@ public class AAAuthLogInViewController: AAAuthViewController {
         super.viewDidLoad()
     }
     
-    public override func viewDidLayoutSubviews() {
+    open override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        welcomeLabel.frame = CGRectMake(15, 90 - 66, view.width - 30, 28)
+        welcomeLabel.frame = CGRect(x: 15, y: 90 - 66, width: view.width - 30, height: 28)
         
-        fieldLine.frame = CGRectMake(10, 200 - 66, view.width - 20, 0.5)
-        field.frame = CGRectMake(20, 156 - 66, view.width - 40, 44)
+        fieldLine.frame = CGRect(x: 10, y: 200 - 66, width: view.width - 20, height: 0.5)
+        field.frame = CGRect(x: 20, y: 156 - 66, width: view.width - 40, height: 44)
         
         scrollView.frame = view.bounds
-        scrollView.contentSize = CGSizeMake(view.width, 240 - 66)
+        scrollView.contentSize = CGSize(width: view.width, height: 240 - 66)
     }
     
-    public override func nextDidTap() {
+    open override func nextDidTap() {
         let value = field.text!.trim()
         if value.length == 0 {
             shakeView(field, originalX: 20)
@@ -81,9 +81,9 @@ public class AAAuthLogInViewController: AAAuthViewController {
             return
         }
         
-        if ActorSDK.sharedActor().authStrategy == .EmailOnly || ActorSDK.sharedActor().authStrategy == .PhoneEmail {
+        if ActorSDK.sharedActor().authStrategy == .emailOnly || ActorSDK.sharedActor().authStrategy == .phoneEmail {
             if (AATools.isValidEmail(value)) {
-                Actor.doStartAuthWithEmail(value).startUserAction().then { (res: ACAuthStartRes!) -> () in
+                Actor.doStartAuth(withEmail: value).startUserAction().then { (res: ACAuthStartRes!) -> () in
                     if res.authMode.toNSEnum() == .OTP {
                         self.navigateNext(AAAuthOTPViewController(email: value, transactionHash: res.transactionHash))
                     } else {
@@ -94,13 +94,13 @@ public class AAAuthLogInViewController: AAAuthViewController {
             }
         }
         
-        if ActorSDK.sharedActor().authStrategy == .PhoneOnly || ActorSDK.sharedActor().authStrategy == .PhoneEmail {
-            let numbersSet = NSCharacterSet(charactersInString: "0123456789").invertedSet
+        if ActorSDK.sharedActor().authStrategy == .phoneOnly || ActorSDK.sharedActor().authStrategy == .phoneEmail {
+            let numbersSet = CharacterSet(charactersIn: "0123456789").inverted
             let stripped = value.strip(numbersSet)
             if let parsed = Int64(stripped) {
-                Actor.doStartAuthWithPhone(jlong(parsed)).startUserAction().then { (res: ACAuthStartRes!) -> () in
+                Actor.doStartAuth(withPhone: jlong(parsed)).startUserAction().then { (res: ACAuthStartRes!) -> () in
                     if res.authMode.toNSEnum() == .OTP {
-                        let formatted = RMPhoneFormat().format("\(parsed)")
+                        let formatted = RMPhoneFormat().format("\(parsed)")!
                         self.navigateNext(AAAuthOTPViewController(phone: formatted, transactionHash: res.transactionHash))
                     } else {
                         self.alertUser(AALocalized("AuthUnsupported").replace("{app_name}", dest: ActorSDK.sharedActor().appName))
@@ -114,13 +114,13 @@ public class AAAuthLogInViewController: AAAuthViewController {
         shakeView(fieldLine, originalX: 10)
     }
     
-    public override func viewWillDisappear(animated: Bool) {
+    open override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         field.resignFirstResponder()
     }
     
-    public override func viewWillAppear(animated: Bool) {
+    open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         if isFirstAppear {

@@ -11,7 +11,7 @@ class AATelephony {
         
         let networkInfo = CTTelephonyNetworkInfo()
         let carrier = networkInfo.subscriberCellularProvider
-        let countryCode = carrier?.isoCountryCode?.lowercaseString
+        let countryCode = carrier?.isoCountryCode?.lowercased()
         
         if countryCode == nil {
             return "en"
@@ -20,9 +20,9 @@ class AATelephony {
         }
     }
     
-    static func getCountry(iso: String) -> CountryDesc {
+    static func getCountry(_ iso: String) -> CountryDesc {
         for i in AATelephony.countryCodes {
-            if i.iso.lowercaseString == iso.lowercaseString {
+            if i.iso.lowercased() == iso.lowercased() {
                 return i
             }
         }

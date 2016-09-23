@@ -17,13 +17,13 @@ public protocol ActorSDKDelegate {
     func actorControllerAfterLogIn() -> UIViewController?
     
     /// User profile controller
-    func actorControllerForUser(uid: Int) -> AAViewController?
+    func actorControllerForUser(_ uid: Int) -> AAViewController?
     
     /// User profile controller
-    func actorControllerForGroup(gid: Int) -> AAViewController?
+    func actorControllerForGroup(_ gid: Int) -> AAViewController?
     
     /// Conversation controller
-    func actorControllerForConversation(peer: ACPeer) -> UIViewController?
+    func actorControllerForConversation(_ peer: ACPeer) -> UIViewController?
     
     /// Contacts controller
     func actorControllerForContacts() -> UIViewController?
@@ -41,99 +41,99 @@ public protocol ActorSDKDelegate {
     func actorRootInitialControllerIndex() -> Int?
     
     /// Configuration of bubble cells
-    func actorConfigureBubbleLayouters(builtIn: [AABubbleLayouter]) -> [AABubbleLayouter]
+    func actorConfigureBubbleLayouters(_ builtIn: [AABubbleLayouter]) -> [AABubbleLayouter]
     
     /// Conversation custom attach menu
-    func actorConversationCustomAttachMenu(controller: UIViewController) -> Bool
+    func actorConversationCustomAttachMenu(_ controller: UIViewController) -> Bool
     
     /// Called after header is created in settings page
-    func actorSettingsHeaderDidCreated(controller: AASettingsViewController, section: AAManagedSection)
+    func actorSettingsHeaderDidCreated(_ controller: AASettingsViewController, section: AAManagedSection)
 
     /// Called after header is created in settings page
-    func actorSettingsConfigurationWillCreated(controller: AASettingsViewController, section: AAManagedSection)
+    func actorSettingsConfigurationWillCreated(_ controller: AASettingsViewController, section: AAManagedSection)
 
     /// Called after header is created in settings page
-    func actorSettingsConfigurationDidCreated(controller: AASettingsViewController, section: AAManagedSection)
+    func actorSettingsConfigurationDidCreated(_ controller: AASettingsViewController, section: AAManagedSection)
     
     /// Called after header is created in settings page
-    func actorSettingsSupportWillCreated(controller: AASettingsViewController, section: AAManagedSection)
+    func actorSettingsSupportWillCreated(_ controller: AASettingsViewController, section: AAManagedSection)
     
     /// Called after header is created in settings page
-    func actorSettingsSupportDidCreated(controller: AASettingsViewController, section: AAManagedSection)
+    func actorSettingsSupportDidCreated(_ controller: AASettingsViewController, section: AAManagedSection)
 }
 
 /// Default empty implementation of SDK Delegate
-public class ActorSDKDelegateDefault: NSObject, ActorSDKDelegate {
+open class ActorSDKDelegateDefault: NSObject, ActorSDKDelegate {
 
-    public func actorControllerForAuthStart() -> UIViewController? {
+    open func actorControllerForAuthStart() -> UIViewController? {
         return nil
     }
     
-    public func actorControllerForStart() -> UIViewController? {
+    open func actorControllerForStart() -> UIViewController? {
         return nil
     }
     
-    public func actorControllerForUser(uid: Int) -> AAViewController? {
+    open func actorControllerForUser(_ uid: Int) -> AAViewController? {
         return nil
     }
     
-    public func actorControllerForGroup(gid: Int) -> AAViewController? {
+    open func actorControllerForGroup(_ gid: Int) -> AAViewController? {
         return nil
     }
     
-    public func actorControllerForConversation(peer: ACPeer) -> UIViewController? {
+    open func actorControllerForConversation(_ peer: ACPeer) -> UIViewController? {
         return nil
     }
     
-    public func actorControllerForContacts() -> UIViewController? {
+    open func actorControllerForContacts() -> UIViewController? {
         return nil
     }
     
-    public func actorControllerForDialogs() -> UIViewController? {
+    open func actorControllerForDialogs() -> UIViewController? {
         return nil
     }
     
-    public func actorControllerForSettings() -> UIViewController? {
+    open func actorControllerForSettings() -> UIViewController? {
         return nil
     }
     
-    public func actorRootControllers() -> [UIViewController]? {
+    open func actorRootControllers() -> [UIViewController]? {
         return nil
     }
     
-    public func actorRootInitialControllerIndex() -> Int? {
+    open func actorRootInitialControllerIndex() -> Int? {
         return nil
     }
     
-    public func actorConfigureBubbleLayouters(builtIn: [AABubbleLayouter]) -> [AABubbleLayouter] {
+    open func actorConfigureBubbleLayouters(_ builtIn: [AABubbleLayouter]) -> [AABubbleLayouter] {
         return builtIn
     }
     
-    public func actorControllerAfterLogIn() -> UIViewController? {
+    open func actorControllerAfterLogIn() -> UIViewController? {
         return nil
     }
     
-    public func actorConversationCustomAttachMenu(controller: UIViewController) -> Bool {
+    open func actorConversationCustomAttachMenu(_ controller: UIViewController) -> Bool {
         return false
     }
     
-    public func actorSettingsHeaderDidCreated(controller: AASettingsViewController, section: AAManagedSection) {
+    open func actorSettingsHeaderDidCreated(_ controller: AASettingsViewController, section: AAManagedSection) {
         
     }
     
-    public func actorSettingsConfigurationWillCreated(controller: AASettingsViewController, section: AAManagedSection) {
+    open func actorSettingsConfigurationWillCreated(_ controller: AASettingsViewController, section: AAManagedSection) {
         
     }
     
-    public func actorSettingsConfigurationDidCreated(controller: AASettingsViewController, section: AAManagedSection) {
+    open func actorSettingsConfigurationDidCreated(_ controller: AASettingsViewController, section: AAManagedSection) {
         
     }
     
-    public func actorSettingsSupportWillCreated(controller: AASettingsViewController, section: AAManagedSection) {
+    open func actorSettingsSupportWillCreated(_ controller: AASettingsViewController, section: AAManagedSection) {
         
     }
     
-    public func actorSettingsSupportDidCreated(controller: AASettingsViewController, section: AAManagedSection) {
+    open func actorSettingsSupportDidCreated(_ controller: AASettingsViewController, section: AAManagedSection) {
         
     }
 }

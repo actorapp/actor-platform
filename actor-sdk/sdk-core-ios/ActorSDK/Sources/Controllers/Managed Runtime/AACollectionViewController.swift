@@ -4,41 +4,41 @@
 
 import Foundation
 
-public class AACollectionViewController: AAViewController, UICollectionViewDelegate, UICollectionViewDataSource {
+open class AACollectionViewController: AAViewController, UICollectionViewDelegate, UICollectionViewDataSource {
     
-    public var collectionView:UICollectionView!
+    open var collectionView:UICollectionView!
     
     public init(collectionLayout: UICollectionViewLayout) {
         super.init()
         
-        collectionView = UICollectionView(frame: CGRectZero, collectionViewLayout: collectionLayout)
+        collectionView = UICollectionView(frame: CGRect.zero, collectionViewLayout: collectionLayout)
     }
 
     public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func loadView() {
+    open override func loadView() {
         super.loadView()
         
         collectionView.delegate = self
         collectionView.dataSource = self
         view.addSubview(collectionView)
         
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: UIBarButtonItemStyle.plain, target: nil, action: nil)
     }
     
-    public override func viewWillLayoutSubviews() {
+    open override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         
         collectionView.frame = view.bounds;
     }
 
-    public func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    open func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         fatalError("Not implemented!")
     }
     
-    public func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+    open func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         fatalError("Not implemented!")
     }
 }

@@ -10,20 +10,20 @@ public struct AADevice {
     //
     // Device Types
     //
-    public static let isiPad = UIDevice.currentDevice().userInterfaceIdiom == .Pad
-    public static let isiPhone = UIDevice.currentDevice().userInterfaceIdiom == .Phone
+    public static let isiPad = UIDevice.current.userInterfaceIdiom == .pad
+    public static let isiPhone = UIDevice.current.userInterfaceIdiom == .phone
     
     //
     // OS Versions
     //
     public static let isiOS8 = true
-    public static let isiOS9 = NSProcessInfo.processInfo().isOperatingSystemAtLeastVersion( NSOperatingSystemVersion(majorVersion: 9, minorVersion: 0, patchVersion: 0))
+    public static let isiOS9 = ProcessInfo.processInfo.isOperatingSystemAtLeast( OperatingSystemVersion(majorVersion: 9, minorVersion: 0, patchVersion: 0))
     
     //
     // Device Sizes
     //
-    public static let screenWidth = min(UIScreen.mainScreen().bounds.size.width, UIScreen.mainScreen().bounds.size.height)
-    public static let screenHeight = max(UIScreen.mainScreen().bounds.size.width, UIScreen.mainScreen().bounds.size.height)
+    public static let screenWidth = min(UIScreen.main.bounds.size.width, UIScreen.main.bounds.size.height)
+    public static let screenHeight = max(UIScreen.main.bounds.size.width, UIScreen.main.bounds.size.height)
     
     //
     // iPhone sizes

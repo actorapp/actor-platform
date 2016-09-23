@@ -8,47 +8,47 @@ import MediaPlayer
 import AVKit
 import AVFoundation
 
-public class AAConversationContentController: SLKTextViewController, ARDisplayList_AppleChangeListener {
+open class AAConversationContentController: SLKTextViewController, ARDisplayList_AppleChangeListener {
 
-    public let peer: ACPeer
+    open let peer: ACPeer
     
-    private let delayLoad = false
+    fileprivate let delayLoad = false
     
-    private let binder = AABinder()
+    fileprivate let binder = AABinder()
     
-    private var displayList: ARBindedDisplayList!
-    private var isStarted: Bool = AADevice.isiPad
-    private var isVisible: Bool = false
-    private var isLoaded: Bool = false
-    private var isLoadedAfter: Bool = false
-    private var unreadIndex: Int? = nil
-    private let collectionViewLayout = AAMessagesFlowLayout()
-    private var prevCount: Int = 0
-    private var unreadMessageId: jlong = 0
+    fileprivate var displayList: ARBindedDisplayList!
+    fileprivate var isStarted: Bool = AADevice.isiPad
+    fileprivate var isVisible: Bool = false
+    fileprivate var isLoaded: Bool = false
+    fileprivate var isLoadedAfter: Bool = false
+    fileprivate var unreadIndex: Int? = nil
+    fileprivate let collectionViewLayout = AAMessagesFlowLayout()
+    fileprivate var prevCount: Int = 0
+    fileprivate var unreadMessageId: jlong = 0
     
-    private var isUpdating: Bool = false
-    private var isBinded: Bool = false
-    private var pendingUpdates = [ARAppleListUpdate]()
-    private var readDate: jlong = 0
-    private var receiveDate: jlong = 0
+    fileprivate var isUpdating: Bool = false
+    fileprivate var isBinded: Bool = false
+    fileprivate var pendingUpdates = [ARAppleListUpdate]()
+    fileprivate var readDate: jlong = 0
+    fileprivate var receiveDate: jlong = 0
     
     // Audio notes
-    public var voicePlayer : AAModernConversationAudioPlayer!
-    public var voiceContext : AAModernViewInlineMediaContext!
+    open var voicePlayer : AAModernConversationAudioPlayer!
+    open var voiceContext : AAModernViewInlineMediaContext!
     
-    public var currentAudioFileId: jlong = 0
-    public var voicesCache: Dictionary<jlong,Float> = Dictionary<jlong,Float>()
+    open var currentAudioFileId: jlong = 0
+    open var voicesCache: Dictionary<jlong,Float> = Dictionary<jlong,Float>()
     
     public init(peer: ACPeer) {
         self.peer = peer
         
         super.init(collectionViewLayout: collectionViewLayout)
         
-        self.collectionView.backgroundColor = UIColor.clearColor()
+        self.collectionView.backgroundColor = UIColor.clear
         self.collectionView.alwaysBounceVertical = true
   
         for layout in AABubbles.layouters {
-            self.collectionView.registerClass(layout.cellClass(), forCellWithReuseIdentifier: layout.cellReuseId())
+            self.collectionView.register(layout.cellClass(), forCellWithReuseIdentifier: layout.cellReuseId())
         }
     }
     
@@ -58,7 +58,7 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
     
     // Controller and UI lifecycle
     
-    public override func viewDidLoad() {
+    open override func viewDidLoad() {
         super.viewDidLoad()
         
         if (self.displayList == nil) {
@@ -66,7 +66,7 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
         }
     }
     
-    public override func viewWillAppear(animated: Bool) {
+    open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         isVisible = true
@@ -83,7 +83,7 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
                 self.collectionView.alpha = 0
             }
             
-            dispatch_async(dispatch_get_main_queue(),{
+            DispatchQueue.main.async(execute: {
                 // What if controller is already closed?
                 if (!self.isVisible) {
                     return
@@ -91,23 +91,23 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
                 
                 self.isStarted = true
                 
-                UIView.animateWithDuration(0.6, animations: { () -> Void in self.collectionView.alpha = 1 }, completion: { (comp) -> Void in })
+                UIView.animate(withDuration: 0.6, animations: { () -> Void in self.collectionView.alpha = 1 }, completion: { (comp) -> Void in })
                 
                 self.tryBind()
             })
         } else {
             self.isStarted = true
             
-            UIView.animateWithDuration(0.6, animations: { () -> Void in self.collectionView.alpha = 1 }, completion: { (comp) -> Void in })
+            UIView.animate(withDuration: 0.6, animations: { () -> Void in self.collectionView.alpha = 1 }, completion: { (comp) -> Void in })
             
             tryBind()
         }
     }
     
-    private func tryBind() {
+    fileprivate func tryBind() {
         if !self.isBinded {
             
-            self.binder.bind(Actor.getConversationVMWithACPeer(peer).getReadDate()) { (val: JavaLangLong!) in
+            self.binder.bind(Actor.getConversationVM(with: peer).getReadDate()) { (val: JavaLangLong?) in
                 
                 let nReadDate = val!.longLongValue()
                 let oReadDate = self.readDate
@@ -117,7 +117,7 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
                     self.messageStatesUpdated(oReadDate, end: nReadDate)
                 }
             }
-            self.binder.bind(Actor.getConversationVMWithACPeer(peer).getReceiveDate()) { (val: JavaLangLong!) in
+            self.binder.bind(Actor.getConversationVM(with: peer).getReceiveDate()) { (val: JavaLangLong?) in
                 
                 let nReceiveDate = val!.longLongValue()
                 let oReceiveDate = self.receiveDate
@@ -139,45 +139,45 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
     }
     
     
-    public func buildCell(collectionView: UICollectionView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+    open func buildCell(_ collectionView: UICollectionView, cellForRowAtIndexPath indexPath: IndexPath) -> UICollectionViewCell {
         let list = getProcessedList()
-        let layout = list!.layouts[indexPath.row]
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(layout.layouter.cellReuseId(), forIndexPath: indexPath)
+        let layout = list!.layouts[(indexPath as NSIndexPath).row]
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: layout.layouter.cellReuseId(), for: indexPath)
         (cell as! AABubbleCell).setConfig(peer, controller: self)
         return cell
     }
     
-    public func bindCell(collectionView: UICollectionView, cellForRowAtIndexPath indexPath: NSIndexPath, cell: UICollectionViewCell) {
+    open func bindCell(_ collectionView: UICollectionView, cellForRowAtIndexPath indexPath: IndexPath, cell: UICollectionViewCell) {
         let list = getProcessedList()
-        let message = list!.items[indexPath.row]
-        let setting = list!.cellSettings[indexPath.row]
-        let layout = list!.layouts[indexPath.row]
+        let message = list!.items[(indexPath as NSIndexPath).row]
+        let setting = list!.cellSettings[(indexPath as NSIndexPath).row]
+        let layout = list!.layouts[(indexPath as NSIndexPath).row]
         let bubbleCell = (cell as! AABubbleCell)
         let isShowNewMessages = message.rid == unreadMessageId
         bubbleCell.performBind(message, receiveDate: receiveDate, readDate: readDate, setting: setting, isShowNewMessages: isShowNewMessages, layout: layout)
     }
     
-    public func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAtIndex section: Int) -> UIEdgeInsets {
+    open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAtIndex section: Int) -> UIEdgeInsets {
         return UIEdgeInsetsMake(6, 0, 100, 0)
     }
     
-    public func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAtIndex section: Int) -> CGFloat {
+    open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAtIndex section: Int) -> CGFloat {
         return 0
     }
     
-    public func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAtIndex section: Int) -> CGFloat {
+    open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAtIndex section: Int) -> CGFloat {
         return 0
     }
     
-    public override func collectionView(collectionView: UICollectionView, canPerformAction action: Selector, forItemAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject!) -> Bool {
+    open override func collectionView(_ collectionView: UICollectionView, canPerformAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: Any!) -> Bool {
         return true
     }
     
-    public override func collectionView(collectionView: UICollectionView, shouldShowMenuForItemAtIndexPath indexPath: NSIndexPath) -> Bool {
+    open override func collectionView(_ collectionView: UICollectionView, shouldShowMenuForItemAt indexPath: IndexPath) -> Bool {
         return true
     }
     
-    public override func collectionView(collectionView: UICollectionView, performAction action: Selector, forItemAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject!) {
+    open override func collectionView(_ collectionView: UICollectionView, performAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: Any!) {
         
     }
     
@@ -192,28 +192,28 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
         return self.displayList.getProcessedList() as? AAPreprocessedList
     }
     
-    public override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    open override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return isStarted ? getCount() : 0
     }
     
-    public override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+    open override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = buildCell(collectionView, cellForRowAtIndexPath: indexPath)
         bindCell(collectionView, cellForRowAtIndexPath: indexPath, cell: cell)
-        displayList.touchWithIndex(jint(indexPath.row))
+        displayList.touch(with: jint((indexPath as NSIndexPath).row))
         return cell
     }
     
-    public override func collectionView(collectionView: UICollectionView, didUnhighlightItemAtIndexPath indexPath: NSIndexPath) {
-        let cell = collectionView.cellForItemAtIndexPath(indexPath) as! AABubbleCell
+    open override func collectionView(_ collectionView: UICollectionView, didUnhighlightItemAt indexPath: IndexPath) {
+        let cell = collectionView.cellForItem(at: indexPath) as! AABubbleCell
         cell.updateView()
     }
 
-    public override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        let cell = collectionView.cellForItemAtIndexPath(indexPath) as! AABubbleCell
+    open override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let cell = collectionView.cellForItem(at: indexPath) as! AABubbleCell
         cell.updateView()
     }
     
-    public override func viewDidDisappear(animated: Bool) {
+    open override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         
         isVisible = false
@@ -233,28 +233,28 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
     
     func displayListForController() -> ARBindedDisplayList {
         let res = Actor.getMessageDisplayList(peer)
-        if (res.getListProcessor() == nil) {
-            res.setListProcessor(AAListProcessor(peer: peer))
+        if (res?.getProcessor() == nil) {
+            res?.setListProcessor(AAListProcessor(peer: peer))
         }
-        return res
+        return res!
     }
     
-    public func objectAtIndexPath(indexPath: NSIndexPath) -> AnyObject? {
-        return objectAtIndex(indexPath.row)
+    open func objectAtIndexPath(_ indexPath: IndexPath) -> AnyObject? {
+        return objectAtIndex((indexPath as NSIndexPath).row)
     }
     
-    public func objectAtIndex(index: Int) -> AnyObject? {
-        return displayList.itemWithIndex(jint(index))
+    open func objectAtIndex(_ index: Int) -> AnyObject? {
+        return displayList.item(with: jint(index)) as AnyObject?
     }
     
-    public func getCount() -> Int {
+    open func getCount() -> Int {
         if (isUpdating) {
             return self.prevCount
         }
         return Int(displayList.size())
     }
     
-    public func onCollectionChangedWithChanges(modification: ARAppleListUpdate!) {
+    open func onCollectionChanged(withChanges modification: ARAppleListUpdate!) {
         
 //        if isUpdating {
 //            pendingUpdates.append(modification)
@@ -284,34 +284,34 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
                 
                 // Removed rows
                 if modification.removedCount() > 0 {
-                    var rows = [NSIndexPath]()
+                    var rows = [IndexPath]()
                     for i in 0..<modification.removedCount() {
                         let removedRow = Int(modification.getRemoved(jint(i)))
-                        rows.append(NSIndexPath(forRow: removedRow, inSection: 0))
+                        rows.append(IndexPath(row: removedRow, section: 0))
 //                        NSLog("👮🏻 removed \(removedRow)")
                     }
-                    self.collectionView.deleteItemsAtIndexPaths(rows)
+                    self.collectionView.deleteItems(at: rows)
                 }
                 
                 // Added rows
                 if modification.addedCount() > 0 {
-                    var rows = [NSIndexPath]()
+                    var rows = [IndexPath]()
                     for i in 0..<modification.addedCount() {
                         let insertedRow = Int(modification.getAdded(jint(i)))
-                        rows.append(NSIndexPath(forRow: insertedRow, inSection: 0))
+                        rows.append(IndexPath(row: insertedRow, section: 0))
 //                        print("👮🏻 inserted \(insertedRow)")
                     }
                     
-                    self.collectionView.insertItemsAtIndexPaths(rows)
+                    self.collectionView.insertItems(at: rows)
                 }
                 
                 // Moved rows
                 if modification.movedCount() > 0 {
                     for i in 0..<modification.movedCount() {
                         let mov = modification.getMoved(jint(i))
-                        let sourceRow = Int(mov.getSourceIndex())
-                        let destRow = Int(mov.getDestIndex())
-                        self.collectionView.moveItemAtIndexPath(NSIndexPath(forRow: sourceRow, inSection: 0), toIndexPath: NSIndexPath(forRow: destRow, inSection: 0))
+                        let sourceRow = Int((mov?.getSourceIndex())!)
+                        let destRow = Int((mov?.getDestIndex())!)
+                        self.collectionView.moveItem(at: IndexPath(row: sourceRow, section: 0), to: IndexPath(row: destRow, section: 0))
 //                        NSLog("👮🏻 moved \(sourceRow) -> \(destRow)")
                     }
                 }
@@ -364,25 +364,25 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
             }
         }
         
-        var forcedRows = [NSIndexPath]()
-        let visibleIndexes = self.collectionView.indexPathsForVisibleItems()
+        var forcedRows = [IndexPath]()
+        let visibleIndexes = self.collectionView.indexPathsForVisibleItems
         for ind in updated {
-            let indexPath = NSIndexPath(forRow: ind, inSection: 0)
+            let indexPath = IndexPath(row: ind, section: 0)
             if visibleIndexes.contains(indexPath) {
-                let cell = self.collectionView.cellForItemAtIndexPath(indexPath)
+                let cell = self.collectionView.cellForItem(at: indexPath)
                 self.bindCell(self.collectionView, cellForRowAtIndexPath: indexPath, cell: cell!)
             }
         }
         
         for ind in updatedForce {
-            let indexPath = NSIndexPath(forRow: ind, inSection: 0)
+            let indexPath = IndexPath(row: ind, section: 0)
             forcedRows.append(indexPath)
         }
         
         if (forcedRows.count > 0) {
             self.collectionViewLayout.beginUpdates(false, list: list, unread: unreadMessageId)
             self.collectionView.performBatchUpdates({ () -> Void in
-                self.collectionView.reloadItemsAtIndexPaths(forcedRows)
+                self.collectionView.reloadItems(at: forcedRows)
             }, completion: nil)
         }
         
@@ -394,23 +394,23 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
         }
     }
     
-    private func completeUpdates(modification: ARAppleListUpdate!) {
+    fileprivate func completeUpdates(_ modification: ARAppleListUpdate!) {
         
     }
     
-    private func messageStatesUpdated(start: jlong, end: jlong) {
-        let visibleIndexes = self.collectionView.indexPathsForVisibleItems()
+    fileprivate func messageStatesUpdated(_ start: jlong, end: jlong) {
+        let visibleIndexes = self.collectionView.indexPathsForVisibleItems
         for ind in visibleIndexes {
-            if let obj = objectAtIndex(ind.row) {
+            if let obj = objectAtIndex((ind as NSIndexPath).row) {
                 if obj.senderId == Actor.myUid() && obj.sortDate >= start && obj.sortDate <= end {
-                    let cell = self.collectionView.cellForItemAtIndexPath(ind)
+                    let cell = self.collectionView.cellForItem(at: ind)
                     self.bindCell(self.collectionView, cellForRowAtIndexPath: ind, cell: cell!)
                 }
             }
         }
     }
     
-    public func willUpdate() {
+    open func willUpdate() {
         isLoadedAfter = false
         if getCount() > 0 && !isLoaded {
             isLoaded = true
@@ -435,16 +435,16 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
         }
     }
     
-    public func didUpdate() {
+    open func didUpdate() {
         if isLoadedAfter {
             if unreadIndex != nil {
-                self.collectionView.scrollToItemAtIndexPath(NSIndexPath(forItem: unreadIndex!, inSection: 0), atScrollPosition: UICollectionViewScrollPosition.Bottom, animated: false)
+                self.collectionView.scrollToItem(at: IndexPath(item: unreadIndex!, section: 0), at: UICollectionViewScrollPosition.bottom, animated: false)
                 unreadIndex = nil
             }
         }
     }
     
-    public func onBubbleAvatarTap(view: UIView, uid: jint) {
+    open func onBubbleAvatarTap(_ view: UIView, uid: jint) {
         var controller: AAViewController! = ActorSDK.sharedActor().delegate.actorControllerForUser(Int(uid))
         if controller == nil {
             controller = AAUserViewController(uid: Int(uid))
@@ -454,16 +454,16 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
             navigation.viewControllers = [controller]
             let popover = UIPopoverController(contentViewController:  navigation)
             controller.popover = popover
-            popover.presentPopoverFromRect(view.bounds, inView: view, permittedArrowDirections: UIPopoverArrowDirection.Any, animated: true)
+            popover.present(from: view.bounds, in: view, permittedArrowDirections: UIPopoverArrowDirection.any, animated: true)
         } else {
             navigateNext(controller, removeCurrent: false)
         }
     }
     
-    public override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator)
+    open override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
         
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+        DispatchQueue.main.async(execute: { () -> Void in
 //            self.collectionView.collectionViewLayout.invalidateLayout()
             self.collectionView.performBatchUpdates(nil, completion: nil)
         })
@@ -474,7 +474,7 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
     ///////////////////////
     
     
-    func playVoiceFromPath(path:String,fileId:jlong,position:Float) {
+    func playVoiceFromPath(_ path:String,fileId:jlong,position:Float) {
         
         if (self.currentAudioFileId != fileId) {
             
@@ -513,12 +513,12 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
         
     }
     
-    func playVideoFromPath(path:String) {
+    func playVideoFromPath(_ path:String) {
         
-        let player = AVPlayer(URL: NSURL(fileURLWithPath: path))
+        let player = AVPlayer(url: URL(fileURLWithPath: path))
         let playerController = AVPlayerViewController()
         playerController.player = player
-        self.presentViewController(playerController, animated: true) {
+        self.present(playerController, animated: true) {
             player.play()
         }
         

@@ -4,21 +4,21 @@
 
 import UIKit
 
-public class AASettingsLastSeenController: AATableViewController {
+open class AASettingsLastSeenController: AATableViewController {
 
-    private var privacy = Actor.getPrivacy()
+    fileprivate var privacy = Actor.getPrivacy()
     
     // MARK: -
     // MARK: Constructors
     
-    private let CellIdentifier = "CellIdentifier"
+    fileprivate let CellIdentifier = "CellIdentifier"
     
     public init() {
-        super.init(style: UITableViewStyle.Grouped)
+        super.init(style: UITableViewStyle.grouped)
         
         title = AALocalized("PrivacyLastSeen")
         
-        content = ACAllEvents_Settings.NOTIFICATIONS()
+        content = ACAllEvents_Settings.notifications()
     }
     
     public required init(coder aDecoder: NSCoder) {
@@ -27,10 +27,10 @@ public class AASettingsLastSeenController: AATableViewController {
     
     // MARK: -
     
-    public override func viewDidLoad() {
+    open override func viewDidLoad() {
         super.viewDidLoad()
         
-        tableView.registerClass(AACommonCell.self, forCellReuseIdentifier: CellIdentifier)
+        tableView.register(AACommonCell.self, forCellReuseIdentifier: CellIdentifier)
         tableView.backgroundColor = appStyle.vcBackyardColor
         tableView.separatorColor = appStyle.vcSeparatorColor
         
@@ -40,58 +40,58 @@ public class AASettingsLastSeenController: AATableViewController {
     // MARK: -
     // MARK: UITableView Data Source
     
-    public override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    open override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
-    public override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    open override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 3
     }
     
-    public func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    open func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return nil
     }
     
-    public func tableView(tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+    open func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         return nil
     }
     
-    private func lastSeenCell(indexPath: NSIndexPath) -> AACommonCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AACommonCell
+    fileprivate func lastSeenCell(_ indexPath: IndexPath) -> AACommonCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: CellIdentifier, for: indexPath) as! AACommonCell
         
-        if indexPath.row == 0 {
+        if (indexPath as NSIndexPath).row == 0 {
             
             cell.setContent(AALocalized("PrivacyLastSeenEverybody"))
             
             if (self.privacy == "always") {
-                cell.style = .Checkmark
+                cell.style = .checkmark
             } else {
-                cell.style = .Normal
+                cell.style = .normal
             }
             
-        } else if indexPath.row == 1 {
+        } else if (indexPath as NSIndexPath).row == 1 {
             
             cell.setContent(AALocalized("PrivacyLastSeenContacts"))
             
             if (self.privacy == "contacts") {
-                cell.style = .Checkmark
+                cell.style = .checkmark
             } else {
-                cell.style = .Normal
+                cell.style = .normal
             }
             
-        } else if indexPath.row == 2 {
+        } else if (indexPath as NSIndexPath).row == 2 {
             
             cell.setContent(AALocalized("PrivacyLastSeenNone"))
             
             if (self.privacy == "none") {
-                cell.style = .Checkmark
+                cell.style = .checkmark
             } else {
-                cell.style = .Normal
+                cell.style = .normal
             }
             
         }
         
-        cell.selectionStyle = UITableViewCellSelectionStyle.None
+        cell.selectionStyle = UITableViewCellSelectionStyle.none
         cell.bottomSeparatorVisible = false
         cell.topSeparatorVisible = false
         cell.bottomSeparatorLeftInset = 0
@@ -100,32 +100,32 @@ public class AASettingsLastSeenController: AATableViewController {
         return cell
     }
     
-    public override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    open override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         return lastSeenCell(indexPath)
     }
     
-    public func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+    open func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         let header: UITableViewHeaderFooterView = view as! UITableViewHeaderFooterView
         header.textLabel!.textColor = ActorSDK.sharedActor().style.cellFooterColor
     }
     
-    public func tableView(tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
+    open func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
         let header: UITableViewHeaderFooterView = view as! UITableViewHeaderFooterView
         header.textLabel!.textColor = ActorSDK.sharedActor().style.cellFooterColor
     }
     
     
-    public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    open func tableView(_ tableView: UITableView, didSelectRowAtIndexPath indexPath: IndexPath) {
         
-        if indexPath.row == 0 {
+        if (indexPath as NSIndexPath).row == 0 {
             
             Actor.setPrivacyWithPrivacy("always")
             
-        } else if indexPath.row == 1 {
+        } else if (indexPath as NSIndexPath).row == 1 {
             
             Actor.setPrivacyWithPrivacy("contacts")
             
-        } else if indexPath.row == 2 {
+        } else if (indexPath as NSIndexPath).row == 2 {
             
             Actor.setPrivacyWithPrivacy("none")
             
