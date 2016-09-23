@@ -32,11 +32,13 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
     } else if (state.isMember(cmd.inviteeUserId)) {
       sender() ! Status.Failure(GroupErrors.UserAlreadyJoined)
     } else {
+      val replyTo = sender()
+
       val isBlockedFu = checkIsBlocked(cmd.inviteeUserId, state.ownerUserId)
 
       onSuccess(isBlockedFu) { isBlocked ⇒
         if (isBlocked) {
-          sender() ! Status.Failure(GroupErrors.UserIsBanned)
+          replyTo ! Status.Failure(GroupErrors.UserIsBanned)
         } else {
           val inviteeIsExUser = state.isExUser(cmd.inviteeUserId)
 
@@ -204,7 +206,7 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
 
             } yield seqStateDate
 
-            result pipeTo sender()
+            result pipeTo replyTo
           }
         }
       }
@@ -221,11 +223,13 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
     if (state.isMember(cmd.joiningUserId) && !state.isInvited(cmd.joiningUserId)) {
       sender() ! Status.Failure(GroupErrors.UserAlreadyJoined)
     } else {
+      val replyTo = sender()
+
       val isBlockedFu = checkIsBlocked(cmd.joiningUserId, state.ownerUserId)
 
       onSuccess(isBlockedFu) { isBlocked ⇒
         if (isBlocked) {
-          sender() ! Status.Failure(GroupErrors.UserIsBanned)
+          replyTo ! Status.Failure(GroupErrors.UserIsBanned)
         } else {
           // user was invited in group by other group user
           val wasInvited = state.isInvited(cmd.joiningUserId)
@@ -428,7 +432,7 @@ private[group] trait MemberCommandHandlers extends GroupsImplicits {
 
               } yield (seqStateDate, memberIds.toVector :+ inviterUserId, randomId)
 
-            result pipeTo sender()
+            result pipeTo replyTo
           }
         }
       }
