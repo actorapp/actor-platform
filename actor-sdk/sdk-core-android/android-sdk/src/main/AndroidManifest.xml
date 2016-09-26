@@ -82,7 +82,7 @@
                     android:scheme="https" />
                 <data
                     android:host="app.actor.diegosilva.com.br"
-                    android:pathPrefix="/#/join/"
+                    android:pathPrefix="/join/"
                     android:scheme="https" />
             </intent-filter>
 
