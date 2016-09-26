@@ -31,6 +31,10 @@ public class Screen {
         return AndroidContext.getContext().getResources().getDisplayMetrics().heightPixels;
     }
 
+    public static boolean isPrtrait() {
+        return getWidth() > getHeight();
+    }
+
     public static int getStatusBarHeight() {
 
         int result = 0;
