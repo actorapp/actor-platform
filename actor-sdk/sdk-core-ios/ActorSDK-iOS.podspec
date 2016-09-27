@@ -35,8 +35,8 @@ Pod::Spec.new do |s|
   s.dependency 'TTTAttributedLabel'
   s.dependency 'M13ProgressSuite'
 
-  s.preserve_paths = '{Frameworks,ActorSDK.framework,ActorSDK.framework.dSYM}'
-  s.vendored_framework = 'ActorSDK.framework'
+  s.ios.preserve_paths = '**/*'
+  s.ios.vendored_framework = 'ActorSDK.framework'
 
   s.xcconfig = { 
      "SWIFT_INCLUDE_PATHS" => "$(PROJECT_DIR)/ActorSDK-iOS/Frameworks/",
