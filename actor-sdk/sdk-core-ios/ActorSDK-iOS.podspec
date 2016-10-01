@@ -5,14 +5,10 @@ Pod::Spec.new do |s|
   s.homepage        = "https://actor.im/"
   s.license         = { :type => 'MIT', :file => 'LICENSE' }
   s.author       		= { "Actor LLC" => "steve@actor.im" }
-  s.source          = { :git => "https://github.com/actorapp/ActorSDK-iOS.git", :tag => "v#{s.version}" }
+  s.source          = { :http => "https://github.com/actorapp/ActorSDK-iOS/releases/download/v#{s.version}/ActorSDK.zip"}
 
   s.platform     		= :ios, "8.0"
   s.requires_arc 		= true
-
-  s.prepare_command = <<-CMD
-      Scripts/download.sh
-  CMD
 
   # Core
   s.dependency 'RegexKitLite'
@@ -35,11 +31,11 @@ Pod::Spec.new do |s|
   s.dependency 'TTTAttributedLabel'
   s.dependency 'M13ProgressSuite'
 
-  s.preserve_paths = '{Frameworks,ActorSDK.framework,ActorSDK.framework.dSYM}'
-  s.vendored_framework = 'ActorSDK.framework'
+  s.ios.preserve_paths = '**/*'
+  s.ios.vendored_frameworks = 'ActorSDK.framework'
 
-  s.xcconfig = { 
-     "SWIFT_INCLUDE_PATHS" => "$(PROJECT_DIR)/ActorSDK-iOS/Frameworks/",
-     "FRAMEWORK_SEARCH_PATHS" => "$(PROJECT_DIR)/ActorSDK-iOS/Frameworks/"
-  }
+  # s.xcconfig = { 
+  #    "SWIFT_INCLUDE_PATHS" => "$(PROJECT_DIR)/ActorSDK-iOS/Frameworks/",
+  #    "FRAMEWORK_SEARCH_PATHS" => "$(PROJECT_DIR)/ActorSDK-iOS/Frameworks/"
+  # }
 end
