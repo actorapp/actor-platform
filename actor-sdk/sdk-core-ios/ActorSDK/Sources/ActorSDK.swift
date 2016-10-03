@@ -590,7 +590,7 @@ import ReachabilitySwift
     //
     
     /// Handling URL Opening in application
-    func openUrl(_ url: String) {
+    open func openUrl(_ url: String) {
         if let u = URL(string: url) {
             
             // Handle phone call

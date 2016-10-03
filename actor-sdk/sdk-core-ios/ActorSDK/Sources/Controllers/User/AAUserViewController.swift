@@ -9,7 +9,7 @@ class AAUserViewController: AAContentTableController {
     var headerRow: AAAvatarRow!
     var isContactRow: AACommonRow!
     
-    init(uid: Int) {
+    public init(uid: Int) {
         super.init(style: AAContentTableStyle.settingsPlain)
         
         self.uid = uid
@@ -18,7 +18,7 @@ class AAUserViewController: AAContentTableController {
         self.title = AALocalized("ProfileTitle")
     }
     
-    required init(coder aDecoder: NSCoder) {
+    public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     

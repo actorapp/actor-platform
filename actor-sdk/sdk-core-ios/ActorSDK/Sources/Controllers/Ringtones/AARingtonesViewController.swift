@@ -20,7 +20,7 @@ open class AARingtonesViewController: AATableViewController {
     var directories: [String] = []
     var soundFiles: [(directory: String, files: [String])] = []
    
-    init() {
+    public init() {
         super.init(style: UITableViewStyle.plain)
         
         self.title = AALocalized("Ringtones")
