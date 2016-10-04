@@ -8,8 +8,8 @@ open class AAUserViewController: AAContentTableController {
     
     var headerRow: AAAvatarRow!
     var isContactRow: AACommonRow!
-    open var setRingtoneController: AARingtonesViewController
-    open var sound: String
+    open var setRingtoneController: AARingtonesViewController!
+    open var sound: String!
     
     public init(uid: Int) {
         super.init(style: AAContentTableStyle.settingsPlain)
@@ -24,7 +24,7 @@ open class AAUserViewController: AAContentTableController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func tableDidLoad() {
+    override open func tableDidLoad() {
         
         // Profile
         section { (s) -> () in
@@ -177,13 +177,13 @@ open class AAUserViewController: AAContentTableController {
                     if(Actor.isNotificationsEnabled(with: peer)){
                         r.selectAction = {() -> Bool in
                             // Sound: Choose sound
-                            setRingtoneController = AARingtonesViewController()
-                            sound = Actor.getNotificationsSound(with: peer)
-                            setRingtoneController.selectedRingtone = (sound != nil) ? sound! : ""
-                            setRingtoneController.completion = {(selectedSound:String) in
+                            self.setRingtoneController = AARingtonesViewController()
+                            self.sound = Actor.getNotificationsSound(with: peer)
+                            self.setRingtoneController.selectedRingtone = (self.sound != nil) ? self.sound! : ""
+                            self.setRingtoneController.completion = {(selectedSound:String) in
                                 Actor.changeNotificationsSound(peer, withValue: selectedSound)
                             }
-                            let navigationController = AANavigationController(rootViewController: setRingtoneController)
+                            let navigationController = AANavigationController(rootViewController: self.setRingtoneController)
                             if (AADevice.isiPad) {
                                 navigationController.isModalInPopover = true
                                 navigationController.modalPresentationStyle = UIModalPresentationStyle.currentContext
@@ -295,7 +295,7 @@ open class AAUserViewController: AAContentTableController {
         }
     }
     
-    override func tableWillBind(_ binder: AABinder) {
+    override open func tableWillBind(_ binder: AABinder) {
         binder.bind(user.getAvatarModel(), closure: { (value: ACAvatar?) -> () in
             self.headerRow.reload()
         })
