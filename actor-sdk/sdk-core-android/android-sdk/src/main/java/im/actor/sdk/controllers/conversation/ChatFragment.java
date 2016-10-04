@@ -207,6 +207,13 @@ public class ChatFragment extends BaseFragment implements InputBarCallback, Mess
                     inputOverlayText.setEnabled(true);
                     showView(inputOverlayContainer, false);
                     goneView(inputContainer, false);
+                } else if (groupVM.getIsDeleted().get()) {
+                    inputOverlayText.setText(groupVM.getGroupType() == GroupType.CHANNEL ? R.string.channel_deleted : R.string.group_deleted);
+                    inputOverlayText.setTextColor(style.getListActionColor());
+                    inputOverlayText.setClickable(false);
+                    inputOverlayText.setEnabled(false);
+                    showView(inputOverlayContainer, false);
+                    goneView(inputContainer, false);
                 } else {
                     inputOverlayText.setText(R.string.chat_not_member);
                     inputOverlayText.setTextColor(style.getListActionColor());
