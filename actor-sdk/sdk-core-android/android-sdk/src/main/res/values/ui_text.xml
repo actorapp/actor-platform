@@ -275,6 +275,8 @@
     <string name="chat_voice_record_cancel">SLIDE TO CANCEL</string>
 
     <string name="chat_not_member">You are not a member of this group</string>
+    <string name="group_deleted">Group deleted</string>
+    <string name="channel_deleted">Channel deleted</string>
 
     <string name="chat_join">Join</string>
     <string name="chat_mute">Mute</string>
