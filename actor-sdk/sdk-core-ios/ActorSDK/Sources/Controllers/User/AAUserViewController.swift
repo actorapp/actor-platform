@@ -4,10 +4,12 @@
 
 import UIKit
 
-class AAUserViewController: AAContentTableController {
+open class AAUserViewController: AAContentTableController {
     
     var headerRow: AAAvatarRow!
     var isContactRow: AACommonRow!
+    open var setRingtoneController: AARingtonesViewController
+    open var sound: String
     
     public init(uid: Int) {
         super.init(style: AAContentTableStyle.settingsPlain)
@@ -175,8 +177,8 @@ class AAUserViewController: AAContentTableController {
                     if(Actor.isNotificationsEnabled(with: peer)){
                         r.selectAction = {() -> Bool in
                             // Sound: Choose sound
-                            let setRingtoneController = AARingtonesViewController()
-                            let sound = Actor.getNotificationsSound(with: peer)
+                            setRingtoneController = AARingtonesViewController()
+                            sound = Actor.getNotificationsSound(with: peer)
                             setRingtoneController.selectedRingtone = (sound != nil) ? sound! : ""
                             setRingtoneController.completion = {(selectedSound:String) in
                                 Actor.changeNotificationsSound(peer, withValue: selectedSound)
