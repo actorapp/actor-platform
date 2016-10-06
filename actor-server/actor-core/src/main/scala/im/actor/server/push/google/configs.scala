@@ -9,7 +9,7 @@ import scala.util.Try
 private final case class GooglePushKey(projectId: Long, key: String)
 
 private[google] final case class GooglePushManagerConfig(keys: List[GooglePushKey]) {
-  def keyMap: Map[Long, String] =
+  val keyMap: Map[Long, String] =
     (keys map {
       case GooglePushKey(projectId, key) ⇒ projectId → key
     }).toMap
