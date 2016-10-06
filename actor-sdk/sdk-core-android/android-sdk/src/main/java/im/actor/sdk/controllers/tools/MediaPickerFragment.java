@@ -40,6 +40,7 @@ public class MediaPickerFragment extends BaseFragment {
     private static final int REQUEST_LOCATION = 4;
     private static final int REQUEST_CONTACT = 5;
     private static final int PERMISSIONS_REQUEST_CAMERA = 6;
+    private static final int PERMISSIONS_REQUEST_CONTACTS = 7;
 
     private String pendingFile;
     private boolean pickCropped;
@@ -134,6 +135,22 @@ public class MediaPickerFragment extends BaseFragment {
 
     public void requestContact() {
         this.pickCropped = false;
+
+        //
+        // Checking permissions
+        //
+        Activity activity = getActivity();
+        if (activity != null) {
+            if (Build.VERSION.SDK_INT >= 23) {
+                if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(new String[]{Manifest.permission.READ_CONTACTS},
+                            PERMISSIONS_REQUEST_CONTACTS);
+                    return;
+                }
+            }
+        } else {
+            return;
+        }
 
         Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
         startActivityForResult(intent, REQUEST_CONTACT);
@@ -275,6 +292,12 @@ public class MediaPickerFragment extends BaseFragment {
         if (requestCode == PERMISSIONS_REQUEST_CAMERA) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 requestPhoto();
+            }
+        }
+
+        if (requestCode == PERMISSIONS_REQUEST_CONTACTS) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                requestContact();
             }
         }
     }
