@@ -2,21 +2,23 @@ package im.actor.server.sequence.operations
 
 import akka.http.scaladsl.util.FastFuture
 import im.actor.server.model.AuthSession
-import im.actor.server.model.push.{ ActorPushCredentials, ApplePushCredentials, GCMPushCredentials, PushCredentials }
+import im.actor.server.model.push._
 import im.actor.server.persist.AuthSessionRepo
 import im.actor.server.persist.push.{ ActorPushCredentialsRepo, ApplePushCredentialsRepo, GooglePushCredentialsRepo }
 import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.sequence.UserSequenceCommands.{ Envelope, RegisterPushCredentials, UnregisterPushCredentials, UnregisterPushCredentialsAck }
 import scodec.bits.BitVector
-
 import akka.pattern.ask
 
 import scala.concurrent.Future
 
 trait PushOperations { this: SeqUpdatesExtension ⇒
 
-  def registerGooglePushCredentials(creds: GCMPushCredentials) =
-    registerPushCredentials(creds.authId, RegisterPushCredentials().withGoogle(creds))
+  def registerGCMPushCredentials(creds: GCMPushCredentials) =
+    registerPushCredentials(creds.authId, RegisterPushCredentials().withGcm(creds))
+
+  def registerFirebasePushCredentials(creds: FirebasePushCredentials) =
+    registerPushCredentials(creds.authId, RegisterPushCredentials().withFirebase(creds))
 
   def registerApplePushCredentials(creds: ApplePushCredentials) =
     registerPushCredentials(creds.authId, RegisterPushCredentials().withApple(creds))
@@ -54,10 +56,19 @@ trait PushOperations { this: SeqUpdatesExtension ⇒
         FastFuture.successful(())
     }
 
-  def unregisterGooglePushCredentials(token: String): Future[Unit] =
+  def unregisterGCMPushCredentials(token: String): Future[Unit] =
     db.run(GooglePushCredentialsRepo.findByToken(token)) flatMap {
       case Some(creds) ⇒
-        unregisterPushCredentials(creds.authId, UnregisterPushCredentials().withGoogle(creds))
+        unregisterPushCredentials(creds.authId, UnregisterPushCredentials().withGcm(creds))
+      case None ⇒
+        log.warning("Google push credentials not found for token: {}", token)
+        FastFuture.successful(())
+    }
+
+  def unregisterFirebasePushCredentials(token: String): Future[Unit] =
+    firebaseKv.findByToken(token) flatMap {
+      case Some(creds) ⇒
+        unregisterPushCredentials(creds.authId, UnregisterPushCredentials().withFirebase(creds))
       case None ⇒
         log.warning("Google push credentials not found for token: {}", token)
         FastFuture.successful(())
@@ -69,9 +80,10 @@ trait PushOperations { this: SeqUpdatesExtension ⇒
     }
 
   private def makeUnregister: PartialFunction[PushCredentials, UnregisterPushCredentials] = {
-    case actor: ActorPushCredentials ⇒ UnregisterPushCredentials().withActor(actor)
-    case apple: ApplePushCredentials ⇒ UnregisterPushCredentials().withApple(apple)
-    case google: GCMPushCredentials  ⇒ UnregisterPushCredentials().withGoogle(google)
+    case actor: ActorPushCredentials       ⇒ UnregisterPushCredentials().withActor(actor)
+    case apple: ApplePushCredentials       ⇒ UnregisterPushCredentials().withApple(apple)
+    case gcm: GCMPushCredentials           ⇒ UnregisterPushCredentials().withGcm(gcm)
+    case firebase: FirebasePushCredentials ⇒ UnregisterPushCredentials().withFirebase(firebase)
   }
 
   private def findAllPushCredentials(authId: Long): Future[Seq[PushCredentials]] =

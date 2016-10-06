@@ -6,7 +6,7 @@ import "scalapb/scalapb.proto";
 import "google/protobuf/wrappers.proto";
 
 message GCMPushCredentials {
-    option (scalapb.message).extends = "im.actor.server.model.push.PushCredentials";
+    option (scalapb.message).extends = "im.actor.server.model.push.GooglePushCredentials";
 
     int64 auth_id = 1;
     int64 project_id = 2;
@@ -14,7 +14,7 @@ message GCMPushCredentials {
 }
 
 message FirebasePushCredentials {
-    option (scalapb.message).extends = "im.actor.server.model.push.PushCredentials";
+    option (scalapb.message).extends = "im.actor.server.model.push.GooglePushCredentials";
 
     int64 auth_id = 1;
     int64 project_id = 2;

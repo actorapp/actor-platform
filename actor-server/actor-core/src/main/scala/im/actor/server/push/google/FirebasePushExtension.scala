@@ -4,6 +4,7 @@ import akka.actor._
 import akka.event.Logging
 import im.actor.server.db.DbExtension
 import im.actor.server.model.push.FirebasePushCredentials
+import im.actor.server.persist.push.FirebasePushCredentialsKV
 
 import scala.concurrent.Future
 
@@ -16,7 +17,8 @@ object FirebasePushExtension extends ExtensionId[FirebasePushExtension] with Ext
 final class FirebasePushExtension(system: ActorSystem) extends Extension {
 
   private val log = Logging(system, getClass)
-  private val db = DbExtension(system).db
+
+  private val firebaseKV = new FirebasePushCredentialsKV()(system)
 
   private val config = GooglePushManagerConfig.loadFirebase.get
 
@@ -32,8 +34,10 @@ final class FirebasePushExtension(system: ActorSystem) extends Extension {
         log.warning("Key not found for projectId: {}", projectId)
     }
 
-  private def remove(regId: String): Future[Int] = ???
+  private def remove(regId: String): Future[Unit] =
+    firebaseKV.deleteByToken(regId)
 
-  def fetchCreds(authIds: Set[Long]): Future[Seq[FirebasePushCredentials]] = ???
+  def fetchCreds(authIds: Set[Long]): Future[Seq[FirebasePushCredentials]] =
+    firebaseKV.find(authIds)
 
 }

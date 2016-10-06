@@ -87,9 +87,10 @@ message UserSequenceCommands {
         option (scalapb.message).extends = "im.actor.server.sequence.VendorPushCommand";
 
         oneof creds {
-            GCMPushCredentials google = 1;
+            GCMPushCredentials gcm = 1;
             ApplePushCredentials apple = 2;
             ActorPushCredentials actor = 3;
+            FirebasePushCredentials firebase = 4;
         }
     }
 
@@ -97,9 +98,10 @@ message UserSequenceCommands {
         option (scalapb.message).extends = "im.actor.server.sequence.VendorPushCommand";
 
         oneof creds {
-            GCMPushCredentials google = 1;
+            GCMPushCredentials gcm = 1;
             ApplePushCredentials apple = 2;
             ActorPushCredentials actor = 3;
+            FirebasePushCredentials firebase = 4;
         }
     }
 

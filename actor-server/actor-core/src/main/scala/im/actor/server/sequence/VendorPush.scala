@@ -2,12 +2,13 @@ package im.actor.server.sequence
 
 import akka.actor._
 import akka.pattern.pipe
+import im.actor.concurrent.FutureExt
 import im.actor.server.db.DbExtension
-import im.actor.server.model.push.{ ActorPushCredentials, ApplePushCredentials, GCMPushCredentials, PushCredentials }
-import im.actor.server.model.{ DeviceType, Peer, PeerType }
-import im.actor.server.persist.AuthSessionRepo
+import im.actor.server.model.push._
+import im.actor.server.model.{ DeviceType, Peer }
+import im.actor.server.persist.{ AuthIdRepo, AuthSessionRepo }
 import im.actor.server.persist.configs.ParameterRepo
-import im.actor.server.persist.push.{ ActorPushCredentialsRepo, ApplePushCredentialsRepo, GooglePushCredentialsRepo }
+import im.actor.server.persist.push.{ ActorPushCredentialsRepo, ApplePushCredentialsRepo, FirebasePushCredentialsKV, GooglePushCredentialsRepo }
 import im.actor.server.push.actor.ActorPush
 import im.actor.server.push.apple.ApplePushProvider
 import im.actor.server.push.google.GooglePushProvider
@@ -122,6 +123,8 @@ private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLo
   private var mapping: Map[PushCredentials, PushCredentialsInfo] = Map.empty
   private var notificationSettings = AllNotificationSettings()
 
+  private val firebaseKv = new FirebasePushCredentialsKV()(context.system)
+
   init()
 
   def receive = initializing
@@ -144,14 +147,18 @@ private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLo
       register(r.getActor)
     case r: RegisterPushCredentials if r.creds.isApple ⇒
       register(r.getApple)
-    case r: RegisterPushCredentials if r.creds.isGoogle ⇒
-      register(r.getGoogle)
+    case r: RegisterPushCredentials if r.creds.isGcm ⇒
+      register(r.getGcm)
+    case r: RegisterPushCredentials if r.creds.isFirebase ⇒
+      register(r.getFirebase)
     case u: UnregisterPushCredentials if u.creds.isActor ⇒
       unregister(u.getActor)
     case u: UnregisterPushCredentials if u.creds.isApple ⇒
       unregister(u.getApple)
-    case u: UnregisterPushCredentials if u.creds.isGoogle ⇒
-      unregister(u.getGoogle)
+    case u: UnregisterPushCredentials if u.creds.isGcm ⇒
+      unregister(u.getGcm)
+    case u: UnregisterPushCredentials if u.creds.isFirebase ⇒
+      unregister(u.getFirebase)
     case DeliverPush(authId, seq, rules) ⇒
       deliver(authId, seq, rules.getOrElse(PushRules()))
     case r: ReloadSettings ⇒
@@ -167,18 +174,23 @@ private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLo
 
   private def init(): Unit = {
     log.debug("Initializing")
-    db.run(for {
-      googleCreds ← GooglePushCredentialsRepo.findByUser(userId)
-      appleCreds ← ApplePushCredentialsRepo.findByUser(userId)
-      actorCreds ← ActorPushCredentialsRepo.findByUser(userId)
-      google ← DBIO.sequence(googleCreds map withInfo) map (_.flatten)
-      apple ← DBIO.sequence(appleCreds.filterNot(_.isVoip) map withInfo) map (_.flatten)
-      actor ← DBIO.sequence(actorCreds map withInfo) map (_.flatten)
-    } yield Initialized(apple ++ google ++ actor)) pipeTo self
+    (for {
+      modelAuthIds ← db.run(AuthIdRepo.findByUserId(userId))
+      authIds = (modelAuthIds map (_.id)).toSet
+      gcmCreds ← db.run(GooglePushCredentialsRepo.find(authIds))
+      firebaseCreds ← firebaseKv.find(authIds)
+      appleCreds ← db.run(ApplePushCredentialsRepo.find(authIds))
+      actorCreds ← db.run(ActorPushCredentialsRepo.find(authIds))
+
+      gcm ← FutureExt.ftraverse(gcmCreds)(withInfo) map (_.flatten)
+      firebase ← FutureExt.ftraverse(firebaseCreds)(withInfo) map (_.flatten)
+      apple ← FutureExt.ftraverse(appleCreds.filterNot(_.isVoip))(withInfo) map (_.flatten)
+      actor ← FutureExt.ftraverse(actorCreds)(withInfo) map (_.flatten)
+    } yield Initialized(apple ++ gcm ++ actor)) pipeTo self
   }
 
   /**
-   * Delivers a push to credentials associated with given `authId` according to push `rules``
+   * Delivers a push to credentials associated with given `authId` according to push `rules`
    *
    */
   private def deliver(authId: Long, seq: Int, rules: PushRules): Unit = {
@@ -258,7 +270,7 @@ private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLo
    */
   private def deliverInvisible(seq: Int, creds: PushCredentials): Unit = {
     creds match {
-      case c: GCMPushCredentials ⇒
+      case c: GooglePushCredentials ⇒
         googlePushProvider.deliverInvisible(seq, c)
       case c: ApplePushCredentials ⇒
         applePushProvider.deliverInvisible(seq, c)
@@ -288,7 +300,7 @@ private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLo
     isVibrationEnabled: Boolean
   ) = {
     creds match {
-      case c: GCMPushCredentials ⇒
+      case c: GooglePushCredentials ⇒
         googlePushProvider.deliverVisible(
           seq = seq,
           creds = c,
@@ -313,14 +325,12 @@ private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLo
   }
 
   private def register(creds: PushCredentials): Unit =
-    db.run {
-      withInfo(creds) map (_.getOrElse(throw new RuntimeException(s"Cannot find appId for $creds")))
-    } pipeTo self
+    withInfo(creds) map (_.getOrElse(throw new RuntimeException(s"Cannot find appId for $creds"))) pipeTo self
 
-  private def withInfo(c: PushCredentials): DBIO[Option[(PushCredentials, PushCredentialsInfo)]] =
-    for {
+  private def withInfo(c: PushCredentials): Future[Option[(PushCredentials, PushCredentialsInfo)]] =
+    db.run(for {
       authSessionOpt ← AuthSessionRepo.findByAuthId(c.authId)
-    } yield authSessionOpt map (s ⇒ c → PushCredentialsInfo(s.appId, c.authId))
+    } yield authSessionOpt map (s ⇒ c → PushCredentialsInfo(s.appId, c.authId)))
 
   private def remove(creds: PushCredentials): Unit =
     mapping -= creds
@@ -329,10 +339,11 @@ private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLo
     val replyTo = sender()
     if (mapping.contains(creds)) {
       remove(creds)
-      val removeFu = db.run(creds match {
-        case c: GCMPushCredentials   ⇒ GooglePushCredentialsRepo.deleteByToken(c.regId)
-        case c: ApplePushCredentials ⇒ ApplePushCredentialsRepo.deleteByToken(c.token.toByteArray)
-        case c: ActorPushCredentials ⇒ ActorPushCredentialsRepo.deleteByTopic(c.endpoint)
+      val removeFu = (creds match {
+        case c: GCMPushCredentials      ⇒ db.run(GooglePushCredentialsRepo.deleteByToken(c.regId))
+        case c: FirebasePushCredentials ⇒ firebaseKv.deleteByToken(c.regId)
+        case c: ApplePushCredentials    ⇒ db.run(ApplePushCredentialsRepo.deleteByToken(c.token.toByteArray))
+        case c: ActorPushCredentials    ⇒ db.run(ActorPushCredentialsRepo.deleteByTopic(c.endpoint))
       }) map (_ ⇒ UnregisterPushCredentialsAck()) pipeTo replyTo
 
       removeFu onFailure {

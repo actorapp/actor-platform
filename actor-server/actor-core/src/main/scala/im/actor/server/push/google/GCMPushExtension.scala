@@ -33,7 +33,8 @@ final class GCMPushExtension(system: ActorSystem) extends Extension {
         log.warning("Key not found for projectId: {}", projectId)
     }
 
-  private def remove(regId: String): Future[Int] = db.run(GooglePushCredentialsRepo.deleteByToken(regId))
+  private def remove(regId: String): Future[Int] =
+    db.run(GooglePushCredentialsRepo.deleteByToken(regId))
 
   def fetchCreds(authIds: Set[Long]): Future[Seq[GCMPushCredentials]] =
     db.run(GooglePushCredentialsRepo.find(authIds))

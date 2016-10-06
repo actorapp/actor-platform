@@ -14,7 +14,7 @@ import spray.http.{ HttpCharsets, StatusCodes }
 import scala.concurrent.Future
 import scala.util.{ Failure, Success }
 
-final class DeliveryStream(publisher: ActorRef, serviceName: String, remove: String ⇒ Future[Int])(implicit system: ActorSystem) {
+private[google] final class DeliveryStream(publisher: ActorRef, serviceName: String, remove: String ⇒ Future[_])(implicit system: ActorSystem) {
   import system.dispatcher
 
   private val log = Logging(system, getClass)
