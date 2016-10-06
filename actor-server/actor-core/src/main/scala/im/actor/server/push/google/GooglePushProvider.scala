@@ -6,7 +6,7 @@ import im.actor.server.push.PushProvider
 import im.actor.server.sequence.PushData
 
 final class GooglePushProvider(userId: Int, system: ActorSystem) extends PushProvider {
-  private val googlePushExt = GooglePushExtension(system)
+  private val googlePushExt = GCMPushExtension(system)
 
   def deliverInvisible(seq: Int, creds: GCMPushCredentials): Unit = {
     val message = GooglePushMessage(

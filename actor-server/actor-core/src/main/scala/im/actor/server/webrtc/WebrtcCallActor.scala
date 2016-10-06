@@ -15,7 +15,7 @@ import im.actor.server.group.GroupExtension
 import im.actor.server.model.{ Peer, PeerType }
 import im.actor.server.push.actor.{ ActorPush, ActorPushMessage }
 import im.actor.server.push.apple.{ APNSSend, ApplePushExtension }
-import im.actor.server.push.google.{ GooglePushExtension, GooglePushMessage }
+import im.actor.server.push.google.{ GCMPushExtension, GooglePushMessage }
 import im.actor.server.sequence._
 import im.actor.server.user.UserExtension
 import im.actor.server.values.ValuesExtension
@@ -172,7 +172,7 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging with
   private val groupExt = GroupExtension(system)
   private val valuesExt = ValuesExtension(system)
   private val apnsExt = ApplePushExtension(system)
-  private val gcmExt = GooglePushExtension(system)
+  private val gcmExt = GCMPushExtension(system)
   private val actorPush = ActorPush(system)
   private val webrtcExt = WebrtcExtension(system)
 
