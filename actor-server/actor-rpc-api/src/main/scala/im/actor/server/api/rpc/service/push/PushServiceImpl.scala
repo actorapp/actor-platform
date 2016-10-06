@@ -9,7 +9,7 @@ import im.actor.api.rpc.encryption.ApiEncryptionKey
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.push.PushService
 import im.actor.server.db.DbExtension
-import im.actor.server.model.push.{ ActorPushCredentials, ApplePushCredentials, GooglePushCredentials }
+import im.actor.server.model.push.{ ActorPushCredentials, ApplePushCredentials, GCMPushCredentials }
 import im.actor.server.persist.push.{ ActorPushCredentialsRepo, ApplePushCredentialsRepo, GooglePushCredentialsRepo }
 import im.actor.server.sequence.SeqUpdatesExtension
 import scodec.bits.BitVector
@@ -48,7 +48,7 @@ final class PushServiceImpl(
     //
     //    }
 
-    val creds = GooglePushCredentials(clientData.authId, projectId, token)
+    val creds = GCMPushCredentials(clientData.authId, projectId, token)
     val action: DBIO[HandlerResult[ResponseVoid]] = for {
       _ ← GooglePushCredentialsRepo.deleteByToken(token)
       _ ← GooglePushCredentialsRepo.createOrUpdate(creds)

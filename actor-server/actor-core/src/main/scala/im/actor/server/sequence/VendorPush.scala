@@ -3,7 +3,7 @@ package im.actor.server.sequence
 import akka.actor._
 import akka.pattern.pipe
 import im.actor.server.db.DbExtension
-import im.actor.server.model.push.{ ActorPushCredentials, ApplePushCredentials, GooglePushCredentials, PushCredentials }
+import im.actor.server.model.push.{ ActorPushCredentials, ApplePushCredentials, GCMPushCredentials, PushCredentials }
 import im.actor.server.model.{ DeviceType, Peer, PeerType }
 import im.actor.server.persist.AuthSessionRepo
 import im.actor.server.persist.configs.ParameterRepo
@@ -258,7 +258,7 @@ private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLo
    */
   private def deliverInvisible(seq: Int, creds: PushCredentials): Unit = {
     creds match {
-      case c: GooglePushCredentials ⇒
+      case c: GCMPushCredentials ⇒
         googlePushProvider.deliverInvisible(seq, c)
       case c: ApplePushCredentials ⇒
         applePushProvider.deliverInvisible(seq, c)
@@ -288,7 +288,7 @@ private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLo
     isVibrationEnabled: Boolean
   ) = {
     creds match {
-      case c: GooglePushCredentials ⇒
+      case c: GCMPushCredentials ⇒
         googlePushProvider.deliverVisible(
           seq = seq,
           creds = c,
@@ -330,9 +330,9 @@ private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLo
     if (mapping.contains(creds)) {
       remove(creds)
       val removeFu = db.run(creds match {
-        case c: GooglePushCredentials ⇒ GooglePushCredentialsRepo.deleteByToken(c.regId)
-        case c: ApplePushCredentials  ⇒ ApplePushCredentialsRepo.deleteByToken(c.token.toByteArray)
-        case c: ActorPushCredentials  ⇒ ActorPushCredentialsRepo.deleteByTopic(c.endpoint)
+        case c: GCMPushCredentials   ⇒ GooglePushCredentialsRepo.deleteByToken(c.regId)
+        case c: ApplePushCredentials ⇒ ApplePushCredentialsRepo.deleteByToken(c.token.toByteArray)
+        case c: ActorPushCredentials ⇒ ActorPushCredentialsRepo.deleteByTopic(c.endpoint)
       }) map (_ ⇒ UnregisterPushCredentialsAck()) pipeTo replyTo
 
       removeFu onFailure {

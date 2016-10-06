@@ -5,7 +5,15 @@ option java_package = "im.actor.server.model";
 import "scalapb/scalapb.proto";
 import "google/protobuf/wrappers.proto";
 
-message GooglePushCredentials {
+message GCMPushCredentials {
+    option (scalapb.message).extends = "im.actor.server.model.push.PushCredentials";
+
+    int64 auth_id = 1;
+    int64 project_id = 2;
+    string reg_id = 3;
+}
+
+message FirebasePushCredentials {
     option (scalapb.message).extends = "im.actor.server.model.push.PushCredentials";
 
     int64 auth_id = 1;

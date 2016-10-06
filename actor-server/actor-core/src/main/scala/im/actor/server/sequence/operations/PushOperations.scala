@@ -2,7 +2,7 @@ package im.actor.server.sequence.operations
 
 import akka.http.scaladsl.util.FastFuture
 import im.actor.server.model.AuthSession
-import im.actor.server.model.push.{ ActorPushCredentials, ApplePushCredentials, GooglePushCredentials, PushCredentials }
+import im.actor.server.model.push.{ ActorPushCredentials, ApplePushCredentials, GCMPushCredentials, PushCredentials }
 import im.actor.server.persist.AuthSessionRepo
 import im.actor.server.persist.push.{ ActorPushCredentialsRepo, ApplePushCredentialsRepo, GooglePushCredentialsRepo }
 import im.actor.server.sequence.SeqUpdatesExtension
@@ -15,7 +15,7 @@ import scala.concurrent.Future
 
 trait PushOperations { this: SeqUpdatesExtension ⇒
 
-  def registerGooglePushCredentials(creds: GooglePushCredentials) =
+  def registerGooglePushCredentials(creds: GCMPushCredentials) =
     registerPushCredentials(creds.authId, RegisterPushCredentials().withGoogle(creds))
 
   def registerApplePushCredentials(creds: ApplePushCredentials) =
@@ -69,9 +69,9 @@ trait PushOperations { this: SeqUpdatesExtension ⇒
     }
 
   private def makeUnregister: PartialFunction[PushCredentials, UnregisterPushCredentials] = {
-    case actor: ActorPushCredentials   ⇒ UnregisterPushCredentials().withActor(actor)
-    case apple: ApplePushCredentials   ⇒ UnregisterPushCredentials().withApple(apple)
-    case google: GooglePushCredentials ⇒ UnregisterPushCredentials().withGoogle(google)
+    case actor: ActorPushCredentials ⇒ UnregisterPushCredentials().withActor(actor)
+    case apple: ApplePushCredentials ⇒ UnregisterPushCredentials().withApple(apple)
+    case google: GCMPushCredentials  ⇒ UnregisterPushCredentials().withGoogle(google)
   }
 
   private def findAllPushCredentials(authId: Long): Future[Seq[PushCredentials]] =
