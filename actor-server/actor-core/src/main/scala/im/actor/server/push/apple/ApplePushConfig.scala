@@ -1,7 +1,7 @@
-package im.actor.server.sequence
+package im.actor.server.push.apple
 
-import com.typesafe.config.Config
 import com.github.kxbmap.configs.syntax._
+import com.typesafe.config.Config
 
 import scala.collection.JavaConversions._
 
