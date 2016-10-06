@@ -1,9 +1,11 @@
-package im.actor.server.sequence
+package im.actor.server.push.google
 
 import akka.actor.ActorSystem
 import im.actor.server.model.push.GooglePushCredentials
+import im.actor.server.push.PushProvider
+import im.actor.server.sequence.PushData
 
-private[sequence] final class GooglePushProvider(userId: Int, system: ActorSystem) extends PushProvider {
+final class GooglePushProvider(userId: Int, system: ActorSystem) extends PushProvider {
   private val googlePushExt = GooglePushExtension(system)
 
   def deliverInvisible(seq: Int, creds: GooglePushCredentials): Unit = {

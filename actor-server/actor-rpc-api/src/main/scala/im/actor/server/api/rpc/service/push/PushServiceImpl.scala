@@ -34,6 +34,20 @@ final class PushServiceImpl(
   private val ErrWrongToken = Error(PushRpcErrors.WrongToken)
 
   override def doHandleRegisterGooglePush(projectId: Long, token: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+    //    val (isFCM, exToken) = extractToken(token)
+    //
+    //    if (isFCM) {
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //    } else {
+    //
+    //    }
+
     val creds = GooglePushCredentials(clientData.authId, projectId, token)
     val action: DBIO[HandlerResult[ResponseVoid]] = for {
       _ ← GooglePushCredentialsRepo.deleteByToken(token)
@@ -42,6 +56,15 @@ final class PushServiceImpl(
 
     db.run(action.transactionally) andThen { case _ ⇒ seqUpdExt.registerGooglePushCredentials(creds) }
   }
+
+  //  private def extractToken(token: String): (Boolean, String) = {
+  //    val fcmPref = "FCM_"
+  //    if(token.startsWith(fcmPref)) {
+  //      true -> token.drop(fcmPref.length)
+  //    } else {
+  //      false -> token
+  //    }
+  //  }
 
   override def doHandleRegisterApplePush(apnsKey: Int, token: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
     BitVector.fromHex(token) match {
@@ -124,8 +147,11 @@ final class PushServiceImpl(
     }
 
   // TODO: figure out, should user be authorized?
-  override protected def doHandleUnregisterGooglePush(token: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
+  override protected def doHandleUnregisterGooglePush(token: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+
+    //    seqUpdExt.unregisterGooglePushCredentials(token) map (_ ⇒ OkVoid)
     seqUpdExt.unregisterGooglePushCredentials(token) map (_ ⇒ OkVoid)
+  }
 
   // TODO: figure out, should user be authorized?
   override protected def doHandleUnregisterActorPush(endpoint: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] =

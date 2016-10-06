@@ -1,10 +1,11 @@
-package im.actor.server.sequence
+package im.actor.server.push.apple
 
 import akka.actor.ActorSystem
 import com.google.protobuf.wrappers.{ Int32Value, StringValue }
 import com.relayrides.pushy.apns.PushNotificationResponse
 import com.relayrides.pushy.apns.util.{ SimpleApnsPushNotification, TokenUtil }
 import im.actor.server.model.push.ApplePushCredentials
+import im.actor.server.sequence.PushFutureListener
 import io.netty.util.concurrent.{ Future ⇒ NFuture }
 import scodec.bits.BitVector
 

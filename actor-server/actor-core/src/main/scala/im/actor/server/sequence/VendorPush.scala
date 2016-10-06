@@ -9,12 +9,13 @@ import im.actor.server.persist.AuthSessionRepo
 import im.actor.server.persist.configs.ParameterRepo
 import im.actor.server.persist.push.{ ActorPushCredentialsRepo, ApplePushCredentialsRepo, GooglePushCredentialsRepo }
 import im.actor.server.push.actor.ActorPush
+import im.actor.server.push.apple.ApplePushProvider
+import im.actor.server.push.google.GooglePushProvider
 import im.actor.server.sequence.UserSequenceCommands.ReloadSettings
 import im.actor.server.userconfig.SettingsKeys
 import slick.dbio.DBIO
 
 import scala.concurrent.Future
-import scala.util.control.NoStackTrace
 
 private[sequence] trait VendorPushCommand
 
@@ -114,6 +115,7 @@ private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLo
 
   private val settingsControl = context.actorOf(SettingsControl.props(userId), "settings")
   private val googlePushProvider = new GooglePushProvider(userId, context.system)
+
   private val applePushProvider = new ApplePushProvider(userId)(context.system)
   private val actorPushProvider = ActorPush(context.system)
 
