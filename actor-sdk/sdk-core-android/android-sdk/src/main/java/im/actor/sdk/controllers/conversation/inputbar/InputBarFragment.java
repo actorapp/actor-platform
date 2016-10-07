@@ -252,36 +252,6 @@ public class InputBarFragment extends BaseFragment {
             return true;
         });
 
-        voiceRecordActor = ActorSystem.system().actorOf(Props.create(() -> {
-            return new VoiceCaptureActor(getActivity(), new VoiceCaptureActor.VoiceCaptureCallback() {
-                @Override
-                public void onRecordProgress(final long time) {
-                    getActivity().runOnUiThread(() -> {
-                        audioTimer.setText(messenger().getFormatter().formatDuration((int) (time / 1000)));
-                    });
-                }
-
-                @Override
-                public void onRecordCrash() {
-                    getActivity().runOnUiThread(() -> {
-                        hideAudio(true);
-                    });
-                }
-
-                @Override
-                public void onRecordStop(long progress) {
-                    if (progress < 1200) {
-                        //Cancel
-                    } else {
-                        Fragment parent = getParentFragment();
-                        if (parent instanceof InputBarCallback) {
-                            ((InputBarCallback) parent).onAudioSent((int) progress, audioFile);
-                        }
-                    }
-                }
-            });
-        }).changeDispatcher("voice_capture_dispatcher"), "actor/voice_capture");
-
         return res;
     }
 
@@ -582,6 +552,39 @@ public class InputBarFragment extends BaseFragment {
         super.onPause();
         emojiKeyboard.destroy();
         voiceRecordActor.send(PoisonPill.INSTANCE);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        voiceRecordActor = ActorSystem.system().actorOf(Props.create(() -> new VoiceCaptureActor(getActivity(), new VoiceCaptureActor.VoiceCaptureCallback() {
+            @Override
+            public void onRecordProgress(final long time) {
+                getActivity().runOnUiThread(() -> {
+                    audioTimer.setText(messenger().getFormatter().formatDuration((int) (time / 1000)));
+                });
+            }
+
+            @Override
+            public void onRecordCrash() {
+                getActivity().runOnUiThread(() -> {
+                    hideAudio(true);
+                });
+            }
+
+            @Override
+            public void onRecordStop(long progress) {
+                if (progress < 1200) {
+                    //Cancel
+                } else {
+                    Fragment parent = getParentFragment();
+                    if (parent instanceof InputBarCallback) {
+                        ((InputBarCallback) parent).onAudioSent((int) progress, audioFile);
+                    }
+                }
+            }
+        })).changeDispatcher("voice_capture_dispatcher"), "actor/voice_capture");
+
     }
 
     @Override
