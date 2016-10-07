@@ -1,6 +1,6 @@
 package im.actor.server.push.google
 
-import com.typesafe.config.{ Config, ConfigException }
+import com.typesafe.config.Config
 import com.github.kxbmap.configs.syntax._
 import im.actor.config.ActorConfig
 
@@ -19,13 +19,13 @@ private[google] object GooglePushManagerConfig {
 
   def loadGCM: Try[GooglePushManagerConfig] = {
     val config = ActorConfig.load()
-    load(config.getConfig("services.google.gcm")) recoverWith {
-      case e: ConfigException.Missing ⇒ load(config.getConfig("services.google.push")) // legacy conf, before firebase
-    }
+    val legacy = load(config.getConfig("services.google.push"))
+    val gcm = load(config.getConfig("services.google.gcm"))
+    legacy.orElse(gcm)
   }
 
   def loadFirebase: Try[GooglePushManagerConfig] =
     load(ActorConfig.load().getConfig("services.google.firebase"))
 
-  private def load(config: => Config) = Try(config.extract[GooglePushManagerConfig])
+  private def load(config: ⇒ Config) = Try(config.extract[GooglePushManagerConfig])
 }
