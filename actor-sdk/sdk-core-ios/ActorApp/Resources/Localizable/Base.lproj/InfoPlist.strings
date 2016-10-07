@@ -4,3 +4,4 @@
 
 "CFBundleDisplayName" = "Actor SDK";
 "CFBundleName" = "Actor SDK";
+"NSPhotoLibraryUsageDescription" = "We need this so you can share photos and videos from your photo library";
