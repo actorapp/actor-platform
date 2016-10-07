@@ -29,6 +29,9 @@ import im.actor.core.api.updates.UpdateUserUnblocked;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.MessageState;
 import im.actor.core.entity.Peer;
+import im.actor.core.entity.PhoneBookContact;
+import im.actor.core.entity.PhoneBookEmail;
+import im.actor.core.entity.PhoneBookPhone;
 import im.actor.core.entity.User;
 import im.actor.core.entity.content.ServiceUserRegistered;
 import im.actor.core.modules.ModuleActor;
@@ -40,6 +43,7 @@ import im.actor.core.modules.users.router.entity.RouterFetchMissingUsers;
 import im.actor.core.modules.users.router.entity.RouterLoadFullUser;
 import im.actor.core.modules.users.router.entity.RouterUserUpdate;
 import im.actor.core.network.parser.Update;
+import im.actor.core.providers.PhoneBookProvider;
 import im.actor.core.viewmodel.UserEmail;
 import im.actor.core.viewmodel.UserPhone;
 import im.actor.core.viewmodel.UserVM;
@@ -61,6 +65,9 @@ public class UserRouter extends ModuleActor {
 
     private HashSet<Integer> requestedFullUsers = new HashSet<>();
     private boolean isFreezed = false;
+
+    PhoneBookProvider phoneBookProvider = config().getPhoneBookProvider();
+    List<PhoneBookContact> contacts = null;
 
     public UserRouter(ModuleContext context) {
         super(context);
@@ -385,11 +392,8 @@ public class UserRouter extends ModuleActor {
                     // Updating user in collection
                     users().addOrUpdateItem(upd);
                 })
-                .after((r, e) -> unfreeze())
-                .chain(r -> {
-                    checkIsInPhoneBook(getUserVM(uid));
-                    return Promise.success(null);
-                });
+                .chain(r -> checkIsInPhoneBook(getUserVM(uid)))
+                .after((r, e) -> unfreeze());
     }
 
     @Verified
@@ -435,51 +439,68 @@ public class UserRouter extends ModuleActor {
                 .after((r, e) -> unfreeze());
     }
 
-    private BookImportStorage getBookImportStorage() {
-        BookImportStorage storage = null;
-        byte[] data = context().getContactsModule().getBookImportState().get(0);
-        if (data != null) {
-            try {
-                storage = new BookImportStorage(data);
-            } catch (Exception e) {
-                e.getLocalizedMessage();
-            }
+    private Promise<List<PhoneBookContact>> getPhoneBook() {
+        if (contacts == null) {
+            return new Promise<List<PhoneBookContact>>(resolver -> {
+                phoneBookProvider.loadPhoneBook(contacts1 -> {
+                    contacts = contacts1;
+                    resolver.result(contacts1);
+                });
+            });
+        } else {
+            return Promise.success(contacts);
         }
-        return storage;
     }
 
-    protected void checkIsInPhoneBook(UserVM userVM) {
+    protected Promise<Void> checkIsInPhoneBook(UserVM userVM) {
+
         if (!config().isEnableOnClientPrivacy()) {
-            return;
+            return Promise.success(null);
         }
 
-        BookImportStorage storage = getBookImportStorage();
-        if (storage == null) {
-            return;
-        }
+        return getPhoneBook().flatMap(phoneBookContacts -> new Promise<Void>(resolver -> {
+            ArrayListUserPhone userPhones = userVM.getPhones().get();
+            ArrayListUserEmail userEmails = userVM.getEmails().get();
 
-        ArrayListUserPhone userPhones = userVM.getPhones().get();
-        ArrayListUserEmail userEmails = userVM.getEmails().get();
+            if (!userVM.isInPhoneBook().get()) {
+                outer:
+                for (UserPhone phone : userPhones) {
 
-        if (!userVM.isInPhoneBook().get()) {
-            for (UserPhone phone : userPhones) {
-                if (storage.isImported(phone.getPhone())) {
-                    userVM.isInPhoneBook().change(true);
-                    context().getContactsModule().markInPhoneBook(userVM.getId());
-                    break;
+                    for (PhoneBookContact phoneBookContact : phoneBookContacts) {
+
+                        for (PhoneBookPhone phone1 : phoneBookContact.getPhones()) {
+                            if (phone.getPhone() == phone1.getNumber()) {
+                                userVM.isInPhoneBook().change(true);
+                                context().getContactsModule().markInPhoneBook(userVM.getId());
+                                break outer;
+                            }
+                        }
+                    }
+
                 }
             }
-        }
 
-        if (!userVM.isInPhoneBook().get()) {
-            for (UserEmail email : userEmails) {
-                if (storage.isImported(email.getEmail())) {
-                    userVM.isInPhoneBook().change(true);
-                    context().getContactsModule().markInPhoneBook(userVM.getId());
-                    break;
+            if (!userVM.isInPhoneBook().get()) {
+                outer:
+                for (UserEmail email : userEmails) {
+
+                    for (PhoneBookContact phoneBookContact : phoneBookContacts) {
+
+                        for (PhoneBookEmail email1 : phoneBookContact.getEmails()) {
+                            if (email.getEmail().equals(email1.getEmail())) {
+                                userVM.isInPhoneBook().change(true);
+                                context().getContactsModule().markInPhoneBook(userVM.getId());
+                                break outer;
+                            }
+                        }
+                    }
+
                 }
             }
-        }
+
+            resolver.result(null);
+        }));
+
     }
 
 
