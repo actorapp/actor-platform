@@ -56,6 +56,8 @@ public class Configuration {
     @Property("readonly, nonatomic")
     private final boolean enablePhoneBookImport;
     @Property("readonly, nonatomic")
+    private final boolean enableOnClientPrivacy;
+    @Property("readonly, nonatomic")
     private final CallsProvider callsProvider;
     @Property("readonly, nonatomic")
     private final RawUpdatesHandler rawUpdatesHandler;
@@ -83,6 +85,7 @@ public class Configuration {
                   String customAppName,
                   TrustedKey[] trustedKeys,
                   boolean enablePhoneBookImport,
+                  boolean enableOnClientPrivcy,
                   CallsProvider callsProvider,
                   RawUpdatesHandler rawUpdatesHandler,
                   boolean voiceCallsEnabled,
@@ -107,6 +110,7 @@ public class Configuration {
         this.customAppName = customAppName;
         this.trustedKeys = trustedKeys;
         this.enablePhoneBookImport = enablePhoneBookImport;
+        this.enableOnClientPrivacy = enableOnClientPrivcy;
         this.callsProvider = callsProvider;
         this.rawUpdatesHandler = rawUpdatesHandler;
         this.voiceCallsEnabled = voiceCallsEnabled;
@@ -159,6 +163,15 @@ public class Configuration {
      */
     public boolean isEnablePhoneBookImport() {
         return enablePhoneBookImport;
+    }
+
+    /**
+     * Getting if app check if contact not in phone book and hides phone/email in that case
+     *
+     * @return if on client privacy enabled
+     */
+    public boolean isEnableOnClientPrivacy() {
+        return enableOnClientPrivacy;
     }
 
     /**

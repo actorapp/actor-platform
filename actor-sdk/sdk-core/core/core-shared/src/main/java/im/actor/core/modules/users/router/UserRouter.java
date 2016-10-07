@@ -34,11 +34,17 @@ import im.actor.core.entity.content.ServiceUserRegistered;
 import im.actor.core.modules.ModuleActor;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.contacts.ContactsSyncActor;
+import im.actor.core.modules.contacts.entity.BookImportStorage;
 import im.actor.core.modules.users.router.entity.RouterApplyUsers;
 import im.actor.core.modules.users.router.entity.RouterFetchMissingUsers;
 import im.actor.core.modules.users.router.entity.RouterLoadFullUser;
 import im.actor.core.modules.users.router.entity.RouterUserUpdate;
 import im.actor.core.network.parser.Update;
+import im.actor.core.viewmodel.UserEmail;
+import im.actor.core.viewmodel.UserPhone;
+import im.actor.core.viewmodel.UserVM;
+import im.actor.core.viewmodel.generics.ArrayListUserEmail;
+import im.actor.core.viewmodel.generics.ArrayListUserPhone;
 import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.annotations.Verified;
 import im.actor.runtime.function.Function;
@@ -59,7 +65,6 @@ public class UserRouter extends ModuleActor {
     public UserRouter(ModuleContext context) {
         super(context);
     }
-
 
     //
     // Small User
@@ -380,7 +385,11 @@ public class UserRouter extends ModuleActor {
                     // Updating user in collection
                     users().addOrUpdateItem(upd);
                 })
-                .after((r, e) -> unfreeze());
+                .after((r, e) -> unfreeze())
+                .chain(r -> {
+                    checkIsInPhoneBook(getUserVM(uid));
+                    return Promise.success(null);
+                });
     }
 
     @Verified
@@ -424,6 +433,53 @@ public class UserRouter extends ModuleActor {
                 })
                 .map(x -> (Void) null)
                 .after((r, e) -> unfreeze());
+    }
+
+    private BookImportStorage getBookImportStorage() {
+        BookImportStorage storage = null;
+        byte[] data = context().getContactsModule().getBookImportState().get(0);
+        if (data != null) {
+            try {
+                storage = new BookImportStorage(data);
+            } catch (Exception e) {
+                e.getLocalizedMessage();
+            }
+        }
+        return storage;
+    }
+
+    protected void checkIsInPhoneBook(UserVM userVM) {
+        if (!config().isEnableOnClientPrivacy()) {
+            return;
+        }
+
+        BookImportStorage storage = getBookImportStorage();
+        if (storage == null) {
+            return;
+        }
+
+        ArrayListUserPhone userPhones = userVM.getPhones().get();
+        ArrayListUserEmail userEmails = userVM.getEmails().get();
+
+        if (!userVM.isInPhoneBook().get()) {
+            for (UserPhone phone : userPhones) {
+                if (storage.isImported(phone.getPhone())) {
+                    userVM.isInPhoneBook().change(true);
+                    context().getContactsModule().markInPhoneBook(userVM.getId());
+                    break;
+                }
+            }
+        }
+
+        if (!userVM.isInPhoneBook().get()) {
+            for (UserEmail email : userEmails) {
+                if (storage.isImported(email.getEmail())) {
+                    userVM.isInPhoneBook().change(true);
+                    context().getContactsModule().markInPhoneBook(userVM.getId());
+                    break;
+                }
+            }
+        }
     }
 
 

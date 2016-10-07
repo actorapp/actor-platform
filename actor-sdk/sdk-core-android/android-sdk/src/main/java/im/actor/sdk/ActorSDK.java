@@ -194,6 +194,9 @@ public class ActorSDK {
      */
     private boolean callsEnabled = false;
     private boolean videoCallsEnabled = false;
+
+    private boolean onClientPrivacyEnabled = false;
+
     private String inviteDataUrl = "https://api.actor.im/v1/groups/invites/";
 
     private ActorSDK() {
@@ -257,6 +260,7 @@ public class ActorSDK {
             }
             builder.setPhoneBookProvider(new AndroidPhoneBook());
             builder.setVideoCallsEnabled(videoCallsEnabled);
+            builder.setOnClientPrivacyEnabled(onClientPrivacyEnabled);
             builder.setNotificationProvider(new AndroidNotifications(application));
             builder.setDeviceCategory(DeviceCategory.MOBILE);
             builder.setPlatformType(PlatformType.ANDROID);
@@ -1049,6 +1053,14 @@ public class ActorSDK {
 
     public void setVideoCallsEnabled(boolean videoCallsEnabled) {
         this.videoCallsEnabled = videoCallsEnabled;
+    }
+
+    public void setOnClientPrivacyEnabled(boolean onClientPrivacyEnabled) {
+        this.onClientPrivacyEnabled = onClientPrivacyEnabled;
+    }
+
+    public boolean isOnClientPrivacyEnabled() {
+        return onClientPrivacyEnabled;
     }
 
     public String getInviteDataUrl() {
