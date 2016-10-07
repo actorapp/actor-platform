@@ -27,5 +27,5 @@ private[google] object GooglePushManagerConfig {
   def loadFirebase: Try[GooglePushManagerConfig] =
     load(ActorConfig.load().getConfig("services.google.firebase"))
 
-  private def load(config: Config) = Try(config.extract[GooglePushManagerConfig])
+  private def load(config: => Config) = Try(config.extract[GooglePushManagerConfig])
 }
