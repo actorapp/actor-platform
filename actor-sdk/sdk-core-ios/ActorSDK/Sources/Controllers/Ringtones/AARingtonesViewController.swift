@@ -13,14 +13,14 @@ import AVFoundation
 open class AARingtonesViewController: AATableViewController {
     
     var audioPlayer: AVAudioPlayer!
-    var selectedRingtone: String = ""
-    var completion: ((String) -> ())!
+    open var selectedRingtone: String = ""
+    open var completion: ((String) -> ())!
     
     let rootSoundDirectories: [String] = ["/Library/Ringtones"/*,"/System/Library/Audio/UISounds"*/]
     var directories: [String] = []
     var soundFiles: [(directory: String, files: [String])] = []
    
-    init() {
+    public init() {
         super.init(style: UITableViewStyle.plain)
         
         self.title = AALocalized("Ringtones")

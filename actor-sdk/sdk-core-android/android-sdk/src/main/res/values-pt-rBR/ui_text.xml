@@ -202,7 +202,7 @@
     <string name="dialogs_title">Conversas</string>
     <string name="dialogs_hint">Pressione demoradamnete para opções adicionais</string>
     <string name="dialogs_empty_title">Iniciar conversas</string>
-    <string name="dialogs_empty">Selecione um contato da sua lista ou pressione o potão mais para começar a conversar agora mesmo.</string>
+    <string name="dialogs_empty">Selecione um contato da sua lista ou pressione o botão mais para começar a conversar agora mesmo.</string>
 
     <string name="dialogs_menu_contact_view">Ver contato</string>
     <string name="dialogs_menu_contact_rename">Renomear contato</string>
@@ -227,7 +227,7 @@
     <string name="contacts_empty_title">Convide seus amigos</string>
     <string name="contacts_empty_invite_hint">Nenhum dos seus contatos usa {appName}. Use o botão abaixo para convidá-los.</string>
     <string name="contacts_empty_invite_action">Avise um amigo</string>
-    <string name="contacts_empty_add_hint">ou adicione manualmente usando o botão abaixo.</string>
+    <string name="contacts_empty_add_hint">ou adicione manualmente usando a busca geral na tela principal.</string>
 
     <string name="contacts_menu_remove">Remove {0} dos contatos</string>
     <string name="contacts_menu_remove_progress">Removendo…</string>
@@ -269,6 +269,8 @@
     <string name="chat_voice_record_cancel">DESLIZE PARA CANCELAR</string>
 
     <string name="chat_not_member">Você não é membro desse grupo</string>
+    <string name="group_deleted">Grupo excluído</string>
+    <string name="channel_deleted">Canal excluído</string>
 
     <string name="chat_join">Entrar</string>
     <string name="chat_mute">Silenciar</string>
