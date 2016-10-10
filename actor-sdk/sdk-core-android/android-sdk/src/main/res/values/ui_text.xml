@@ -480,6 +480,9 @@
     <string name="invite_link_error_revoke_link">Unable to revoke invite link</string>
     <string name="invite_link_empty_view">Loading invite link</string>
 
+    <string name="join">JOIN</string>
+    <string name="open">OPEN</string>
+
     <string name="invite_link_join_confirm">Join "%1$s"?</string>
 
     <!-- Documents -->

@@ -58,6 +58,7 @@ public class ConfigurationBuilder {
     private String customAppName;
 
     private boolean isPhoneBookImportEnabled = true;
+    private boolean isOnClientPrivacyEnabled = false;
 
     private CallsProvider callsProvider;
     private RawUpdatesHandler rawUpdatesHandler;
@@ -126,6 +127,19 @@ public class ConfigurationBuilder {
     @ObjectiveCName("setPhoneBookImportEnabled:")
     public ConfigurationBuilder setPhoneBookImportEnabled(boolean isPhoneBookImportEnabled) {
         this.isPhoneBookImportEnabled = isPhoneBookImportEnabled;
+        return this;
+    }
+
+    /**
+     * Setting if application uses on client contacts privacy
+     *
+     * @param isOnClientPrivacyEnabled enabled flag
+     * @return this
+     */
+    @NotNull
+    @ObjectiveCName("setOnClientPrivacyEnabled:")
+    public ConfigurationBuilder setOnClientPrivacyEnabled(boolean isOnClientPrivacyEnabled) {
+        this.isOnClientPrivacyEnabled = isOnClientPrivacyEnabled;
         return this;
     }
 
@@ -419,6 +433,7 @@ public class ConfigurationBuilder {
                 customAppName,
                 trustedKeys.toArray(new TrustedKey[trustedKeys.size()]),
                 isPhoneBookImportEnabled,
+                isOnClientPrivacyEnabled,
                 callsProvider,
                 rawUpdatesHandler,
                 voiceCallsEnabled,

@@ -463,8 +463,10 @@
     <string name="join_public_group_title">grupos públicos</string>
     <string name="join_public_group_members_count">Membros:</string>
     <string name="join_public_group_friends_count">Amigos:</string>
+
     <string name="join">ENTRAR</string>
     <string name="open">ABRIR</string>
+
     <string name="join_public_group_top_title">Ei!</string>
     <string name="join_public_group_top_subtitle">Confira as nossas primeiras conversas públicas</string>
     <string name="join_public_group_top_by_friends_title">Conversar com amigos!</string>
@@ -482,6 +484,7 @@
     <string name="invite_link_error_get_link">Não foi possível obter link do convite</string>
     <string name="invite_link_error_revoke_link">Não foi possível remover link do convite</string>
     <string name="invite_link_empty_view">Carregando o link do convite</string>
+
 
     <string name="invite_link_join_confirm">Entrar "%1$s"?</string>
 

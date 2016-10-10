@@ -57,7 +57,7 @@ public class Application extends ActorSDKApplication {
         ActorSDK.sharedActor().setDelegate(new ActorSDKDelegate());
         ActorSDK.sharedActor().setPushId(209133700967L);
         ActorSDK.sharedActor().setActorPushEndpoint(null);
-
+        ActorSDK.sharedActor().setOnClientPrivacyEnabled(true);
         ActorStyle style = ActorSDK.sharedActor().style;
         style.setDialogsActiveTextColor(0xff5882ac);
         style.setShowAvatarPrivateInTitle(false);
