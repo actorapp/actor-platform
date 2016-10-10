@@ -26,6 +26,8 @@ import im.actor.core.api.updates.UpdateUserNickChanged;
 import im.actor.core.api.updates.UpdateUserPreferredLanguagesChanged;
 import im.actor.core.api.updates.UpdateUserTimeZoneChanged;
 import im.actor.core.api.updates.UpdateUserUnblocked;
+import im.actor.core.entity.ContactRecord;
+import im.actor.core.entity.ContactRecordType;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.MessageState;
 import im.actor.core.entity.Peer;
@@ -49,6 +51,7 @@ import im.actor.core.viewmodel.UserPhone;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.core.viewmodel.generics.ArrayListUserEmail;
 import im.actor.core.viewmodel.generics.ArrayListUserPhone;
+import im.actor.runtime.Log;
 import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.annotations.Verified;
 import im.actor.runtime.function.Function;
@@ -381,7 +384,13 @@ public class UserRouter extends ModuleActor {
                                 .map(responseLoadFullUsers ->
                                         new Tuple2<>(responseLoadFullUsers, u));
                     } else {
-                        return Promise.failure(new RuntimeException("Already loaded"));
+                        //user already loaded, only perform is in phone book check
+                        if (!getUserVM(uid).isInPhoneBook().get()) {
+                            return checkIsInPhoneBook(u).flatMap(aVoid -> Promise.failure(new RuntimeException("Already loaded")));
+                        } else {
+                            return Promise.failure(new RuntimeException("Already loaded"));
+                        }
+
                     }
                 })
                 .then(r -> {
@@ -392,7 +401,7 @@ public class UserRouter extends ModuleActor {
                     // Updating user in collection
                     users().addOrUpdateItem(upd);
                 })
-                .chain(r -> checkIsInPhoneBook(getUserVM(uid)))
+                .chain(r -> checkIsInPhoneBook(r.getT2().updateExt(r.getT1().getFullUsers().get(0))))
                 .after((r, e) -> unfreeze());
     }
 
@@ -452,51 +461,54 @@ public class UserRouter extends ModuleActor {
         }
     }
 
-    protected Promise<Void> checkIsInPhoneBook(UserVM userVM) {
+    protected Promise<Void> checkIsInPhoneBook(User user) {
 
         if (!config().isEnableOnClientPrivacy()) {
             return Promise.success(null);
         }
 
+        Log.d("ON_CLIENT_PRIVACY", "checking " + user.getName() + " is in phone book");
+
         return getPhoneBook().flatMap(phoneBookContacts -> new Promise<Void>(resolver -> {
-            ArrayListUserPhone userPhones = userVM.getPhones().get();
-            ArrayListUserEmail userEmails = userVM.getEmails().get();
+            List<ContactRecord> userRecords = user.getRecords();
 
-            if (!userVM.isInPhoneBook().get()) {
-                outer:
-                for (UserPhone phone : userPhones) {
+            Log.d("ON_CLIENT_PRIVACY", "phonebook have " + phoneBookContacts.size() + " records");
+            Log.d("ON_CLIENT_PRIVACY", "user have " + userRecords.size() + " records");
 
-                    for (PhoneBookContact phoneBookContact : phoneBookContacts) {
+            outer:
+            for (ContactRecord record : userRecords) {
 
-                        for (PhoneBookPhone phone1 : phoneBookContact.getPhones()) {
-                            if (phone.getPhone() == phone1.getNumber()) {
-                                userVM.isInPhoneBook().change(true);
-                                context().getContactsModule().markInPhoneBook(userVM.getId());
+                for (PhoneBookContact phoneBookContact : phoneBookContacts) {
+
+                    for (PhoneBookPhone phone1 : phoneBookContact.getPhones()) {
+                        if (record.getRecordType() == ContactRecordType.PHONE) {
+                            if (record.getRecordData().equals(phone1.getNumber() + "")) {
+                                context().getContactsModule().markInPhoneBook(user.getUid());
+                                getUserVM(user.getUid()).isInPhoneBook().change(true);
+                                Log.d("ON_CLIENT_PRIVACY", "in record book!");
                                 break outer;
                             }
                         }
+
                     }
 
-                }
-            }
-
-            if (!userVM.isInPhoneBook().get()) {
-                outer:
-                for (UserEmail email : userEmails) {
-
-                    for (PhoneBookContact phoneBookContact : phoneBookContacts) {
-
-                        for (PhoneBookEmail email1 : phoneBookContact.getEmails()) {
-                            if (email.getEmail().equals(email1.getEmail())) {
-                                userVM.isInPhoneBook().change(true);
-                                context().getContactsModule().markInPhoneBook(userVM.getId());
+                    for (PhoneBookEmail email : phoneBookContact.getEmails()) {
+                        if (record.getRecordType() == ContactRecordType.EMAIL) {
+                            if (record.getRecordData().equals(email.getEmail())) {
+                                context().getContactsModule().markInPhoneBook(user.getUid());
+                                getUserVM(user.getUid()).isInPhoneBook().change(true);
+                                Log.d("ON_CLIENT_PRIVACY", "in record book!");
                                 break outer;
                             }
                         }
-                    }
 
+                    }
                 }
+
             }
+
+            Log.d("ON_CLIENT_PRIVACY", "finish check");
+
 
             resolver.result(null);
         }));
