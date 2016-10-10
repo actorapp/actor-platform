@@ -1,4 +1,4 @@
-package im.actor.server.sequence
+package im.actor.server.push.apple
 
 import java.io.File
 import java.util.concurrent.{ ExecutionException, TimeUnit, TimeoutException }
@@ -13,9 +13,8 @@ import im.actor.server.persist.push.ApplePushCredentialsRepo
 import im.actor.util.log.AnyRefLogSource
 
 import scala.collection.concurrent.TrieMap
-import scala.concurrent.Future
-import scala.concurrent.blocking
 import scala.concurrent.duration._
+import scala.concurrent.{ Future, blocking }
 import scala.util.Try
 
 object ApplePushExtension extends ExtensionId[ApplePushExtension] with ExtensionIdProvider {

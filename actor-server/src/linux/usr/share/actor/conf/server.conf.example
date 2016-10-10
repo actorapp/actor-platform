@@ -219,8 +219,17 @@ services {
     #  scope: "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.google.com/m8/feeds/"
     #}
 
-    # Android & Chrome push notifications
-    # push {
+    # Android push notifications via GCM and Firebase
+    # gcm {
+    #  # Keys for push notifications in format
+    #   keys = [
+    #    {
+    #      project-id: <put_your_project_id_here>
+    #      key: <put_your_key_here>
+    #    }
+    #  ]
+    # }
+    # firebase {
     #  # Keys for push notifications in format
     #   keys = [
     #    {

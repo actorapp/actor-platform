@@ -1,14 +1,15 @@
-package im.actor.server.sequence
+package im.actor.server.push.apple
 
 import akka.actor.ActorSystem
 import akka.event.Logging
-import com.google.protobuf.wrappers.{ Int32Value, StringValue }
 import com.relayrides.pushy.apns.ApnsClient
 import com.relayrides.pushy.apns.util.{ ApnsPayloadBuilder, SimpleApnsPushNotification }
 import im.actor.server.dialog.DialogExtension
 import im.actor.server.model.push.ApplePushCredentials
+import im.actor.server.push.PushProvider
+import im.actor.server.sequence.PushData
 
-private[sequence] final class ApplePushProvider(userId: Int)(implicit system: ActorSystem) extends PushProvider with APNSSend {
+final class ApplePushProvider(userId: Int)(implicit system: ActorSystem) extends PushProvider with APNSSend {
   import system.dispatcher
 
   private val log = Logging(system, getClass)

@@ -1,10 +1,13 @@
-package im.actor.server.sequence
+package im.actor.server.push.google
 
 import akka.actor.ActorSystem
-import im.actor.server.model.push.GooglePushCredentials
+import im.actor.server.model.push.{ FirebasePushCredentials, GCMPushCredentials, GooglePushCredentials }
+import im.actor.server.push.PushProvider
+import im.actor.server.sequence.PushData
 
-private[sequence] final class GooglePushProvider(userId: Int, system: ActorSystem) extends PushProvider {
-  private val googlePushExt = GooglePushExtension(system)
+final class GooglePushProvider(userId: Int, system: ActorSystem) extends PushProvider {
+  private val gcmPushExt = GCMPushExtension(system)
+  private val firebasePushExt = FirebasePushExtension(system)
 
   def deliverInvisible(seq: Int, creds: GooglePushCredentials): Unit = {
     val message = GooglePushMessage(
@@ -13,8 +16,12 @@ private[sequence] final class GooglePushProvider(userId: Int, system: ActorSyste
       data = Some(Map("seq" → seq.toString)),
       time_to_live = None
     )
-
-    googlePushExt.send(creds.projectId, message)
+    creds match {
+      case _: GCMPushCredentials ⇒
+        gcmPushExt.send(creds.projectId, message)
+      case _: FirebasePushCredentials ⇒
+        firebasePushExt.send(creds.projectId, message)
+    }
   }
 
   def deliverVisible(
@@ -37,7 +44,11 @@ private[sequence] final class GooglePushProvider(userId: Int, system: ActorSyste
       )),
       time_to_live = None
     )
-
-    googlePushExt.send(creds.projectId, message)
+    creds match {
+      case _: GCMPushCredentials ⇒
+        gcmPushExt.send(creds.projectId, message)
+      case _: FirebasePushCredentials ⇒
+        firebasePushExt.send(creds.projectId, message)
+    }
   }
 }
