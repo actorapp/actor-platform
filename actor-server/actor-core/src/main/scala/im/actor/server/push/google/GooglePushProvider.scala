@@ -13,7 +13,12 @@ final class GooglePushProvider(userId: Int, system: ActorSystem) extends PushPro
     val message = GooglePushMessage(
       to = creds.regId,
       collapse_key = Some(s"seq-invisible-${userId.toString}"),
-      data = Some(Map("seq" → seq.toString)),
+      data = Some(
+        Map(
+          "seq" → seq.toString,
+          "_authId" → creds.authId.toString
+        )
+      ),
       time_to_live = None
     )
     creds match {
@@ -35,13 +40,16 @@ final class GooglePushProvider(userId: Int, system: ActorSystem) extends PushPro
     val message = GooglePushMessage(
       to = creds.regId,
       collapse_key = Some(s"seq-visible-${userId.toString}"),
-      data = Some(Map("seq" → seq.toString) ++ (
-        data.text match {
-          case text if text.nonEmpty && isTextEnabled ⇒
-            Map("message" → text)
-          case _ ⇒ Map.empty
-        }
-      )),
+      data = Some(
+        Map(
+          "seq" → seq.toString,
+          "_authId" → creds.authId.toString
+        ) ++ (data.text match {
+            case text if text.nonEmpty && isTextEnabled ⇒
+              Map("message" → text)
+            case _ ⇒ Map.empty
+          })
+      ),
       time_to_live = None
     )
     creds match {
