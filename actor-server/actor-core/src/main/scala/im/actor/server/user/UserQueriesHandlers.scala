@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.util.FastFuture
 import akka.pattern.pipe
 import im.actor.api.rpc.collections._
-import im.actor.api.rpc.users.{ ApiFullUser, ApiUser }
+import im.actor.api.rpc.users.{ ApiContactRecord, ApiFullUser, ApiUser }
 import im.actor.server.ApiConversions._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.dialog.UserAcl
@@ -23,6 +23,10 @@ private[user] trait UserQueriesHandlers extends UserAcl {
         FastFuture.successful(None)
       else
         userExt.getLocalName(clientUserId, state.id)
+      isInContacts ← if (clientUserId == state.id || clientUserId == 0)
+        FastFuture.successful(true)
+      else
+        FastFuture.successful(false)
     } yield GetApiStructResponse(ApiUser(
       id = userId,
       accessHash = ACLUtils.userAccessHash(clientAuthId, userId, state.accessSalt),
@@ -31,7 +35,7 @@ private[user] trait UserQueriesHandlers extends UserAcl {
       sex = Some(state.sex),
       avatar = state.avatar,
       isBot = Some(state.isBot),
-      contactInfo = UserUtils.defaultUserContactRecords(state.phones.toVector, state.emails.toVector, state.socialContacts.toVector),
+      contactInfo = if (!isInContacts) Vector.empty[ApiContactRecord] else UserUtils.defaultUserContactRecords(state.phones.toVector, state.emails.toVector, state.socialContacts.toVector),
       nick = state.nickname,
       about = state.about,
       preferredLanguages = state.preferredLanguages.toVector,
@@ -48,9 +52,13 @@ private[user] trait UserQueriesHandlers extends UserAcl {
         FastFuture.successful(None)
       else
         userExt.getLocalName(clientUserId, state.id)
+      isInContacts ← if (clientUserId == state.id || clientUserId == 0)
+        FastFuture.successful(true)
+      else
+        FastFuture.successful(false)
     } yield GetApiFullStructResponse(ApiFullUser(
       id = userId,
-      contactInfo = UserUtils.defaultUserContactRecords(state.phones.toVector, state.emails.toVector, state.socialContacts.toVector),
+      contactInfo = if (!isInContacts) Vector.empty[ApiContactRecord] else UserUtils.defaultUserContactRecords(state.phones.toVector, state.emails.toVector, state.socialContacts.toVector),
       about = state.about,
       preferredLanguages = state.preferredLanguages.toVector,
       timeZone = state.timeZone,
