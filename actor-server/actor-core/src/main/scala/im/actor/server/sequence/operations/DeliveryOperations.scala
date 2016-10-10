@@ -12,9 +12,11 @@ import scala.concurrent.Future
 trait DeliveryOperations { this: SeqUpdatesExtension ⇒
 
   def pushRules(isFat: Boolean, pushText: Option[String], excludeAuthIds: Seq[Long] = Seq.empty): PushRules =
-    PushRules(isFat = isFat)
-      .withData(PushData().withText(pushText.getOrElse("")))
-      .withExcludeAuthIds(excludeAuthIds)
+    PushRules(
+      isFat = isFat,
+      excludeAuthIds = excludeAuthIds,
+      data = pushText map (t ⇒ PushData(text = t))
+    )
 
   /**
    * Send update to all devices of user and return `SeqState` associated with `authId`
@@ -147,9 +149,10 @@ trait DeliveryOperations { this: SeqUpdatesExtension ⇒
     Future.sequence(userIds.toSeq map (deliverUpdate(_, deliver))) map (_ ⇒ ())
 
   private def deliverUpdate(userId: Int, deliver: DeliverUpdate): Future[SeqState] = {
-    val isUpdateDefined =
-      deliver.getMapping.default.isDefined || deliver.getMapping.custom.nonEmpty
-    require(isUpdateDefined, "No default update nor authId-specific")
+    require(
+      deliver.getMapping.default.isDefined || deliver.getMapping.custom.nonEmpty,
+      "No default update nor authId-specific"
+    )
     (region.ref ? Envelope(userId).withDeliverUpdate(deliver)).mapTo[SeqState]
   }
 

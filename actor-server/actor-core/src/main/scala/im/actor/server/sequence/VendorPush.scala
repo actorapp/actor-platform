@@ -5,7 +5,7 @@ import akka.pattern.pipe
 import im.actor.concurrent.FutureExt
 import im.actor.server.db.DbExtension
 import im.actor.server.model.push._
-import im.actor.server.model.{ DeviceType, Peer }
+import im.actor.server.model.{ DeviceType, Peer, PeerType }
 import im.actor.server.persist.{ AuthIdRepo, AuthSessionRepo }
 import im.actor.server.persist.configs.ParameterRepo
 import im.actor.server.persist.push.{ ActorPushCredentialsRepo, ApplePushCredentialsRepo, FirebasePushCredentialsKV, GooglePushCredentialsRepo }
@@ -24,7 +24,13 @@ private final case class PushCredentialsInfo(appId: Int, authId: Long)
 
 private final case class AllNotificationSettings(
   generic:  NotificationSettings              = NotificationSettings(),
-  specific: Map[String, NotificationSettings] = Map.empty
+  specific: Map[String, NotificationSettings] = Map.empty,
+  groups:   GroupNotificationSettings         = GroupNotificationSettings()
+)
+
+private final case class GroupNotificationSettings(
+  enabled:     Boolean = true,
+  onlyMention: Boolean = false
 )
 
 private final case class NotificationSettings(
@@ -81,20 +87,29 @@ private final class SettingsControl(userId: Int) extends Actor with ActorLogging
 
   private def load(): Future[AllNotificationSettings] =
     db.run(for {
-      generic ← loadAction(DeviceType.Generic)
-      mobile ← loadAction(DeviceType.Mobile)
-      tablet ← loadAction(DeviceType.Tablet)
-      desktop ← loadAction(DeviceType.Desktop)
+      generic ← loadForDevice(DeviceType.Generic)
+      mobile ← loadForDevice(DeviceType.Mobile)
+      tablet ← loadForDevice(DeviceType.Tablet)
+      desktop ← loadForDevice(DeviceType.Desktop)
+
+      groups ← loadForGroups()
     } yield AllNotificationSettings(
       generic = generic,
       specific = Map(
         DeviceType.Mobile → mobile,
         DeviceType.Tablet → tablet,
         DeviceType.Desktop → desktop
-      )
+      ),
+      groups = groups
     ))
 
-  private def loadAction(deviceType: String): DBIO[NotificationSettings] = {
+  private def loadForGroups(): DBIO[GroupNotificationSettings] =
+    for {
+      enabled ← ParameterRepo.findBooleanValue(userId, SettingsKeys.accountGroupEnabled, true)
+      onlyMentions ← ParameterRepo.findBooleanValue(userId, SettingsKeys.accountGroupMentionEnabled, false)
+    } yield GroupNotificationSettings(enabled, onlyMentions)
+
+  private def loadForDevice(deviceType: String): DBIO[NotificationSettings] =
     for {
       enabled ← ParameterRepo.findBooleanValue(userId, SettingsKeys.enabled(deviceType), true)
       sound ← ParameterRepo.findBooleanValue(userId, SettingsKeys.soundEnabled(deviceType), true)
@@ -103,7 +118,7 @@ private final class SettingsControl(userId: Int) extends Actor with ActorLogging
       peers ← ParameterRepo.findPeerNotifications(userId, deviceType)
       customSounds ← ParameterRepo.findPeerRingtone(userId)
     } yield NotificationSettings(enabled, sound, vibration, text, customSounds.toMap, peers.toMap)
-  }
+
 }
 
 private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLogging with Stash {
@@ -120,6 +135,7 @@ private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLo
   private val applePushProvider = new ApplePushProvider(userId)(context.system)
   private val actorPushProvider = ActorPush(context.system)
 
+  // TODO: why do we need `PushCredentialsInfo`, we have `authId` anyway!
   private var mapping: Map[PushCredentials, PushCredentialsInfo] = Map.empty
   private var notificationSettings = AllNotificationSettings()
 
@@ -214,33 +230,18 @@ private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLo
     val deviceType = DeviceType(info.appId)
 
     if (rules.excludeAuthIds.contains(info.authId)) {
-      log.debug("AuthSid is excluded, not pushing")
+      log.debug("AuthId is excluded, not pushing")
     } else {
       rules.data match {
         case Some(data) ⇒
           val settings = notificationSettings.specific.getOrElse(deviceType, notificationSettings.generic)
 
-          val isVisible =
-            (settings.enabled, data.peer) match {
-              case (true, Some(peer)) ⇒
-                settings.peers.get(peer) match {
-                  case Some(true) ⇒
-                    log.debug("Notifications for peer {} are enabled, push will be visible", peer)
-                    true
-                  case Some(false) ⇒
-                    log.debug("Notifications for peer {} are disabled, push will be invisible", peer)
-                    false
-                  case None ⇒
-                    log.debug("Notifications for peer {} are not set, push will be visible", peer)
-                    true
-                }
-              case (true, None) ⇒
-                log.debug("Notifications are enabled, delivering visible push")
-                true
-              case (false, _) ⇒
-                log.debug("Notifications are disabled, delivering invisible push")
-                false
-            }
+          val isVisible = isNotificationVisible(
+            settings,
+            notificationSettings.groups,
+            data.peer,
+            data.isMentioned
+          )
 
           if (isVisible)
             deliverVisible(
@@ -259,6 +260,56 @@ private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLo
           log.debug("No text, delivering simple seq")
           deliverInvisible(seq, creds)
       }
+    }
+  }
+
+  private def isNotificationVisible(
+    settings:      NotificationSettings,
+    groupSettings: GroupNotificationSettings,
+    optPeer:       Option[Peer],
+    isMentioned:   Boolean
+  ) = {
+    (settings.enabled, optPeer) match {
+      case (true, Some(peer)) ⇒
+        peer.`type` match {
+          case PeerType.Group ⇒
+            if (groupSettings.enabled) {
+              if (groupSettings.onlyMention) {
+                if (isMentioned) {
+                  log.debug("User is mentioned, notification for group {} will be visible", peer)
+                  true
+                } else {
+                  log.debug("Message without mention, notification for group {} will be visible", peer)
+                  false
+                }
+              } else {
+                log.debug("Group notifications are enabled, notification for group {} will be visible", peer)
+                true
+              }
+            } else {
+              log.debug("Group notifications are disabled, notification for group {} will be invisible", peer)
+              false
+            }
+          case _ ⇒
+            settings.peers.get(peer) match {
+              case Some(true) ⇒
+                log.debug("Notifications for peer {} are enabled, notification will be visible", peer)
+                true
+              case Some(false) ⇒
+                log.debug("Notifications for peer {} are disabled, notification will be invisible", peer)
+                false
+              case None ⇒
+                log.debug("Notifications for peer {} are not set, notification will be visible", peer)
+                true
+            }
+
+        }
+      case (true, None) ⇒
+        log.debug("Notifications are enabled, delivering visible push")
+        true
+      case (false, _) ⇒
+        log.debug("Notifications are disabled, delivering invisible push")
+        false
     }
   }
 

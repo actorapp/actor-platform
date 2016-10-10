@@ -26,6 +26,7 @@ message PushData {
     string text = 1;
     string censoredText = 3;
     Peer peer = 2;
+    bool is_mentioned = 4;
 }
 
 message PushRules {
