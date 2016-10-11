@@ -6,51 +6,51 @@ import Foundation
 
 public extension UIViewController {
 
-    public func alertSheet(@noescape closure: (a: AAAlertSetting) -> ()) {
+    public func alertSheet(_ closure: (_ a: AAAlertSetting) -> ()) {
         
         let s = AAAlertSetting()
         
-        closure(a: s)
+        closure(s)
         
-        let controller = UIAlertController(title: AALocalized(s.title), message: AALocalized(s.message), preferredStyle: .ActionSheet)
+        let controller = UIAlertController(title: AALocalized(s.title), message: AALocalized(s.message), preferredStyle: .actionSheet)
             
         for i in s.actions {
-            controller.addAction(UIAlertAction(title: AALocalized(i.title), style: i.isDestructive ? UIAlertActionStyle.Destructive : UIAlertActionStyle.Default, handler: { (c) -> Void in
+            controller.addAction(UIAlertAction(title: AALocalized(i.title), style: i.isDestructive ? UIAlertActionStyle.destructive : UIAlertActionStyle.default, handler: { (c) -> Void in
                 i.closure()
             }))
         }
             
-        controller.addAction(UIAlertAction(title: AALocalized("AlertCancel"), style: .Cancel, handler: nil))
+        controller.addAction(UIAlertAction(title: AALocalized("AlertCancel"), style: .cancel, handler: nil))
         
-        presentViewController(controller, animated: true, completion: nil)
+        present(controller, animated: true, completion: nil)
     }
     
-    public func confirmDestructive(message: String, action: String, yes: ()->()) {
-        let controller = UIAlertController(title: nil, message: message, preferredStyle: .Alert)
-        controller.addAction(UIAlertAction(title: action, style: .Destructive, handler: { (act) -> Void in
+    public func confirmDestructive(_ message: String, action: String, yes: @escaping ()->()) {
+        let controller = UIAlertController(title: nil, message: message, preferredStyle: .alert)
+        controller.addAction(UIAlertAction(title: action, style: .destructive, handler: { (act) -> Void in
             yes()
         }))
-        controller.addAction(UIAlertAction(title: AALocalized("AlertCancel"), style: .Cancel, handler: nil))
-        presentViewController(controller, animated: true, completion: nil)
+        controller.addAction(UIAlertAction(title: AALocalized("AlertCancel"), style: .cancel, handler: nil))
+        present(controller, animated: true, completion: nil)
     }
 }
 
-public class AAAlertSetting {
+open class AAAlertSetting {
     
-    public var cancel: String!
-    public var title: String!
-    public var message: String!
+    open var cancel: String!
+    open var title: String!
+    open var message: String!
     
-    private var actions = [AlertActions]()
+    fileprivate var actions = [AlertActions]()
     
-    public func action(title: String, closure: ()->()) {
+    open func action(_ title: String, closure: @escaping ()->()) {
         let a = AlertActions()
         a.title = title
         a.closure = closure
         actions.append(a)
     }
     
-    public func destructive(title: String, closure: ()->()) {
+    open func destructive(_ title: String, closure: @escaping ()->()) {
         let a = AlertActions()
         a.title = title
         a.closure = closure

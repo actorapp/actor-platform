@@ -26,19 +26,32 @@ import im.actor.core.api.updates.UpdateUserNickChanged;
 import im.actor.core.api.updates.UpdateUserPreferredLanguagesChanged;
 import im.actor.core.api.updates.UpdateUserTimeZoneChanged;
 import im.actor.core.api.updates.UpdateUserUnblocked;
+import im.actor.core.entity.ContactRecord;
+import im.actor.core.entity.ContactRecordType;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.MessageState;
 import im.actor.core.entity.Peer;
+import im.actor.core.entity.PhoneBookContact;
+import im.actor.core.entity.PhoneBookEmail;
+import im.actor.core.entity.PhoneBookPhone;
 import im.actor.core.entity.User;
 import im.actor.core.entity.content.ServiceUserRegistered;
 import im.actor.core.modules.ModuleActor;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.contacts.ContactsSyncActor;
+import im.actor.core.modules.contacts.entity.BookImportStorage;
 import im.actor.core.modules.users.router.entity.RouterApplyUsers;
 import im.actor.core.modules.users.router.entity.RouterFetchMissingUsers;
 import im.actor.core.modules.users.router.entity.RouterLoadFullUser;
 import im.actor.core.modules.users.router.entity.RouterUserUpdate;
 import im.actor.core.network.parser.Update;
+import im.actor.core.providers.PhoneBookProvider;
+import im.actor.core.viewmodel.UserEmail;
+import im.actor.core.viewmodel.UserPhone;
+import im.actor.core.viewmodel.UserVM;
+import im.actor.core.viewmodel.generics.ArrayListUserEmail;
+import im.actor.core.viewmodel.generics.ArrayListUserPhone;
+import im.actor.runtime.Log;
 import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.annotations.Verified;
 import im.actor.runtime.function.Function;
@@ -56,10 +69,12 @@ public class UserRouter extends ModuleActor {
     private HashSet<Integer> requestedFullUsers = new HashSet<>();
     private boolean isFreezed = false;
 
+    PhoneBookProvider phoneBookProvider = config().getPhoneBookProvider();
+    List<PhoneBookContact> contacts = null;
+
     public UserRouter(ModuleContext context) {
         super(context);
     }
-
 
     //
     // Small User
@@ -369,7 +384,13 @@ public class UserRouter extends ModuleActor {
                                 .map(responseLoadFullUsers ->
                                         new Tuple2<>(responseLoadFullUsers, u));
                     } else {
-                        return Promise.failure(new RuntimeException("Already loaded"));
+                        //user already loaded, only perform is in phone book check
+                        if (!getUserVM(uid).isInPhoneBook().get()) {
+                            return checkIsInPhoneBook(u).flatMap(aVoid -> Promise.failure(new RuntimeException("Already loaded")));
+                        } else {
+                            return Promise.failure(new RuntimeException("Already loaded"));
+                        }
+
                     }
                 })
                 .then(r -> {
@@ -380,6 +401,7 @@ public class UserRouter extends ModuleActor {
                     // Updating user in collection
                     users().addOrUpdateItem(upd);
                 })
+                .chain(r -> checkIsInPhoneBook(r.getT2().updateExt(r.getT1().getFullUsers().get(0))))
                 .after((r, e) -> unfreeze());
     }
 
@@ -424,6 +446,73 @@ public class UserRouter extends ModuleActor {
                 })
                 .map(x -> (Void) null)
                 .after((r, e) -> unfreeze());
+    }
+
+    private Promise<List<PhoneBookContact>> getPhoneBook() {
+        if (contacts == null) {
+            return new Promise<List<PhoneBookContact>>(resolver -> {
+                phoneBookProvider.loadPhoneBook(contacts1 -> {
+                    contacts = contacts1;
+                    resolver.result(contacts1);
+                });
+            });
+        } else {
+            return Promise.success(contacts);
+        }
+    }
+
+    protected Promise<Void> checkIsInPhoneBook(User user) {
+
+        if (!config().isEnableOnClientPrivacy()) {
+            return Promise.success(null);
+        }
+
+        Log.d("ON_CLIENT_PRIVACY", "checking " + user.getName() + " is in phone book");
+
+        return getPhoneBook().flatMap(phoneBookContacts -> new Promise<Void>(resolver -> {
+            List<ContactRecord> userRecords = user.getRecords();
+
+            Log.d("ON_CLIENT_PRIVACY", "phonebook have " + phoneBookContacts.size() + " records");
+            Log.d("ON_CLIENT_PRIVACY", "user have " + userRecords.size() + " records");
+
+            outer:
+            for (ContactRecord record : userRecords) {
+
+                for (PhoneBookContact phoneBookContact : phoneBookContacts) {
+
+                    for (PhoneBookPhone phone1 : phoneBookContact.getPhones()) {
+                        if (record.getRecordType() == ContactRecordType.PHONE) {
+                            if (record.getRecordData().equals(phone1.getNumber() + "")) {
+                                context().getContactsModule().markInPhoneBook(user.getUid());
+                                getUserVM(user.getUid()).isInPhoneBook().change(true);
+                                Log.d("ON_CLIENT_PRIVACY", "in record book!");
+                                break outer;
+                            }
+                        }
+
+                    }
+
+                    for (PhoneBookEmail email : phoneBookContact.getEmails()) {
+                        if (record.getRecordType() == ContactRecordType.EMAIL) {
+                            if (record.getRecordData().equals(email.getEmail())) {
+                                context().getContactsModule().markInPhoneBook(user.getUid());
+                                getUserVM(user.getUid()).isInPhoneBook().change(true);
+                                Log.d("ON_CLIENT_PRIVACY", "in record book!");
+                                break outer;
+                            }
+                        }
+
+                    }
+                }
+
+            }
+
+            Log.d("ON_CLIENT_PRIVACY", "finish check");
+
+
+            resolver.result(null);
+        }));
+
     }
 
 

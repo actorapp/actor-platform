@@ -41,38 +41,39 @@ import im.actor.sdk.view.avatar.AvatarView;
 
 import static im.actor.sdk.util.ActorSDKMessenger.groups;
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
+import static im.actor.sdk.util.ActorSDKMessenger.myUid;
 import static im.actor.sdk.util.ActorSDKMessenger.users;
 
 public class ChatToolbarFragment extends BaseFragment {
 
     public static final int MAX_USERS_FOR_CALLS = 5;
-    private static final int PERMISSIONS_REQUEST_FOR_CALL = 8;
-    private static final int PERMISSIONS_REQUEST_FOR_VIDEO_CALL = 12;
+    protected static final int PERMISSIONS_REQUEST_FOR_CALL = 8;
+    protected static final int PERMISSIONS_REQUEST_FOR_VIDEO_CALL = 12;
 
     public static ChatToolbarFragment create(Peer peer) {
         return new ChatToolbarFragment(peer);
     }
 
-    private Peer peer;
+    protected Peer peer;
 
     // Toolbar title root view
-    private View barView;
+    protected View barView;
     // Toolbar unread counter
-    private TextView counter;
+    protected TextView counter;
     // Toolbar Avatar view
-    private AvatarView barAvatar;
+    protected AvatarView barAvatar;
     // Toolbar title view
-    private TextView barTitle;
+    protected TextView barTitle;
     // Toolbar subtitle view container
-    private View barSubtitleContainer;
+    protected View barSubtitleContainer;
     // Toolbar subtitle text view
-    private TextView barSubtitle;
+    protected TextView barSubtitle;
     // Toolbar typing container
-    private View barTypingContainer;
+    protected View barTypingContainer;
     // Toolbar typing icon
-    private ImageView barTypingIcon;
+    protected ImageView barTypingIcon;
     // Toolbar typing text
-    private TextView barTyping;
+    protected TextView barTyping;
 
     public ChatToolbarFragment() {
         setRootFragment(true);
@@ -223,6 +224,7 @@ public class ChatToolbarFragment extends BaseFragment {
         super.onCreateOptionsMenu(menu, inflater);
 
         // Inflating menu
+        menu.clear();
         inflater.inflate(R.menu.chat_menu, menu);
 
         // Show menu for opening chat contact

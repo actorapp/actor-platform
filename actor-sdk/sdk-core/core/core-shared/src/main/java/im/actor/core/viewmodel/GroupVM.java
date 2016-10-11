@@ -610,6 +610,7 @@ public class GroupVM extends BaseValueModel<Group> {
         isChanged |= isCanClear.change(rawObj.isCanClear());
         isChanged |= isCanViewInfo.change(rawObj.isCanViewInfo());
         isChanged |= isCanJoin.change(rawObj.isCanJoin());
+        isChanged |= isCanCall.change(rawObj.isCanCall());
 
         if (isChanged) {
             notifyIfNeeded();

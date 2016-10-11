@@ -5,7 +5,7 @@
 import Foundation
 
 public extension Array {
-    public func contains<T where T : Equatable>(obj: T) -> Bool {
+    public func contains<T>(_ obj: T) -> Bool where T : Equatable {
         return self.filter({$0 as? T == obj}).count > 0
     }
 }

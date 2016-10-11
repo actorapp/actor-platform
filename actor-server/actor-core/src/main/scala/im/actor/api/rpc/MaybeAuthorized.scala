@@ -36,11 +36,9 @@ case object MaybeAuthorized extends MaybeAuthorizedInstances
 
 trait MaybeAuthorizedInstances {
   implicit val maybeAuthorizedInstance = new Functor[MaybeAuthorized] with Monad[MaybeAuthorized] {
-
     override def map[A, B](fa: MaybeAuthorized[A])(f: A ⇒ B): MaybeAuthorized[B] = fa.map(f)
-
     def pure[A](a: A): MaybeAuthorized[A] = Authorized(a)
-
     def flatMap[A, B](fa: MaybeAuthorized[A])(f: A ⇒ MaybeAuthorized[B]): MaybeAuthorized[B] = fa.flatMap(f)
+    def tailRecM[A, B](a: A)(f: A ⇒ MaybeAuthorized[Either[A, B]]): MaybeAuthorized[B] = defaultTailRecM(a)(f)
   }
 }

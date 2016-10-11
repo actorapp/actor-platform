@@ -12,7 +12,7 @@ struct AAHashMap<T> {
         }
     }
     
-    mutating func setKey(key: Int64, withValue val: T?) {
+    mutating func setKey(_ key: Int64, withValue val: T?) {
         let hashedString = Int(abs(key) % 10)
         if let collisionList = table[hashedString] {
             collisionList.upsertNodeWithKey(key, AndValue: val)
@@ -21,7 +21,7 @@ struct AAHashMap<T> {
             table[hashedString]!.upsertNodeWithKey(key, AndValue: val)
         }
     }
-    func getValueAtKey(key: Int64) -> T? {
+    func getValueAtKey(_ key: Int64) -> T? {
         let hashedString = Int(abs(key) % 10)
         if let collisionList = table[hashedString] {
             return collisionList.findNodeWithKey(key)?.value
@@ -34,7 +34,7 @@ struct AAHashMap<T> {
 struct SinglyLinkedList<T> {
     
     var head = CCHeadNode<CCSinglyNode<T>>()
-    func findNodeWithKey(key: Int64) -> CCSinglyNode<T>? {
+    func findNodeWithKey(_ key: Int64) -> CCSinglyNode<T>? {
         var res: CCSinglyNode<T>?
         autoreleasepool {
             if var currentNode = head.next {
@@ -55,7 +55,7 @@ struct SinglyLinkedList<T> {
         return res
     }
     
-    func upsertNodeWithKey(key: Int64, AndValue val: T?) -> CCSinglyNode<T> {
+    func upsertNodeWithKey(_ key: Int64, AndValue val: T?) -> CCSinglyNode<T> {
         if var currentNode = head.next {
             while let nextNode = currentNode.next {
                 if currentNode.key == key {

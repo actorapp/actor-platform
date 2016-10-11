@@ -9,7 +9,7 @@ import AVFoundation
 
 private var targetReference = "target"
 public extension UITapGestureRecognizer {
-    public convenience init(closure: ()->()){
+    public convenience init(closure: @escaping ()->()){
         let target = ClosureTarget(closure: closure)
         self.init(target: target, action: #selector(ClosureTarget.invoke))
         setAssociatedObject(self, value: target, associativeKey: &targetReference)
@@ -21,7 +21,7 @@ public extension UIView {
         set (value) {
             if value != nil {
                 self.addGestureRecognizer(UITapGestureRecognizer(closure: value!))
-                self.userInteractionEnabled = true
+                self.isUserInteractionEnabled = true
             }
         }
         get {
@@ -32,9 +32,9 @@ public extension UIView {
 
 private class ClosureTarget {
     
-    private let closure: ()->()
+    fileprivate let closure: ()->()
     
-    init(closure: ()->()) {
+    init(closure: @escaping ()->()) {
         self.closure = closure
     }
     
@@ -48,43 +48,43 @@ private class ClosureTarget {
 public extension UIView {
     
     public func hideView() {
-        self.hidden = true
+        self.isHidden = true
 //        UIView.animateWithDuration(0.2, animations: { () -> Void in
 //            self.alpha = 0
 //        })
     }
     
     public func showView() {
-        self.hidden = false
+        self.isHidden = false
 //        UIView.animateWithDuration(0.2, animations: { () -> Void in
 //            self.alpha = 1
 //        })
     }
     
     public func showViewAnimated() {
-        UIView.animateWithDuration(0.2, animations: { () -> Void in
+        UIView.animate(withDuration: 0.2, animations: { () -> Void in
             self.alpha = 1
         })
     }
     
     public func hideViewAnimated() {
-        UIView.animateWithDuration(0.2, animations: { () -> Void in
+        UIView.animate(withDuration: 0.2, animations: { () -> Void in
             self.alpha = 0
         })
     }
     
     public func showViewPop() {
-        UIView.animateWithDuration(1, delay: 0, usingSpringWithDamping: 0.7,
-                                   initialSpringVelocity: 0.6, options: .CurveEaseOut, animations: { () -> Void in
-            self.transform = CGAffineTransformIdentity;
+        UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 0.7,
+                                   initialSpringVelocity: 0.6, options: .curveEaseOut, animations: { () -> Void in
+            self.transform = CGAffineTransform.identity;
             self.alpha = 1
         }, completion: nil)
     }
     
     public func hideViewPop() {
-        UIView.animateWithDuration(1, delay: 0, usingSpringWithDamping: 0.7,
-                                   initialSpringVelocity: 1.0,options: .CurveEaseOut,animations: { () -> Void in
-            self.transform = CGAffineTransformMakeScale(0.01, 0.01)
+        UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 0.7,
+                                   initialSpringVelocity: 1.0,options: .curveEaseOut,animations: { () -> Void in
+            self.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
             self.alpha = 0
         }, completion: nil)
     }
@@ -97,53 +97,53 @@ public extension UIView {
 //    public var top: CGFloat { get { return frame.minY } }
 //    public var bottom: CGFloat { get { return frame.maxY } }
     
-    public func centerIn(rect: CGRect) {
-        self.frame = CGRectMake(rect.origin.x + (rect.width - self.bounds.width) / 2, rect.origin.y + (rect.height - self.bounds.height) / 2,
-            self.bounds.width, self.bounds.height)
+    public func centerIn(_ rect: CGRect) {
+        self.frame = CGRect(x: rect.origin.x + (rect.width - self.bounds.width) / 2, y: rect.origin.y + (rect.height - self.bounds.height) / 2,
+            width: self.bounds.width, height: self.bounds.height)
     }
     
-    public func under(rect: CGRect, offset: CGFloat) {
-        self.frame = CGRectMake(rect.origin.x + (rect.width - self.bounds.width) / 2, rect.origin.y + rect.height + offset,
-            self.bounds.width, self.bounds.height)
+    public func under(_ rect: CGRect, offset: CGFloat) {
+        self.frame = CGRect(x: rect.origin.x + (rect.width - self.bounds.width) / 2, y: rect.origin.y + rect.height + offset,
+            width: self.bounds.width, height: self.bounds.height)
     }
     
-    public func topIn(rect: CGRect) {
-        self.frame = CGRectMake(rect.origin.x + (rect.width - self.bounds.width) / 2, rect.origin.y,
-            self.bounds.width, self.bounds.height)
+    public func topIn(_ rect: CGRect) {
+        self.frame = CGRect(x: rect.origin.x + (rect.width - self.bounds.width) / 2, y: rect.origin.y,
+            width: self.bounds.width, height: self.bounds.height)
     }
 }
 
 // Text measuring
 
-public class UIViewMeasure {
+open class UIViewMeasure {
     
-    public class func measureText(text: String, width: CGFloat, fontSize: CGFloat) -> CGSize {
-        return UIViewMeasure.measureText(text, width: width, font: UIFont.systemFontOfSize(fontSize))
+    open class func measureText(_ text: String, width: CGFloat, fontSize: CGFloat) -> CGSize {
+        return UIViewMeasure.measureText(text, width: width, font: UIFont.systemFont(ofSize: fontSize))
     }
     
-    public class func measureText(text: String, width: CGFloat, font: UIFont) -> CGSize {
+    open class func measureText(_ text: String, width: CGFloat, font: UIFont) -> CGSize {
         
         // Building paragraph styles
         let style = NSMutableParagraphStyle()
-        style.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        style.lineBreakMode = NSLineBreakMode.byWordWrapping
         
         // Measuring text with reduced width
-        let rect = text.boundingRectWithSize(CGSize(width: width - 2, height: CGFloat.max),
-            options: NSStringDrawingOptions.UsesLineFragmentOrigin,
+        let rect = text.boundingRect(with: CGSize(width: width - 2, height: CGFloat.greatestFiniteMagnitude),
+            options: NSStringDrawingOptions.usesLineFragmentOrigin,
             attributes: [NSFontAttributeName: font, NSParagraphStyleAttributeName: style],
             context: nil)
         
         // Returning size with expanded width
-        return CGSizeMake(ceil(rect.width + 2), CGFloat(ceil(rect.height)))
+        return CGSize(width: ceil(rect.width + 2), height: CGFloat(ceil(rect.height)))
     }
     
-    public class func measureText(attributedText: NSAttributedString, width: CGFloat) -> CGSize {
+    open class func measureText(_ attributedText: NSAttributedString, width: CGFloat) -> CGSize {
         
         // Measuring text with reduced width
-        let rect = attributedText.boundingRectWithSize(CGSize(width: width - 2, height: CGFloat.max), options: [.UsesLineFragmentOrigin, .UsesFontLeading], context: nil)
+        let rect = attributedText.boundingRect(with: CGSize(width: width - 2, height: CGFloat.greatestFiniteMagnitude), options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil)
         
         // Returning size with expanded width and height
-        return CGSizeMake(ceil(rect.width + 2), CGFloat(ceil(rect.height)))
+        return CGSize(width: ceil(rect.width + 2), height: CGFloat(ceil(rect.height)))
     }
 }
 
@@ -152,7 +152,7 @@ public class UIViewMeasure {
 private var registeredCells = "cells!"
 
 public extension UITableView {
-    private func cellTypeForClass(cellClass: AnyClass) -> String {
+    fileprivate func cellTypeForClass(_ cellClass: AnyClass) -> String {
         let cellReuseId = "\(cellClass)"
         var registered: ([String])! = getAssociatedObject(self, associativeKey: &registeredCells)
         var found = false
@@ -168,30 +168,30 @@ public extension UITableView {
         }
         
         if !found {
-            registerClass(cellClass, forCellReuseIdentifier: cellReuseId)
+            register(cellClass, forCellReuseIdentifier: cellReuseId)
         }
         
         return cellReuseId
     }
     
-    public func dequeueCell(cellClass: AnyClass, indexPath: NSIndexPath) -> UITableViewCell {
+    public func dequeueCell(_ cellClass: AnyClass, indexPath: IndexPath) -> UITableViewCell {
         let reuseId = cellTypeForClass(cellClass)
-        return self.dequeueReusableCellWithIdentifier(reuseId, forIndexPath: indexPath)
+        return self.dequeueReusableCell(withIdentifier: reuseId, for: indexPath)
     }
     
-    public func dequeueCell<T where T: UITableViewCell>(indexPath: NSIndexPath) -> T {
+    public func dequeueCell<T>(_ indexPath: IndexPath) -> T where T: UITableViewCell {
         let reuseId = cellTypeForClass(T.self)
-        return self.dequeueReusableCellWithIdentifier(reuseId, forIndexPath: indexPath) as! T
+        return self.dequeueReusableCell(withIdentifier: reuseId, for: indexPath) as! T
     }
     
-    public func visibleCellForIndexPath(path: NSIndexPath) -> UITableViewCell? {
+    public func visibleCellForIndexPath(_ path: IndexPath) -> UITableViewCell? {
         if indexPathsForVisibleRows == nil {
             return nil
         }
         
         for i in 0..<indexPathsForVisibleRows!.count {
             let vPath = indexPathsForVisibleRows![i]
-            if vPath.row == path.row && vPath.section == path.section {
+            if (vPath as NSIndexPath).row == (path as NSIndexPath).row && (vPath as NSIndexPath).section == (path as NSIndexPath).section {
                 return visibleCells[i]
             }
         }
@@ -250,7 +250,7 @@ public extension UIViewController {
     
     public var statusBarHeight: CGFloat {
         get {
-            let statusBarSize = UIApplication.sharedApplication().statusBarFrame.size
+            let statusBarSize = UIApplication.shared.statusBarFrame.size
             return min(statusBarSize.width, statusBarSize.height)
         }
     }
@@ -263,15 +263,15 @@ private var viewClass: AnyClass = NSClassFromString("VJTubuvtCbs".encodeText(-1)
 
 public extension UIApplication {
     
-    public func animateStatusBarAppearance(animation: StatusBarAppearanceAnimation, duration: NSTimeInterval) {
+    public func animateStatusBarAppearance(_ animation: StatusBarAppearanceAnimation, duration: TimeInterval) {
         
-        if self.respondsToSelector(selector) {
+        if self.responds(to: selector) {
             
-            let window = self.performSelector(selector).takeUnretainedValue() as! UIWindow
+            let window = self.perform(selector).takeUnretainedValue() as! UIWindow
             
             var view: UIView! = nil
             for subview in window.subviews {
-                if subview.dynamicType == viewClass {
+                if type(of: subview) == viewClass {
                     view = subview
                     break
                 }
@@ -284,39 +284,39 @@ public extension UIApplication {
                 var startPosition = view.layer.position
                 var position = view.layer.position
                 
-                if animation == .SlideDown {
-                    startPosition = CGPointMake(floor(view.frame.size.width / 2), floor(view.frame.size.height / 2) - viewHeight);
-                    position = CGPointMake(floor(view.frame.size.width / 2), floor(view.frame.size.height / 2));
-                } else if animation == .SlideUp {
-                    startPosition = CGPointMake(floor(view.frame.size.width / 2), floor(view.frame.size.height / 2));
-                    position = CGPointMake(floor(view.frame.size.width / 2), floor(view.frame.size.height / 2) - viewHeight);
+                if animation == .slideDown {
+                    startPosition = CGPoint(x: floor(view.frame.size.width / 2), y: floor(view.frame.size.height / 2) - viewHeight);
+                    position = CGPoint(x: floor(view.frame.size.width / 2), y: floor(view.frame.size.height / 2));
+                } else if animation == .slideUp {
+                    startPosition = CGPoint(x: floor(view.frame.size.width / 2), y: floor(view.frame.size.height / 2));
+                    position = CGPoint(x: floor(view.frame.size.width / 2), y: floor(view.frame.size.height / 2) - viewHeight);
                 }
                 
                 
                 let animation = CABasicAnimation(keyPath: "position")
                 animation.duration = duration
-                animation.fromValue = NSValue(CGPoint: startPosition)
-                animation.toValue = NSValue(CGPoint: position)
+                animation.fromValue = NSValue(cgPoint: startPosition)
+                animation.toValue = NSValue(cgPoint: position)
                 
                 animation.fillMode = kCAFillModeForwards
-                animation.removedOnCompletion = false
+                animation.isRemovedOnCompletion = false
                 
                 animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
                 
-                view.layer.addAnimation(animation, forKey: "ac_position")
+                view.layer.add(animation, forKey: "ac_position")
             }
         }
     }
 }
 
 public enum StatusBarAppearanceAnimation {
-    case SlideDown
-    case SlideUp
+    case slideDown
+    case slideUp
 }
 
 // Encoding strings to avoid deobfuscation
 extension String {
-    func encodeText(key: Int32) -> String {
+    func encodeText(_ key: Int32) -> String {
         var res = ""
         for i in 0..<length {
             res += String(
@@ -325,7 +325,7 @@ extension String {
                         UInt32(
                             Int32(
                                 (self[i] as String).unicodeScalars.first!.value) + key
-                        ))
+                        ))!
                 )
             )
         }
@@ -338,21 +338,21 @@ extension String {
 extension UINavigationBar {
 
     func setTransparentBackground() {
-        setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
+        setBackgroundImage(UIImage(), for: UIBarMetrics.default)
         shadowImage = UIImage()
     }
     
     var hairlineHidden: Bool {
         get {
-            return hairlineImageViewInNavigationBar(self)!.hidden
+            return hairlineImageViewInNavigationBar(self)!.isHidden
         }
         set(v) {
-            hairlineImageViewInNavigationBar(self)!.hidden = v
+            hairlineImageViewInNavigationBar(self)!.isHidden = v
         }
     }
     
-    private func hairlineImageViewInNavigationBar(view: UIView) -> UIImageView? {
-        if view.isKindOfClass(UIImageView) && view.bounds.height <= 1.0 {
+    fileprivate func hairlineImageViewInNavigationBar(_ view: UIView) -> UIImageView? {
+        if view.isKind(of: UIImageView.self) && view.bounds.height <= 1.0 {
             return (view as! UIImageView)
         }
         
@@ -369,48 +369,48 @@ extension UINavigationBar {
 extension AVAsset {
     
     func videoOrientation() -> (orientation: UIInterfaceOrientation, device: AVCaptureDevicePosition) {
-        var orientation: UIInterfaceOrientation = .Unknown
-        var device: AVCaptureDevicePosition = .Unspecified
+        var orientation: UIInterfaceOrientation = .unknown
+        var device: AVCaptureDevicePosition = .unspecified
         
-        let tracks :[AVAssetTrack] = self.tracksWithMediaType(AVMediaTypeVideo)
+        let tracks :[AVAssetTrack] = self.tracks(withMediaType: AVMediaTypeVideo)
         if let videoTrack = tracks.first {
             
             let t = videoTrack.preferredTransform
             
             if (t.a == 0 && t.b == 1.0 && t.d == 0) {
-                orientation = .Portrait
+                orientation = .portrait
                 
                 if t.c == 1.0 {
-                    device = .Front
+                    device = .front
                 } else if t.c == -1.0 {
-                    device = .Back
+                    device = .back
                 }
             }
             else if (t.a == 0 && t.b == -1.0 && t.d == 0) {
-                orientation = .PortraitUpsideDown
+                orientation = .portraitUpsideDown
                 
                 if t.c == -1.0 {
-                    device = .Front
+                    device = .front
                 } else if t.c == 1.0 {
-                    device = .Back
+                    device = .back
                 }
             }
             else if (t.a == 1.0 && t.b == 0 && t.c == 0) {
-                orientation = .LandscapeRight
+                orientation = .landscapeRight
                 
                 if t.d == -1.0 {
-                    device = .Front
+                    device = .front
                 } else if t.d == 1.0 {
-                    device = .Back
+                    device = .back
                 }
             }
             else if (t.a == -1.0 && t.b == 0 && t.c == 0) {
-                orientation = .LandscapeLeft
+                orientation = .landscapeLeft
                 
                 if t.d == 1.0 {
-                    device = .Front
+                    device = .front
                 } else if t.d == -1.0 {
-                    device = .Back
+                    device = .back
                 }
             }
         }

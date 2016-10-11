@@ -2,7 +2,7 @@ package im.actor.server.encryption
 
 import cats.Foldable
 import cats.data.Xor, Xor._
-import cats.std.all._
+import cats.instances.all._
 import cats.syntax.all._
 import com.google.protobuf.ByteString
 import im.actor.api.rpc.encryption.{ ApiEncryptionKeySignature, ApiEncryptionKeyGroup, ApiEncryptionKey }

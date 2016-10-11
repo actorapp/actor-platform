@@ -208,7 +208,7 @@
     <string name="dialogs_title">Chats</string>
     <string name="dialogs_hint">Long press for additional options</string>
     <string name="dialogs_empty_title">Start messaging</string>
-    <string name="dialogs_empty">Pick a contact from your contact list or press the plus button to start a conversation right now.</string>
+    <string name="dialogs_empty">Pick a contact from your contact list or press the "write" button to start a conversation right now.</string>
 
     <string name="dialogs_menu_contact_view">View contact</string>
     <string name="dialogs_menu_contact_rename">Rename contact</string>
@@ -234,7 +234,7 @@
     <string name="contacts_empty_title">Invite your friends</string>
     <string name="contacts_empty_invite_hint">None of your contacts are using {appName}. Use the button below to invite them.</string>
     <string name="contacts_empty_invite_action">Tell a friend</string>
-    <string name="contacts_empty_add_hint">or manually add contacts by pressing the plus button below.</string>
+    <string name="contacts_empty_add_hint">or manually add contacts using global search on main screen.</string>
 
     <string name="contacts_menu_remove">Remove {0} from contacts</string>
     <string name="contacts_menu_remove_progress">Removing…</string>
@@ -276,6 +276,8 @@
     <string name="chat_voice_record_cancel">SLIDE TO CANCEL</string>
 
     <string name="chat_not_member">You are not a member of this group</string>
+    <string name="group_deleted">Group deleted</string>
+    <string name="channel_deleted">Channel deleted</string>
 
     <string name="chat_join">Join</string>
     <string name="chat_mute">Mute</string>
@@ -479,6 +481,9 @@
     <string name="invite_link_error_revoke_link">Unable to revoke invite link</string>
     <string name="invite_link_empty_view">Loading invite link</string>
 
+    <string name="join">JOIN</string>
+    <string name="open">OPEN</string>
+
     <string name="invite_link_join_confirm">Join "%1$s"?</string>
 
     <!-- Documents -->
@@ -548,6 +553,12 @@
 
     <string name="settings_chat_markdown">Markdown</string>
     <string name="settings_chat_markdown_subtitle">Is markdown enabled</string>
+
+    <string name="settings_animation_download_title">Auto download animations</string>
+    <string name="settings_image_download_title">Auto download images</string>
+    <string name="settings_video_download_title">Auto download videos</string>
+    <string name="settings_audio_download_title">Auto download audio</string>
+    <string name="settings_doc_download_title">Auto download documents</string>
 
     <!-- Security -->
     <string name="security_title">Security and Privacy</string>

@@ -4,17 +4,17 @@
 
 import Foundation
 
-public class AAGroupCreateViewController: AAViewController, UITextFieldDelegate {
+open class AAGroupCreateViewController: AAViewController, UITextFieldDelegate {
 
-    private let isChannel: Bool
-    private var addPhotoButton = UIButton()
-    private var avatarImageView = UIImageView()
-    private var hint = UILabel()
+    fileprivate let isChannel: Bool
+    fileprivate var addPhotoButton = UIButton()
+    fileprivate var avatarImageView = UIImageView()
+    fileprivate var hint = UILabel()
     
-    private var groupName = UITextField()
-    private var groupNameFieldSeparator = UIView()
+    fileprivate var groupName = UITextField()
+    fileprivate var groupNameFieldSeparator = UIView()
     
-    private var image: UIImage?
+    fileprivate var image: UIImage?
 
     public init(isChannel: Bool) {
         self.isChannel = isChannel
@@ -25,16 +25,16 @@ public class AAGroupCreateViewController: AAViewController, UITextFieldDelegate 
             self.navigationItem.title = AALocalized("CreateGroupTitle")
         }
         if AADevice.isiPad {
-            self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: UIBarButtonItemStyle.Plain, target: self, action: #selector(AAViewController.dismiss))
+            self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: UIBarButtonItemStyle.plain, target: self, action: #selector(self.dismissController))
         }
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationNext"), style: UIBarButtonItemStyle.Done, target: self, action: #selector(AAGroupCreateViewController.doNext))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationNext"), style: UIBarButtonItemStyle.done, target: self, action: #selector(AAGroupCreateViewController.doNext))
     }
 
     public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func viewDidLoad() {
+    open override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = appStyle.vcBgColor
@@ -46,52 +46,52 @@ public class AAGroupCreateViewController: AAViewController, UITextFieldDelegate 
         
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 110, height: 110), false, 0.0);
         let context = UIGraphicsGetCurrentContext();
-        CGContextSetFillColorWithColor(context, appStyle.composeAvatarBgColor.CGColor);
-        CGContextFillEllipseInRect(context, CGRectMake(0.0, 0.0, 110.0, 110.0));
-        CGContextSetStrokeColorWithColor(context, appStyle.composeAvatarBorderColor.CGColor);
-        CGContextSetLineWidth(context, 1.0);
-        CGContextStrokeEllipseInRect(context, CGRectMake(0.5, 0.5, 109.0, 109.0));
+        context?.setFillColor(appStyle.composeAvatarBgColor.cgColor);
+        context?.fillEllipse(in: CGRect(x: 0.0, y: 0.0, width: 110.0, height: 110.0));
+        context?.setStrokeColor(appStyle.composeAvatarBorderColor.cgColor);
+        context?.setLineWidth(1.0);
+        context?.strokeEllipse(in: CGRect(x: 0.5, y: 0.5, width: 109.0, height: 109.0));
         let buttonImage = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
         
-        addPhotoButton.exclusiveTouch = true
-        addPhotoButton.setBackgroundImage(buttonImage, forState: UIControlState.Normal)
-        addPhotoButton.addTarget(self, action: #selector(AAGroupCreateViewController.photoTap), forControlEvents: UIControlEvents.TouchUpInside)
+        addPhotoButton.isExclusiveTouch = true
+        addPhotoButton.setBackgroundImage(buttonImage, for: UIControlState())
+        addPhotoButton.addTarget(self, action: #selector(AAGroupCreateViewController.photoTap), for: UIControlEvents.touchUpInside)
         
         let addPhotoLabelFirst = UILabel()
         addPhotoLabelFirst.text = AALocalized("ActionAddPhoto1")
-        addPhotoLabelFirst.font = UIFont.systemFontOfSize(15.0)
-        addPhotoLabelFirst.backgroundColor = UIColor.clearColor()
+        addPhotoLabelFirst.font = UIFont.systemFont(ofSize: 15.0)
+        addPhotoLabelFirst.backgroundColor = UIColor.clear
         addPhotoLabelFirst.textColor = appStyle.composeAvatarTextColor
         addPhotoLabelFirst.sizeToFit()
         
         let addPhotoLabelSecond = UILabel()
         addPhotoLabelSecond.text = AALocalized("ActionAddPhoto2")
-        addPhotoLabelSecond.font = UIFont.systemFontOfSize(15.0)
-        addPhotoLabelSecond.backgroundColor = UIColor.clearColor()
+        addPhotoLabelSecond.font = UIFont.systemFont(ofSize: 15.0)
+        addPhotoLabelSecond.backgroundColor = UIColor.clear
         addPhotoLabelSecond.textColor = appStyle.composeAvatarTextColor
         addPhotoLabelSecond.sizeToFit()
         
         addPhotoButton.addSubview(addPhotoLabelFirst)
         addPhotoButton.addSubview(addPhotoLabelSecond)
         
-        addPhotoLabelFirst.frame = CGRectIntegral(CGRectMake((80 - addPhotoLabelFirst.frame.size.width) / 2, 22, addPhotoLabelFirst.frame.size.width, addPhotoLabelFirst.frame.size.height));
-        addPhotoLabelSecond.frame = CGRectIntegral(CGRectMake((80 - addPhotoLabelSecond.frame.size.width) / 2, 22 + 22, addPhotoLabelSecond.frame.size.width, addPhotoLabelSecond.frame.size.height));
+        addPhotoLabelFirst.frame = CGRect(x: (80 - addPhotoLabelFirst.frame.size.width) / 2, y: 22, width: addPhotoLabelFirst.frame.size.width, height: addPhotoLabelFirst.frame.size.height).integral;
+        addPhotoLabelSecond.frame = CGRect(x: (80 - addPhotoLabelSecond.frame.size.width) / 2, y: 22 + 22, width: addPhotoLabelSecond.frame.size.width, height: addPhotoLabelSecond.frame.size.height).integral;
         
         groupName.backgroundColor = appStyle.vcBgColor
         groupName.textColor = ActorSDK.sharedActor().style.cellTextColor
-        groupName.font = UIFont.systemFontOfSize(20)
-        groupName.keyboardType = UIKeyboardType.Default
-        groupName.returnKeyType = UIReturnKeyType.Next
+        groupName.font = UIFont.systemFont(ofSize: 20)
+        groupName.keyboardType = UIKeyboardType.default
+        groupName.returnKeyType = UIReturnKeyType.next
         if isChannel {
             groupName.attributedPlaceholder = NSAttributedString(string: AALocalized("CreateChannelNamePlaceholder"), attributes: [NSForegroundColorAttributeName: ActorSDK.sharedActor().style.vcHintColor])
         } else {
             groupName.attributedPlaceholder = NSAttributedString(string: AALocalized("CreateGroupNamePlaceholder"), attributes: [NSForegroundColorAttributeName: ActorSDK.sharedActor().style.vcHintColor])
         }
         groupName.delegate = self
-        groupName.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
-        groupName.autocapitalizationType = UITextAutocapitalizationType.Words
-        groupName.keyboardAppearance = appStyle.isDarkApp ? .Dark : .Light
+        groupName.contentVerticalAlignment = UIControlContentVerticalAlignment.center
+        groupName.autocapitalizationType = UITextAutocapitalizationType.words
+        groupName.keyboardAppearance = appStyle.isDarkApp ? .dark : .light
         
         groupNameFieldSeparator.backgroundColor = appStyle.vcSeparatorColor
         
@@ -101,25 +101,25 @@ public class AAGroupCreateViewController: AAViewController, UITextFieldDelegate 
             hint.text = AALocalized("CreateGroupHint")
         }
         
-        hint.font = UIFont.systemFontOfSize(15)
-        hint.lineBreakMode = .ByWordWrapping
+        hint.font = UIFont.systemFont(ofSize: 15)
+        hint.lineBreakMode = .byWordWrapping
         hint.numberOfLines = 0
         hint.textColor = ActorSDK.sharedActor().style.vcHintColor
     }
     
-    public override func viewDidLayoutSubviews() {
+    open override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        avatarImageView.frame = CGRectMake(20, 20 + 66, 80, 80)
+        avatarImageView.frame = CGRect(x: 20, y: 20 + 66, width: 80, height: 80)
         addPhotoButton.frame = avatarImageView.frame
-        hint.frame = CGRectMake(120, 20 + 66, view.width - 140, 80)
+        hint.frame = CGRect(x: 120, y: 20 + 66, width: view.width - 140, height: 80)
         
-        groupName.frame = CGRectMake(20, 106 + 66, view.width - 20, 56.0)
-        groupNameFieldSeparator.frame = CGRectMake(20, 156 + 66, view.width - 20, 0.5)
+        groupName.frame = CGRect(x: 20, y: 106 + 66, width: view.width - 20, height: 56.0)
+        groupNameFieldSeparator.frame = CGRect(x: 20, y: 156 + 66, width: view.width - 20, height: 0.5)
     }
     
-    public func photoTap() {
-        let hasCamera = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
+    open func photoTap() {
+        let hasCamera = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera)
         self.showActionSheet(hasCamera ? ["PhotoCamera", "PhotoLibrary"] : ["PhotoLibrary"],
             cancelButton: "AlertCancel",
             destructButton: self.avatarImageView.image != nil ? "PhotoRemove" : nil,
@@ -139,17 +139,17 @@ public class AAGroupCreateViewController: AAViewController, UITextFieldDelegate 
         })
     }
     
-    public override func viewWillAppear(animated: Bool) {
+    open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)   
         groupName.becomeFirstResponder()
     }
 
-    public func textFieldShouldReturn(textField: UITextField) -> Bool {
+    open func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         doNext()
         return false
     }
     
-    public func doNext() {
+    open func doNext() {
         let title = groupName.text!.trim()
         if (title.length == 0) {
             shakeView(groupName, originalX: groupName.frame.origin.x)
@@ -159,7 +159,7 @@ public class AAGroupCreateViewController: AAViewController, UITextFieldDelegate 
         groupName.resignFirstResponder()
         
         if isChannel {
-            executePromise(Actor.createChannelWithTitle(title, withAvatar: nil)).then({ (gid: JavaLangInteger!) in
+            executePromise(Actor.createChannel(withTitle: title, withAvatar: nil)).then({ (gid: JavaLangInteger!) in
                 self.navigateNext(AAGroupTypeViewController(gid: Int(gid.intValue()), isCreation: true), removeCurrent: true)
             })
         } else {

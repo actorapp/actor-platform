@@ -517,8 +517,16 @@ public class RouterActor extends ModuleActor {
 
         Message head = conversation(peer).getHeadValue();
 
-        if (head != null && head.getMessageState() == MessageState.PENDING) {
-            head = null;
+        if (head != null) {
+            ConversationState state = conversationStates.getValue(peer.getUnuqueId());
+            state = state
+                    .changeInReadDate(head.getSortDate())
+                    .changeOutSendDate(head.getSortDate());
+            conversationStates.addOrUpdateItem(state);
+
+            if (head.getMessageState() == MessageState.PENDING) {
+                head = null;
+            }
         }
 
         return getDialogsRouter().onMessageDeleted(peer, head);
@@ -736,8 +744,9 @@ public class RouterActor extends ModuleActor {
         ConversationState state = conversationStates.getValue(peer.getUnuqueId());
         if (state.isEmpty() != isEmpty) {
             state = state.changeIsEmpty(isEmpty);
-            conversationStates.addOrUpdateItem(state);
         }
+
+        conversationStates.addOrUpdateItem(state);
     }
 
     //

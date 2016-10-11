@@ -10,10 +10,6 @@ trait InternalExtension
 
 object InternalExtensions {
 
-  def getId(path: String, name: String) = {
-    ActorConfig.load().getInt(s"$path.$name.id")
-  }
-
   def extensions(path: String): Map[Int, String] = {
     val extConfig = ActorConfig.load().getConfig(path)
     val extensionsKeys = extConfig.root.keys

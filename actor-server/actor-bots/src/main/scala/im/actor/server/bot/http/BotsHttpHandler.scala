@@ -12,7 +12,7 @@ import akka.stream.{ ActorMaterializer, Materializer }
 import akka.stream.scaladsl.Flow
 import akka.util.ByteString
 import cats.data.OptionT
-import cats.std.future._
+import cats.instances.future._
 import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
 import im.actor.api.rpc.sequence.UpdateRawUpdate
 import im.actor.server.api.http.HttpHandler

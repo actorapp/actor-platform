@@ -1,4 +1,3 @@
-drop table departments;
 drop table llectro_devices;
 drop table llectro_interests;
 drop table llectro_users;

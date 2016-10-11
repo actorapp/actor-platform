@@ -3,7 +3,7 @@ package im.actor.server.encryption
 import akka.actor._
 import akka.event.Logging
 import akka.http.scaladsl.util.FastFuture
-import cats.std.all._
+import cats.instances.all._
 import cats.syntax.all._
 import cats.data.{ Xor, XorT }
 import im.actor.api.rpc.encryption._

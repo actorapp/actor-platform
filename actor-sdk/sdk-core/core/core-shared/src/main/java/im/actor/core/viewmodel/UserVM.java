@@ -69,6 +69,8 @@ public class UserVM extends BaseValueModel<User> {
     @NotNull
     private BooleanValueModel isContact;
     @NotNull
+    private BooleanValueModel isInPhoneBook;
+    @NotNull
     private BooleanValueModel isBlocked;
     @NotNull
     private BooleanValueModel isVerified;
@@ -112,6 +114,7 @@ public class UserVM extends BaseValueModel<User> {
         about = new StringValueModel("user." + id + ".about", user.getAbout());
         avatar = new AvatarValueModel("user." + id + ".avatar", user.getAvatar());
         isContact = new BooleanValueModel("user." + id + ".contact", modules.getContactsModule().isUserContact(id));
+        isInPhoneBook = new BooleanValueModel("user." + id + ".in_pb", modules.getContactsModule().isUserInPhoneBook(id));
         isBlocked = new BooleanValueModel("user." + id + ".blocked", user.isBlocked());
         isVerified = new BooleanValueModel("user." + id + ".is_verified", user.isVerified());
         timeZone = new StringValueModel("user." + id + ".time_zone", user.getTimeZone());
@@ -262,6 +265,17 @@ public class UserVM extends BaseValueModel<User> {
     @ObjectiveCName("isContactModel")
     public BooleanValueModel isContact() {
         return isContact;
+    }
+
+    /**
+     * Get ValueModel of flag if user is in phone book
+     *
+     * @return ValueModel of Boolean
+     */
+    @NotNull
+    @ObjectiveCName("isInPhoneBookModel")
+    public BooleanValueModel isInPhoneBook() {
+        return isInPhoneBook;
     }
 
     /**

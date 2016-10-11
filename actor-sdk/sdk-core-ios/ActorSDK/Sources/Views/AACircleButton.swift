@@ -4,21 +4,21 @@
 
 import Foundation
 
-public class AACircleButton: UIView {
+open class AACircleButton: UIView {
     
-    private let buttonSize: CGFloat
+    fileprivate let buttonSize: CGFloat
     
-    public let button = UIButton()
-    private let titleView = UILabel()
-    private let borderView = UIImageView()
+    open let button = UIButton()
+    fileprivate let titleView = UILabel()
+    fileprivate let borderView = UIImageView()
     
-    public var image: UIImage? {
+    open var image: UIImage? {
         didSet(v) {
             updateStyles()
         }
     }
     
-    public var title: String? {
+    open var title: String? {
         get {
             return titleView.text
         }
@@ -27,21 +27,21 @@ public class AACircleButton: UIView {
         }
     }
 
-    public var filled: Bool = false {
+    open var filled: Bool = false {
         didSet(v) {
             updateStyles()
         }
     }
     
-    public var enabled: Bool = true {
+    open var enabled: Bool = true {
         didSet(v) {
-            button.enabled = v
-            button.userInteractionEnabled = v
+            button.isEnabled = v
+            button.isUserInteractionEnabled = v
             updateStyles()
         }
     }
     
-    public var borderColor: UIColor = UIColor.whiteColor().alpha(0.87) {
+    open var borderColor: UIColor = UIColor.white.alpha(0.87) {
         didSet(v) {
             updateStyles()
         }
@@ -49,17 +49,17 @@ public class AACircleButton: UIView {
     
     public init(size: CGFloat) {
         self.buttonSize = size
-        super.init(frame: CGRectMake(0, 0, size, size))
+        super.init(frame: CGRect(x: 0, y: 0, width: size, height: size))
         
-        borderView.bounds = CGRectMake(0, 0, size, size)
+        borderView.bounds = CGRect(x: 0, y: 0, width: size, height: size)
         borderView.frame = borderView.bounds
         
         titleView.font = UIFont.thinSystemFontOfSize(17)
-        titleView.textAlignment = .Center
-        titleView.bounds = CGRectMake(0, 0, 86, 44)
+        titleView.textAlignment = .center
+        titleView.bounds = CGRect(x: 0, y: 0, width: 86, height: 44)
         titleView.adjustsFontSizeToFitWidth = true
         
-        button.bounds = CGRectMake(0, 0, size, size)
+        button.bounds = CGRect(x: 0, y: 0, width: size, height: size)
         
         updateStyles()
         
@@ -72,20 +72,20 @@ public class AACircleButton: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func updateStyles() {
-        let mainColor = enabled ? UIColor.whiteColor() : UIColor.whiteColor().alpha(0.3)
-        let selectedColor = enabled ? UIColor.blackColor() : UIColor.blackColor().alpha(0.3)
+    fileprivate func updateStyles() {
+        let mainColor = enabled ? UIColor.white : UIColor.white.alpha(0.3)
+        let selectedColor = enabled ? UIColor.black : UIColor.black.alpha(0.3)
         titleView.textColor = mainColor
         if (filled) {
             borderView.image = Imaging.roundedImage(mainColor, radius: buttonSize / 2)
-            button.setImage(image?.tintImage(selectedColor), forState: .Normal)
+            button.setImage(image?.tintImage(selectedColor), for: UIControlState())
         } else {
             borderView.image = Imaging.circleImage(mainColor, radius: buttonSize / 2)
-            button.setImage(image?.tintImage(mainColor), forState: .Normal)
+            button.setImage(image?.tintImage(mainColor), for: UIControlState())
         }
     }
     
-    public override func layoutSubviews() {
+    open override func layoutSubviews() {
         super.layoutSubviews()
         
         button.topIn(self.bounds)

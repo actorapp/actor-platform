@@ -645,6 +645,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
     case GroupErrors.ShortNameTaken          ⇒ GroupRpcErrors.ShortNameTaken
     case GroupErrors.NoPermission            ⇒ GroupRpcErrors.NoPermission
     case GroupErrors.CantLeaveGroup          ⇒ GroupRpcErrors.CantLeaveGroup
+    case GroupErrors.UserIsBanned            ⇒ GroupRpcErrors.UserIsBanned
   }
 
 }

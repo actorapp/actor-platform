@@ -115,7 +115,7 @@ public class ProfileFragment extends BaseFragment {
         //
 
         avatarView = (AvatarView) res.findViewById(R.id.avatar);
-        avatarView.init(Screen.dp(96), 44);
+        avatarView.init(Screen.dp(48), 22);
         avatarView.bind(user.getAvatar().get(), user.getName().get(), user.getId());
         avatarView.setOnClickListener(v -> {
             startActivity(ViewAvatarActivity.viewAvatar(user.getId(), getActivity()));
@@ -207,6 +207,7 @@ public class ProfileFragment extends BaseFragment {
         // Voice Call
         //
 
+        View voiceCallDivider = res.findViewById(R.id.voiceCallDivider);
         View voiceCallView = res.findViewById(R.id.voiceCall);
         if (ActorSDK.sharedActor().isCallsEnabled() && !user.isBot()) {
             ImageView voiceViewIcon = (ImageView) voiceCallView.findViewById(R.id.actionIcon);
@@ -221,6 +222,7 @@ public class ProfileFragment extends BaseFragment {
             });
         } else {
             voiceCallView.setVisibility(View.GONE);
+            voiceCallDivider.setVisibility(View.GONE);
         }
 
         //
@@ -228,6 +230,7 @@ public class ProfileFragment extends BaseFragment {
         //
 
 
+        View videoCallDivider = res.findViewById(R.id.videoCallDivider);
         View videoCallView = res.findViewById(R.id.videoCall);
         if (ActorSDK.sharedActor().isCallsEnabled() && !user.isBot()) {
             ImageView voiceViewIcon = (ImageView) videoCallView.findViewById(R.id.videoCallIcon);
@@ -242,6 +245,7 @@ public class ProfileFragment extends BaseFragment {
             });
         } else {
             videoCallView.setVisibility(View.GONE);
+            videoCallDivider.setVisibility(View.GONE);
         }
 
 
@@ -280,136 +284,141 @@ public class ProfileFragment extends BaseFragment {
             }
         });
 
-        //
-        // Phones
-        //
 
-        for (int i = 0; i < phones.size(); i++) {
-            final UserPhone userPhone = phones.get(i);
+        if (!ActorSDK.sharedActor().isOnClientPrivacyEnabled() || user.isInPhoneBook().get()) {
 
-            // Formatting Phone Number
-            String _phoneNumber;
-            try {
-                Phonenumber.PhoneNumber number = PhoneNumberUtil.getInstance().parse("+" + userPhone.getPhone(), "us");
-                _phoneNumber = PhoneNumberUtil.getInstance().format(number, PhoneNumberUtil.PhoneNumberFormat.INTERNATIONAL);
-            } catch (NumberParseException e) {
-                e.printStackTrace();
-                _phoneNumber = "+" + userPhone.getPhone();
+            //
+            // Phones
+            //
+
+            for (int i = 0; i < phones.size(); i++) {
+                final UserPhone userPhone = phones.get(i);
+
+                // Formatting Phone Number
+                String _phoneNumber;
+                try {
+                    Phonenumber.PhoneNumber number = PhoneNumberUtil.getInstance().parse("+" + userPhone.getPhone(), "us");
+                    _phoneNumber = PhoneNumberUtil.getInstance().format(number, PhoneNumberUtil.PhoneNumberFormat.INTERNATIONAL);
+                } catch (NumberParseException e) {
+                    e.printStackTrace();
+                    _phoneNumber = "+" + userPhone.getPhone();
+                }
+                final String phoneNumber = _phoneNumber;
+
+
+                String phoneTitle = userPhone.getTitle();
+
+                // "Mobile phone" is default value for non specified title
+                // Trying to localize this
+                if (phoneTitle.toLowerCase().equals("mobile phone")) {
+                    phoneTitle = getString(R.string.settings_mobile_phone);
+                }
+
+                View view = buildRecord(phoneTitle,
+                        phoneNumber,
+                        R.drawable.ic_import_contacts_black_24dp,
+                        isFirstContact,
+                        false,
+                        inflater, contactsContainer);
+                if (isFirstContact) {
+                    recordFieldWithIcon = view;
+                }
+
+                view.setOnClickListener(v -> {
+                    new AlertDialog.Builder(getActivity())
+                            .setItems(new CharSequence[]{
+                                    getString(R.string.phone_menu_call).replace("{0}", phoneNumber),
+                                    getString(R.string.phone_menu_sms).replace("{0}", phoneNumber),
+                                    getString(R.string.phone_menu_share).replace("{0}", phoneNumber),
+                                    getString(R.string.phone_menu_copy)
+                            }, (dialog, which) -> {
+                                if (which == 0) {
+                                    startActivity(new Intent(Intent.ACTION_DIAL)
+                                            .setData(Uri.parse("tel:+" + userPhone.getPhone())));
+                                } else if (which == 1) {
+                                    startActivity(new Intent(Intent.ACTION_VIEW)
+                                            .setData(Uri.parse("sms:+" + userPhone.getPhone())));
+                                } else if (which == 2) {
+                                    startActivity(new Intent(Intent.ACTION_SEND)
+                                            .setType("text/plain")
+                                            .putExtra(Intent.EXTRA_TEXT, getString(R.string.settings_share_text)
+                                                    .replace("{0}", phoneNumber)
+                                                    .replace("{1}", user.getName().get())));
+                                } else if (which == 3) {
+                                    ClipboardManager clipboard =
+                                            (ClipboardManager) getActivity()
+                                                    .getSystemService(Context.CLIPBOARD_SERVICE);
+                                    ClipData clip = ClipData.newPlainText("Phone number", phoneNumber);
+                                    clipboard.setPrimaryClip(clip);
+                                    Snackbar.make(res, R.string.toast_phone_copied, Snackbar.LENGTH_SHORT)
+                                            .show();
+                                }
+                            })
+                            .show()
+                            .setCanceledOnTouchOutside(true);
+                });
+
+                view.setOnLongClickListener(v -> {
+                    ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                    ClipData clip = ClipData.newPlainText("Phone number", "+" + userPhone.getPhone());
+                    clipboard.setPrimaryClip(clip);
+                    Snackbar.make(res, R.string.toast_phone_copied, Snackbar.LENGTH_SHORT)
+                            .show();
+                    return true;
+                });
+
+                isFirstContact = false;
             }
-            final String phoneNumber = _phoneNumber;
 
+            //
+            // Emails
+            //
 
-            String phoneTitle = userPhone.getTitle();
+            for (int i = 0; i < emails.size(); i++) {
+                final UserEmail userEmail = emails.get(i);
+                View view = buildRecord(userEmail.getTitle(),
+                        userEmail.getEmail(),
+                        R.drawable.ic_import_contacts_black_24dp,
+                        isFirstContact,
+                        false,
+                        inflater, contactsContainer);
+                if (isFirstContact) {
+                    recordFieldWithIcon = view;
+                }
 
-            // "Mobile phone" is default value for non specified title
-            // Trying to localize this
-            if (phoneTitle.toLowerCase().equals("mobile phone")) {
-                phoneTitle = getString(R.string.settings_mobile_phone);
+                view.setOnClickListener(v -> {
+                    new AlertDialog.Builder(getActivity())
+                            .setItems(new CharSequence[]{
+                                    getString(R.string.email_menu_email).replace("{0}", userEmail.getEmail()),
+                                    getString(R.string.phone_menu_copy)
+                            }, (dialog, which) -> {
+                                if (which == 0) {
+                                    startActivity(new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", userEmail.getEmail(), null)));
+                                } else if (which == 1) {
+                                    ClipboardManager clipboard =
+                                            (ClipboardManager) getActivity()
+                                                    .getSystemService(Context.CLIPBOARD_SERVICE);
+                                    ClipData clip = ClipData.newPlainText("Email", userEmail.getEmail());
+                                    clipboard.setPrimaryClip(clip);
+                                    Snackbar.make(res, R.string.toast_email_copied, Snackbar.LENGTH_SHORT)
+                                            .show();
+                                }
+                            })
+                            .show()
+                            .setCanceledOnTouchOutside(true);
+                });
+                view.setOnLongClickListener(v -> {
+                    ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                    ClipData clip = ClipData.newPlainText("Email", "+" + userEmail.getEmail());
+                    clipboard.setPrimaryClip(clip);
+                    Snackbar.make(res, R.string.toast_email_copied, Snackbar.LENGTH_SHORT)
+                            .show();
+                    return true;
+                });
+                isFirstContact = false;
             }
-
-            View view = buildRecord(phoneTitle,
-                    phoneNumber,
-                    R.drawable.ic_import_contacts_black_24dp,
-                    isFirstContact,
-                    false,
-                    inflater, contactsContainer);
-            if (isFirstContact) {
-                recordFieldWithIcon = view;
-            }
-
-            view.setOnClickListener(v -> {
-                new AlertDialog.Builder(getActivity())
-                        .setItems(new CharSequence[]{
-                                getString(R.string.phone_menu_call).replace("{0}", phoneNumber),
-                                getString(R.string.phone_menu_sms).replace("{0}", phoneNumber),
-                                getString(R.string.phone_menu_share).replace("{0}", phoneNumber),
-                                getString(R.string.phone_menu_copy)
-                        }, (dialog, which) -> {
-                            if (which == 0) {
-                                startActivity(new Intent(Intent.ACTION_DIAL)
-                                        .setData(Uri.parse("tel:+" + userPhone.getPhone())));
-                            } else if (which == 1) {
-                                startActivity(new Intent(Intent.ACTION_VIEW)
-                                        .setData(Uri.parse("sms:+" + userPhone.getPhone())));
-                            } else if (which == 2) {
-                                startActivity(new Intent(Intent.ACTION_SEND)
-                                        .setType("text/plain")
-                                        .putExtra(Intent.EXTRA_TEXT, getString(R.string.settings_share_text)
-                                                .replace("{0}", phoneNumber)
-                                                .replace("{1}", user.getName().get())));
-                            } else if (which == 3) {
-                                ClipboardManager clipboard =
-                                        (ClipboardManager) getActivity()
-                                                .getSystemService(Context.CLIPBOARD_SERVICE);
-                                ClipData clip = ClipData.newPlainText("Phone number", phoneNumber);
-                                clipboard.setPrimaryClip(clip);
-                                Snackbar.make(res, R.string.toast_phone_copied, Snackbar.LENGTH_SHORT)
-                                        .show();
-                            }
-                        })
-                        .show()
-                        .setCanceledOnTouchOutside(true);
-            });
-
-            view.setOnLongClickListener(v -> {
-                ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("Phone number", "+" + userPhone.getPhone());
-                clipboard.setPrimaryClip(clip);
-                Snackbar.make(res, R.string.toast_phone_copied, Snackbar.LENGTH_SHORT)
-                        .show();
-                return true;
-            });
-
-            isFirstContact = false;
         }
 
-        //
-        // Emails
-        //
-
-        for (int i = 0; i < emails.size(); i++) {
-            final UserEmail userEmail = emails.get(i);
-            View view = buildRecord(userEmail.getTitle(),
-                    userEmail.getEmail(),
-                    R.drawable.ic_import_contacts_black_24dp,
-                    isFirstContact,
-                    false,
-                    inflater, contactsContainer);
-            if (isFirstContact) {
-                recordFieldWithIcon = view;
-            }
-
-            view.setOnClickListener(v -> {
-                new AlertDialog.Builder(getActivity())
-                        .setItems(new CharSequence[]{
-                                getString(R.string.email_menu_email).replace("{0}", userEmail.getEmail()),
-                                getString(R.string.phone_menu_copy)
-                        }, (dialog, which) -> {
-                            if (which == 0) {
-                                startActivity(new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", userEmail.getEmail(), null)));
-                            } else if (which == 1) {
-                                ClipboardManager clipboard =
-                                        (ClipboardManager) getActivity()
-                                                .getSystemService(Context.CLIPBOARD_SERVICE);
-                                ClipData clip = ClipData.newPlainText("Email", userEmail.getEmail());
-                                clipboard.setPrimaryClip(clip);
-                                Snackbar.make(res, R.string.toast_email_copied, Snackbar.LENGTH_SHORT)
-                                        .show();
-                            }
-                        })
-                        .show()
-                        .setCanceledOnTouchOutside(true);
-            });
-            view.setOnLongClickListener(v -> {
-                ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("Email", "+" + userEmail.getEmail());
-                clipboard.setPrimaryClip(clip);
-                Snackbar.make(res, R.string.toast_email_copied, Snackbar.LENGTH_SHORT)
-                        .show();
-                return true;
-            });
-            isFirstContact = false;
-        }
 
         //
         // Username

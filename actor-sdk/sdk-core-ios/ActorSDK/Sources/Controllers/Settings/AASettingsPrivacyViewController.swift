@@ -4,23 +4,23 @@
 
 import UIKit
 
-public class AASettingsPrivacyViewController: AAContentTableController {
+open class AASettingsPrivacyViewController: AAContentTableController {
     
-    private var sessionsCell: AAManagedArrayRows<ARApiAuthSession, AACommonCell>?
+    fileprivate var sessionsCell: AAManagedArrayRows<ARApiAuthSession, AACommonCell>?
     
     public init() {
-        super.init(style: AAContentTableStyle.SettingsGrouped)
+        super.init(style: AAContentTableStyle.settingsGrouped)
         
         navigationItem.title = AALocalized("PrivacyTitle")
         
-        content = ACAllEvents_Settings.PRIVACY()
+        content = ACAllEvents_Settings.privacy()
     }
     
     public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func tableDidLoad() {
+    open override func tableDidLoad() {
         
         section { (s) -> () in
             

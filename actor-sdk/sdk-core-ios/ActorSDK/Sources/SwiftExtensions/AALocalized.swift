@@ -6,10 +6,7 @@ import Foundation
 
 // Shorter helper for localized strings
 
-public func AALocalized(text: String!) -> String! {
-    if text == nil {
-        return nil
-    }
+public func AALocalized(_ text: String) -> String {
     
     let appRes = NSLocalizedString(text, comment: "")
     
@@ -24,12 +21,12 @@ public func AALocalized(text: String!) -> String! {
         }
     }
     
-    return NSLocalizedString(text, tableName: nil, bundle: NSBundle.framework, value: text, comment: "")
+    return NSLocalizedString(text, tableName: nil, bundle: Bundle.framework, value: text, comment: "")
 }
 
 // Registration localization table
 
-public func AARegisterLocalizedBundle(table: String, bundle: NSBundle) {
+public func AARegisterLocalizedBundle(_ table: String, bundle: Bundle) {
     tables.append(LocTable(table: table, bundle: bundle))
 }
 
@@ -38,9 +35,9 @@ private var tables = [LocTable]()
 private class LocTable {
     
     let table: String
-    let bundle: NSBundle
+    let bundle: Bundle
     
-    init(table: String, bundle: NSBundle) {
+    init(table: String, bundle: Bundle) {
         self.table = table
         self.bundle = bundle
     }
