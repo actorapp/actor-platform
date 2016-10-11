@@ -56,4 +56,8 @@ open class AppDelegate : ActorApplicationDelegate {
     open override func showStickersButton() -> Bool{
         return false
     }
+    
+    open override func useOnClientPrivacy() -> Bool{
+        return true
+    }
 }

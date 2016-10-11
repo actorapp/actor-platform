@@ -63,6 +63,8 @@ public protocol ActorSDKDelegate {
     func actorSettingsSupportDidCreated(_ controller: AASettingsViewController, section: AAManagedSection)
     
     func showStickersButton() -> Bool
+    
+    func useOnClientPrivacy() -> Bool
 }
 
 /// Default empty implementation of SDK Delegate
@@ -142,5 +144,9 @@ open class ActorSDKDelegateDefault: NSObject, ActorSDKDelegate {
     
     open func showStickersButton() -> Bool{
         return true
+    }
+    
+    open func useOnClientPrivacy() -> Bool{
+        return false
     }
 }
