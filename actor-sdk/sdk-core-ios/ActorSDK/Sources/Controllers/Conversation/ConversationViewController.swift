@@ -159,7 +159,9 @@ open class ConversationViewController:
         self.stickersButton.tintColor = UIColor.lightGray.withAlphaComponent(0.5)
         self.stickersButton.setImage(UIImage.bundled("sticker_button"), for: UIControlState())
         self.stickersButton.addTarget(self, action: #selector(ConversationViewController.changeKeyboard), for: UIControlEvents.touchUpInside)
-        self.textInputbar.addSubview(stickersButton)
+        if(ActorSDK.sharedActor().delegate.showStickersButton()){
+         self.textInputbar.addSubview(stickersButton)   
+        }
         
         
         //
