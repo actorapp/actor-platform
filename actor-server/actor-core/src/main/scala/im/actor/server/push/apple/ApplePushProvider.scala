@@ -45,21 +45,24 @@ final class ApplePushProvider(userId: Int)(implicit system: ActorSystem) extends
   ): Unit = {
     withClient(creds) { implicit client ⇒
       if (isLegacyCreds(creds)) {
-        val builder =
-          new ApnsPayloadBuilder()
-            .addCustomProperty("seq", seq)
-            .setContentAvailable(true)
+        dialogExt.getUnreadTotal(userId) foreach { total ⇒
+          val builder =
+            new ApnsPayloadBuilder()
+              .addCustomProperty("seq", seq)
+              .setContentAvailable(true)
+              .setBadgeNumber(total)
 
-        if (data.text.nonEmpty && isTextEnabled)
-          builder.setAlertBody(data.text)
-        else if (data.censoredText.nonEmpty)
-          builder.setAlertBody(data.censoredText)
+          if (data.text.nonEmpty && isTextEnabled)
+            builder.setAlertBody(data.text)
+          else if (data.censoredText.nonEmpty)
+            builder.setAlertBody(data.censoredText)
 
-        if (isSoundEnabled)
-          builder.setSoundFileName(customSound getOrElse "iapetus.caf")
+          if (isSoundEnabled)
+            builder.setSoundFileName(customSound getOrElse "iapetus.caf")
 
-        val payload = builder.buildWithDefaultMaximumLength()
-        sendNotification(payload, creds, userId)
+          val payload = builder.buildWithDefaultMaximumLength()
+          sendNotification(payload, creds, userId)
+        }
       } else {
         sendNotification(payload = seqOnly(seq), creds, userId)
       }
