@@ -176,15 +176,15 @@ open class AADialogCell: AATableViewCell, AABindedCell {
         setNeedsLayout()
     }
     
-    open override func willTransition(to state: UITableViewCellStateMask) {
-        super.willTransition(to: state)
-        
-        if state.contains(UITableViewCellStateMask.showingEditControlMask) {
-            isEditing = true
-        } else {
-            isEditing = false
-        }
-    }
+//    open override func willTransition(to state: UITableViewCellStateMask) {
+//        super.willTransition(to: state)
+//        
+//        if state.contains(UITableViewCellStateMask.showingEditControlMask) {
+//            isEditing = true
+//        } else {
+//            isEditing = false
+//        }
+//    }
     
     open override func layoutSubviews() {
         super.layoutSubviews()

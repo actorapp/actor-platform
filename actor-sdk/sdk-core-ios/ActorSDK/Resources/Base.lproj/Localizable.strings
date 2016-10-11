@@ -699,6 +699,11 @@
 
 "ActionDeleteMessage" = "Are you sure want to delete chat?";
 
+"ActionDeleteGroupTitle" = "Remove Group";
+
+"ActionDeleteChannelTitle" = "Remove Channel";
+
+"ActionDeleteChatlTitle" = "Remove Chat";
 
 "ActionDeleteChannel" = "Delete Channel";
 
