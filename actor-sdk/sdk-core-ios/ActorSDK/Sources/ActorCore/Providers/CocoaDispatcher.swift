@@ -6,7 +6,7 @@ import Foundation
 
 class CocoaDispatcher: NSObject, ARCocoaDispatcherProxy {
     
-    func dispatchOnBackground(runnable: JavaLangRunnable!, withDelay delay: jlong) -> ARDispatchCancel! {
+    func dispatch(onBackground runnable: JavaLangRunnable!, withDelay delay: jlong) -> ARDispatchCancel! {
         dispatchBackgroundDelayed(Double(delay) / 1000) { () -> Void in
             runnable.run()
         }
@@ -16,7 +16,7 @@ class CocoaDispatcher: NSObject, ARCocoaDispatcherProxy {
 
 private class DispatchCancel: NSObject, ARDispatchCancel {
     
-    @objc private func cancel() {
+    @objc fileprivate func cancel() {
         // Do Nothing
     }
 }

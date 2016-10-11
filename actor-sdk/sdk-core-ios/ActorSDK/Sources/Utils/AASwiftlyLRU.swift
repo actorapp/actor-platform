@@ -45,7 +45,7 @@ class LinkedList<K, V> {
         
     }
     
-    func addToHead(node: Node<K, V>) {
+    func addToHead(_ node: Node<K, V>) {
         if self.head == nil  {
             self.head = node
             self.tail = node
@@ -58,7 +58,7 @@ class LinkedList<K, V> {
         }
     }
     
-    func remove(node: Node<K, V>) {
+    func remove(_ node: Node<K, V>) {
         if node === self.head {
             if self.head?.next != nil {
                 self.head = self.head?.next
@@ -94,8 +94,8 @@ class AASwiftlyLRU<K : Hashable, V> : CustomStringConvertible {
     let capacity: Int
     var length = 0
     
-    private let queue: LinkedList<K, V>
-    private var hashtable: [K : Node<K, V>]
+    fileprivate let queue: LinkedList<K, V>
+    fileprivate var hashtable: [K : Node<K, V>]
     
     /**
     Least Recently Used "LRU" Cache, capacity is the number of elements to keep in the Cache.
@@ -134,7 +134,7 @@ class AASwiftlyLRU<K : Hashable, V> : CustomStringConvertible {
                     
                     self.length += 1
                 } else {
-                    hashtable.removeValueForKey(self.queue.tail!.key)
+                    hashtable.removeValue(forKey: self.queue.tail!.key)
                     self.queue.tail = self.queue.tail?.previous
                     
                     if let node = self.queue.tail {

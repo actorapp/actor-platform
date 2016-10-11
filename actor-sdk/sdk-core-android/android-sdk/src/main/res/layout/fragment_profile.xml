@@ -71,6 +71,7 @@
                 android:orientation="vertical" />
 
             <im.actor.sdk.view.DividerView
+                android:id="@+id/messageDivider"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
@@ -104,6 +105,7 @@
             </LinearLayout>
 
             <im.actor.sdk.view.DividerView
+                android:id="@+id/videoCallDivider"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
@@ -137,6 +139,7 @@
             </LinearLayout>
 
             <im.actor.sdk.view.DividerView
+                android:id="@+id/voiceCallDivider"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"

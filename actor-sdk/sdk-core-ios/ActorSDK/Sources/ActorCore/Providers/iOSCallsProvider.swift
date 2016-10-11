@@ -11,27 +11,27 @@ class iOSCallsProvider: NSObject, ACCallsProvider {
     var ringtonePlayer: AVAudioPlayer! = nil
     var latestNotification: UILocalNotification!
     
-    func onCallStartWithCallId(callId: jlong) {
+    func onCallStart(withCallId callId: jlong) {
         
         AAAudioManager.sharedAudio().callStart(Actor.getCallWithCallId(callId))
        
         dispatchOnUi() {
             let rootController = ActorSDK.sharedActor().bindedToWindow.rootViewController!
             if let presented = rootController.presentedViewController {
-                presented.dismissViewControllerAnimated(true, completion: { () -> Void in
-                    rootController.presentViewController(AACallViewController(callId: callId), animated: true, completion: nil)
+                presented.dismiss(animated: true, completion: { () -> Void in
+                    rootController.present(AACallViewController(callId: callId), animated: true, completion: nil)
                 })
             } else {
-                rootController.presentViewController(AACallViewController(callId: callId), animated: true, completion: nil)
+                rootController.present(AACallViewController(callId: callId), animated: true, completion: nil)
             }
         }
     }
     
-    func onCallAnsweredWithCallId(callId: jlong) {
+    func onCallAnswered(withCallId callId: jlong) {
         AAAudioManager.sharedAudio().callAnswered(Actor.getCallWithCallId(callId))
     }
     
-    func onCallEndWithCallId(callId: jlong) {
+    func onCallEnd(withCallId callId: jlong) {
         AAAudioManager.sharedAudio().callEnd(Actor.getCallWithCallId(callId))
     }
     
@@ -39,7 +39,7 @@ class iOSCallsProvider: NSObject, ACCallsProvider {
         
         if (beepPlayer == nil) {
             do {
-                beepPlayer = try AVAudioPlayer(contentsOfURL: NSURL(fileURLWithPath: NSBundle.framework.pathForResource("tone", ofType: "m4a")!))
+                beepPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: Bundle.framework.path(forResource: "tone", ofType: "m4a")!))
                 beepPlayer.prepareToPlay()
                 beepPlayer.numberOfLoops = -1
             } catch let error as NSError {

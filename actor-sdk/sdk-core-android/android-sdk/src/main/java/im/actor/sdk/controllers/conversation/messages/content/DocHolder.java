@@ -298,7 +298,7 @@ public class DocHolder extends MessageHolder {
 
             if (document.getSource() instanceof FileRemoteSource) {
                 FileRemoteSource remoteSource = (FileRemoteSource) document.getSource();
-                boolean autoDownload = remoteSource.getFileReference().getFileSize() <= 1024 * 1024;// < 1MB
+                boolean autoDownload = remoteSource.getFileReference().getFileSize() <= 1024 * 1024 && messenger().isDocAutoDownloadEnabled();// < 1MB
                 downloadFileVM = messenger().bindFile(remoteSource.getFileReference(),
                         autoDownload, new DownloadVMCallback());
             } else if (document.getSource() instanceof FileLocalSource) {

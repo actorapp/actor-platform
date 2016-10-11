@@ -49,7 +49,7 @@ class AAListProcessor: NSObject, ARListProcessor {
         self.peer = peer
     }
     
-    func processWithItems(items: JavaUtilList, withPrevious previous: AnyObject?) -> AnyObject? {
+    func process(withItems items: JavaUtilList, withPrevious previous: Any?) -> Any? {
         
         var objs = [ACMessage]()
         var indexes = [jlong: Int]()
@@ -74,7 +74,7 @@ class AAListProcessor: NSObject, ARListProcessor {
             
             // Building content list and dictionary from rid to index list
             for i in 0..<items.size() {
-                let msg = items.getWithInt(i) as! ACMessage
+                let msg = items.getWith(i) as! ACMessage
                 indexes.updateValue(Int(i), forKey: msg.rid)
                 objs.append(msg)
             }
@@ -199,7 +199,7 @@ class AAListProcessor: NSObject, ARListProcessor {
         Building Cell Setting: Information about decorators like date separator 
         and clenching of bubbles
     */
-    func buildCellSetting(index: Int, items: [ACMessage]) -> AACellSetting {
+    func buildCellSetting(_ index: Int, items: [ACMessage]) -> AACellSetting {
         
         let current = items[index]
         let id = Int64(current.rid)
@@ -240,14 +240,14 @@ class AAListProcessor: NSObject, ARListProcessor {
     /**
         Checking if messages have same send day
     */
-    func areSameDate(source:ACMessage, prev: ACMessage) -> Bool {
-        let calendar = NSCalendar.currentCalendar()
+    func areSameDate(_ source:ACMessage, prev: ACMessage) -> Bool {
+        let calendar = Calendar.current
         
-        let currentDate = NSDate(timeIntervalSince1970: Double(source.date)/1000.0)
-        let currentDateComp = calendar.components([.Day, .Year, .Month], fromDate: currentDate)
+        let currentDate = Date(timeIntervalSince1970: Double(source.date)/1000.0)
+        let currentDateComp = (calendar as NSCalendar).components([.day, .year, .month], from: currentDate)
         
-        let nextDate = NSDate(timeIntervalSince1970: Double(prev.date)/1000.0)
-        let nextDateComp = calendar.components([.Day, .Year, .Month], fromDate: nextDate)
+        let nextDate = Date(timeIntervalSince1970: Double(prev.date)/1000.0)
+        let nextDateComp = (calendar as NSCalendar).components([.day, .year, .month], from: nextDate)
         
         return (currentDateComp.year == nextDateComp.year && currentDateComp.month == nextDateComp.month && currentDateComp.day == nextDateComp.day)
     }
@@ -255,7 +255,7 @@ class AAListProcessor: NSObject, ARListProcessor {
     /**
         Checking if it is good to make bubbles clenched
     */
-    func useCompact(source: ACMessage, next: ACMessage) -> Bool {
+    func useCompact(_ source: ACMessage, next: ACMessage) -> Bool {
         if (source.content is ACServiceContent) {
             if (next.content is ACServiceContent) {
                 return true
@@ -272,7 +272,7 @@ class AAListProcessor: NSObject, ARListProcessor {
         return false
     }
     
-    func measureHeight(message: ACMessage, setting: AACellSetting, layout: AACellLayout) -> CGFloat {
+    func measureHeight(_ message: ACMessage, setting: AACellSetting, layout: AACellLayout) -> CGFloat {
         
         let content = message.content!
         
@@ -293,7 +293,7 @@ class AAListProcessor: NSObject, ARListProcessor {
         return height
     }
     
-    func buildLayout(message: ACMessage, layoutCache: AALayoutCache) -> AACellLayout {
+    func buildLayout(_ message: ACMessage, layoutCache: AALayoutCache) -> AACellLayout {
         
         var layout: AACellLayout! = layoutCache.pick(message.rid)
         

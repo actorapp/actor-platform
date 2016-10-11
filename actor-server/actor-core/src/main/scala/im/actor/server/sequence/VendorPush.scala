@@ -2,19 +2,21 @@ package im.actor.server.sequence
 
 import akka.actor._
 import akka.pattern.pipe
+import im.actor.concurrent.FutureExt
 import im.actor.server.db.DbExtension
-import im.actor.server.model.push.{ ActorPushCredentials, ApplePushCredentials, GooglePushCredentials, PushCredentials }
+import im.actor.server.model.push._
 import im.actor.server.model.{ DeviceType, Peer, PeerType }
-import im.actor.server.persist.AuthSessionRepo
+import im.actor.server.persist.{ AuthIdRepo, AuthSessionRepo }
 import im.actor.server.persist.configs.ParameterRepo
-import im.actor.server.persist.push.{ ActorPushCredentialsRepo, ApplePushCredentialsRepo, GooglePushCredentialsRepo }
+import im.actor.server.persist.push.{ ActorPushCredentialsRepo, ApplePushCredentialsRepo, FirebasePushCredentialsKV, GooglePushCredentialsRepo }
 import im.actor.server.push.actor.ActorPush
+import im.actor.server.push.apple.ApplePushProvider
+import im.actor.server.push.google.GooglePushProvider
 import im.actor.server.sequence.UserSequenceCommands.ReloadSettings
 import im.actor.server.userconfig.SettingsKeys
 import slick.dbio.DBIO
 
 import scala.concurrent.Future
-import scala.util.control.NoStackTrace
 
 private[sequence] trait VendorPushCommand
 
@@ -22,7 +24,13 @@ private final case class PushCredentialsInfo(appId: Int, authId: Long)
 
 private final case class AllNotificationSettings(
   generic:  NotificationSettings              = NotificationSettings(),
-  specific: Map[String, NotificationSettings] = Map.empty
+  specific: Map[String, NotificationSettings] = Map.empty,
+  groups:   GroupNotificationSettings         = GroupNotificationSettings()
+)
+
+private final case class GroupNotificationSettings(
+  enabled:     Boolean = true,
+  onlyMention: Boolean = false
 )
 
 private final case class NotificationSettings(
@@ -79,20 +87,29 @@ private final class SettingsControl(userId: Int) extends Actor with ActorLogging
 
   private def load(): Future[AllNotificationSettings] =
     db.run(for {
-      generic ← loadAction(DeviceType.Generic)
-      mobile ← loadAction(DeviceType.Mobile)
-      tablet ← loadAction(DeviceType.Tablet)
-      desktop ← loadAction(DeviceType.Desktop)
+      generic ← loadForDevice(DeviceType.Generic)
+      mobile ← loadForDevice(DeviceType.Mobile)
+      tablet ← loadForDevice(DeviceType.Tablet)
+      desktop ← loadForDevice(DeviceType.Desktop)
+
+      groups ← loadForGroups()
     } yield AllNotificationSettings(
       generic = generic,
       specific = Map(
         DeviceType.Mobile → mobile,
         DeviceType.Tablet → tablet,
         DeviceType.Desktop → desktop
-      )
+      ),
+      groups = groups
     ))
 
-  private def loadAction(deviceType: String): DBIO[NotificationSettings] = {
+  private def loadForGroups(): DBIO[GroupNotificationSettings] =
+    for {
+      enabled ← ParameterRepo.findBooleanValue(userId, SettingsKeys.accountGroupEnabled, true)
+      onlyMentions ← ParameterRepo.findBooleanValue(userId, SettingsKeys.accountGroupMentionEnabled, false)
+    } yield GroupNotificationSettings(enabled, onlyMentions)
+
+  private def loadForDevice(deviceType: String): DBIO[NotificationSettings] =
     for {
       enabled ← ParameterRepo.findBooleanValue(userId, SettingsKeys.enabled(deviceType), true)
       sound ← ParameterRepo.findBooleanValue(userId, SettingsKeys.soundEnabled(deviceType), true)
@@ -101,7 +118,7 @@ private final class SettingsControl(userId: Int) extends Actor with ActorLogging
       peers ← ParameterRepo.findPeerNotifications(userId, deviceType)
       customSounds ← ParameterRepo.findPeerRingtone(userId)
     } yield NotificationSettings(enabled, sound, vibration, text, customSounds.toMap, peers.toMap)
-  }
+
 }
 
 private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLogging with Stash {
@@ -114,11 +131,15 @@ private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLo
 
   private val settingsControl = context.actorOf(SettingsControl.props(userId), "settings")
   private val googlePushProvider = new GooglePushProvider(userId, context.system)
+
   private val applePushProvider = new ApplePushProvider(userId)(context.system)
   private val actorPushProvider = ActorPush(context.system)
 
+  // TODO: why do we need `PushCredentialsInfo`, we have `authId` anyway!
   private var mapping: Map[PushCredentials, PushCredentialsInfo] = Map.empty
   private var notificationSettings = AllNotificationSettings()
+
+  private val firebaseKv = new FirebasePushCredentialsKV()(context.system)
 
   init()
 
@@ -142,14 +163,18 @@ private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLo
       register(r.getActor)
     case r: RegisterPushCredentials if r.creds.isApple ⇒
       register(r.getApple)
-    case r: RegisterPushCredentials if r.creds.isGoogle ⇒
-      register(r.getGoogle)
+    case r: RegisterPushCredentials if r.creds.isGcm ⇒
+      register(r.getGcm)
+    case r: RegisterPushCredentials if r.creds.isFirebase ⇒
+      register(r.getFirebase)
     case u: UnregisterPushCredentials if u.creds.isActor ⇒
       unregister(u.getActor)
     case u: UnregisterPushCredentials if u.creds.isApple ⇒
       unregister(u.getApple)
-    case u: UnregisterPushCredentials if u.creds.isGoogle ⇒
-      unregister(u.getGoogle)
+    case u: UnregisterPushCredentials if u.creds.isGcm ⇒
+      unregister(u.getGcm)
+    case u: UnregisterPushCredentials if u.creds.isFirebase ⇒
+      unregister(u.getFirebase)
     case DeliverPush(authId, seq, rules) ⇒
       deliver(authId, seq, rules.getOrElse(PushRules()))
     case r: ReloadSettings ⇒
@@ -165,18 +190,23 @@ private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLo
 
   private def init(): Unit = {
     log.debug("Initializing")
-    db.run(for {
-      googleCreds ← GooglePushCredentialsRepo.findByUser(userId)
-      appleCreds ← ApplePushCredentialsRepo.findByUser(userId)
-      actorCreds ← ActorPushCredentialsRepo.findByUser(userId)
-      google ← DBIO.sequence(googleCreds map withInfo) map (_.flatten)
-      apple ← DBIO.sequence(appleCreds.filterNot(_.isVoip) map withInfo) map (_.flatten)
-      actor ← DBIO.sequence(actorCreds map withInfo) map (_.flatten)
-    } yield Initialized(apple ++ google ++ actor)) pipeTo self
+    (for {
+      modelAuthIds ← db.run(AuthIdRepo.findByUserId(userId))
+      authIds = (modelAuthIds map (_.id)).toSet
+      gcmCreds ← db.run(GooglePushCredentialsRepo.find(authIds))
+      firebaseCreds ← firebaseKv.find(authIds)
+      appleCreds ← db.run(ApplePushCredentialsRepo.find(authIds))
+      actorCreds ← db.run(ActorPushCredentialsRepo.find(authIds))
+
+      gcm ← FutureExt.ftraverse(gcmCreds)(withInfo) map (_.flatten)
+      firebase ← FutureExt.ftraverse(firebaseCreds)(withInfo) map (_.flatten)
+      apple ← FutureExt.ftraverse(appleCreds.filterNot(_.isVoip))(withInfo) map (_.flatten)
+      actor ← FutureExt.ftraverse(actorCreds)(withInfo) map (_.flatten)
+    } yield Initialized(apple ++ gcm ++ actor)) pipeTo self
   }
 
   /**
-   * Delivers a push to credentials associated with given `authId` according to push `rules``
+   * Delivers a push to credentials associated with given `authId` according to push `rules`
    *
    */
   private def deliver(authId: Long, seq: Int, rules: PushRules): Unit = {
@@ -200,33 +230,18 @@ private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLo
     val deviceType = DeviceType(info.appId)
 
     if (rules.excludeAuthIds.contains(info.authId)) {
-      log.debug("AuthSid is excluded, not pushing")
+      log.debug("AuthId is excluded, not pushing")
     } else {
       rules.data match {
         case Some(data) ⇒
           val settings = notificationSettings.specific.getOrElse(deviceType, notificationSettings.generic)
 
-          val isVisible =
-            (settings.enabled, data.peer) match {
-              case (true, Some(peer)) ⇒
-                settings.peers.get(peer) match {
-                  case Some(true) ⇒
-                    log.debug("Notifications for peer {} are enabled, push will be visible", peer)
-                    true
-                  case Some(false) ⇒
-                    log.debug("Notifications for peer {} are disabled, push will be invisible", peer)
-                    false
-                  case None ⇒
-                    log.debug("Notifications for peer {} are not set, push will be visible", peer)
-                    true
-                }
-              case (true, None) ⇒
-                log.debug("Notifications are enabled, delivering visible push")
-                true
-              case (false, _) ⇒
-                log.debug("Notifications are disabled, delivering invisible push")
-                false
-            }
+          val isVisible = isNotificationVisible(
+            settings,
+            notificationSettings.groups,
+            data.peer,
+            data.isMentioned
+          )
 
           if (isVisible)
             deliverVisible(
@@ -245,6 +260,56 @@ private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLo
           log.debug("No text, delivering simple seq")
           deliverInvisible(seq, creds)
       }
+    }
+  }
+
+  private def isNotificationVisible(
+    settings:      NotificationSettings,
+    groupSettings: GroupNotificationSettings,
+    optPeer:       Option[Peer],
+    isMentioned:   Boolean
+  ) = {
+    (settings.enabled, optPeer) match {
+      case (true, Some(peer)) ⇒
+        peer.`type` match {
+          case PeerType.Group ⇒
+            if (groupSettings.enabled) {
+              if (groupSettings.onlyMention) {
+                if (isMentioned) {
+                  log.debug("User is mentioned, notification for group {} will be visible", peer)
+                  true
+                } else {
+                  log.debug("Message without mention, notification for group {} will be visible", peer)
+                  false
+                }
+              } else {
+                log.debug("Group notifications are enabled, notification for group {} will be visible", peer)
+                true
+              }
+            } else {
+              log.debug("Group notifications are disabled, notification for group {} will be invisible", peer)
+              false
+            }
+          case _ ⇒
+            settings.peers.get(peer) match {
+              case Some(true) ⇒
+                log.debug("Notifications for peer {} are enabled, notification will be visible", peer)
+                true
+              case Some(false) ⇒
+                log.debug("Notifications for peer {} are disabled, notification will be invisible", peer)
+                false
+              case None ⇒
+                log.debug("Notifications for peer {} are not set, notification will be visible", peer)
+                true
+            }
+
+        }
+      case (true, None) ⇒
+        log.debug("Notifications are enabled, delivering visible push")
+        true
+      case (false, _) ⇒
+        log.debug("Notifications are disabled, delivering invisible push")
+        false
     }
   }
 
@@ -311,14 +376,12 @@ private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLo
   }
 
   private def register(creds: PushCredentials): Unit =
-    db.run {
-      withInfo(creds) map (_.getOrElse(throw new RuntimeException(s"Cannot find appId for $creds")))
-    } pipeTo self
+    withInfo(creds) map (_.getOrElse(throw new RuntimeException(s"Cannot find appId for $creds"))) pipeTo self
 
-  private def withInfo(c: PushCredentials): DBIO[Option[(PushCredentials, PushCredentialsInfo)]] =
-    for {
+  private def withInfo(c: PushCredentials): Future[Option[(PushCredentials, PushCredentialsInfo)]] =
+    db.run(for {
       authSessionOpt ← AuthSessionRepo.findByAuthId(c.authId)
-    } yield authSessionOpt map (s ⇒ c → PushCredentialsInfo(s.appId, c.authId))
+    } yield authSessionOpt map (s ⇒ c → PushCredentialsInfo(s.appId, c.authId)))
 
   private def remove(creds: PushCredentials): Unit =
     mapping -= creds
@@ -327,10 +390,11 @@ private[sequence] final class VendorPush(userId: Int) extends Actor with ActorLo
     val replyTo = sender()
     if (mapping.contains(creds)) {
       remove(creds)
-      val removeFu = db.run(creds match {
-        case c: GooglePushCredentials ⇒ GooglePushCredentialsRepo.deleteByToken(c.regId)
-        case c: ApplePushCredentials  ⇒ ApplePushCredentialsRepo.deleteByToken(c.token.toByteArray)
-        case c: ActorPushCredentials  ⇒ ActorPushCredentialsRepo.deleteByTopic(c.endpoint)
+      val removeFu = (creds match {
+        case c: GCMPushCredentials      ⇒ db.run(GooglePushCredentialsRepo.deleteByToken(c.regId))
+        case c: FirebasePushCredentials ⇒ firebaseKv.deleteByToken(c.regId)
+        case c: ApplePushCredentials    ⇒ db.run(ApplePushCredentialsRepo.deleteByToken(c.token.toByteArray))
+        case c: ActorPushCredentials    ⇒ db.run(ActorPushCredentialsRepo.deleteByTopic(c.endpoint))
       }) map (_ ⇒ UnregisterPushCredentialsAck()) pipeTo replyTo
 
       removeFu onFailure {

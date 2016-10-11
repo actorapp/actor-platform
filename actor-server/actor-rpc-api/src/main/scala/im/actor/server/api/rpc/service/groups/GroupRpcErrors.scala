@@ -20,10 +20,12 @@ object GroupRpcErrors {
   val GroupNotPublic        = RpcError(400, "GROUP_IS_NOT_PUBLIC",    "The group is not public.",                                            false, None)
   val CantLeaveGroup        = RpcError(403, "CANT_LEAVE_GROUP",       "You can't leave this group!",                                         false, None)
   val CantJoinGroup         = RpcError(403, "CANT_JOIN_GROUP",        "You can't join this group!",                                          false, None)
+  val CantGrantToBot        = RpcError(400, "CANT_GRANT_TO_BOT",      "Can't grant this permissions to bot",                                 false, None)
+  val UserIsBanned          = RpcError(403, "USER_IS_BANNED",         "You can't join this group.",                                          false, None)
+
   val InvalidShortName      = RpcError(400, "GROUP_SHORT_NAME_INVALID",
     "Invalid group short name. Valid short name should contain from 5 to 32 characters, and may consist of latin characters, numbers and underscores", false, None)
   val ShortNameTaken        = RpcError(400, "GROUP_SHORT_NAME_TAKEN", "This short name already belongs to other user or group, we are sorry!", false, None)
   val NoPermission          = CommonRpcErrors.forbidden("You have no permission to execute this action")
-  val CantGrantToBot        = RpcError(400, "CANT_GRANT_TO_BOT",      "Can't grant this permissions to bot",                                 false, None)
 }
 // format: ON

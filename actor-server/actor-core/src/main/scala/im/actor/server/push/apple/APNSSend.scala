@@ -1,4 +1,4 @@
-package im.actor.server.sequence
+package im.actor.server.push.apple
 
 import akka.actor.ActorSystem
 import com.google.protobuf.wrappers.{ Int32Value, StringValue }

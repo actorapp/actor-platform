@@ -4,7 +4,7 @@
 
 import Foundation
 
-public class AANoSelectionViewController: AAViewController {
+open class AANoSelectionViewController: AAViewController {
     
     public override init() {
         super.init(nibName: nil, bundle: nil)

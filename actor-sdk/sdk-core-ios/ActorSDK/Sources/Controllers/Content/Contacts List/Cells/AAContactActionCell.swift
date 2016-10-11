@@ -4,18 +4,18 @@
 
 import Foundation
 
-public class AAContactActionCell: AATableViewCell {
+open class AAContactActionCell: AATableViewCell {
     
-    public let titleView = YYLabel()
-    public let iconView = UIImageView()
+    open let titleView = YYLabel()
+    open let iconView = UIImageView()
     
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        titleView.font = UIFont.systemFontOfSize(18)
+        titleView.font = UIFont.systemFont(ofSize: 18)
         titleView.textColor = ActorSDK.sharedActor().style.cellTintColor
         titleView.displaysAsynchronously = true
-        iconView.contentMode = UIViewContentMode.Center
+        iconView.contentMode = UIViewContentMode.center
         self.contentView.addSubview(titleView)
         self.contentView.addSubview(iconView)
     }
@@ -24,15 +24,15 @@ public class AAContactActionCell: AATableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public func bind(icon: String, actionTitle: String) {
+    open func bind(_ icon: String, actionTitle: String) {
         titleView.text = actionTitle
         iconView.image = UIImage.bundled(icon)?.tintImage(ActorSDK.sharedActor().style.cellTintColor)
     }
     
-    public override func layoutSubviews() {
+    open override func layoutSubviews() {
         super.layoutSubviews()
         let width = self.contentView.frame.width;
-        iconView.frame = CGRectMake(30, 8, 40, 40);
-        titleView.frame = CGRectMake(80, 8, width - 80 - 14, 40);
+        iconView.frame = CGRect(x: 30, y: 8, width: 40, height: 40);
+        titleView.frame = CGRect(x: 80, y: 8, width: width - 80 - 14, height: 40);
     }
 }
