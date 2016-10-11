@@ -10,92 +10,92 @@ public protocol AAManagedRange {
     
     // Initing Table
     
-    func initTable(table: AAManagedTable)
+    func initTable(_ table: AAManagedTable)
     
     // Total items count
     
-    func rangeNumberOfItems(table: AAManagedTable) -> Int
+    func rangeNumberOfItems(_ table: AAManagedTable) -> Int
     
     // Cell
     
-    func rangeCellHeightForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> CGFloat
+    func rangeCellHeightForItem(_ table: AAManagedTable, indexPath: AARangeIndexPath) -> CGFloat
     
-    func rangeCellForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> UITableViewCell
+    func rangeCellForItem(_ table: AAManagedTable, indexPath: AARangeIndexPath) -> UITableViewCell
     
     // Selection
     
-    func rangeCanSelect(table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool
+    func rangeCanSelect(_ table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool
     
-    func rangeSelect(table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool
+    func rangeSelect(_ table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool
     
     // Copying
     
-    func rangeCanCopy(table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool
+    func rangeCanCopy(_ table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool
     
-    func rangeCopy(table: AAManagedTable, indexPath: AARangeIndexPath)
+    func rangeCopy(_ table: AAManagedTable, indexPath: AARangeIndexPath)
     
     // Delete
     
-    func rangeCanDelete(table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool
+    func rangeCanDelete(_ table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool
     
-    func rangeDelete(table: AAManagedTable, indexPath: AARangeIndexPath)
+    func rangeDelete(_ table: AAManagedTable, indexPath: AARangeIndexPath)
     
     // Binding
     
-    func rangeBind(table: AAManagedTable, binder: AABinder)
+    func rangeBind(_ table: AAManagedTable, binder: AABinder)
     
-    func rangeUnbind(table: AAManagedTable, binder: AABinder)
+    func rangeUnbind(_ table: AAManagedTable, binder: AABinder)
 }
 
 // Default implementations of ACManagedRangeDelegate
 
 public extension AAManagedRange {
     
-    public func rangeCanSelect(table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool {
+    public func rangeCanSelect(_ table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool {
         // Do nothing
         return false
     }
     
-    public func rangeSelect(table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool {
+    public func rangeSelect(_ table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool {
         // Do nothing
         return false
     }
     
-    public func rangeCanCopy(table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool {
+    public func rangeCanCopy(_ table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool {
         // Do nothing
         return false
     }
     
-    public func rangeCopy(table: AAManagedTable, indexPath: AARangeIndexPath) {
+    public func rangeCopy(_ table: AAManagedTable, indexPath: AARangeIndexPath) {
         // Do nothing
     }
     
-    public func rangeCanDelete(table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool {
+    public func rangeCanDelete(_ table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool {
         // Do nothing
         return false
     }
     
-    public func rangeDelete(table: AAManagedTable, indexPath: AARangeIndexPath) {
+    public func rangeDelete(_ table: AAManagedTable, indexPath: AARangeIndexPath) {
         // Do nothing
     }
     
-    public func rangeBind(table: AAManagedTable, binder: AABinder) {
+    public func rangeBind(_ table: AAManagedTable, binder: AABinder) {
         // Do nothing
     }
     
-    public func rangeUnbind(table: AAManagedTable, binder: AABinder) {
+    public func rangeUnbind(_ table: AAManagedTable, binder: AABinder) {
         // Do nothing
     }
 }
 
-public class AARangeIndexPath {
+open class AARangeIndexPath {
     
-    public let section: Int
-    public let range: Int
-    public let item: Int
-    public let indexPath: NSIndexPath
+    open let section: Int
+    open let range: Int
+    open let item: Int
+    open let indexPath: IndexPath
     
-    public init(section: Int, range: Int, item: Int, indexPath: NSIndexPath) {
+    public init(section: Int, range: Int, item: Int, indexPath: IndexPath) {
         self.section = section
         self.range = range
         self.item = item

@@ -11,11 +11,11 @@ class AASettingsWallpapersController: AATableViewController {
     // MARK: -
     // MARK: Constructors
     
-    private let CellIdentifier = "CellIdentifier"
+    fileprivate let CellIdentifier = "CellIdentifier"
     
     init() {
         
-        super.init(style: UITableViewStyle.Grouped)
+        super.init(style: UITableViewStyle.grouped)
         title = AALocalized("WallpapersTitle")
     }
     
@@ -27,7 +27,7 @@ class AASettingsWallpapersController: AATableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tableView.registerClass(AAWallpapersCell.self, forCellReuseIdentifier: CellIdentifier)
+        tableView.register(AAWallpapersCell.self, forCellReuseIdentifier: CellIdentifier)
         tableView.backgroundColor = appStyle.vcBackyardColor
         tableView.separatorColor = appStyle.vcSeparatorColor
         
@@ -37,45 +37,45 @@ class AASettingsWallpapersController: AATableViewController {
     // MARK: -
     // MARK: UITableView Data Source
     
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 1
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        if indexPath.section == 0 {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if (indexPath as NSIndexPath).section == 0 {
             return photosLibrary(indexPath)
         } else {
             return wallpapersCell(indexPath)
         }
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAtIndexPath indexPath: IndexPath) {
         //
-        self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        self.tableView.deselectRow(at: indexPath, animated: true)
         
-        if indexPath.section == 0 {
+        if (indexPath as NSIndexPath).section == 0 {
             
-            self.pickImage(.PhotoLibrary)
+            self.pickImage(.photoLibrary)
             
         }
         
     }
     
     
-    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return nil
     }
     
-    func tableView(tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+    func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         return nil
     }
     
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        if indexPath.section == 0 {
+    func tableView(_ tableView: UITableView, heightForRowAtIndexPath indexPath: IndexPath) -> CGFloat {
+        if (indexPath as NSIndexPath).section == 0 {
             return 40
         } else {
             return 180
@@ -85,23 +85,23 @@ class AASettingsWallpapersController: AATableViewController {
     // MARK: -
     // MARK: Create cells
     
-    private func photosLibrary(indexPath: NSIndexPath) -> AACommonCell {
+    fileprivate func photosLibrary(_ indexPath: IndexPath) -> AACommonCell {
         let cell = AACommonCell()
         
         cell.textLabel?.text = AALocalized("WallpapersPhoto")
-        cell.style = .Navigation
+        cell.style = .navigation
         cell.textLabel?.textColor = appStyle.cellTextColor
         
         
         return cell
     }
     
-    private func wallpapersCell(indexPath: NSIndexPath) -> AAWallpapersCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AAWallpapersCell
+    fileprivate func wallpapersCell(_ indexPath: IndexPath) -> AAWallpapersCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: CellIdentifier, for: indexPath) as! AAWallpapersCell
         
-        cell.selectionStyle = UITableViewCellSelectionStyle.None
+        cell.selectionStyle = UITableViewCellSelectionStyle.none
         cell.wallpapperDidTap = { [unowned self] (name) -> () in
-            self.presentViewController(AAWallpapperPreviewController(imageName: name), animated: true, completion: nil)
+            self.present(AAWallpapperPreviewController(imageName: name), animated: true, completion: nil)
         }
         
         return cell
@@ -110,13 +110,13 @@ class AASettingsWallpapersController: AATableViewController {
     // MARK: -
     // MARK: Picker delegate
     
-    override func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
+    override func imagePickerController(_ picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
         
         picker.navigationController?.pushViewController(AAWallpapperPreviewController(selectedImage: image), animated: true)
         
     }
     
-    override func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
+    override func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         
         if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
             picker.pushViewController(AAWallpapperPreviewController(selectedImage: image), animated: true)
@@ -124,20 +124,20 @@ class AASettingsWallpapersController: AATableViewController {
         
     }
     
-    override func imagePickerControllerDidCancel(picker: UIImagePickerController) {
-        picker.dismissViewControllerAnimated(true, completion: nil)
+    override func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil)
     }
     
     // MARK: -
     // MARK: Image picking
     
-    func pickImage(source: UIImagePickerControllerSourceType) {
+    func pickImage(_ source: UIImagePickerControllerSourceType) {
         let pickerController = AAImagePickerController()
         pickerController.sourceType = source
         pickerController.mediaTypes = [kUTTypeImage as String]
         pickerController.delegate = self
         
-        self.presentViewController(pickerController, animated: true, completion: nil)
+        self.present(pickerController, animated: true, completion: nil)
     }
     
     

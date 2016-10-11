@@ -86,6 +86,18 @@ public class ContactsModule extends AbsModule {
         return preferences().getBool("contact_" + uid, false);
     }
 
+    public void markInPhoneBook(int uid) {
+        preferences().putBool("contact_in_pb_" + uid, true);
+    }
+
+    public void markNotInPhoneBook(int uid) {
+        preferences().putBool("contact_in_pb_" + uid, false);
+    }
+
+    public boolean isUserInPhoneBook(int uid) {
+        return preferences().getBool("contact_in_pb_" + uid, false);
+    }
+
     public Promise<UserVM[]> findUsers(final String query) {
         return api(new RequestSearchContacts(query, ApiSupportConfiguration.OPTIMIZATIONS))
                 .chain(responseSearchContacts -> updates().loadRequiredPeers(responseSearchContacts.getUserPeers(), new ArrayList<>()))

@@ -36,10 +36,10 @@ class AAAuthPhoneViewController: AAAuthViewController, AACountryViewControllerDe
 
     override func viewDidLoad() {
         
-        view.backgroundColor = UIColor.whiteColor()
+        view.backgroundColor = UIColor.white
         
-        scrollView.keyboardDismissMode = .OnDrag
-        scrollView.scrollEnabled = true
+        scrollView.keyboardDismissMode = .onDrag
+        scrollView.isScrollEnabled = true
         scrollView.alwaysBounceVertical = true
         
         welcomeLabel.font = UIFont.lightSystemFontOfSize(23)
@@ -48,31 +48,31 @@ class AAAuthPhoneViewController: AAAuthViewController, AACountryViewControllerDe
         welcomeLabel.numberOfLines = 1
         welcomeLabel.minimumScaleFactor = 0.3
         welcomeLabel.adjustsFontSizeToFitWidth = true
-        welcomeLabel.textAlignment = .Center
+        welcomeLabel.textAlignment = .center
         
-        hintLabel.font = UIFont.systemFontOfSize(14)
+        hintLabel.font = UIFont.systemFont(ofSize: 14)
         hintLabel.textColor = ActorSDK.sharedActor().style.authHintColor
         hintLabel.text = AALocalized("AuthPhoneHint")
         hintLabel.numberOfLines = 2
-        hintLabel.textAlignment = .Center
+        hintLabel.textAlignment = .center
         
-        countryButton.setTitle(currentCountry.country, forState: .Normal)
-        countryButton.setTitleColor(ActorSDK.sharedActor().style.authTextColor, forState: .Normal)
-        countryButton.titleLabel!.font = UIFont.systemFontOfSize(17)
+        countryButton.setTitle(currentCountry.country, for: UIControlState())
+        countryButton.setTitleColor(ActorSDK.sharedActor().style.authTextColor, for: UIControlState())
+        countryButton.titleLabel!.font = UIFont.systemFont(ofSize: 17)
         countryButton.titleEdgeInsets = UIEdgeInsetsMake(11, 10, 11, 10)
-        countryButton.contentHorizontalAlignment = .Left
-        countryButton.setBackgroundImage(Imaging.imageWithColor(UIColor.alphaBlack(0.2), size: CGSizeMake(1, 1)), forState: .Highlighted)
-        countryButton.addTarget(self, action: #selector(AAAuthPhoneViewController.countryDidPressed), forControlEvents: .TouchUpInside)
+        countryButton.contentHorizontalAlignment = .left
+        countryButton.setBackgroundImage(Imaging.imageWithColor(UIColor.alphaBlack(0.2), size: CGSize(width: 1, height: 1)), for: .highlighted)
+        countryButton.addTarget(self, action: #selector(AAAuthPhoneViewController.countryDidPressed), for: .touchUpInside)
         
         countryButtonLine.backgroundColor = ActorSDK.sharedActor().style.authSeparatorColor
         
-        phoneCodeLabel.font = UIFont.systemFontOfSize(17)
+        phoneCodeLabel.font = UIFont.systemFont(ofSize: 17)
         phoneCodeLabel.textColor = ActorSDK.sharedActor().style.authHintColor
         phoneCodeLabel.text = "+\(currentCountry.code)"
-        phoneCodeLabel.textAlignment = .Center
+        phoneCodeLabel.textAlignment = .center
         
         phoneNumberLabel.currentIso = currentCountry.iso
-        phoneNumberLabel.keyboardType = .PhonePad
+        phoneNumberLabel.keyboardType = .phonePad
         phoneNumberLabel.placeholder = AALocalized("AuthPhonePlaceholder")
         phoneNumberLabel.textColor = ActorSDK.sharedActor().style.authTextColor
         
@@ -108,7 +108,7 @@ class AAAuthPhoneViewController: AAAuthViewController, AACountryViewControllerDe
                     if let url = ActorSDK.sharedActor().termsOfServiceUrl {
                         self.openUrl(url)
                     } else if let text = ActorSDK.sharedActor().termsOfServiceText {
-                        self.presentViewController(AABigAlertController(alertTitle: tosText, alertMessage: text), animated: true, completion: nil)
+                        self.present(AABigAlertController(alertTitle: tosText, alertMessage: text), animated: true, completion: nil)
                     }
                 }
                 attributedTerms.yy_setColor(ActorSDK.sharedActor().style.authTintColor, range: tosRange)
@@ -127,7 +127,7 @@ class AAAuthPhoneViewController: AAAuthViewController, AACountryViewControllerDe
                     if let url = ActorSDK.sharedActor().privacyPolicyUrl {
                         self.openUrl(url)
                     } else if let text = ActorSDK.sharedActor().privacyPolicyText {
-                        self.presentViewController(AABigAlertController(alertTitle: privacyText, alertMessage: text), animated: true, completion: nil)
+                        self.present(AABigAlertController(alertTitle: privacyText, alertMessage: text), animated: true, completion: nil)
                     }
                 }
                 attributedTerms.yy_setColor(ActorSDK.sharedActor().style.authTintColor, range: privacyRange)
@@ -136,22 +136,22 @@ class AAAuthPhoneViewController: AAAuthViewController, AACountryViewControllerDe
             
         
             termsLabel.attributedText = attributedTerms
-            termsLabel.font = UIFont.systemFontOfSize(14)
+            termsLabel.font = UIFont.systemFont(ofSize: 14)
             termsLabel.numberOfLines = 2
-            termsLabel.textAlignment = .Center
+            termsLabel.textAlignment = .center
         } else {
-            termsLabel.hidden = true
+            termsLabel.isHidden = true
         }
         
         
-        if ActorSDK.sharedActor().authStrategy == .EmailOnly || ActorSDK.sharedActor().authStrategy == .PhoneEmail {
-            useEmailButton.setTitle(AALocalized("AuthPhoneUseEmail"), forState: .Normal)
-            useEmailButton.titleLabel?.font = UIFont.systemFontOfSize(14)
-            useEmailButton.setTitleColor(ActorSDK.sharedActor().style.authTintColor, forState: .Normal)
-            useEmailButton.setTitleColor(ActorSDK.sharedActor().style.authTintColor.alpha(0.56), forState: .Highlighted)
-            useEmailButton.addTarget(self, action: #selector(AAAuthPhoneViewController.useEmailDidPressed), forControlEvents: .TouchUpInside)
+        if ActorSDK.sharedActor().authStrategy == .emailOnly || ActorSDK.sharedActor().authStrategy == .phoneEmail {
+            useEmailButton.setTitle(AALocalized("AuthPhoneUseEmail"), for: UIControlState())
+            useEmailButton.titleLabel?.font = UIFont.systemFont(ofSize: 14)
+            useEmailButton.setTitleColor(ActorSDK.sharedActor().style.authTintColor, for: UIControlState())
+            useEmailButton.setTitleColor(ActorSDK.sharedActor().style.authTintColor.alpha(0.56), for: .highlighted)
+            useEmailButton.addTarget(self, action: #selector(AAAuthPhoneViewController.useEmailDidPressed), for: .touchUpInside)
         } else {
-            useEmailButton.hidden = true
+            useEmailButton.isHidden = true
         }
         
         
@@ -174,34 +174,34 @@ class AAAuthPhoneViewController: AAAuthViewController, AACountryViewControllerDe
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        welcomeLabel.frame = CGRectMake(20, 90 - 66, view.width - 40, 28)
-        hintLabel.frame = CGRectMake(20, 127 - 66, view.width - 40, 34)
+        welcomeLabel.frame = CGRect(x: 20, y: 90 - 66, width: view.width - 40, height: 28)
+        hintLabel.frame = CGRect(x: 20, y: 127 - 66, width: view.width - 40, height: 34)
         
-        countryButton.frame = CGRectMake(10, 200 - 66, view.width - 20, 44)
-        countryButtonLine.frame = CGRectMake(10, 244 - 66, view.width - 20, 0.5)
+        countryButton.frame = CGRect(x: 10, y: 200 - 66, width: view.width - 20, height: 44)
+        countryButtonLine.frame = CGRect(x: 10, y: 244 - 66, width: view.width - 20, height: 0.5)
         
-        termsLabel.frame = CGRectMake(20, 314 - 66, view.width - 40, 55)
+        termsLabel.frame = CGRect(x: 20, y: 314 - 66, width: view.width - 40, height: 55)
         
-        useEmailButton.frame = CGRectMake(20, 375 - 66, view.width - 40, 38)
+        useEmailButton.frame = CGRect(x: 20, y: 375 - 66, width: view.width - 40, height: 38)
         
         resizePhoneLabels()
         
         scrollView.frame = view.bounds
-        scrollView.contentSize = CGSizeMake(view.width, 400)
+        scrollView.contentSize = CGSize(width: view.width, height: 400)
     }
     
-    private func resizePhoneLabels() {
-        phoneCodeLabel.frame = CGRectMake(10, 244 - 66, 80, 44)
+    fileprivate func resizePhoneLabels() {
+        phoneCodeLabel.frame = CGRect(x: 10, y: 244 - 66, width: 80, height: 44)
         phoneCodeLabel.sizeToFit()
-        phoneCodeLabel.frame = CGRectMake(10, 244 - 66, phoneCodeLabel.width + 32, 44)
+        phoneCodeLabel.frame = CGRect(x: 10, y: 244 - 66, width: phoneCodeLabel.width + 32, height: 44)
         
-        phoneNumberLabel.frame = CGRectMake(phoneCodeLabel.width + 10, 245 - 66, view.width - phoneCodeLabel.width, 44)
-        phoneCodeLabelLine.frame = CGRectMake(10, 288 - 66, view.width - 20, 0.5)
+        phoneNumberLabel.frame = CGRect(x: phoneCodeLabel.width + 10, y: 245 - 66, width: view.width - phoneCodeLabel.width, height: 44)
+        phoneCodeLabelLine.frame = CGRect(x: 10, y: 288 - 66, width: view.width - 20, height: 0.5)
     }
     
-    func countriesController(countriesController: AACountryViewController, didChangeCurrentIso currentIso: String) {
+    func countriesController(_ countriesController: AACountryViewController, didChangeCurrentIso currentIso: String) {
         currentCountry = AATelephony.getCountry(currentIso)
-        countryButton.setTitle(currentCountry.country, forState: .Normal)
+        countryButton.setTitle(currentCountry.country, for: UIControlState())
         phoneCodeLabel.text = "+\(currentCountry.code)"
         phoneNumberLabel.currentIso = currentIso
         resizePhoneLabels()
@@ -223,17 +223,17 @@ class AAAuthPhoneViewController: AAAuthViewController, AACountryViewControllerDe
         let numberStr = phoneNumberLabel.phoneNumber
         let number = phoneNumberLabel.phoneNumber.toJLong()
         
-        Actor.doStartAuthWithPhone(number).startUserAction().then { (res: ACAuthStartRes!) -> () in
+        Actor.doStartAuth(withPhone: number).startUserAction().then { (res: ACAuthStartRes!) -> () in
             if res.authMode.toNSEnum() == .OTP {
-                self.navigateNext(AAAuthOTPViewController(phone: numberStr, name: self.name, transactionHash: res.transactionHash))
+                self.navigateNext(AAAuthOTPViewController(phone: numberStr!, name: self.name, transactionHash: res.transactionHash))
             } else {
                 self.alertUser(AALocalized("AuthUnsupported").replace("{app_name}", dest: ActorSDK.sharedActor().appName))
             }
         }
     }
     
-    override func keyboardWillAppear(height: CGFloat) {
-        scrollView.frame = CGRectMake(0, 0, view.width, view.height - height)
+    override func keyboardWillAppear(_ height: CGFloat) {
+        scrollView.frame = CGRect(x: 0, y: 0, width: view.width, height: view.height - height)
         
         if AADevice.isiPhone4 || AADevice.isiPhone5 {
             
@@ -246,10 +246,10 @@ class AAAuthPhoneViewController: AAAuthViewController, AACountryViewControllerDe
     }
     
     override func keyboardWillDisappear() {
-        scrollView.frame = CGRectMake(0, 0, view.width, view.height)
+        scrollView.frame = CGRect(x: 0, y: 0, width: view.width, height: view.height)
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         phoneNumberLabel.resignFirstResponder()

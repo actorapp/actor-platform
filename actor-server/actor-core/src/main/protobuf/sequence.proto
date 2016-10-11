@@ -26,6 +26,7 @@ message PushData {
     string text = 1;
     string censoredText = 3;
     Peer peer = 2;
+    bool is_mentioned = 4;
 }
 
 message PushRules {
@@ -87,9 +88,10 @@ message UserSequenceCommands {
         option (scalapb.message).extends = "im.actor.server.sequence.VendorPushCommand";
 
         oneof creds {
-            GooglePushCredentials google = 1;
+            GCMPushCredentials gcm = 1;
             ApplePushCredentials apple = 2;
             ActorPushCredentials actor = 3;
+            FirebasePushCredentials firebase = 4;
         }
     }
 
@@ -97,9 +99,10 @@ message UserSequenceCommands {
         option (scalapb.message).extends = "im.actor.server.sequence.VendorPushCommand";
 
         oneof creds {
-            GooglePushCredentials google = 1;
+            GCMPushCredentials gcm = 1;
             ApplePushCredentials apple = 2;
             ActorPushCredentials actor = 3;
+            FirebasePushCredentials firebase = 4;
         }
     }
 

@@ -8,7 +8,7 @@ import UIKit
  class AATableViewSeparator : UIView {
 
     init(color: UIColor) {
-        super.init(frame: CGRectZero)
+        super.init(frame: CGRect.zero)
         
         super.backgroundColor = color
     }

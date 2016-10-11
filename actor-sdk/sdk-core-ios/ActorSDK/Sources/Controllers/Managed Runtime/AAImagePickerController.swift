@@ -4,8 +4,8 @@
 
 import Foundation
 
-public class AAImagePickerController: UIImagePickerController {
-    public override func preferredStatusBarStyle() -> UIStatusBarStyle {
+open class AAImagePickerController: UIImagePickerController {
+    open override var preferredStatusBarStyle : UIStatusBarStyle {
         return ActorSDK.sharedActor().style.vcStatusBarStyle
     }
 

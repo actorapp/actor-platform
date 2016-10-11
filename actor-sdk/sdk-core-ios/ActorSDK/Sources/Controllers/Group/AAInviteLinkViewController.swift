@@ -4,18 +4,18 @@
 
 import Foundation
 
-public class AAInviteLinkViewController: AAContentTableController {
+open class AAInviteLinkViewController: AAContentTableController {
 
     // Data
     
-    public var currentUrl: String?
+    open var currentUrl: String?
     
     // Rows
     
-    public var urlRow: AACommonRow!
+    open var urlRow: AACommonRow!
     
     public init(gid: Int) {
-        super.init(style: AAContentTableStyle.SettingsGrouped)
+        super.init(style: AAContentTableStyle.settingsGrouped)
         
         self.gid = gid
         
@@ -26,9 +26,9 @@ public class AAInviteLinkViewController: AAContentTableController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func tableDidLoad() {
+    open override func tableDidLoad() {
         
-        tableView.hidden = true
+        tableView.isHidden = true
         
         section { (s) -> () in
             s.headerText = AALocalized("GroupInviteLinkTitle")
@@ -44,7 +44,7 @@ public class AAInviteLinkViewController: AAContentTableController {
         section { (s) -> () in
             s.action("ActionCopyLink") { (r) -> () in
                 r.selectAction = { () -> Bool in
-                    UIPasteboard.generalPasteboard().string = self.currentUrl
+                    UIPasteboard.general.string = self.currentUrl
                     self.alertUser("AlertLinkCopied")
                     return true
                 }
@@ -52,9 +52,9 @@ public class AAInviteLinkViewController: AAContentTableController {
             s.action("ActionShareLink") { (r) -> () in
                 r.selectAction = { () -> Bool in
                     var sharingItems = [AnyObject]()
-                    sharingItems.append(self.currentUrl!)
+                    sharingItems.append(self.currentUrl! as AnyObject)
                     let activityViewController = UIActivityViewController(activityItems: sharingItems, applicationActivities: nil)
-                    self.presentViewController(activityViewController, animated: true, completion: nil)
+                    self.present(activityViewController, animated: true, completion: nil)
                     return true
                 }
             }
@@ -71,18 +71,18 @@ public class AAInviteLinkViewController: AAContentTableController {
             }
         }
         
-        executeSafe(Actor.requestInviteLinkCommandWithGid(jint(gid))) { (val) -> Void in
+        executeSafe(Actor.requestInviteLinkCommand(withGid: jint(gid))) { (val) -> Void in
             self.currentUrl = val as? String
             self.urlRow.reload()
-            self.tableView.hidden = false
+            self.tableView.isHidden = false
         }
     }
     
-    public func reloadLink() {
-        executeSafe(Actor.requestRevokeLinkCommandWithGid(jint(gid))) { (val) -> Void in
+    open func reloadLink() {
+        executeSafe(Actor.requestRevokeLinkCommand(withGid: jint(gid))) { (val) -> Void in
             self.currentUrl = val as? String
             self.urlRow.reload()
-            self.tableView.hidden = false
+            self.tableView.isHidden = false
         }
     }
 }

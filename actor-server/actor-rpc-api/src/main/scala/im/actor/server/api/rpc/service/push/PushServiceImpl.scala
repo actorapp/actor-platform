@@ -9,8 +9,8 @@ import im.actor.api.rpc.encryption.ApiEncryptionKey
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.push.PushService
 import im.actor.server.db.DbExtension
-import im.actor.server.model.push.{ ActorPushCredentials, ApplePushCredentials, GooglePushCredentials }
-import im.actor.server.persist.push.{ ActorPushCredentialsRepo, ApplePushCredentialsRepo, GooglePushCredentialsRepo }
+import im.actor.server.model.push.{ ActorPushCredentials, ApplePushCredentials, FirebasePushCredentials, GCMPushCredentials }
+import im.actor.server.persist.push.{ ActorPushCredentialsRepo, ApplePushCredentialsRepo, FirebasePushCredentialsKV, GooglePushCredentialsRepo }
 import im.actor.server.sequence.SeqUpdatesExtension
 import scodec.bits.BitVector
 import slick.driver.PostgresDriver.api._
@@ -27,20 +27,31 @@ final class PushServiceImpl(
 ) extends PushService {
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
-  private implicit val db: Database = DbExtension(actorSystem).db
+  private val db = DbExtension(actorSystem).db
   private implicit val seqUpdExt: SeqUpdatesExtension = SeqUpdatesExtension(actorSystem)
+
+  private val firebaseKv = new FirebasePushCredentialsKV
 
   private val OkVoid = Ok(ResponseVoid)
   private val ErrWrongToken = Error(PushRpcErrors.WrongToken)
 
-  override def doHandleRegisterGooglePush(projectId: Long, token: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
-    val creds = GooglePushCredentials(clientData.authId, projectId, token)
-    val action: DBIO[HandlerResult[ResponseVoid]] = for {
-      _ ← GooglePushCredentialsRepo.deleteByToken(token)
-      _ ← GooglePushCredentialsRepo.createOrUpdate(creds)
-    } yield OkVoid
-
-    db.run(action.transactionally) andThen { case _ ⇒ seqUpdExt.registerGooglePushCredentials(creds) }
+  override def doHandleRegisterGooglePush(projectId: Long, rawToken: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+    val (isFCM, token) = extractToken(rawToken)
+    if (isFCM) {
+      val creds = FirebasePushCredentials(clientData.authId, projectId, token)
+      for {
+        _ ← firebaseKv.deleteByToken(token)
+        _ ← firebaseKv.createOrUpdate(creds)
+        _ ← seqUpdExt.registerFirebasePushCredentials(creds)
+      } yield OkVoid
+    } else {
+      val creds = GCMPushCredentials(clientData.authId, projectId, token)
+      db.run(for {
+        _ ← GooglePushCredentialsRepo.deleteByToken(token)
+        _ ← GooglePushCredentialsRepo.createOrUpdate(creds)
+        _ ← DBIO.from(seqUpdExt.registerGCMPushCredentials(creds))
+      } yield OkVoid)
+    }
   }
 
   override def doHandleRegisterApplePush(apnsKey: Int, token: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
@@ -124,8 +135,14 @@ final class PushServiceImpl(
     }
 
   // TODO: figure out, should user be authorized?
-  override protected def doHandleUnregisterGooglePush(token: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
-    seqUpdExt.unregisterGooglePushCredentials(token) map (_ ⇒ OkVoid)
+  override protected def doHandleUnregisterGooglePush(rawToken: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+    val (isFCM, token) = extractToken(rawToken)
+    (if (isFCM) {
+      seqUpdExt.unregisterFirebasePushCredentials(token)
+    } else {
+      seqUpdExt.unregisterGCMPushCredentials(token)
+    }) map (_ ⇒ OkVoid)
+  }
 
   // TODO: figure out, should user be authorized?
   override protected def doHandleUnregisterActorPush(endpoint: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
@@ -156,5 +173,15 @@ final class PushServiceImpl(
       case None ⇒
         FastFuture.successful(ErrWrongToken)
     }
+
+  // FIXME: temporary hack before schema has changed
+  private def extractToken(token: String): (Boolean, String) = {
+    val fcmPref = "FCM_"
+    if (token.startsWith(fcmPref)) {
+      true → token.drop(fcmPref.length)
+    } else {
+      false → token
+    }
+  }
 
 }

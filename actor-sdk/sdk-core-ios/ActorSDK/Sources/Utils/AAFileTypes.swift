@@ -10,88 +10,88 @@ let UTTAll = [
 ]
 
 let AAFileTypes = [
-    "mp3"  :AAFileType.Music,
-    "m4a"  :AAFileType.Music,
-    "ogg"  :AAFileType.Music,
-    "flac" :AAFileType.Music,
-    "alac" :AAFileType.Music,
-    "wav"  :AAFileType.Music,
-    "wma"  :AAFileType.Music,
-    "aac"  :AAFileType.Music,
+    "mp3"  :AAFileType.music,
+    "m4a"  :AAFileType.music,
+    "ogg"  :AAFileType.music,
+    "flac" :AAFileType.music,
+    "alac" :AAFileType.music,
+    "wav"  :AAFileType.music,
+    "wma"  :AAFileType.music,
+    "aac"  :AAFileType.music,
     
-    "doc"  :AAFileType.Doc,
-    "docm" :AAFileType.Doc,
-    "dot"  :AAFileType.Doc,
-    "dotx" :AAFileType.Doc,
-    "epub" :AAFileType.Doc,
-    "fb2"  :AAFileType.Doc,
-    "xml"  :AAFileType.Doc,
-    "info" :AAFileType.Doc,
-    "tex"  :AAFileType.Doc,
-    "stw"  :AAFileType.Doc,
-    "sxw"  :AAFileType.Doc,
-    "txt"  :AAFileType.Doc,
-    "xlc"  :AAFileType.Doc,
-    "odf"  :AAFileType.Doc,
-    "odt"  :AAFileType.Doc,
-    "ott"  :AAFileType.Doc,
-    "rtf"  :AAFileType.Doc,
-    "pages":AAFileType.Doc,
-    "ini"  :AAFileType.Doc,
+    "doc"  :AAFileType.doc,
+    "docm" :AAFileType.doc,
+    "dot"  :AAFileType.doc,
+    "dotx" :AAFileType.doc,
+    "epub" :AAFileType.doc,
+    "fb2"  :AAFileType.doc,
+    "xml"  :AAFileType.doc,
+    "info" :AAFileType.doc,
+    "tex"  :AAFileType.doc,
+    "stw"  :AAFileType.doc,
+    "sxw"  :AAFileType.doc,
+    "txt"  :AAFileType.doc,
+    "xlc"  :AAFileType.doc,
+    "odf"  :AAFileType.doc,
+    "odt"  :AAFileType.doc,
+    "ott"  :AAFileType.doc,
+    "rtf"  :AAFileType.doc,
+    "pages":AAFileType.doc,
+    "ini"  :AAFileType.doc,
 
-    "xls"  :AAFileType.Spreadsheet,
-    "xlsx" :AAFileType.Spreadsheet,
-    "xlsm" :AAFileType.Spreadsheet,
-    "xlsb" :AAFileType.Spreadsheet,
-    "numbers":AAFileType.Spreadsheet,
+    "xls"  :AAFileType.spreadsheet,
+    "xlsx" :AAFileType.spreadsheet,
+    "xlsm" :AAFileType.spreadsheet,
+    "xlsb" :AAFileType.spreadsheet,
+    "numbers":AAFileType.spreadsheet,
 
-    "jpg"  :AAFileType.Picture,
-    "jpeg"  :AAFileType.Picture,
-    "jp2"  :AAFileType.Picture,
-    "jps"  :AAFileType.Picture,
-    "gif"  :AAFileType.Picture,
-    "tiff"  :AAFileType.Picture,
-    "png"  :AAFileType.Picture,
-    "psd"  :AAFileType.Picture,
-    "webp"  :AAFileType.Picture,
-    "ico"  :AAFileType.Picture,
-    "pcx"  :AAFileType.Picture,
-    "tga"  :AAFileType.Picture,
-    "raw"  :AAFileType.Picture,
-    "svg"  :AAFileType.Picture,
+    "jpg"  :AAFileType.picture,
+    "jpeg"  :AAFileType.picture,
+    "jp2"  :AAFileType.picture,
+    "jps"  :AAFileType.picture,
+    "gif"  :AAFileType.picture,
+    "tiff"  :AAFileType.picture,
+    "png"  :AAFileType.picture,
+    "psd"  :AAFileType.picture,
+    "webp"  :AAFileType.picture,
+    "ico"  :AAFileType.picture,
+    "pcx"  :AAFileType.picture,
+    "tga"  :AAFileType.picture,
+    "raw"  :AAFileType.picture,
+    "svg"  :AAFileType.picture,
     
-    "mp4"  :AAFileType.Video,
-    "3gp"  :AAFileType.Video,
-    "m4v"  :AAFileType.Video,
-    "webm"  :AAFileType.Video,
+    "mp4"  :AAFileType.video,
+    "3gp"  :AAFileType.video,
+    "m4v"  :AAFileType.video,
+    "webm"  :AAFileType.video,
     
-    "ppt"  :AAFileType.Presentation,
-    "key"  :AAFileType.Presentation,
-    "keynote"  :AAFileType.Presentation,
+    "ppt"  :AAFileType.presentation,
+    "key"  :AAFileType.presentation,
+    "keynote"  :AAFileType.presentation,
     
-    "pdf"  :AAFileType.PDF,
-    "apk"  :AAFileType.APK,
-    "rar"  :AAFileType.RAR,
-    "zip"  :AAFileType.ZIP,
-    "csv"  :AAFileType.CSV,
+    "pdf"  :AAFileType.pdf,
+    "apk"  :AAFileType.apk,
+    "rar"  :AAFileType.rar,
+    "zip"  :AAFileType.zip,
+    "csv"  :AAFileType.csv,
     
-    "xhtm"  :AAFileType.HTML,
-    "htm"  :AAFileType.HTML,
-    "html"  :AAFileType.HTML,
+    "xhtm"  :AAFileType.html,
+    "htm"  :AAFileType.html,
+    "html"  :AAFileType.html,
 ]
 
 enum AAFileType {
-    case Music
-    case Doc
-    case Spreadsheet
-    case Picture
-    case Video
-    case Presentation
-    case PDF
-    case APK
-    case RAR
-    case ZIP
-    case CSV
-    case HTML
-    case UNKNOWN
+    case music
+    case doc
+    case spreadsheet
+    case picture
+    case video
+    case presentation
+    case pdf
+    case apk
+    case rar
+    case zip
+    case csv
+    case html
+    case unknown
 }

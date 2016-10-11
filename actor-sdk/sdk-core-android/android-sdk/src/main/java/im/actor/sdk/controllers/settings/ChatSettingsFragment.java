@@ -36,20 +36,35 @@ public class ChatSettingsFragment extends BaseFragment {
         ((TextView) res.findViewById(R.id.settings_send_by_enter_title)).setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
         ((TextView) res.findViewById(R.id.settings_set_by_enter_hint)).setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
 
-        final CheckBox animationsAtoPlay = (CheckBox) res.findViewById(R.id.animationAutoPlay);
-        animationsAtoPlay.setChecked(messenger().isAnimationAutoPlayEnabled());
-        View.OnClickListener animListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                messenger().changeAnimationAutoPlayEnabled(!messenger().isAnimationAutoPlayEnabled());
-                animationsAtoPlay.setChecked(messenger().isAnimationAutoPlayEnabled());
-            }
-        };
-        animationsAtoPlay.setOnClickListener(animListener);
-        res.findViewById(R.id.animationAutoPlayCont).setOnClickListener(animListener);
-        ((TextView) res.findViewById(R.id.settings_animation_auto_play_title)).setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
+        setupCheckbox(res, R.id.animationAutoPlay, R.id.animationAutoPlayCont, R.id.settings_animation_auto_play_title, () -> messenger().changeAnimationAutoPlayEnabled(!messenger().isAnimationAutoPlayEnabled()), () -> messenger().isAnimationAutoPlayEnabled());
         ((TextView) res.findViewById(R.id.settings_animation_auto_play_hint)).setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
 
+        setupCheckbox(res, R.id.animationAutoDownload, R.id.animationAutoDownloadCont, R.id.settings_animation_download_title, () -> messenger().changeAnimationAutoDownloadEnabled(!messenger().isAnimationAutoDownloadEnabled()), () -> messenger().isAnimationAutoDownloadEnabled());
+        setupCheckbox(res, R.id.imageAutoDownload, R.id.imageAutoDownloadCont, R.id.settings_image_download_title, () -> messenger().changeImageAutoDownloadEnabled(!messenger().isImageAutoDownloadEnabled()), () -> messenger().isImageAutoDownloadEnabled());
+        setupCheckbox(res, R.id.videoAutoDownload, R.id.videoAutoDownloadCont, R.id.settings_video_download_title, () -> messenger().changeVideoAutoDownloadEnabled(!messenger().isVideoAutoDownloadEnabled()), () -> messenger().isVideoAutoDownloadEnabled());
+        setupCheckbox(res, R.id.audioAutoDownload, R.id.audioAutoDownloadCont, R.id.settings_audio_download_title, () -> messenger().changeAudioAutoDownloadEnabled(!messenger().isAudioAutoDownloadEnabled()), () -> messenger().isAudioAutoDownloadEnabled());
+        setupCheckbox(res, R.id.docAutoDownload, R.id.docAutoDownloadCont, R.id.settings_doc_download_title, () -> messenger().changeDocAutoDownloadEnabled(!messenger().isDocAutoDownloadEnabled()), () -> messenger().isDocAutoDownloadEnabled());
+
         return res;
+    }
+
+    protected void setupCheckbox(View root, int chbId, int contId, int titleId, OnClLstnr lstnr, Checker checker) {
+        final CheckBox animationsAtoPlay = (CheckBox) root.findViewById(chbId);
+        animationsAtoPlay.setChecked(checker.check());
+        View.OnClickListener animListener = v -> {
+            lstnr.onClick();
+            animationsAtoPlay.setChecked(checker.check());
+        };
+        animationsAtoPlay.setOnClickListener(animListener);
+        root.findViewById(contId).setOnClickListener(animListener);
+        ((TextView) root.findViewById(titleId)).setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
+    }
+
+    private interface OnClLstnr {
+        void onClick();
+    }
+
+    private interface Checker {
+        boolean check();
     }
 }

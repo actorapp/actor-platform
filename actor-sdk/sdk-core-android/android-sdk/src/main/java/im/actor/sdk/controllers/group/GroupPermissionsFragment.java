@@ -157,6 +157,7 @@ public class GroupPermissionsFragment extends BaseFragment {
                 permissions.setMembersCanEditInfo(canEditInfo.isChecked());
                 permissions.setAdminsCanEditGroupInfo(canAdminsEditInfo.isChecked());
                 permissions.setShowJoinLeaveMessages(showLeaveJoin.isChecked());
+                permissions.setMembersCanInvite(canSendInvitations.isChecked());
                 permissions.setShowAdminsToMembers(showAdminsToMembers.isChecked());
                 execute(messenger().saveGroupPermissions(groupId, permissions).then(r -> {
                     finishActivity();

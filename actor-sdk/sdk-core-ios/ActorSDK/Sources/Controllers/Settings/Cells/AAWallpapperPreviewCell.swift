@@ -6,13 +6,13 @@ import Foundation
 
 class AAWallpapperPreviewCell: UICollectionViewCell {
 
-    private let imageView = UIImageView()
-    private let imageIcon = UIImageView()
+    fileprivate let imageView = UIImageView()
+    fileprivate let imageIcon = UIImageView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        imageView.contentMode = .ScaleAspectFill
+        imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         
         imageIcon.image = UIImage.bundled("ImageSelectedOn")
@@ -34,15 +34,15 @@ class AAWallpapperPreviewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func bind(index: Int) {
+    func bind(_ index: Int) {
         imageView.image = UIImage.bundled("bg_\(index + 1).jpg")
-        imageIcon.hidden = ActorSDK.sharedActor().messenger.getSelectedWallpaper() == "local:bg_\(index + 1).jpg"
+        imageIcon.isHidden = ActorSDK.sharedActor().messenger.getSelectedWallpaper() == "local:bg_\(index + 1).jpg"
     }
     
     override func layoutSubviews() {
         super.layoutSubviews()
         
         imageView.frame = contentView.bounds
-        imageIcon.frame = CGRectMake(contentView.width - 32, contentView.height - 32, 26, 26)
+        imageIcon.frame = CGRect(x: contentView.width - 32, y: contentView.height - 32, width: 26, height: 26)
     }
 }

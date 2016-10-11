@@ -6,27 +6,27 @@ import Foundation
 
 public protocol AAContactsListContentControllerDelegate {
     
-    func willAddContacts(controller: AAContactsListContentController, section: AAManagedSection)
+    func willAddContacts(_ controller: AAContactsListContentController, section: AAManagedSection)
     
-    func didAddContacts(controller: AAContactsListContentController, section: AAManagedSection)
+    func didAddContacts(_ controller: AAContactsListContentController, section: AAManagedSection)
     
-    func contactDidTap(controller: AAContactsListContentController, contact: ACContact) -> Bool
+    func contactDidTap(_ controller: AAContactsListContentController, contact: ACContact) -> Bool
     
-    func contactDidBind(controller: AAContactsListContentController, contact: ACContact, cell: AAContactCell)
+    func contactDidBind(_ controller: AAContactsListContentController, contact: ACContact, cell: AAContactCell)
     
 }
 
 public extension AAContactsListContentControllerDelegate {
     
-    public func willAddContacts(controller: AAContactsListContentController, section: AAManagedSection) {
+    public func willAddContacts(_ controller: AAContactsListContentController, section: AAManagedSection) {
         // Do Nothing
     }
     
-    public func didAddContacts(controller: AAContactsListContentController, section: AAManagedSection) {
+    public func didAddContacts(_ controller: AAContactsListContentController, section: AAManagedSection) {
         // Do Nothing
     }
     
-    public func contactDidBind(controller: AAContactsListContentController, contact: ACContact, cell: AAContactCell) {
+    public func contactDidBind(_ controller: AAContactsListContentController, contact: ACContact, cell: AAContactCell) {
         // Do Nothing
     }
 }

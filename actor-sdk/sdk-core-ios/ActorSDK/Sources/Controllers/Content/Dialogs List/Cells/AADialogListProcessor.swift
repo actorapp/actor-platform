@@ -6,12 +6,12 @@ import Foundation
 
 class AADialogListProcessor: NSObject, ARListProcessor {
     
-    func processWithItems(items: JavaUtilList, withPrevious previous: AnyObject?) -> AnyObject? {
+    func process(withItems items: JavaUtilList, withPrevious previous: Any?) -> Any? {
         
         var uids = Set<jint>()
         
         for i in 0..<items.size() {
-            let d = items.getWithInt(i) as! ACDialog
+            let d = items.getWith(i) as! ACDialog
             
             if d.peer.isGroup {
                 if d.senderId != 0 {

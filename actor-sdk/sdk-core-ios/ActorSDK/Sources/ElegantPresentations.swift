@@ -37,7 +37,7 @@ public struct ElegantPresentations {
 struct PresentationOptions {
     var dimmingViewAlpha: CGFloat = 1
     var dimmingViewTapDismisses = false
-    var presentingTransform = CGAffineTransformMakeScale(0.93, 0.93)
+    var presentingTransform = CGAffineTransform(scaleX: 0.93, y: 0.93)
     var presentedHeight: CGFloat = -1
     var presentedPercentHeight = 1.0
     var usePercentHeight = true
@@ -47,18 +47,18 @@ struct PresentationOptions {
     init(options: Set<PresentationOption>) {
         for option in options {
             switch option {
-            case .NoDimmingView: dimmingViewAlpha = 0
-            case .CustomDimmingViewAlpha(let alpha): dimmingViewAlpha = alpha
-            case .DismissOnDimmingViewTap: dimmingViewTapDismisses = true
-            case .PresentingViewKeepsSize: presentingTransform = CGAffineTransformIdentity
-            case .PresentedHeight(let height):
+            case .noDimmingView: dimmingViewAlpha = 0
+            case .customDimmingViewAlpha(let alpha): dimmingViewAlpha = alpha
+            case .dismissOnDimmingViewTap: dimmingViewTapDismisses = true
+            case .presentingViewKeepsSize: presentingTransform = CGAffineTransform.identity
+            case .presentedHeight(let height):
                 usePercentHeight = false
                 presentedHeight = height
-            case .PresentedPercentHeight(let percentHeight):
+            case .presentedPercentHeight(let percentHeight):
                 usePercentHeight = true
                 presentedPercentHeight = percentHeight
-            case .CustomPresentingScale(let scale):
-                presentingTransform = CGAffineTransformMakeScale(CGFloat(min(1, scale)), CGFloat(min(1, scale)))
+            case .customPresentingScale(let scale):
+                presentingTransform = CGAffineTransform(scaleX: CGFloat(min(1, scale)), y: CGFloat(min(1, scale)))
             }
         }
         
@@ -67,7 +67,7 @@ struct PresentationOptions {
             NSLog("\n-------------------------\nElegant Presentation Warning:\nDO NOT set a height and a percent height! Only one will be respected.\n-------------------------")
         }
         
-        if options.contains(.NoDimmingView) &&  dimmingViewAlpha != 0 {
+        if options.contains(.noDimmingView) &&  dimmingViewAlpha != 0 {
             NSLog("\n-------------------------\nElegant Presentation Warning:\nDO NOT set no dimming view and a custom dimming view alpha! Only one will be respected.\n-------------------------")
         }
     }
@@ -84,23 +84,23 @@ struct PresentationOptions {
  */
 public enum PresentationOption: Hashable {
     
-    case NoDimmingView
-    case CustomDimmingViewAlpha(CGFloat)
-    case DismissOnDimmingViewTap
-    case PresentingViewKeepsSize
-    case PresentedHeight(CGFloat)
-    case PresentedPercentHeight(Double)
-    case CustomPresentingScale(Double)
+    case noDimmingView
+    case customDimmingViewAlpha(CGFloat)
+    case dismissOnDimmingViewTap
+    case presentingViewKeepsSize
+    case presentedHeight(CGFloat)
+    case presentedPercentHeight(Double)
+    case customPresentingScale(Double)
     
     var description: String {
         switch self {
-        case .NoDimmingView:                        return "No dimming view"
-        case .CustomDimmingViewAlpha(let alpha):    return "Custom dimming view alpha \(alpha)"
-        case .DismissOnDimmingViewTap:              return "Dismiss on dimming view tap"
-        case .PresentingViewKeepsSize:              return "Presenting view keeps size"
-        case .PresentedHeight(let height):          return "Presented height \(height)"
-        case .PresentedPercentHeight(let percent):  return "Presented percent height \(percent)"
-        case .CustomPresentingScale(let scale):     return "Custom presenting scale \(scale)"
+        case .noDimmingView:                        return "No dimming view"
+        case .customDimmingViewAlpha(let alpha):    return "Custom dimming view alpha \(alpha)"
+        case .dismissOnDimmingViewTap:              return "Dismiss on dimming view tap"
+        case .presentingViewKeepsSize:              return "Presenting view keeps size"
+        case .presentedHeight(let height):          return "Presented height \(height)"
+        case .presentedPercentHeight(let percent):  return "Presented percent height \(percent)"
+        case .customPresentingScale(let scale):     return "Custom presenting scale \(scale)"
         }
     }
     

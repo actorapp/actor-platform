@@ -4,11 +4,11 @@
 
 import UIKit
 
-public class AATitledCell: AATableViewCell {
+open class AATitledCell: AATableViewCell {
     
-    private var isAction: Bool = false
-    public let titleLabel: UILabel = UILabel()
-    public let contentLabel: UILabel = UILabel()
+    fileprivate var isAction: Bool = false
+    open let titleLabel: UILabel = UILabel()
+    open let contentLabel: UILabel = UILabel()
     
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -22,17 +22,17 @@ public class AATitledCell: AATableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public func setContent(title: String, content: String, isAction: Bool) {
+    open func setContent(_ title: String, content: String, isAction: Bool) {
         titleLabel.text = title
         contentLabel.text = content
         if isAction {
-            contentLabel.textColor = UIColor.lightGrayColor()
+            contentLabel.textColor = UIColor.lightGray
         } else {
             contentLabel.textColor = appStyle.cellTextColor
         }
     }
     
-    public override func layoutSubviews() {
+    open override func layoutSubviews() {
         super.layoutSubviews()
         
         titleLabel.frame = CGRect(x: separatorInset.left, y: 7, width: contentView.bounds.width - separatorInset.left - 10, height: 19)

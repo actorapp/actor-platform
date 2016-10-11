@@ -6,16 +6,16 @@ import UIKit
 import YYImage
 
 public protocol AAStickersKeyboardDelegate {
-    func stickerDidSelected(keyboard: AAStickersKeyboard, sticker: ACSticker)
+    func stickerDidSelected(_ keyboard: AAStickersKeyboard, sticker: ACSticker)
 }
 
-public class AAStickersKeyboard: UIView, UICollectionViewDelegate, UICollectionViewDataSource {
+open class AAStickersKeyboard: UIView, UICollectionViewDelegate, UICollectionViewDataSource {
 
-    public var delegate : AAStickersKeyboardDelegate?
+    open var delegate : AAStickersKeyboardDelegate?
     
-    private let collectionView: UICollectionView!
-    private var stickers = Array<ACSticker>()
-    private let binder = AABinder()
+    fileprivate let collectionView: UICollectionView!
+    fileprivate var stickers = Array<ACSticker>()
+    fileprivate let binder = AABinder()
 
     public override init(frame: CGRect) {
         
@@ -24,8 +24,8 @@ public class AAStickersKeyboard: UIView, UICollectionViewDelegate, UICollectionV
         
         // layout for collection view
         let layoutCV = UICollectionViewFlowLayout()
-        layoutCV.scrollDirection = .Vertical
-        layoutCV.itemSize = CGSizeMake(widthHightItem, widthHightItem)
+        layoutCV.scrollDirection = .vertical
+        layoutCV.itemSize = CGSize(width: widthHightItem, height: widthHightItem)
         layoutCV.sectionInset = UIEdgeInsets(top: 5, left: 0, bottom: 10, right: 0)
         
         // init collection view
@@ -41,27 +41,27 @@ public class AAStickersKeyboard: UIView, UICollectionViewDelegate, UICollectionV
         self.collectionView.dataSource = self
         self.collectionView.backgroundColor = UIColor(red: 0.7728, green: 0.8874, blue: 0.9365, alpha: 1.0)
         
-        self.collectionView.registerClass(AAStickersViewCell.self, forCellWithReuseIdentifier: "AAStickersViewCell")
+        self.collectionView.register(AAStickersViewCell.self, forCellWithReuseIdentifier: "AAStickersViewCell")
         
         self.collectionView.contentInset = UIEdgeInsetsMake(10, 5, 10, 5)
         
         self.collectionView.preservesSuperviewLayoutMargins = false
-        self.collectionView.layoutMargins = UIEdgeInsetsZero
+        self.collectionView.layoutMargins = UIEdgeInsets.zero
         
         // add collection view as subview
         self.addSubview(self.collectionView)
         
-        self.backgroundColor = UIColor.clearColor()
+        self.backgroundColor = UIColor.clear
         
         // Bind To Stickers
-        binder.bind(Actor.getAvailableStickersVM().getOwnStickerPacks()) { (value: JavaUtilArrayList!) -> () in
-            self.stickers.removeAll(keepCapacity: true)
+        binder.bind(Actor.getAvailableStickersVM().getOwnStickerPacks()) { (value: JavaUtilArrayList?) -> () in
+            self.stickers.removeAll(keepingCapacity: true)
             
-            for i in 0..<value.size() {
-                let pack = value.getWithInt(i) as! ACStickerPack
+            for i in 0..<value!.size() {
+                let pack = value!.getWith(i) as! ACStickerPack
                 
                 for j in 0..<pack.stickers.size() {
-                    let sticker = pack.stickers.getWithInt(j) as! ACSticker
+                    let sticker = pack.stickers.getWith(j) as! ACSticker
                     self.stickers.append(sticker)
                 }
             }
@@ -78,7 +78,7 @@ public class AAStickersKeyboard: UIView, UICollectionViewDelegate, UICollectionV
         binder.unbindAll()
     }
     
-    public override func layoutSubviews() {
+    open override func layoutSubviews() {
         super.layoutSubviews()
         self.collectionView.frame = self.frame
     }
@@ -88,31 +88,31 @@ public class AAStickersKeyboard: UIView, UICollectionViewDelegate, UICollectionV
     // Collection View
     //
 
-    public func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    open func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return stickers.count
     }
     
-    public func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+    open func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let stickerCell = collectionView
-            .dequeueReusableCellWithReuseIdentifier("AAStickersViewCell", forIndexPath: indexPath) as! AAStickersViewCell
-        stickerCell.bind(stickers[indexPath.row], clearPrev: true)
+            .dequeueReusableCell(withReuseIdentifier: "AAStickersViewCell", for: indexPath) as! AAStickersViewCell
+        stickerCell.bind(stickers[(indexPath as NSIndexPath).row], clearPrev: true)
         return stickerCell
     }
     
-    public func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        let sticker = stickers[indexPath.row]
+    open func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let sticker = stickers[(indexPath as NSIndexPath).row]
         self.delegate?.stickerDidSelected(self, sticker: sticker)
     }
 }
 
-public class AAStickersViewCell : UICollectionViewCell {
+open class AAStickersViewCell : UICollectionViewCell {
     
-    private let stickerImage = AAStickerView()
+    fileprivate let stickerImage = AAStickerView()
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = UIColor.clearColor()
-        self.contentView.backgroundColor = UIColor.clearColor()
+        self.backgroundColor = UIColor.clear
+        self.contentView.backgroundColor = UIColor.clear
         self.addSubview(self.stickerImage)
     }
     
@@ -120,7 +120,7 @@ public class AAStickersViewCell : UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public func bind(sticker: ACSticker!, clearPrev: Bool) {
+    open func bind(_ sticker: ACSticker!, clearPrev: Bool) {
         var fileLocation: ACFileReference? = sticker.getImage128()
         if sticker.getImage256() != nil {
             fileLocation = sticker.getImage256()
@@ -128,12 +128,12 @@ public class AAStickersViewCell : UICollectionViewCell {
         self.stickerImage.setSticker(fileLocation)
     }
     
-    public override func layoutSubviews() {
+    open override func layoutSubviews() {
         super.layoutSubviews()
         self.stickerImage.frame = self.contentView.frame
     }
     
-    public override func prepareForReuse() {
+    open override func prepareForReuse() {
         super.prepareForReuse()
         self.stickerImage.setSticker(nil)
     }

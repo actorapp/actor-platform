@@ -4,21 +4,21 @@
 
 import Foundation
 
-public class AAManagedTableController: AAViewController {
+open class AAManagedTableController: AAViewController {
     
-    public let style: AAContentTableStyle
+    open let style: AAContentTableStyle
     
-    public var managedTableDelegate: AAManagedTableControllerDelegate?
+    open var managedTableDelegate: AAManagedTableControllerDelegate?
     
-    public let binder = AABinder()
+    open let binder = AABinder()
     
-    public var tableView: UITableView!
+    open var tableView: UITableView!
     
-    public var managedTable: AAManagedTable!
+    open var managedTable: AAManagedTable!
     
-    public var unbindOnDissapear: Bool = false
+    open var unbindOnDissapear: Bool = false
     
-    private var isBinded: Bool = false
+    fileprivate var isBinded: Bool = false
     
     public init(style: AAContentTableStyle) {
         self.style = style
@@ -29,31 +29,31 @@ public class AAManagedTableController: AAViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func viewDidLoad() {
+    open override func viewDidLoad() {
         super.viewDidLoad()
         
         // Creating tables
         
         let tableViewStyle: UITableViewStyle
         switch(style) {
-        case .Plain:
-            tableViewStyle = .Plain
+        case .plain:
+            tableViewStyle = .plain
             break
-        case .SettingsPlain:
-            tableViewStyle = .Plain
+        case .settingsPlain:
+            tableViewStyle = .plain
             break
-        case .SettingsGrouped:
-            tableViewStyle = .Grouped
+        case .settingsGrouped:
+            tableViewStyle = .grouped
             break
         }
         
         tableView = UITableView(frame: view.bounds, style: tableViewStyle)
         
         // Disabling separators as we use manual separators handling
-        tableView.separatorStyle = .None
+        tableView.separatorStyle = .none
         
         // Setting tableView and view bg color depends on table style
-        tableView.backgroundColor = style == .Plain ? appStyle.vcBgColor : appStyle.vcBackyardColor
+        tableView.backgroundColor = style == .plain ? appStyle.vcBgColor : appStyle.vcBackyardColor
         view.backgroundColor = tableView.backgroundColor
         
         // Useful for making table view with fixed row height
@@ -74,11 +74,11 @@ public class AAManagedTableController: AAViewController {
         tableView.reloadData()
     }
     
-    public override func viewWillAppear(animated: Bool) {
+    open override func viewWillAppear(_ animated: Bool) {
 
         if let t = tableView {
             if let row = t.indexPathForSelectedRow {
-                t.deselectRowAtIndexPath(row, animated: animated)
+                t.deselectRow(at: row, animated: animated)
             }
         }
         
@@ -105,7 +105,7 @@ public class AAManagedTableController: AAViewController {
         }
     }
     
-    public override func viewWillDisappear(animated: Bool) {
+    open override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         // Stopping data binding here
@@ -131,7 +131,7 @@ public class AAManagedTableController: AAViewController {
         }
     }
     
-    public override func viewDidDisappear(animated: Bool) {
+    open override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         
         if let m = managedTable {
@@ -141,7 +141,7 @@ public class AAManagedTableController: AAViewController {
         }
     }
     
-    public override func viewWillLayoutSubviews() {
+    open override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         
         tableView.frame = view.bounds
@@ -149,23 +149,23 @@ public class AAManagedTableController: AAViewController {
 }
 
 public protocol AAManagedTableControllerDelegate {
-    func managedTableWillLoad(controller: AAManagedTableController)
-    func managedTableLoad(controller: AAManagedTableController, table: AAManagedTable)
-    func managedTableBind(controller: AAManagedTableController, table: AAManagedTable, binder: AABinder)
-    func managedTableUnbind(controller: AAManagedTableController, table: AAManagedTable, binder: AABinder)
+    func managedTableWillLoad(_ controller: AAManagedTableController)
+    func managedTableLoad(_ controller: AAManagedTableController, table: AAManagedTable)
+    func managedTableBind(_ controller: AAManagedTableController, table: AAManagedTable, binder: AABinder)
+    func managedTableUnbind(_ controller: AAManagedTableController, table: AAManagedTable, binder: AABinder)
 }
 
 public extension AAManagedTableControllerDelegate {
     
-    public func managedTableLoad(controller: AAManagedTableController, table: AAManagedTable) {
+    public func managedTableLoad(_ controller: AAManagedTableController, table: AAManagedTable) {
         // Do nothing
     }
     
-    public func managedTableBind(controller: AAManagedTableController, table: AAManagedTable, binder: AABinder) {
+    public func managedTableBind(_ controller: AAManagedTableController, table: AAManagedTable, binder: AABinder) {
         // Do nothing
     }
     
-    public func managedTableUnbind(controller: AAManagedTableController, table: AAManagedTable, binder: AABinder) {
+    public func managedTableUnbind(_ controller: AAManagedTableController, table: AAManagedTable, binder: AABinder) {
         // Do nothing
     }
 }

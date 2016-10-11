@@ -6,7 +6,7 @@ import Foundation
 
 class AAActorRuntime {
     
-    private static var isInited = false
+    fileprivate static var isInited = false
     
     class func configureRuntime() {
         if isInited {
@@ -18,11 +18,11 @@ class AAActorRuntime {
         ARCocoaHttpProxyProvider.setHttpRuntime(CocoaHttpRuntime())
         ARCocoaFileSystemProxyProvider.setFileSystemRuntime(CocoaFileSystemRuntime())
         ARCocoaNetworkProxyProvider.setNetworkRuntime(CocoaNetworkRuntime())
-        ARCocoaAssetsProxyProvider.setAssetsRuntimeWithARAssetsRuntime(CocoaAssetsRuntime())
+        ARCocoaAssetsProxyProvider.setAssetsRuntimeWith(CocoaAssetsRuntime())
         ARCocoaWebRTCProxyProvider.setWebRTCRuntime(CocoaWebRTCRuntime())
         ARCocoaLifecycleProxyProvider.setLifecycleRuntime(CocoaLifecycleRuntime())
         ARCocoaDispatcher.setDispatcherProxy(CocoaDispatcher())
         // ARRuntimeEnvironment.setIsProductionWithBoolean(true)
-        ARCocoaCryptoProvider.setProxyProviderWithARCocoaCryptoProxyProvider(CocoaCrypto())
+        ARCocoaCryptoProvider.setProxyProviderWithARCocoaCryptoProxy(CocoaCrypto())
     }
 }

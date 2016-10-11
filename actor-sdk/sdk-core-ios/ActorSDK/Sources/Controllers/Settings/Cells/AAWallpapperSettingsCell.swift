@@ -5,41 +5,41 @@
 import Foundation
 import YYImage
 
-public class AAWallpapperSettingsCell: AATableViewCell {
+open class AAWallpapperSettingsCell: AATableViewCell {
     
-    private let wallpapper1 = UIImageView()
-    private let wallpapper1Icon = UIImageView()
-    private let wallpapper2 = UIImageView()
-    private let wallpapper2Icon = UIImageView()
-    private let wallpapper3 = UIImageView()
-    private let wallpapper3Icon = UIImageView()
-    private let label = UILabel()
-    private let disclose = UIImageView()
+    fileprivate let wallpapper1 = UIImageView()
+    fileprivate let wallpapper1Icon = UIImageView()
+    fileprivate let wallpapper2 = UIImageView()
+    fileprivate let wallpapper2Icon = UIImageView()
+    fileprivate let wallpapper3 = UIImageView()
+    fileprivate let wallpapper3Icon = UIImageView()
+    fileprivate let label = UILabel()
+    fileprivate let disclose = UIImageView()
     
-    public var wallpapperDidTap: ((name: String) -> ())?
+    open var wallpapperDidTap: ((_ name: String) -> ())?
     
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         wallpapper1.clipsToBounds = true
-        wallpapper1.contentMode = .ScaleAspectFill
+        wallpapper1.contentMode = .scaleAspectFill
         wallpapper1.image = UIImage.bundled("bg_1_preview.jpg")!
-        wallpapper1.viewDidTap = { [unowned self] () -> () in self.wallpapperDidTap?(name: "bg_1.jpg") }
+        wallpapper1.viewDidTap = { [unowned self] () -> () in self.wallpapperDidTap?("bg_1.jpg") }
         wallpapper1Icon.image = UIImage.bundled("ImageSelectedOn")
 
         wallpapper2.clipsToBounds = true
-        wallpapper2.contentMode = .ScaleAspectFill
+        wallpapper2.contentMode = .scaleAspectFill
         wallpapper2.image = UIImage.bundled("bg_2_preview.jpg")!
-        wallpapper2.viewDidTap = { [unowned self] () -> () in self.wallpapperDidTap?(name: "bg_2.jpg") }
+        wallpapper2.viewDidTap = { [unowned self] () -> () in self.wallpapperDidTap?("bg_2.jpg") }
         wallpapper2Icon.image = UIImage.bundled("ImageSelectedOn")
 
         wallpapper3.clipsToBounds = true
-        wallpapper3.contentMode = .ScaleAspectFill
+        wallpapper3.contentMode = .scaleAspectFill
         wallpapper3.image = UIImage.bundled("bg_3_preview.jpg")!
-        wallpapper3.viewDidTap = { [unowned self] () -> () in self.wallpapperDidTap?(name: "bg_3.jpg") }
+        wallpapper3.viewDidTap = { [unowned self] () -> () in self.wallpapperDidTap?("bg_3.jpg") }
         wallpapper3Icon.image = UIImage.bundled("ImageSelectedOn")
 
-        label.font = UIFont.systemFontOfSize(17)
+        label.font = UIFont.systemFont(ofSize: 17)
         label.textColor = appStyle.cellTextColor
         label.text = AALocalized("SettingsWallpapers")
         disclose.image = UIImage.bundled("ios_disclose")
@@ -53,7 +53,7 @@ public class AAWallpapperSettingsCell: AATableViewCell {
         self.contentView.addSubview(label)
         self.contentView.addSubview(disclose)
         
-        disclose.hidden = false
+        disclose.isHidden = false
         //selectionStyle = .None
     }
 
@@ -61,7 +61,7 @@ public class AAWallpapperSettingsCell: AATableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func layoutSubviews() {
+    open override func layoutSubviews() {
         super.layoutSubviews()
         
         let width = contentView.width
@@ -71,22 +71,22 @@ public class AAWallpapperSettingsCell: AATableViewCell {
         let wWidth = (width - padding * 4) / 3
         let wHeight = height - padding - 44
         
-        wallpapper1.frame = CGRectMake(padding, wPadding, wWidth, wHeight)
-        wallpapper2.frame = CGRectMake(padding * 2 + wWidth, wPadding, wWidth, wHeight)
-        wallpapper3.frame = CGRectMake(padding * 3 + wWidth * 2, wPadding, wWidth, wHeight)
+        wallpapper1.frame = CGRect(x: padding, y: wPadding, width: wWidth, height: wHeight)
+        wallpapper2.frame = CGRect(x: padding * 2 + wWidth, y: wPadding, width: wWidth, height: wHeight)
+        wallpapper3.frame = CGRect(x: padding * 3 + wWidth * 2, y: wPadding, width: wWidth, height: wHeight)
         
-        wallpapper1Icon.frame = CGRectMake(wWidth - 32, wHeight - 32, 26, 26)
-        wallpapper2Icon.frame = CGRectMake(wWidth - 32, wHeight - 32, 26, 26)
-        wallpapper3Icon.frame = CGRectMake(wWidth - 32, wHeight - 32, 26, 26)
+        wallpapper1Icon.frame = CGRect(x: wWidth - 32, y: wHeight - 32, width: 26, height: 26)
+        wallpapper2Icon.frame = CGRect(x: wWidth - 32, y: wHeight - 32, width: 26, height: 26)
+        wallpapper3Icon.frame = CGRect(x: wWidth - 32, y: wHeight - 32, width: 26, height: 26)
         
-        label.frame = CGRectMake(padding, 0, width - padding * 2, 44)
+        label.frame = CGRect(x: padding, y: 0, width: width - padding * 2, height: 44)
         
-        disclose.frame = CGRectMake(width - 13 - 10, 15, 13, 14)
+        disclose.frame = CGRect(x: width - 13 - 10, y: 15, width: 13, height: 14)
     }
     
-    public func bind() {
-        wallpapper1Icon.hidden = ActorSDK.sharedActor().messenger.getSelectedWallpaper() != "local:bg_1.jpg"
-        wallpapper2Icon.hidden = ActorSDK.sharedActor().messenger.getSelectedWallpaper() != "local:bg_2.jpg"
-        wallpapper3Icon.hidden = ActorSDK.sharedActor().messenger.getSelectedWallpaper() != "local:bg_3.jpg"
+    open func bind() {
+        wallpapper1Icon.isHidden = ActorSDK.sharedActor().messenger.getSelectedWallpaper() != "local:bg_1.jpg"
+        wallpapper2Icon.isHidden = ActorSDK.sharedActor().messenger.getSelectedWallpaper() != "local:bg_2.jpg"
+        wallpapper3Icon.isHidden = ActorSDK.sharedActor().messenger.getSelectedWallpaper() != "local:bg_3.jpg"
     }
 }

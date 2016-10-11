@@ -5,15 +5,15 @@
 import Foundation
 
 public extension UIViewController {
-    public func navigateDetail(controller: UIViewController) {
+    public func navigateDetail(_ controller: UIViewController) {
         if (AADevice.isiPad) {
-            let split = UIApplication.sharedApplication().keyWindow?.rootViewController as! UISplitViewController
+            let split = UIApplication.shared.keyWindow?.rootViewController as! UISplitViewController
             let master = split.viewControllers[0]
             let detail = AANavigationController()
             detail.viewControllers = [controller]
             split.viewControllers = [master, detail]
         } else {
-            let tabBar = UIApplication.sharedApplication().keyWindow?.rootViewController as! UITabBarController
+            let tabBar = UIApplication.shared.keyWindow?.rootViewController as! UITabBarController
             controller.hidesBottomBarWhenPushed = true
             (tabBar.selectedViewController as! AANavigationController).pushViewController(controller, animated: true)
         }
@@ -21,7 +21,7 @@ public extension UIViewController {
 }
 
 public extension UIViewController {
-    public func navigateNext(controller: UIViewController, removeCurrent: Bool = false) {
+    public func navigateNext(_ controller: UIViewController, removeCurrent: Bool = false) {
         if let aaC = controller as? AAViewController, let aaSelf = self as? AAViewController  {
             aaC.popover = aaSelf.popover
         }
@@ -45,7 +45,7 @@ public extension UIViewController {
     public func navigateBack() {
         if (self.navigationController!.viewControllers.last != nil) {
             if (self.navigationController!.viewControllers.last! == self) {
-                self.navigationController!.popViewControllerAnimated(true)
+                self.navigationController!.popViewController(animated: true)
             } else {
             
             }

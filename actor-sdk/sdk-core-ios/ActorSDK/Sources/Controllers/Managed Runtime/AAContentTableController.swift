@@ -6,16 +6,16 @@ import Foundation
 
 public enum AAContentTableStyle {
     
-    case SettingsPlain
-    case SettingsGrouped
-    case Plain
+    case settingsPlain
+    case settingsGrouped
+    case plain
 }
 
-public class AAContentTableController: AAManagedTableController, AAManagedTableControllerDelegate {
+open class AAContentTableController: AAManagedTableController, AAManagedTableControllerDelegate {
     
-    private var isInLoad: Bool = false
+    fileprivate var isInLoad: Bool = false
     
-    public var autoSections = true
+    open var autoSections = true
     
     // Controller constructor
     
@@ -24,7 +24,7 @@ public class AAContentTableController: AAManagedTableController, AAManagedTableC
         
         self.managedTableDelegate = self
         
-        self.autoSections = style != .Plain
+        self.autoSections = style != .plain
     }
 
     public required init(coder aDecoder: NSCoder) {
@@ -33,7 +33,7 @@ public class AAContentTableController: AAManagedTableController, AAManagedTableC
     
     // DSL Implementation
     
-    public func section(@noescape closure: (s: AAManagedSection) -> ()) -> AAManagedSection {
+    open func section(_ closure: (_ s: AAManagedSection) -> ()) -> AAManagedSection {
         if !isInLoad {
             fatalError("Unable to change sections not during tableDidLoad method call")
         }
@@ -47,15 +47,15 @@ public class AAContentTableController: AAManagedTableController, AAManagedTableC
                 s.headerHeight = 0
             }
         }
-        closure(s: s)
+        closure(s)
         return s
     }
     
-    public func search<C where C: AABindedSearchCell, C: UITableViewCell>(cell: C.Type, @noescape closure: (s: AAManagedSearchConfig<C>) -> ()) {
+    open func search<C>(_ cell: C.Type, closure: (_ s: AAManagedSearchConfig<C>) -> ()) where C: AABindedSearchCell, C: UITableViewCell {
         managedTable.search(cell, closure: closure)
     }
     
-    public func afterTableCreated() {
+    open func afterTableCreated() {
         if autoSections {
             managedTable.sections.last?.footerHeight = 30
         }
@@ -63,25 +63,25 @@ public class AAContentTableController: AAManagedTableController, AAManagedTableC
     
     // Implement it in subclass
 
-    public func tableWillLoad() {
+    open func tableWillLoad() {
         
     }
     
-    public func tableDidLoad() {
+    open func tableDidLoad() {
         
     }
     
-    public func tableWillBind(binder: AABinder) {
+    open func tableWillBind(_ binder: AABinder) {
         
     }
     
-    public func tableWillUnbind(binder: AABinder) {
+    open func tableWillUnbind(_ binder: AABinder) {
         
     }
     
     // Delegate implementation
     
-    public func managedTableLoad(controller: AAManagedTableController, table: AAManagedTable) {
+    open func managedTableLoad(_ controller: AAManagedTableController, table: AAManagedTable) {
         isInLoad = true
         table.beginUpdates()
         tableDidLoad()
@@ -90,15 +90,15 @@ public class AAContentTableController: AAManagedTableController, AAManagedTableC
         isInLoad = false
     }
     
-    public func managedTableBind(controller: AAManagedTableController, table: AAManagedTable, binder: AABinder) {
+    open func managedTableBind(_ controller: AAManagedTableController, table: AAManagedTable, binder: AABinder) {
         tableWillBind(binder)
     }
     
-    public func managedTableUnbind(controller: AAManagedTableController, table: AAManagedTable, binder: AABinder) {
+    open func managedTableUnbind(_ controller: AAManagedTableController, table: AAManagedTable, binder: AABinder) {
         tableWillUnbind(binder)
     }
     
-    public func managedTableWillLoad(controller: AAManagedTableController) {
+    open func managedTableWillLoad(_ controller: AAManagedTableController) {
         tableWillLoad()
     }
 }

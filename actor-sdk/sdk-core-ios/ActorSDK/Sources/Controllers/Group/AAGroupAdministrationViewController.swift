@@ -4,16 +4,16 @@
 
 import Foundation
 
-public class AAGroupAdministrationViewController: AAContentTableController {
+open class AAGroupAdministrationViewController: AAContentTableController {
     
-    private var isChannel: Bool = false
-    private var shortNameRow: AACommonRow!
-    private var shareHistoryRow: AACommonRow!
+    fileprivate var isChannel: Bool = false
+    fileprivate var shortNameRow: AACommonRow!
+    fileprivate var shareHistoryRow: AACommonRow!
     
     public init(gid: Int) {
-        super.init(style: .SettingsGrouped)
+        super.init(style: .settingsGrouped)
         self.gid = gid
-        self.isChannel = group.groupType == ACGroupType.CHANNEL()
+        self.isChannel = group.groupType == ACGroupType.channel()
         navigationItem.title = AALocalized("GroupAdministration")
     }
     
@@ -21,7 +21,7 @@ public class AAGroupAdministrationViewController: AAContentTableController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func tableDidLoad() {
+    open override func tableDidLoad() {
         
         section { (s) in
             if isChannel {
@@ -54,7 +54,7 @@ public class AAGroupAdministrationViewController: AAContentTableController {
                 }
                 
                 if group.isCanEditAdministration.get().booleanValue() {
-                    r.style = .Navigation
+                    r.style = .navigation
                     r.selectAction = { () -> Bool in
                         self.navigateNext(AAGroupTypeViewController(gid: self.gid, isCreation: false))
                         return false
@@ -76,7 +76,7 @@ public class AAGroupAdministrationViewController: AAContentTableController {
                             r.hint = nil
                             r.selectAction = { () -> Bool in
                                 self.confirmAlertUser("GroupShareMessage", action: "GroupShareAction", tapYes: { 
-                                    self.executePromise(Actor.shareHistoryWithGid(jint(self.gid)))  
+                                    self.executePromise(Actor.shareHistory(withGid: jint(self.gid)))  
                                 })
                                 return true
                             }
@@ -99,7 +99,7 @@ public class AAGroupAdministrationViewController: AAContentTableController {
                 s.danger(action, closure: { (r) in
                     r.selectAction = { () -> Bool in
                         self.confirmAlertUserDanger(self.isChannel ? "ActionDeleteChannelMessage" : "ActionDeleteGroupMessage", action: "ActionDelete", tapYes: {
-                            self.executePromise(Actor.deleteGroupWithGid(jint(self.gid))).after {
+                            self.executePromise(Actor.deleteGroup(withGid: jint(self.gid))).after {
                                 let first = self.navigationController!.viewControllers.first!
                                 self.navigationController!.setViewControllers([first], animated: true)
                             }
@@ -111,15 +111,15 @@ public class AAGroupAdministrationViewController: AAContentTableController {
         }
     }
     
-    public override func tableWillBind(binder: AABinder) {
+    open override func tableWillBind(_ binder: AABinder) {
         
-        binder.bind(self.group.shortName) { (value: String!) in
+        binder.bind(self.group.shortName) { (value: String?) in
             if let row = self.shortNameRow {
                 row.reload()
             }
         }
         
-        binder.bind(self.group.isHistoryShared) { (value: JavaLangBoolean!) in
+        binder.bind(self.group.isHistoryShared) { (value: JavaLangBoolean?) in
             if let row = self.shareHistoryRow {
                 row.reload()
             }
