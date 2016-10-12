@@ -60,6 +60,7 @@ open class AANavigationController: UINavigationController {
             [NSForegroundColorAttributeName: ActorSDK.sharedActor().style.navigationTitleColor]
         navigationBar.tintColor = ActorSDK.sharedActor().style.navigationTintColor
         navigationBar.barTintColor = ActorSDK.sharedActor().style.navigationBgColor
+        navigationBar.isTranslucent = ActorSDK.sharedActor().style.navigationIsTransluent
         navigationBar.hairlineHidden = ActorSDK.sharedActor().style.navigationHairlineHidden
         
         view.backgroundColor = ActorSDK.sharedActor().style.vcBgColor

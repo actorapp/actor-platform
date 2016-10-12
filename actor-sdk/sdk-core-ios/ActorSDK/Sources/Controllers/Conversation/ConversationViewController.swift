@@ -93,27 +93,16 @@ open class ConversationViewController:
         backgroundView.backgroundColor = appStyle.chatBgColor
         
         // Custom background if available
-       
-        var bg = Actor.getSelectedWallpaper();
-        if (bg == nil){
-            bg = "local:bg_1.jpg"
+        if let bg = Actor.getSelectedWallpaper(){
+            if bg != "default" {
+                if bg.startsWith("local:") {
+                    backgroundView.image = UIImage.bundled(bg.skip(6))
+                } else {
+                    let path = CocoaFiles.pathFromDescriptor(bg.skip(5))
+                    backgroundView.image = UIImage(contentsOfFile:path)
+                }
+            }            
         }
-        
-        if let bg = bg {
-            var image:UIImage?
-            if bg.startsWith("local:") {
-                image = UIImage.bundled(bg.skip(6))
-            } else {
-                let path = CocoaFiles.pathFromDescriptor(bg.skip(5))
-                image = UIImage(contentsOfFile:path)
-            }
-            
-            if(image == nil){
-                image = UIImage.bundled("bg_1.jpg")
-            }
-            backgroundView.image = image
-        }
-
         
         view.insertSubview(backgroundView, at: 0)
         

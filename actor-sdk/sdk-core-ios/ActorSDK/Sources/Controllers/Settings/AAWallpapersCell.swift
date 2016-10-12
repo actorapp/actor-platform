@@ -10,25 +10,25 @@ open class AAWallpapersCell: AATableViewCell {
     fileprivate let wallpapper2 = UIImageView()
     fileprivate let wallpapper3 = UIImageView()
     
-    open var wallpapperDidTap: ((_ name: String) -> ())?
+    open var wallpapperDidTap: ((_ name: String?) -> ())?
     
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         wallpapper1.clipsToBounds = true
         wallpapper1.contentMode = .scaleAspectFill
-        wallpapper1.image = UIImage.bundled("bg_1_preview.jpg")!
-        wallpapper1.viewDidTap = { [unowned self] () -> () in self.wallpapperDidTap?("bg_1.jpg") }
+        wallpapper1.backgroundColor = ActorSDK.sharedActor().style.chatBgColor
+        wallpapper1.viewDidTap = { [unowned self] () -> () in self.wallpapperDidTap?(nil) }
         
         wallpapper2.clipsToBounds = true
         wallpapper2.contentMode = .scaleAspectFill
-        wallpapper2.image = UIImage.bundled("bg_2_preview.jpg")!
-        wallpapper2.viewDidTap = { [unowned self] () -> () in self.wallpapperDidTap?("bg_2.jpg") }
+        wallpapper2.image = UIImage.bundled("bg_1_preview.jpg")!
+        wallpapper2.viewDidTap = { [unowned self] () -> () in self.wallpapperDidTap?("bg_1.jpg") }
         
         wallpapper3.clipsToBounds = true
         wallpapper3.contentMode = .scaleAspectFill
-        wallpapper3.image = UIImage.bundled("bg_3_preview.jpg")!
-        wallpapper3.viewDidTap = { [unowned self] () -> () in self.wallpapperDidTap?("bg_3.jpg") }
+        wallpapper3.image = UIImage.bundled("bg_2_preview.jpg")!
+        wallpapper3.viewDidTap = { [unowned self] () -> () in self.wallpapperDidTap?("bg_2.jpg") }
         
         self.contentView.addSubview(wallpapper1)
         self.contentView.addSubview(wallpapper2)

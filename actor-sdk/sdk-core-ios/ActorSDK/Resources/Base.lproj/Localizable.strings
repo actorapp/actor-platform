@@ -377,6 +377,12 @@
 
 "GroupMemberKickAction" = "Kick";
 
+"ChannelMemberKick" = "Kick from Channel";
+
+"ChannelMemberKickMessage" = "Are you sure you want to kick {name} from this channel?";
+
+"ChannelMemberKickAction" = "Kick";
+
 "GroupMemberWrite" = "Write a Message";
 
 "GroupMemberCall" = "Phone Call";

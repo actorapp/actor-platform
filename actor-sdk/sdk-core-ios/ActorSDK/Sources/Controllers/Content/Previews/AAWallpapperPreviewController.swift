@@ -10,16 +10,21 @@ open class AAWallpapperPreviewController: AAViewController {
     fileprivate let cancelButton = UIButton()
     fileprivate let setButton = UIButton()
     
-    fileprivate let imageName: String
+    fileprivate let imageName: String?
     fileprivate let selectedImage: UIImage
     fileprivate var fromName: Bool
     
-    public init(imageName: String) {
+    public init(imageName: String?) {
         self.imageName = imageName
         self.selectedImage = UIImage()
         self.fromName = true
         super.init()
-        imageView.image = UIImage.bundled(imageName)!
+        if(imageName != nil){
+            imageView.image = UIImage.bundled(imageName!)!
+        }else{
+            imageView.backgroundColor = ActorSDK.sharedActor().style.chatBgColor
+        }
+        
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         cancelButton.backgroundColor = appStyle.vcPanelBgColor
@@ -81,7 +86,8 @@ open class AAWallpapperPreviewController: AAViewController {
         self.dismiss(animated: true, completion: nil)
         
         if self.fromName == true {
-            Actor.changeSelectedWallpaper("local:\(imageName)")
+            
+            Actor.changeSelectedWallpaper(imageName != nil ? "local:\(imageName!)" : "default")
             
         } else {
             dispatchBackground({ () -> Void in
