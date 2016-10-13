@@ -114,7 +114,7 @@ trait GroupQueryHandlers {
           theme = state.topic,
           about = state.about,
           isHidden = Some(state.isHidden),
-          ext = None,
+          ext = Some(extToApi(state.exts)),
           membersCount = Some(count),
           groupType = Some(state.groupType match {
             case Channel         ⇒ ApiGroupType.CHANNEL

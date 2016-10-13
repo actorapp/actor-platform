@@ -168,4 +168,19 @@ message GroupEvents {
         required int64 ts = 1 [(scalapb.field).type = "java.time.Instant"];
         required int32 executor_user_id = 2;
     }
+
+    message ExtAdded {
+        option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
+
+        required int64 ts = 1 [(scalapb.field).type = "java.time.Instant"];
+        required bytes ext = 2 [(scalapb.field).type = "im.actor.server.group.GroupExt"];
+    }
+
+    message ExtRemoved {
+        option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
+
+        required int64 ts = 1 [(scalapb.field).type = "java.time.Instant"];
+        required string key = 2;
+    }
+
 }
