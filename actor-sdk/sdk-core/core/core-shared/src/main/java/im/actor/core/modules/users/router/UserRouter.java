@@ -386,7 +386,12 @@ public class UserRouter extends ModuleActor {
                     } else {
                         //user already loaded, only perform is in phone book check
                         if (!getUserVM(uid).isInPhoneBook().get()) {
-                            return checkIsInPhoneBook(u).flatMap(aVoid -> Promise.failure(new RuntimeException("Already loaded")));
+                            return checkIsInPhoneBook(u).flatMap(new Function<Void, Promise<Tuple2<ResponseLoadFullUsers, User>>>() {
+                                @Override
+                                public Promise<Tuple2<ResponseLoadFullUsers, User>> apply(Void aVoid) {
+                                    return Promise.failure(new RuntimeException("Already loaded"));
+                                }
+                            });
                         } else {
                             return Promise.failure(new RuntimeException("Already loaded"));
                         }
@@ -448,6 +453,7 @@ public class UserRouter extends ModuleActor {
                 .after((r, e) -> unfreeze());
     }
 
+    @Verified
     private Promise<List<PhoneBookContact>> getPhoneBook() {
         if (contacts == null) {
             return new Promise<List<PhoneBookContact>>(resolver -> {
@@ -461,6 +467,7 @@ public class UserRouter extends ModuleActor {
         }
     }
 
+    @Verified
     protected Promise<Void> checkIsInPhoneBook(User user) {
 
         if (!config().isEnableOnClientPrivacy()) {
@@ -469,49 +476,54 @@ public class UserRouter extends ModuleActor {
 
         Log.d("ON_CLIENT_PRIVACY", "checking " + user.getName() + " is in phone book");
 
-        return getPhoneBook().flatMap(phoneBookContacts -> new Promise<Void>(resolver -> {
-            List<ContactRecord> userRecords = user.getRecords();
+        return getPhoneBook().flatMap(new Function<List<PhoneBookContact>, Promise<Void>>() {
+            @Override
+            public Promise<Void> apply(List<PhoneBookContact> phoneBookContacts) {
+                return new Promise<Void>(resolver -> {
+                    List<ContactRecord> userRecords = user.getRecords();
 
-            Log.d("ON_CLIENT_PRIVACY", "phonebook have " + phoneBookContacts.size() + " records");
-            Log.d("ON_CLIENT_PRIVACY", "user have " + userRecords.size() + " records");
+                    Log.d("ON_CLIENT_PRIVACY", "phonebook have " + phoneBookContacts.size() + " records");
+                    Log.d("ON_CLIENT_PRIVACY", "user have " + userRecords.size() + " records");
 
-            outer:
-            for (ContactRecord record : userRecords) {
+                    outer:
+                    for (ContactRecord record : userRecords) {
 
-                for (PhoneBookContact phoneBookContact : phoneBookContacts) {
+                        for (PhoneBookContact phoneBookContact : phoneBookContacts) {
 
-                    for (PhoneBookPhone phone1 : phoneBookContact.getPhones()) {
-                        if (record.getRecordType() == ContactRecordType.PHONE) {
-                            if (record.getRecordData().equals(phone1.getNumber() + "")) {
-                                context().getContactsModule().markInPhoneBook(user.getUid());
-                                getUserVM(user.getUid()).isInPhoneBook().change(true);
-                                Log.d("ON_CLIENT_PRIVACY", "in record book!");
-                                break outer;
+                            for (PhoneBookPhone phone1 : phoneBookContact.getPhones()) {
+                                if (record.getRecordType() == ContactRecordType.PHONE) {
+                                    if (record.getRecordData().equals(phone1.getNumber() + "")) {
+                                        context().getContactsModule().markInPhoneBook(user.getUid());
+                                        getUserVM(user.getUid()).isInPhoneBook().change(true);
+                                        Log.d("ON_CLIENT_PRIVACY", "in record book!");
+                                        break outer;
+                                    }
+                                }
+
+                            }
+
+                            for (PhoneBookEmail email : phoneBookContact.getEmails()) {
+                                if (record.getRecordType() == ContactRecordType.EMAIL) {
+                                    if (record.getRecordData().equals(email.getEmail())) {
+                                        context().getContactsModule().markInPhoneBook(user.getUid());
+                                        getUserVM(user.getUid()).isInPhoneBook().change(true);
+                                        Log.d("ON_CLIENT_PRIVACY", "in record book!");
+                                        break outer;
+                                    }
+                                }
+
                             }
                         }
 
                     }
 
-                    for (PhoneBookEmail email : phoneBookContact.getEmails()) {
-                        if (record.getRecordType() == ContactRecordType.EMAIL) {
-                            if (record.getRecordData().equals(email.getEmail())) {
-                                context().getContactsModule().markInPhoneBook(user.getUid());
-                                getUserVM(user.getUid()).isInPhoneBook().change(true);
-                                Log.d("ON_CLIENT_PRIVACY", "in record book!");
-                                break outer;
-                            }
-                        }
+                    Log.d("ON_CLIENT_PRIVACY", "finish check");
 
-                    }
-                }
 
+                    resolver.result(null);
+                });
             }
-
-            Log.d("ON_CLIENT_PRIVACY", "finish check");
-
-
-            resolver.result(null);
-        }));
+        });
 
     }
 
