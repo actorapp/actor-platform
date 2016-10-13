@@ -542,8 +542,14 @@ object BotMessages {
 
   @key("CreateGroup")
   final case class CreateGroup(
-    title: String
+    @beanGetter title: String,
+    ownerUserId: Option[Int]
   ) extends RequestBody {
+    def this(title: String) = this(title, None)
+    def this(title: String, ownerUserId: Int) = this(title, Option(ownerUserId))
+
+    def getOwnerUserId = ownerUserId.asJava
+
     override type Response = ResponseCreateGroup
     override val service: String = Services.Groups
 
@@ -551,6 +557,22 @@ object BotMessages {
   }
 
   final case class ResponseCreateGroup(@beanGetter peer: GroupOutPeer) extends ResponseBody
+
+  @key("UpdateGroupShortName")
+  final case class UpdateGroupShortName(
+                                      @beanGetter groupId: Int,
+                                      shortName: Option[String]
+                                    ) extends RequestBody {
+    def this(groupId: Int, shortName: String) = this(groupId, Option(shortName))
+
+    def getShortName = shortName.asJava
+
+    override type Response = Void
+    override val service: String = Services.Groups
+
+    override def readResponse(obj: Js.Obj): Response = readJs[Response](obj)
+  }
+
 
   @key("AddGroupExtString")
   final case class AddGroupExtString(
