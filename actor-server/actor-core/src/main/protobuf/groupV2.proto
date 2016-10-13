@@ -18,6 +18,15 @@ import "file.proto";
 import "sequence.proto";
 import "dialog.proto";
 
+// TODO: Can't share with UserExt: proto 2/3
+message GroupExt {
+    string key = 1;
+    oneof value {
+        string string_value = 2;
+        bool bool_value = 3;
+    }
+}
+
 message GroupMember {
     int32 user_id = 1;
     int32 inviter_user_id = 2;
@@ -45,6 +54,8 @@ message GroupEnvelope {
         GroupCommands.TransferOwnership transfer_ownership = 14;
         GroupCommands.UpdateAdminSettings update_admin_settings = 30;
         GroupCommands.DeleteGroup delete_group = 33;
+        GroupCommands.AddExt add_ext = 34;
+        GroupCommands.RemoveExt remove_ext = 35;
     }
     oneof query {
         GroupQueries.GetAccessHash get_access_hash = 15;
@@ -219,6 +230,23 @@ message GroupCommands {
         int32 client_user_id = 1;
         int64 client_auth_id = 2;
     }
+
+    message AddExt {
+        option (scalapb.message).extends = "GroupCommand";
+
+        GroupExt ext = 1;
+    }
+
+    message AddExtAck {}
+
+    message RemoveExt {
+        option (scalapb.message).extends = "GroupCommand";
+
+        string key = 1;
+    }
+
+    message RemoveExtAck {}
+
 }
 
 message GroupQueries {

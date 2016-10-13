@@ -46,4 +46,6 @@ object GroupErrors {
   case object CantLeaveGroup extends Exception with NoStackTrace
 
   final case class IncorrectGroupType(value: Int) extends Exception with NoStackTrace
+
+  case object InvalidExtension extends Exception with NoStackTrace
 }
