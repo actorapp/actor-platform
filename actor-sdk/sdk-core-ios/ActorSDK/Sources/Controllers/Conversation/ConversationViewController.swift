@@ -7,6 +7,7 @@ import UIKit
 import MobileCoreServices
 import AddressBook
 import AddressBookUI
+import AVFoundation
 
 open class ConversationViewController:
     AAConversationContentController,
@@ -804,6 +805,11 @@ open class ConversationViewController:
     ////////////////////////////////////////////////////////////
     
     func pickImage(_ source: UIImagePickerControllerSourceType) {
+        
+        if(source == .camera && (AVAudioSession.sharedInstance().recordPermission() == AVAudioSessionRecordPermission.undetermined || AVAudioSession.sharedInstance().recordPermission() == AVAudioSessionRecordPermission.denied)){
+            AVAudioSession.sharedInstance().requestRecordPermission({_ in (Bool).self})
+        }
+        
         let pickerController = AAImagePickerController()
         pickerController.sourceType = source
         pickerController.mediaTypes = [kUTTypeImage as String,kUTTypeMovie as String]
