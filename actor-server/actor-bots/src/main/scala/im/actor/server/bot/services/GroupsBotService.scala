@@ -57,23 +57,29 @@ private[bot] final class GroupsBotService(system: ActorSystem) extends BotServic
 
   private def addGroupExtString(groupId: Int, key: String, value: String) = RequestHandler[AddGroupExtString, AddGroupExtString#Response](
     (botUserId: Int, botAuthId: Long, botAuthSid: Int) ⇒ {
-      (for (_ ← addExt(groupId, GroupExt(key, StringValue(value)))) yield Right(Void)) recover {
-        case InvalidExtension ⇒ Left(BotError(500, "INVALID_EXT"))
+      ifIsAdmin(botUserId) {
+        (for (_ ← addExt(groupId, GroupExt(key, StringValue(value)))) yield Right(Void)) recover {
+          case InvalidExtension ⇒ Left(BotError(500, "INVALID_EXT"))
+        }
       }
     }
   )
 
   private def addGroupExtBool(groupId: Int, key: String, value: Boolean) = RequestHandler[AddGroupExtBool, AddGroupExtBool#Response](
     (botUserId: Int, botAuthId: Long, botAuthSid: Int) ⇒ {
-      (for (_ ← addExt(groupId, GroupExt(key, BoolValue(value)))) yield Right(Void)) recover {
-        case InvalidExtension ⇒ Left(BotError(500, "INVALID_EXT"))
+      ifIsAdmin(botUserId) {
+        (for (_ ← addExt(groupId, GroupExt(key, BoolValue(value)))) yield Right(Void)) recover {
+          case InvalidExtension ⇒ Left(BotError(500, "INVALID_EXT"))
+        }
       }
     }
   )
 
   private def removeExt(groupId: Int, key: String) = RequestHandler[RemoveGroupExt, RemoveGroupExt#Response](
     (botUserId: Int, botAuthId: Long, botAuthSid: Int) ⇒ {
-      groupExt.removeExt(groupId, key) map (_ ⇒ Right(Void))
+      ifIsAdmin(botUserId) {
+        groupExt.removeExt(groupId, key) map (_ ⇒ Right(Void))
+      }
     }
   )
 
