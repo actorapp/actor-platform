@@ -35,7 +35,6 @@ public class BotKeyboard extends EmojiKeyboard implements MessagesFragment.NewMe
     private LinearLayout buttonsContainer;
     private View emoji;
     private BotButtonListener botButtonListener;
-    private int keyboardHash = -1;
     private BotKeyboardButton[][] keyboard;
     private boolean buttonsRequested;
 
@@ -128,13 +127,6 @@ public class BotKeyboard extends EmojiKeyboard implements MessagesFragment.NewMe
         if (content instanceof JsonContent) {
             try {
                 String rawJson = ((JsonContent) content).getRawJson();
-
-                //Check if it is same keyboard
-                int hash = rawJson.hashCode();
-                if (keyboardHash == hash) {
-                    return;
-                }
-                keyboardHash = hash;
 
                 JSONObject json = new JSONObject(rawJson);
                 if (json.getString("dataType").equals("textWithKeyboard")) {
