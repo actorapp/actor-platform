@@ -22,10 +22,7 @@ open class AAAddParticipantViewController: AAContactsListContentController, AACo
         
         title = AALocalized("GroupAddParticipantTitle")
         
-//        navigationItem.leftBarButtonItem = UIBarButtonItem(
-//                    title: AALocalized("NavigationCancel"),
-//                    style: UIBarButtonItemStyle.plain,
-//                    target: self, action: #selector(AAViewController.dismiss))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: .plain, target: self, action: #selector(AAViewController.dismissController))
     }
     
     open func willAddContacts(_ controller: AAContactsListContentController, section: AAManagedSection) {

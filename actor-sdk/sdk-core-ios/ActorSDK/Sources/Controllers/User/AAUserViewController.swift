@@ -103,43 +103,46 @@ open class AAUserViewController: AAContentTableController {
                     s.titled("ProfileUsername", content: "@\(n)")
                 }
                 
-                // Contact: Phones
-                s.arrays { (r: AAManagedArrayRows<ACUserPhone, AATitledCell>) -> () in
-                    r.height = 55
-                    r.data = self.user.getPhonesModel().get().toSwiftArray()
-                    r.bindData = { (c: AATitledCell, d: ACUserPhone) -> () in
-                        c.setContent(AALocalized("SettingsMobilePhone"), content: "+\(d.phone)", isAction: false)
-                    }
-                    r.bindCopy = { (d: ACUserPhone) -> String? in
-                        return "+\(d.phone)"
-                    }
-                    r.selectAction = { (c: ACUserPhone) -> Bool in
-                        let phoneNumber = c.phone
-                        let hasPhone = UIApplication.shared.canOpenURL(URL(string: "telprompt://")!)
-                        if (!hasPhone) {
-                            UIPasteboard.general.string = "+\(phoneNumber)"
-                            self.alertUser("NumberCopied")
-                        } else {
-                            ActorSDK.sharedActor().openUrl("telprompt://+\(phoneNumber)")
+                if  !ActorSDK.sharedActor().delegate.useOnClientPrivacy() || self.user.isInPhoneBookModel().get().booleanValue() {
+                    // Contact: Phones
+                    s.arrays { (r: AAManagedArrayRows<ACUserPhone, AATitledCell>) -> () in
+                        r.height = 55
+                        r.data = self.user.getPhonesModel().get().toSwiftArray()
+                        r.bindData = { (c: AATitledCell, d: ACUserPhone) -> () in
+                            c.setContent(AALocalized("SettingsMobilePhone"), content: "+\(d.phone)", isAction: false)
                         }
-                        return true
+                        r.bindCopy = { (d: ACUserPhone) -> String? in
+                            return "+\(d.phone)"
+                        }
+                        r.selectAction = { (c: ACUserPhone) -> Bool in
+                            let phoneNumber = c.phone
+                            let hasPhone = UIApplication.shared.canOpenURL(URL(string: "telprompt://")!)
+                            if (!hasPhone) {
+                                UIPasteboard.general.string = "+\(phoneNumber)"
+                                self.alertUser("NumberCopied")
+                            } else {
+                                ActorSDK.sharedActor().openUrl("telprompt://+\(phoneNumber)")
+                            }
+                            return true
+                        }
                     }
-                }
-                
-                // Contact: Emails
-                s.arrays { (r: AAManagedArrayRows<ACUserEmail, AATitledCell>) -> () in
-                    r.height = 55
-                    r.data = self.user.getEmailsModel().get().toSwiftArray()
-                    r.bindData = { (c: AATitledCell, d: ACUserEmail) -> () in
-                        c.setContent(d.title, content: d.email, isAction: false)
+                    
+                    // Contact: Emails
+                    s.arrays { (r: AAManagedArrayRows<ACUserEmail, AATitledCell>) -> () in
+                        r.height = 55
+                        r.data = self.user.getEmailsModel().get().toSwiftArray()
+                        r.bindData = { (c: AATitledCell, d: ACUserEmail) -> () in
+                            c.setContent(d.title, content: d.email, isAction: false)
+                        }
+                        r.bindCopy = { (d: ACUserEmail) -> String? in
+                            return d.email
+                        }
+                        r.selectAction = { (c: ACUserEmail) -> Bool in
+                            ActorSDK.sharedActor().openUrl("mailto:\(c.email)")
+                            return true
+                        }
                     }
-                    r.bindCopy = { (d: ACUserEmail) -> String? in
-                        return d.email
-                    }
-                    r.selectAction = { (c: ACUserEmail) -> Bool in
-                        ActorSDK.sharedActor().openUrl("mailto:\(c.email)")
-                        return true
-                    }
+
                 }
                 
                 // Contact: About

@@ -240,6 +240,9 @@ import ReachabilitySwift
         for key in trustedKeys {
             builder.addTrustedKey(key)
         }
+        
+        builder.setOnClientPrivacyEnabled(jboolean(delegate.useOnClientPrivacy()))
+        
         builder.setApiConfiguration(ACApiConfiguration(appTitle: appTitle, withAppId: jint(apiId), withAppKey: apiKey, withDeviceTitle: deviceName, withDeviceId: deviceKey))
         
         // Providers

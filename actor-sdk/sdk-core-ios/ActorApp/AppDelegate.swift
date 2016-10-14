@@ -52,4 +52,12 @@ open class AppDelegate : ActorApplicationDelegate {
     open override func actorRootInitialControllerIndex() -> Int? {
         return 0
     }
+    
+    open override func showStickersButton() -> Bool{
+        return false
+    }
+    
+    open override func useOnClientPrivacy() -> Bool{
+        return true
+    }
 }

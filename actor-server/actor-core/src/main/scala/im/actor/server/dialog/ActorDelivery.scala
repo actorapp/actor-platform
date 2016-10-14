@@ -40,6 +40,11 @@ final class ActorDelivery(val system: ActorSystem)
       quotedMessage = None
     )
 
+    val isMentioned = message match {
+      case ApiTextMessage(_, mentions, _) ⇒ mentions.contains(receiverUserId)
+      case _                              ⇒ false
+    }
+
     for {
       senderName ← UserExtension(system).getName(senderUserId, receiverUserId)
       (pushText, censoredPushText) ← getPushText(peer, receiverUserId, senderName, message)
@@ -51,6 +56,7 @@ final class ActorDelivery(val system: ActorSystem)
             .withText(pushText)
             .withCensoredText(censoredPushText)
             .withPeer(peer)
+            .withIsMentioned(isMentioned)
         ),
         deliveryId = seqUpdExt.msgDeliveryId(peer, randomId),
         deliveryTag = deliveryTag

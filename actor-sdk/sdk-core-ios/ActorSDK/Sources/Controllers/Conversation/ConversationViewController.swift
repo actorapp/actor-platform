@@ -7,6 +7,7 @@ import UIKit
 import MobileCoreServices
 import AddressBook
 import AddressBookUI
+import AVFoundation
 
 open class ConversationViewController:
     AAConversationContentController,
@@ -93,14 +94,17 @@ open class ConversationViewController:
         backgroundView.backgroundColor = appStyle.chatBgColor
         
         // Custom background if available
-        if let bg = Actor.getSelectedWallpaper() {
-            if bg.startsWith("local:") {
-                backgroundView.image = UIImage.bundled(bg.skip(6))
-            } else {
-                let path = CocoaFiles.pathFromDescriptor(bg.skip(5))
-                backgroundView.image = UIImage(contentsOfFile:path)
-            }
+        if let bg = Actor.getSelectedWallpaper(){
+            if bg != "default" {
+                if bg.startsWith("local:") {
+                    backgroundView.image = UIImage.bundled(bg.skip(6))
+                } else {
+                    let path = CocoaFiles.pathFromDescriptor(bg.skip(5))
+                    backgroundView.image = UIImage(contentsOfFile:path)
+                }
+            }            
         }
+        
         view.insertSubview(backgroundView, at: 0)
         
         
@@ -145,7 +149,9 @@ open class ConversationViewController:
         self.stickersButton.tintColor = UIColor.lightGray.withAlphaComponent(0.5)
         self.stickersButton.setImage(UIImage.bundled("sticker_button"), for: UIControlState())
         self.stickersButton.addTarget(self, action: #selector(ConversationViewController.changeKeyboard), for: UIControlEvents.touchUpInside)
-        self.textInputbar.addSubview(stickersButton)
+        if(ActorSDK.sharedActor().delegate.showStickersButton()){
+         self.textInputbar.addSubview(stickersButton)   
+        }
         
         
         //
@@ -799,6 +805,11 @@ open class ConversationViewController:
     ////////////////////////////////////////////////////////////
     
     func pickImage(_ source: UIImagePickerControllerSourceType) {
+        
+        if(source == .camera && (AVAudioSession.sharedInstance().recordPermission() == AVAudioSessionRecordPermission.undetermined || AVAudioSession.sharedInstance().recordPermission() == AVAudioSessionRecordPermission.denied)){
+            AVAudioSession.sharedInstance().requestRecordPermission({_ in (Bool).self})
+        }
+        
         let pickerController = AAImagePickerController()
         pickerController.sourceType = source
         pickerController.mediaTypes = [kUTTypeImage as String,kUTTypeMovie as String]

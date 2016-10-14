@@ -34,7 +34,7 @@ public extension ACCocoaMessenger {
         
         if let videoData = try? Data(contentsOf: url) { // if data have on this local path url go to upload
             
-            let descriptor = "/tmp/"+UUID().uuidString
+            let descriptor = "/tmp/"+UUID().uuidString + ".mp4"
             let path = CocoaFiles.pathFromDescriptor(descriptor);
             
             try? videoData.write(to: URL(fileURLWithPath: path), options: [.atomic]) // write to file
