@@ -115,7 +115,6 @@ public class ChatFragment extends BaseFragment implements InputBarCallback, Mess
             }
             MessagesDefaultFragment messagesDefaultFragment = MessagesDefaultFragment.create(peer);
             messagesDefaultFragment.setNewMessageListener(inputBarFragment);
-            inputBarFragment.onNewMessage(messagesDefaultFragment.getLastMessage());
             getChildFragmentManager().beginTransaction()
                     .add(toolbarFragment, "toolbar")
                     .add(R.id.messagesFragment, messagesDefaultFragment)

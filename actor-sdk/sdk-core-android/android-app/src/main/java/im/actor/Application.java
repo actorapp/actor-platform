@@ -22,6 +22,7 @@ import im.actor.core.entity.content.JsonContent;
 import im.actor.core.entity.content.PhotoContent;
 import im.actor.develop.R;
 import im.actor.fragments.AttachFragmentEx;
+import im.actor.fragments.InputBarEx;
 import im.actor.fragments.RootFragmentEx;
 import im.actor.runtime.json.JSONException;
 import im.actor.runtime.json.JSONObject;
@@ -30,6 +31,7 @@ import im.actor.sdk.ActorSDKApplication;
 import im.actor.sdk.ActorStyle;
 import im.actor.sdk.BaseActorSDKDelegate;
 import im.actor.sdk.controllers.conversation.attach.AbsAttachFragment;
+import im.actor.sdk.controllers.conversation.inputbar.InputBarFragment;
 import im.actor.sdk.controllers.conversation.messages.BubbleLayouter;
 import im.actor.sdk.controllers.conversation.messages.DefaultLayouter;
 import im.actor.sdk.controllers.conversation.messages.JsonXmlBubbleLayouter;
@@ -136,6 +138,21 @@ public class Application extends ActorSDKApplication {
                     bindRawText(jsonString, readDate, receiveDate, reactions, message, false);
                 }
             }));
+
+            layouters.add(0, new JsonXmlBubbleLayouter("textWithKeyboard", R.layout.adapter_dialog_text, (adapter, root, peer) -> new TextHolder(adapter, root, peer) {
+                @Override
+                protected void bindData(Message message, long readDate, long receiveDate, boolean isUpdated, PreprocessedData preprocessedData) {
+                    String jsonString = "can't read json";
+                    try {
+                        JSONObject jsonObject = new JSONObject(((JsonContent) message.getContent()).getRawJson());
+                        JSONObject data = jsonObject.getJSONObject("data");
+                        jsonString = data.getString("text");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    bindRawText(jsonString, readDate, receiveDate, reactions, message, false);
+                }
+            }));
         }
 
         @Nullable
@@ -150,7 +167,13 @@ public class Application extends ActorSDKApplication {
             return new AttachFragmentEx(peer);
         }
 
-//        @Override
+        @Nullable
+        @Override
+        public InputBarFragment fragmentForChatInput() {
+            return new InputBarEx();
+        }
+
+        //        @Override
 //        public BaseGroupInfoActivity getGroupInfoIntent(int gid) {
 //            return new BaseGroupInfoActivity() {
 //                @Override

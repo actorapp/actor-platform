@@ -297,7 +297,7 @@ public abstract class MessagesFragment extends DisplayListFragment<Message, AbsM
     public void onCollectionChanged() {
         super.onCollectionChanged();
         recalculateUnreadMessageIfNeeded();
-        if (newMessageListener != null) {
+        if (newMessageListener != null && getDisplayList().getSize() > 0) {
             newMessageListener.onNewMessage(getLastMessage());
         }
     }
