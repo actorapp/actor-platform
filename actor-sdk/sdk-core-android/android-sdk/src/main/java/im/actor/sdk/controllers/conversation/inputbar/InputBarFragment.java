@@ -93,6 +93,7 @@ public class InputBarFragment extends BaseFragment implements MessagesDefaultFra
     // Emoji keyboard
     protected EmojiKeyboard emojiKeyboard;
     protected ImageView emojiButton;
+    private Message lastMessage;
 
     @Override
     public void onCreate(Bundle saveInstance) {
@@ -257,6 +258,16 @@ public class InputBarFragment extends BaseFragment implements MessagesDefaultFra
         });
 
         return res;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (lastMessage != null) {
+            onNewMessage(lastMessage);
+            lastMessage = null;
+        }
+
     }
 
     @NonNull
@@ -626,6 +637,10 @@ public class InputBarFragment extends BaseFragment implements MessagesDefaultFra
 
     @Override
     public void onNewMessage(Message m) {
+        if (emojiKeyboard == null) {
+            // Inputbar fragment not yet created, store last message for later use
+            lastMessage = m;
+        }
         if (emojiKeyboard instanceof MessagesFragment.NewMessageListener) {
             ((MessagesFragment.NewMessageListener) emojiKeyboard).onNewMessage(m);
         }

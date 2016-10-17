@@ -44,7 +44,7 @@ public class BaseKeyboard implements
 
     Boolean pendingOpen = false;
 
-    private KeyboardStatusListener keyboardStatusListener;
+    protected KeyboardStatusListener keyboardStatusListener;
 
     final WindowManager windowManager;
     int keyboardHeight;

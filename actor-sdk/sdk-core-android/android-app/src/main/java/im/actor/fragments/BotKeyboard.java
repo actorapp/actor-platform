@@ -37,6 +37,7 @@ public class BotKeyboard extends EmojiKeyboard implements MessagesFragment.NewMe
     private BotButtonListener botButtonListener;
     private BotKeyboardButton[][] keyboard;
     private boolean buttonsRequested;
+    private boolean buttonsAvailable = false;
 
     public BotKeyboard(Activity activity, EditText messageBody) {
         super(activity, messageBody);
@@ -108,11 +109,18 @@ public class BotKeyboard extends EmojiKeyboard implements MessagesFragment.NewMe
     }
 
     public void show(boolean showBotButtons) {
+        switchMode(showBotButtons);
+        super.show();
+    }
+
+    protected void switchMode(boolean showBotButtons) {
         buttonsRequested = showBotButtons;
         if (buttonsContainer != null) {
             container.bringChildToFront(buttonsRequested ? buttonsScrollContainer : emoji);
         }
-        super.show();
+        if (keyboardStatusListener != null && keyboardStatusListener instanceof BotKeyboardStatusListener) {
+            ((BotKeyboardStatusListener) keyboardStatusListener).onBotKeyboardStatusChanged(showBotButtons, buttonsAvailable);
+        }
     }
 
     @Override
@@ -132,41 +140,46 @@ public class BotKeyboard extends EmojiKeyboard implements MessagesFragment.NewMe
                 if (json.getString("dataType").equals("textWithKeyboard")) {
                     JSONObject data = json.getJSONObject("data");
                     //Check if keyboard must shown in message
-                    if (data.optBoolean("isInMessage", false)) {
-                        return;
-                    }
-
-                    // Unpack keyboard from json
-                    JSONArray keyboardRows = data.getJSONArray("keyboardRows");
-                    JSONArray rowJson;
-                    JSONObject buttonJson;
-                    keyboard = new BotKeyboardButton[keyboardRows.length()][];
-                    for (int i = 0; i < keyboardRows.length(); i++) {
-                        rowJson = keyboardRows.getJSONArray(i);
-                        BotKeyboardButton[] row = new BotKeyboardButton[rowJson.length()];
-                        for (int j = 0; j < rowJson.length(); j++) {
-                            buttonJson = rowJson.getJSONObject(j);
-                            row[j] = new BotKeyboardButton(getActivity(),
-                                    buttonJson.getString("content"),
-                                    buttonJson.getString("title"),
-                                    buttonJson.optBoolean("isDraft"),
-                                    buttonJson.optBoolean("isSend", true),
-                                    buttonJson.optInt("color", 0xffffffff),
-                                    botButtonListener
-                            );
+                    if (!data.optBoolean("isInMessage", false)) {
+                        // Unpack keyboard from json
+                        JSONArray keyboardRows = data.getJSONArray("keyboardRows");
+                        JSONArray rowJson;
+                        JSONObject buttonJson;
+                        keyboard = new BotKeyboardButton[keyboardRows.length()][];
+                        for (int i = 0; i < keyboardRows.length(); i++) {
+                            rowJson = keyboardRows.getJSONArray(i);
+                            BotKeyboardButton[] row = new BotKeyboardButton[rowJson.length()];
+                            for (int j = 0; j < rowJson.length(); j++) {
+                                buttonJson = rowJson.getJSONObject(j);
+                                row[j] = new BotKeyboardButton(getActivity(),
+                                        buttonJson.getString("content"),
+                                        buttonJson.getString("title"),
+                                        buttonJson.optBoolean("isDraft"),
+                                        buttonJson.optBoolean("isSend", true),
+                                        buttonJson.optInt("color", 0xffffffff),
+                                        botButtonListener
+                                );
+                            }
+                            keyboard[i] = row;
                         }
-                        keyboard[i] = row;
-                    }
-                    if (!isShowing()) {
-                        show(true);
-                    } else {
-                        bindBotButtons(keyboard);
+                        buttonsAvailable = true;
+                        if (!isShowing()) {
+                            show(true);
+                        } else {
+                            bindBotButtons(keyboard);
+                        }
+
+                        return;
                     }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
+
+        //if not returned before, hide old bot keyboard
+        buttonsAvailable = false;
+        switchMode(false);
     }
 
     public static class BotKeyboardButton extends TextView {
