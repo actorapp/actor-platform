@@ -96,7 +96,8 @@ private[group] object GroupState {
       deletedAt = None,
 
       //???
-      extensions = Map.empty
+      internalExtensions = Map.empty,
+      exts = Seq.empty
     )
 }
 
@@ -124,11 +125,12 @@ private[group] final case class GroupState(
   invitedUserIds: Set[Int],
 
   //security and etc.
-  accessHash:    Long,
-  adminSettings: AdminSettings,
-  bot:           Option[Bot],
-  deletedAt:     Option[Instant],
-  extensions:    Map[Int, Array[Byte]]
+  accessHash:         Long,
+  adminSettings:      AdminSettings,
+  bot:                Option[Bot],
+  deletedAt:          Option[Instant],
+  internalExtensions: Map[Int, Array[Byte]],
+  exts:               Seq[GroupExt]
 ) extends ProcessorState[GroupState] {
 
   lazy val memberIds = members.keySet
@@ -200,7 +202,7 @@ private[group] final case class GroupState(
           if (typeOfGroup.isChannel) AdminSettings.ChannelsDefault
           else AdminSettings.PlainDefault,
         bot = None,
-        extensions = (evt.extensions map { //TODO: validate is it right?
+        internalExtensions = (evt.extensions map { //TODO: validate is it right?
           case ApiExtension(extId, data) ⇒
             extId → data
         }).toMap
@@ -287,6 +289,13 @@ private[group] final case class GroupState(
           if (groupType.isChannel) AdminSettings.ChannelsDefault
           else AdminSettings.PlainDefault
       )
+    case ExtAdded(_, ext) ⇒
+      if (exts.contains(ext))
+        this
+      else
+        this.copy(exts = exts :+ ext)
+    case ExtRemoved(_, key) ⇒
+      this.copy(exts = exts.filterNot(_.key == key))
     // deprecated events
     case UserBecameAdmin(_, userId, _) ⇒
       this.copy(

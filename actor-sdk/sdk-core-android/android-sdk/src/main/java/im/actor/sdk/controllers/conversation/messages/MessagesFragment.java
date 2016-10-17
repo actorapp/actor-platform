@@ -45,6 +45,7 @@ public abstract class MessagesFragment extends DisplayListFragment<Message, AbsM
     private long firstUnread = -1;
     private boolean isUnreadLoaded = false;
     private boolean reloaded;
+    private NewMessageListener newMessageListener;
 
 
     //
@@ -168,6 +169,7 @@ public abstract class MessagesFragment extends DisplayListFragment<Message, AbsM
         if (displayList.getListProcessor() == null) {
             displayList.setListProcessor(new ChatListProcessor(peer, this.getContext()));
         }
+        notifyNewMessage(displayList);
         return displayList;
     }
 
@@ -200,7 +202,7 @@ public abstract class MessagesFragment extends DisplayListFragment<Message, AbsM
         }
 
         // refresh list if top message is too old
-        if (getDisplayList().getItem(0).getSortDate() < firstUnread && !reloaded) {
+        if (getLastMessage(getDisplayList()).getSortDate() < firstUnread && !reloaded) {
             reloaded = true;
             getDisplayList().initCenter(firstUnread, true);
             return;
@@ -296,6 +298,17 @@ public abstract class MessagesFragment extends DisplayListFragment<Message, AbsM
     public void onCollectionChanged() {
         super.onCollectionChanged();
         recalculateUnreadMessageIfNeeded();
+        notifyNewMessage(getDisplayList());
+    }
+
+    protected void notifyNewMessage(BindedDisplayList<Message> displayList) {
+        if (newMessageListener != null && displayList.getSize() > 0) {
+            newMessageListener.onNewMessage(getLastMessage(displayList));
+        }
+    }
+
+    public Message getLastMessage(BindedDisplayList<Message> displayList) {
+        return displayList.getItem(0);
     }
 
     @Override
@@ -315,5 +328,13 @@ public abstract class MessagesFragment extends DisplayListFragment<Message, AbsM
             messagesAdapter.getBinder().unbindAll();
             messagesAdapter = null;
         }
+    }
+
+    public void setNewMessageListener(NewMessageListener newMessageListener) {
+        this.newMessageListener = newMessageListener;
+    }
+
+    public interface NewMessageListener {
+        void onNewMessage(Message m);
     }
 }
