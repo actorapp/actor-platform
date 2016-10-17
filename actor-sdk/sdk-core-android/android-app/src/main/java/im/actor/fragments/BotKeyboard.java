@@ -131,6 +131,9 @@ public class BotKeyboard extends EmojiKeyboard implements MessagesFragment.NewMe
 
     @Override
     public void onNewMessage(Message m) {
+        if (m.getSenderId() == ActorSDK.sharedActor().getMessenger().myUid()) {
+            return;
+        }
         AbsContent content = m.getContent();
         if (content instanceof JsonContent) {
             try {
