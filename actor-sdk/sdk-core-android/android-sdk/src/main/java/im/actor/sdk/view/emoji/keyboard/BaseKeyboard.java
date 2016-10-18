@@ -44,7 +44,7 @@ public class BaseKeyboard implements
 
     Boolean pendingOpen = false;
 
-    private KeyboardStatusListener keyboardStatusListener;
+    protected KeyboardStatusListener keyboardStatusListener;
 
     final WindowManager windowManager;
     int keyboardHeight;
@@ -93,6 +93,10 @@ public class BaseKeyboard implements
 
 
     public void show() {
+        if (isShowing()) {
+            return;
+        }
+
         softKeyboardListeningEnabled = true;
         this.root = (KeyboardLayout) messageBody.getRootView().findViewById(R.id.container).getParent();
         this.container = (RelativeLayout) messageBody.getRootView().findViewById(R.id.container);
@@ -111,7 +115,7 @@ public class BaseKeyboard implements
 
     }
 
-    public void showInternal() {
+    protected void showInternal() {
         if (isShowing()) {
             return;
         }
