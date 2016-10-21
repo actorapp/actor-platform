@@ -3,6 +3,8 @@ package im.actor.sdk.controllers.auth;
 import android.app.AlertDialog;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
+import android.telephony.PhoneNumberFormattingTextWatcher;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,6 +22,7 @@ import im.actor.sdk.ActorStyle;
 import im.actor.sdk.R;
 import im.actor.sdk.util.Fonts;
 import im.actor.sdk.util.KeyboardHelper;
+import im.actor.sdk.util.Mask;
 import im.actor.sdk.view.SelectorFactory;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
@@ -44,33 +47,6 @@ public class SignInFragment extends BaseAuthFragment {
         v.findViewById(R.id.divider).setBackgroundColor(style.getDividerColor());
 
         initView(v);
-
-//        Get domain logo
-
-//        logoActor = ActorSystem.system().actorOf(Props.create(LogoActor.class, new ActorCreator<LogoActor>() {
-//            @Override
-//            public LogoActor create() {
-//                return new LogoActor();
-//            }
-//        }), "actor/logo_actor");
-//
-//        logoActor.send(new LogoActor.AddCallback(new LogoActor.LogoCallBack() {
-//            @Override
-//            public void onDownloaded(final Drawable logoDrawable) {
-//                getActivity().runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        if (logoDrawable != null) {
-//                            logo.setImageDrawable(logoDrawable);
-//                            logo.measure(0, 0);
-//                            expand(logo, logo.getMeasuredHeight());
-//                        } else {
-//                            expand(logo, 0);
-//                        }
-//                    }
-//                });
-//            }
-//        }));
 
         return v;
     }
@@ -122,6 +98,7 @@ public class SignInFragment extends BaseAuthFragment {
             hint.setText(getString(R.string.sign_in_hint_phone_only));
             signIdEditText.setHint(getString(R.string.sign_in_edit_text_hint_phone_only));
             signIdEditText.setInputType(EditorInfo.TYPE_CLASS_PHONE);
+            signIdEditText.addTextChangedListener(Mask.telephoneMask(signIdEditText));
         } else if ((availableAuthType & AuthActivity.AUTH_TYPE_EMAIL) == AuthActivity.AUTH_TYPE_EMAIL) {
             hint.setText(getString(R.string.sign_in_hint_email_only));
             signIdEditText.setHint(getString(R.string.sign_in_edit_text_hint_email_only));
@@ -129,7 +106,6 @@ public class SignInFragment extends BaseAuthFragment {
                 setSuggestedEmail(signIdEditText);
             }
         }
-
 
         Button singUp = (Button) v.findViewById(R.id.button_sign_up);
         singUp.setTextColor(style.getTextSecondaryColor());
@@ -165,7 +141,8 @@ public class SignInFragment extends BaseAuthFragment {
             startEmailAuth(rawId);
         } else {
             try {
-                startPhoneAuth(Long.parseLong(rawId.replace("+", "")));
+               // startPhoneAuth(Long.parseLong("55"+rawId.replace("+", "")));
+                startPhoneAuth(Long.parseLong("55"+rawId.replaceAll("[^0-9]*", "")));
             } catch (Exception e) {
                 new AlertDialog.Builder(getActivity())
                         .setMessage(message)

@@ -41,7 +41,6 @@
                 android:paddingLeft="4dp"
                 android:paddingRight="4dp">
 
-
                 <EditText
                     android:id="@+id/tv_sign_in"
                     android:layout_width="match_parent"
@@ -50,8 +49,13 @@
                     android:hint="@string/sign_in_edit_text_hint"
                     android:imeOptions="actionGo"
                     android:maxLines="1"
-                    android:singleLine="true"
-                    android:textColorHint="#a6a6a6" />
+                    android:textColorHint="#a6a6a6"
+                    android:inputType="number|phone"
+                    android:digits="0123456789"
+                    android:textAlignment="center"
+                    android:gravity="center_horizontal"
+                    android:textSize="20sp"
+                    android:background="@android:color/transparent"/>
 
             </LinearLayout>
 

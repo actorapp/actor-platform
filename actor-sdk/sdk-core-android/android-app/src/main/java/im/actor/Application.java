@@ -29,6 +29,7 @@ import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorSDKApplication;
 import im.actor.sdk.ActorStyle;
 import im.actor.sdk.BaseActorSDKDelegate;
+import im.actor.sdk.controllers.auth.AuthActivity;
 import im.actor.sdk.controllers.conversation.attach.AbsAttachFragment;
 import im.actor.sdk.controllers.conversation.messages.BubbleLayouter;
 import im.actor.sdk.controllers.conversation.messages.DefaultLayouter;
@@ -86,7 +87,7 @@ public class Application extends ActorSDKApplication {
 
 //        ActorSDK.sharedActor().setEndpoints(new String[]{"tcp://192.168.1.8:9070"});
         ActorSDK.sharedActor().setEndpoints(new String[]{"tcp://64.137.236.110:9070"});
-
+        ActorSDK.sharedActor().setAuthType(AuthActivity.AUTH_TYPE_PHONE);
 
 //        ActorSDK.sharedActor().setTwitter("");
 //        ActorSDK.sharedActor().setHomePage("http://www.foo.com");

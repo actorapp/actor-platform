@@ -249,40 +249,40 @@ public abstract class BaseAuthFragment extends BaseFragment {
         } else if (i == R.id.sign_up) {
             startSignUp();
             return true;
-        } else if (i == R.id.change_endpoint) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setTitle(R.string.auth_change_endpoint);
-
-            final EditText input = new EditText(getActivity());
-            input.setText("tcp://");
-            input.setSelection(input.getText().length());
-
-            int padding = Screen.dp(25);
-            FrameLayout inputContainer = new FrameLayout(getActivity());
-            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            params.setMargins(padding, padding, padding, 0);
-            inputContainer.addView(input, params);
-            builder.setView(inputContainer);
-
-            builder.setPositiveButton(R.string.dialog_ok, (dialog, which) -> {
-                try {
-                    messenger().changeEndpoint(input.getText().toString());
-                } catch (ConnectionEndpointArray.UnknownSchemeException e) {
-                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
-                }
-            });
-            builder.setNegativeButton(R.string.auth_reset_default_endpoint, (dialog, which) -> {
-                try {
-                    messenger().changeEndpoint(null);
-                } catch (ConnectionEndpointArray.UnknownSchemeException e) {
-                    e.printStackTrace();
-                }
-            });
-
-            builder.show();
-            input.requestFocus();
-
-            return true;
+//        } else if (i == R.id.change_endpoint) {
+//            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+//            builder.setTitle(R.string.auth_change_endpoint);
+//
+//            final EditText input = new EditText(getActivity());
+//            input.setText("tcp://");
+//            input.setSelection(input.getText().length());
+//
+//            int padding = Screen.dp(25);
+//            FrameLayout inputContainer = new FrameLayout(getActivity());
+//            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//            params.setMargins(padding, padding, padding, 0);
+//            inputContainer.addView(input, params);
+//            builder.setView(inputContainer);
+//
+//            builder.setPositiveButton(R.string.dialog_ok, (dialog, which) -> {
+//                try {
+//                    messenger().changeEndpoint(input.getText().toString());
+//                } catch (ConnectionEndpointArray.UnknownSchemeException e) {
+//                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+//                }
+//            });
+//            builder.setNegativeButton(R.string.auth_reset_default_endpoint, (dialog, which) -> {
+//                try {
+//                    messenger().changeEndpoint(null);
+//                } catch (ConnectionEndpointArray.UnknownSchemeException e) {
+//                    e.printStackTrace();
+//                }
+//            });
+//
+//            builder.show();
+//            input.requestFocus();
+//
+//            return true;
         } else {
             return super.onOptionsItemSelected(item);
         }
