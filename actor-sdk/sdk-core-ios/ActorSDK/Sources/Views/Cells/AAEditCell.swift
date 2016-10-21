@@ -4,20 +4,20 @@
 
 import Foundation
 
-public class AAEditCell: AATableViewCell {
+open class AAEditCell: AATableViewCell {
     
-    public let textPrefix = UILabel()
-    public let textField = UITextField()
+    open let textPrefix = UILabel()
+    open let textField = UITextField()
     
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        textField.autocapitalizationType = .None
-        textField.autocorrectionType = .No
+        textField.autocapitalizationType = .none
+        textField.autocorrectionType = .no
         textField.textColor = appStyle.cellTextColor
-        textField.keyboardAppearance = appStyle.isDarkApp ? .Dark : .Light
+        textField.keyboardAppearance = appStyle.isDarkApp ? .dark : .light
         
-        textPrefix.hidden = true
+        textPrefix.isHidden = true
         
         contentView.addSubview(textPrefix)
         contentView.addSubview(textField)
@@ -27,16 +27,16 @@ public class AAEditCell: AATableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func layoutSubviews() {
+    open override func layoutSubviews() {
         super.layoutSubviews()
         
-        if textPrefix.hidden {
-            textField.frame = CGRectMake(15, 0, contentView.width - 30, 44)
+        if textPrefix.isHidden {
+            textField.frame = CGRect(x: 15, y: 0, width: contentView.width - 30, height: 44)
         } else {
-            textPrefix.frame = CGRectMake(15, 0, contentView.width - 30, 44)
+            textPrefix.frame = CGRect(x: 15, y: 0, width: contentView.width - 30, height: 44)
             textPrefix.sizeToFit()
-            textPrefix.frame = CGRectMake(15, 0, textPrefix.width, 44)
-            textField.frame = CGRectMake(15 + textPrefix.width, 0, contentView.width - textPrefix.width - 30, 44)
+            textPrefix.frame = CGRect(x: 15, y: 0, width: textPrefix.width, height: 44)
+            textField.frame = CGRect(x: 15 + textPrefix.width, y: 0, width: contentView.width - textPrefix.width - 30, height: 44)
         }
     }
 }

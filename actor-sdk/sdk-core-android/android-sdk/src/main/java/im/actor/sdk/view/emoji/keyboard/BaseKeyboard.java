@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
+import android.os.Build;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +17,13 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.lang.reflect.Field;
+
 import im.actor.sdk.R;
 import im.actor.runtime.Log;
 import im.actor.sdk.controllers.conversation.KeyboardLayout;
 import im.actor.sdk.util.KeyboardHelper;
+import im.actor.sdk.util.Screen;
 
 public class BaseKeyboard implements
         ViewTreeObserver.OnGlobalLayoutListener {
@@ -40,10 +44,10 @@ public class BaseKeyboard implements
 
     Boolean pendingOpen = false;
 
-    private KeyboardStatusListener keyboardStatusListener;
+    protected KeyboardStatusListener keyboardStatusListener;
 
     final WindowManager windowManager;
-    int keyboardHeight = 0;
+    int keyboardHeight;
     private boolean showingPending;
 
     private boolean showing = false;
@@ -51,6 +55,7 @@ public class BaseKeyboard implements
     private boolean softwareKeyboardShowing;
     private KeyboardHelper keyboardHelper;
     private boolean keyboardMeasured = false;
+    private int keyboardTriggerHeight = Screen.dp(150);
 
     public BaseKeyboard(Activity activity, EditText messageBody) {
         this.activity = activity;
@@ -88,6 +93,10 @@ public class BaseKeyboard implements
 
 
     public void show() {
+        if (isShowing()) {
+            return;
+        }
+
         softKeyboardListeningEnabled = true;
         this.root = (KeyboardLayout) messageBody.getRootView().findViewById(R.id.container).getParent();
         this.container = (RelativeLayout) messageBody.getRootView().findViewById(R.id.container);
@@ -106,7 +115,7 @@ public class BaseKeyboard implements
 
     }
 
-    public void showInternal() {
+    protected void showInternal() {
         if (isShowing()) {
             return;
         }
@@ -220,12 +229,11 @@ public class BaseKeyboard implements
             return;
         }
         Rect r = new Rect();
-        decorView.getWindowVisibleDisplayFrame(r);
+        messageBody.getWindowVisibleDisplayFrame(r);
 
-        int screenHeight = decorView.getRootView()
+        int screenHeight = messageBody.getRootView()
                 .getHeight();
-        int heightDifference = screenHeight
-                - (r.bottom - r.top);
+
 
 //        int widthDiff = decorView.getRootView().getWidth() - (r.right - r.left);
 //        if (Math.abs(widthDiff) > 0) {
@@ -234,30 +242,22 @@ public class BaseKeyboard implements
         int resourceId = activity.getResources()
                 .getIdentifier("status_bar_height",
                         "dimen", "android");
-        if (resourceId > 0) {
-            heightDifference -= activity.getResources()
-                    .getDimensionPixelSize(resourceId);
-        }
-        int orientation = activity.getResources().getConfiguration().orientation;
+        int statusBarHeight = 0;
 
-        int id = activity.getResources().getIdentifier("config_showNavigationBar", "bool", "android");
-        if (id > 0) {
-            if (activity.getResources().getBoolean(id)) {
-                int navbarResId = activity.getResources()
-                        .getIdentifier(
-                                orientation == Configuration.ORIENTATION_PORTRAIT ? "navigation_bar_height" : "navigation_bar_height_landscape",
-                                "dimen", "android");
-                if (navbarResId > 0) {
-                    heightDifference -= activity.getResources()
-                            .getDimensionPixelSize(navbarResId);
-                }
-            }
+        if (resourceId > 0) {
+            statusBarHeight = activity.getResources()
+                    .getDimensionPixelSize(resourceId);
+            screenHeight -= statusBarHeight;
         }
+
+
+        screenHeight -= getViewInset(root, statusBarHeight);
+
+        int heightDifference = screenHeight - (r.bottom - r.top);
 
         boolean changed = softwareKeyboardShowing;
 
-
-        if (heightDifference > 100) {
+        if (heightDifference > keyboardTriggerHeight) {
 
             softwareKeyboardShowing = true;
 
@@ -266,7 +266,6 @@ public class BaseKeyboard implements
             keyboardHeight = heightDifference;
 
             dismiss();
-
 
         } else {
 
@@ -339,5 +338,32 @@ public class BaseKeyboard implements
             return true;
         }
         return false;
+    }
+
+    public static int getViewInset(View view, int statusBarHeight) {
+        if (view == null || view.getRootView() == null) {
+            return 0;
+        }
+
+        view = view.getRootView();
+
+        if (Build.VERSION.SDK_INT < 21 || view.getHeight() == Screen.getHeight() || view.getHeight() == Screen.getHeight() - statusBarHeight) {
+            return 0;
+        }
+
+        try {
+            Field mAttachInfoField = View.class.getDeclaredField("mAttachInfo");
+            mAttachInfoField.setAccessible(true);
+            Object mAttachInfo = mAttachInfoField.get(view);
+            if (mAttachInfo != null) {
+                Field mStableInsetsField = mAttachInfo.getClass().getDeclaredField("mStableInsets");
+                mStableInsetsField.setAccessible(true);
+                Rect insets = (Rect) mStableInsetsField.get(mAttachInfo);
+                return insets.bottom;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 }

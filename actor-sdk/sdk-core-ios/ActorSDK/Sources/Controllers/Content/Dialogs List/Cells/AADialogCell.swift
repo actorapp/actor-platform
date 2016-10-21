@@ -4,7 +4,7 @@
 
 import UIKit
 
-public class AADialogCell: AATableViewCell, AABindedCell {
+open class AADialogCell: AATableViewCell, AABindedCell {
     
     // Binding data type
     
@@ -12,48 +12,46 @@ public class AADialogCell: AATableViewCell, AABindedCell {
     
     // Hight of cell
     
-    public static func bindedCellHeight(table: AAManagedTable, item: ACDialog) -> CGFloat {
+    open static func bindedCellHeight(_ table: AAManagedTable, item: ACDialog) -> CGFloat {
         
         return 76
     }
     
     // Cached design
     
-    private static let counterBgImage = Imaging
-        .imageWithColor(ActorSDK.sharedActor().style.dialogCounterBgColor, size: CGSizeMake(18, 18))
+    fileprivate static let counterBgImage = Imaging
+        .imageWithColor(ActorSDK.sharedActor().style.dialogCounterBgColor, size: CGSize(width: 18, height: 18))
         .roundImage(18)
-        .resizableImageWithCapInsets(UIEdgeInsetsMake(9, 9, 9, 9))
-    private lazy var dialogTextActiveColor = ActorSDK.sharedActor().style.dialogTextActiveColor
-    private lazy var dialogTextColor = ActorSDK.sharedActor().style.dialogTextColor
-    private lazy var dialogStatusSending = ActorSDK.sharedActor().style.dialogStatusSending
-    private lazy var dialogStatusRead = ActorSDK.sharedActor().style.dialogStatusRead
-    private lazy var dialogStatusReceived = ActorSDK.sharedActor().style.dialogStatusReceived
-    private lazy var dialogStatusSent = ActorSDK.sharedActor().style.dialogStatusSent
-    private lazy var dialogStatusError = ActorSDK.sharedActor().style.dialogStatusError
-    private lazy var dialogAvatarSize = ActorSDK.sharedActor().style.dialogAvatarSize
-    private lazy var chatIconClock = ActorSDK.sharedActor().style.chatIconClock
-    private lazy var chatIconCheck2 = ActorSDK.sharedActor().style.chatIconCheck2
-    private lazy var chatIconCheck1 = ActorSDK.sharedActor().style.chatIconCheck1
-    private lazy var chatIconError = ActorSDK.sharedActor().style.chatIconError
+        .resizableImage(withCapInsets: UIEdgeInsetsMake(9, 9, 9, 9))
+    fileprivate lazy var dialogTextActiveColor = ActorSDK.sharedActor().style.dialogTextActiveColor
+    fileprivate lazy var dialogTextColor = ActorSDK.sharedActor().style.dialogTextColor
+    fileprivate lazy var dialogStatusSending = ActorSDK.sharedActor().style.dialogStatusSending
+    fileprivate lazy var dialogStatusRead = ActorSDK.sharedActor().style.dialogStatusRead
+    fileprivate lazy var dialogStatusReceived = ActorSDK.sharedActor().style.dialogStatusReceived
+    fileprivate lazy var dialogStatusSent = ActorSDK.sharedActor().style.dialogStatusSent
+    fileprivate lazy var dialogStatusError = ActorSDK.sharedActor().style.dialogStatusError
+    fileprivate lazy var dialogAvatarSize = ActorSDK.sharedActor().style.dialogAvatarSize
+    fileprivate lazy var chatIconClock = ActorSDK.sharedActor().style.chatIconClock
+    fileprivate lazy var chatIconCheck2 = ActorSDK.sharedActor().style.chatIconCheck2
+    fileprivate lazy var chatIconCheck1 = ActorSDK.sharedActor().style.chatIconCheck1
+    fileprivate lazy var chatIconError = ActorSDK.sharedActor().style.chatIconError
     
     // Views
 
-    private var cellRenderer: AABackgroundCellRenderer<AADialogCellConfig, AADialogCellLayout>!
+    fileprivate var cellRenderer: AABackgroundCellRenderer<AADialogCellConfig, AADialogCellLayout>!
     
-    public let avatarView = AAAvatarView()
-    public let titleView = YYLabel()
-    public let messageView = YYLabel()
+    open let avatarView = AAAvatarView()
+    open let titleView = YYLabel()
+    open let messageView = YYLabel()
     
-    public let dateView = YYLabel()
-    public let statusView = UIImageView()
-    public let counterView = YYLabel()
-    public let counterViewBg = UIImageView()
-    
-    private var isEditing = false
-    
+    open let dateView = YYLabel()
+    open let statusView = UIImageView()
+    open let counterView = YYLabel()
+    open let counterViewBg = UIImageView()
+        
     // Binding Data
     
-    private var bindedItem: ACDialog?
+    fileprivate var bindedItem: ACDialog?
     
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -82,7 +80,7 @@ public class AADialogCell: AATableViewCell, AABindedCell {
 
         counterViewBg.image = AADialogCell.counterBgImage
         
-        statusView.contentMode = .Center
+        statusView.contentMode = .center
         
         self.contentView.addSubview(avatarView)
         self.contentView.addSubview(titleView)
@@ -97,7 +95,7 @@ public class AADialogCell: AATableViewCell, AABindedCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public func bind(item: ACDialog, table: AAManagedTable, index: Int, totalCount: Int) {
+    open func bind(_ item: ACDialog, table: AAManagedTable, index: Int, totalCount: Int) {
         
         //
         // Checking dialog rebinding
@@ -110,7 +108,7 @@ public class AADialogCell: AATableViewCell, AABindedCell {
         
         var isRebind: Bool = false
         if let b = bindedItem {
-            if b.peer.isEqual(item.peer).boolValue {
+            if b.peer.isEqual(item.peer) {
                 isRebind = true
             }
         }
@@ -155,20 +153,20 @@ public class AADialogCell: AATableViewCell, AABindedCell {
         //
         
         if item.senderId != Actor.myUid() {
-            self.statusView.hidden = true
+            self.statusView.isHidden = true
         } else {
             if item.isRead() {
                 self.statusView.tintColor = dialogStatusRead
                 self.statusView.image = chatIconCheck2
-                self.statusView.hidden = false
+                self.statusView.isHidden = false
             } else if item.isReceived() {
                 self.statusView.tintColor = dialogStatusReceived
                 self.statusView.image = chatIconCheck2
-                self.statusView.hidden = false
+                self.statusView.isHidden = false
             } else {
                 self.statusView.tintColor = dialogStatusSent
                 self.statusView.image = chatIconCheck1
-                self.statusView.hidden = false
+                self.statusView.isHidden = false
             }
         }
         
@@ -178,17 +176,17 @@ public class AADialogCell: AATableViewCell, AABindedCell {
         setNeedsLayout()
     }
     
-    public override func willTransitionToState(state: UITableViewCellStateMask) {
-        super.willTransitionToState(state)
+    open override func willTransition(to state: UITableViewCellStateMask) {
+        super.willTransition(to: state)
         
-        if state.contains(UITableViewCellStateMask.ShowingEditControlMask) {
+        if state.contains(UITableViewCellStateMask.showingEditControlMask) {
             isEditing = true
         } else {
             isEditing = false
         }
     }
     
-    public override func layoutSubviews() {
+    open override func layoutSubviews() {
         super.layoutSubviews()
         
         // We expect height == 76;
@@ -200,13 +198,13 @@ public class AADialogCell: AATableViewCell, AABindedCell {
         // Avatar View
         //
         let avatarPadding = padding + (50 - dialogAvatarSize) / 2
-        avatarView.frame = CGRectMake(avatarPadding, avatarPadding, dialogAvatarSize, dialogAvatarSize)
+        avatarView.frame = CGRect(x: avatarPadding, y: avatarPadding, width: dialogAvatarSize, height: dialogAvatarSize)
         
         
         //
         // Title
         //
-        let titleFrame = CGRectMake(leftPadding, 16, width - leftPadding - /*paddingRight*/(padding + 50), 21)
+        let titleFrame = CGRect(x: leftPadding, y: 16, width: width - leftPadding - /*paddingRight*/(padding + 50), height: 21)
         UIView.performWithoutAnimation {
             self.titleView.frame = titleFrame
         }
@@ -216,8 +214,8 @@ public class AADialogCell: AATableViewCell, AABindedCell {
         // Status Icon
         //
 
-        if (!self.statusView.hidden) {
-            statusView.frame = CGRectMake(leftPadding, 44, 20, 18)
+        if (!self.statusView.isHidden) {
+            statusView.frame = CGRect(x: leftPadding, y: 44, width: 20, height: 18)
         }
         
         
@@ -228,7 +226,7 @@ public class AADialogCell: AATableViewCell, AABindedCell {
         if bindedItem != nil {
             let config = AADialogCellConfig(
                 item: bindedItem!,
-                isStatusVisible: !statusView.hidden,
+                isStatusVisible: !statusView.isHidden,
                 titleWidth: titleFrame.width,
                 contentWidth: width)
             
@@ -247,7 +245,7 @@ public class AADialogCell: AATableViewCell, AABindedCell {
         }
     }
     
-    private func cellRender(config: AADialogCellConfig) -> AADialogCellLayout! {
+    fileprivate func cellRender(_ config: AADialogCellConfig) -> AADialogCellLayout! {
         
         //
         // Title Layouting
@@ -258,7 +256,7 @@ public class AADialogCell: AATableViewCell, AABindedCell {
         title.yy_color = appStyle.dialogTitleColor
         let titleContainer = YYTextContainer(size: CGSize(width: config.titleWidth, height: 1000))
         titleContainer.maximumNumberOfRows = 1
-        titleContainer.truncationType = .End
+        titleContainer.truncationType = .end
         let titleLayout = YYTextLayout(container: titleContainer, text: title)!
         
         
@@ -280,7 +278,7 @@ public class AADialogCell: AATableViewCell, AABindedCell {
         let counterLayout: YYTextLayout?
         if config.item.unreadCount > 0 {
             let counter = NSMutableAttributedString(string: "\(config.item.unreadCount)")
-            counter.yy_font = UIFont.systemFontOfSize(14)
+            counter.yy_font = UIFont.systemFont(ofSize: 14)
             counter.yy_color = appStyle.dialogCounterColor
             counterLayout = YYTextLayout(containerSize: CGSize(width: 1000, height: 1000), text: counter)!
             unreadPadding = max(counterLayout!.textBoundingSize.width + 8, 18)
@@ -294,8 +292,8 @@ public class AADialogCell: AATableViewCell, AABindedCell {
         //
         
         let message = NSMutableAttributedString(string: Actor.getFormatter().formatDialogText(config.item))
-        message.yy_font = UIFont.systemFontOfSize(16)
-        if config.item.messageType.ordinal() != ACContentType.TEXT().ordinal() {
+        message.yy_font = UIFont.systemFont(ofSize: 16)
+        if config.item.messageType.ordinal() != ACContentType.text().ordinal() {
             message.yy_color = dialogTextActiveColor
         } else {
             message.yy_color = dialogTextColor
@@ -303,7 +301,7 @@ public class AADialogCell: AATableViewCell, AABindedCell {
         let messageWidth = config.contentWidth - 76 - 14 - messagePadding - unreadPadding
         let messageContainer = YYTextContainer(size: CGSize(width: messageWidth, height: 1000))
         messageContainer.maximumNumberOfRows = 1
-        messageContainer.truncationType = .End
+        messageContainer.truncationType = .end
         let messageLayout = YYTextLayout(container: messageContainer, text: message)!
         
         
@@ -319,14 +317,14 @@ public class AADialogCell: AATableViewCell, AABindedCell {
         }
         let dateAtrStr = NSMutableAttributedString(string: dateStr)
         dateAtrStr.yy_color = appStyle.dialogDateColor
-        dateAtrStr.yy_font = UIFont.systemFontOfSize(14)
+        dateAtrStr.yy_font = UIFont.systemFont(ofSize: 14)
         let dateContainer = YYTextContainer(size: CGSize(width: 60, height: 1000))
         let dateLayout = YYTextLayout(container: dateContainer, text: dateAtrStr)!
         
         return AADialogCellLayout(titleLayout: titleLayout, messageLayout: messageLayout, messageWidth: messageWidth, counterLayout: counterLayout, dateLayout: dateLayout)
     }
     
-    private func cellApply(render: AADialogCellLayout!) {
+    fileprivate func cellApply(_ render: AADialogCellLayout!) {
         
         //
         // Avatar
@@ -356,7 +354,7 @@ public class AADialogCell: AATableViewCell, AABindedCell {
         
         dateView.textLayout = render.dateLayout
         let dateWidth = render.dateLayout.textBoundingSize.width
-        dateView.frame = CGRectMake(contentView.width - dateWidth - leftPadding, 18, dateWidth, 18)
+        dateView.frame = CGRect(x: contentView.width - dateWidth - leftPadding, y: 18, width: dateWidth, height: 18)
         presentView(dateView)
         
         
@@ -365,10 +363,10 @@ public class AADialogCell: AATableViewCell, AABindedCell {
         //
         
         var padding: CGFloat = 76
-        if !statusView.hidden {
+        if !statusView.isHidden {
             padding += 22
         }
-        let messageViewFrame = CGRectMake(padding, 44, render.messageWidth, 18)
+        let messageViewFrame = CGRect(x: padding, y: 44, width: render.messageWidth, height: 18)
         UIView.performWithoutAnimation {
             self.messageView.frame = messageViewFrame
         }
@@ -379,7 +377,7 @@ public class AADialogCell: AATableViewCell, AABindedCell {
         //
         // Message State
         //
-        if !self.statusView.hidden {
+        if !self.statusView.isHidden {
             presentView(self.statusView)
         }
         
@@ -394,8 +392,8 @@ public class AADialogCell: AATableViewCell, AABindedCell {
             let textW = render.counterLayout!.textBoundingSize.width
             let unreadW = max(textW + 8, 18)
             
-            counterView.frame = CGRectMake(contentView.width - leftPadding - unreadW + (unreadW - textW) / 2, 44, textW, 18)
-            counterViewBg.frame = CGRectMake(contentView.width - leftPadding - unreadW, 44, unreadW, 18)
+            counterView.frame = CGRect(x: contentView.width - leftPadding - unreadW + (unreadW - textW) / 2, y: 44, width: textW, height: 18)
+            counterViewBg.frame = CGRect(x: contentView.width - leftPadding - unreadW, y: 44, width: unreadW, height: 18)
             
             presentView(counterView)
             presentView(counterViewBg)
@@ -406,11 +404,11 @@ public class AADialogCell: AATableViewCell, AABindedCell {
         }
     }
     
-    private func presentView(view: UIView) {
+    fileprivate func presentView(_ view: UIView) {
         view.alpha = 1
     }
     
-    private func dismissView(view: UIView) {
+    fileprivate func dismissView(_ view: UIView) {
         view.alpha = 0
     }
 }

@@ -222,7 +222,7 @@
     <string name="dialogs_hint">Нажмите и удерживайте для дополнительной информации</string>
 
     <string name="dialogs_empty_title">Начать общение</string>
-    <string name="dialogs_empty">Выберите контакт из списка контактов или нажмине кнопку "плюс" для начала общения.</string>
+    <string name="dialogs_empty">Выберите контакт из списка контактов или нажмине кнопку "написать" для начала общения.</string>
 
     <string name="dialogs_menu_contact_view">Посмотреть контакт</string>
     <string name="dialogs_menu_contact_rename">Переименовать контакт</string>
@@ -252,7 +252,7 @@
     <string name="contacts_empty_title">Пригласите своих друзей</string>
     <string name="contacts_empty_invite_hint">Никто из ваших контактов не использует {appName}. Используйте кнопку ниже что бы пригласить их.</string>
     <string name="contacts_empty_invite_action">РАССКАЗАТЬ ДРУЗЬЯМ</string>
-    <string name="contacts_empty_add_hint">или добавьте контакт вручную, нажав на плюс ниже</string>
+    <string name="contacts_empty_add_hint">или добавьте контакт вручную, используя поиск на главном экране</string>
 
     <string name="contacts_invite_via_link">Отправить ссылку</string>
 
@@ -567,6 +567,13 @@
 
     <string name="settings_chat_markdown">Markdown</string>
     <string name="settings_chat_markdown_subtitle">Использование разметки markdown</string>
+
+
+    <string name="settings_animation_download_title">Автоматически загружать анимации</string>
+    <string name="settings_image_download_title">Автоматически загружать изобажения</string>
+    <string name="settings_video_download_title">Автоматически загружать видео</string>
+    <string name="settings_audio_download_title">Автоматически загружать аудио</string>
+    <string name="settings_doc_download_title">Автоматически загружать документы</string>
 
 
     <!-- Security -->

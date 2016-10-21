@@ -10,7 +10,7 @@ class AAThumbnailCollectionCell: UICollectionViewCell {
     let imgSelected         : UIImageView!
     
     var animated            : Bool!
-    var indexPath           : NSIndexPath!
+    var indexPath           : IndexPath!
     var isCheckSelected     : Bool!
     weak var bindedThumbView : AAThumbnailView!
     weak var bindedPhotoModel : PHAsset!
@@ -18,12 +18,12 @@ class AAThumbnailCollectionCell: UICollectionViewCell {
     override init(frame: CGRect) {
         
         self.imgThumbnails = UIImageView()
-        self.imgThumbnails.backgroundColor = UIColor.clearColor()
+        self.imgThumbnails.backgroundColor = UIColor.clear
         
         self.imgSelected = UIImageView()
-        self.imgSelected.backgroundColor = UIColor.clearColor()
-        self.imgSelected.userInteractionEnabled = true
-        self.imgSelected.contentMode = UIViewContentMode.ScaleAspectFill
+        self.imgSelected.backgroundColor = UIColor.clear
+        self.imgSelected.isUserInteractionEnabled = true
+        self.imgSelected.contentMode = UIViewContentMode.scaleAspectFill
         
         self.isCheckSelected = false
         self.animated        = false
@@ -49,10 +49,10 @@ class AAThumbnailCollectionCell: UICollectionViewCell {
             
             self.imgSelected.image = UIImage.bundled("ImageSelectedOn")
             
-            self.imgSelected.transform = CGAffineTransformMakeScale(0.5,0.5)
-            UIView.animateWithDuration(0.3, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: UIViewAnimationOptions.CurveEaseInOut, animations: { () -> Void in
+            self.imgSelected.transform = CGAffineTransform(scaleX: 0.5,y: 0.5)
+            UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: UIViewAnimationOptions(), animations: { () -> Void in
                 
-                self.imgSelected.transform = CGAffineTransformIdentity
+                self.imgSelected.transform = CGAffineTransform.identity
                 
                 }, completion: nil)
             
@@ -64,10 +64,10 @@ class AAThumbnailCollectionCell: UICollectionViewCell {
             
             self.imgSelected.image = UIImage.bundled("ImageSelectedOff")
             
-            self.imgSelected.transform = CGAffineTransformMakeScale(0.5,0.5)
-            UIView.animateWithDuration(0.3, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: UIViewAnimationOptions.CurveEaseInOut, animations: { () -> Void in
+            self.imgSelected.transform = CGAffineTransform(scaleX: 0.5,y: 0.5)
+            UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: UIViewAnimationOptions(), animations: { () -> Void in
                 
-                self.imgSelected.transform = CGAffineTransformIdentity
+                self.imgSelected.transform = CGAffineTransform.identity
                 
                 }, completion: nil)
             
@@ -89,9 +89,9 @@ class AAThumbnailCollectionCell: UICollectionViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        self.imgThumbnails.frame = CGRectMake(0, 0, 90, 90)
+        self.imgThumbnails.frame = CGRect(x: 0, y: 0, width: 90, height: 90)
         
-        self.imgSelected.frame = CGRectMake(self.contentView.frame.size.width-30, 4, 26, 26)
+        self.imgSelected.frame = CGRect(x: self.contentView.frame.size.width-30, y: 4, width: 26, height: 26)
         
         
         

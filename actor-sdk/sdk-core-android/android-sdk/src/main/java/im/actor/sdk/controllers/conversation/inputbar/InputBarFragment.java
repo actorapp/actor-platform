@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -25,6 +26,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import im.actor.core.entity.Message;
 import im.actor.runtime.Log;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSystem;
@@ -33,6 +35,8 @@ import im.actor.runtime.actors.messages.PoisonPill;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.BaseFragment;
+import im.actor.sdk.controllers.conversation.messages.MessagesDefaultFragment;
+import im.actor.sdk.controllers.conversation.messages.MessagesFragment;
 import im.actor.sdk.core.audio.VoiceCaptureActor;
 import im.actor.sdk.util.KeyboardHelper;
 import im.actor.sdk.util.Screen;
@@ -47,7 +51,7 @@ import static im.actor.sdk.util.ViewUtils.zoomInView;
 import static im.actor.sdk.util.ViewUtils.zoomOutView;
 import static im.actor.sdk.view.emoji.SmileProcessor.emoji;
 
-public class InputBarFragment extends BaseFragment {
+public class InputBarFragment extends BaseFragment implements MessagesDefaultFragment.NewMessageListener {
 
     private static final int SLIDE_LIMIT = Screen.dp(180);
     private static final int PERMISSION_REQUEST_RECORD_AUDIO = 1;
@@ -89,6 +93,7 @@ public class InputBarFragment extends BaseFragment {
     // Emoji keyboard
     protected EmojiKeyboard emojiKeyboard;
     protected ImageView emojiButton;
+    private Message lastMessage;
 
     @Override
     public void onCreate(Bundle saveInstance) {
@@ -194,7 +199,7 @@ public class InputBarFragment extends BaseFragment {
         //
         emojiButton = (ImageView) res.findViewById(R.id.ib_emoji);
         emojiButton.setOnClickListener(v -> emojiKeyboard.toggle());
-        emojiKeyboard = new EmojiKeyboard(getActivity(), messageEditText);
+        emojiKeyboard = getEmojiKeyboard();
         emojiKeyboard.setOnStickerClickListener(sticker -> {
             Fragment parent = getParentFragment();
             if (parent instanceof InputBarCallback) {
@@ -252,37 +257,22 @@ public class InputBarFragment extends BaseFragment {
             return true;
         });
 
-        voiceRecordActor = ActorSystem.system().actorOf(Props.create(() -> {
-            return new VoiceCaptureActor(getActivity(), new VoiceCaptureActor.VoiceCaptureCallback() {
-                @Override
-                public void onRecordProgress(final long time) {
-                    getActivity().runOnUiThread(() -> {
-                        audioTimer.setText(messenger().getFormatter().formatDuration((int) (time / 1000)));
-                    });
-                }
-
-                @Override
-                public void onRecordCrash() {
-                    getActivity().runOnUiThread(() -> {
-                        hideAudio(true);
-                    });
-                }
-
-                @Override
-                public void onRecordStop(long progress) {
-                    if (progress < 1200) {
-                        //Cancel
-                    } else {
-                        Fragment parent = getParentFragment();
-                        if (parent instanceof InputBarCallback) {
-                            ((InputBarCallback) parent).onAudioSent((int) progress, audioFile);
-                        }
-                    }
-                }
-            });
-        }).changeDispatcher("voice_capture_dispatcher"), "actor/voice_capture");
-
         return res;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (lastMessage != null) {
+            onNewMessage(lastMessage);
+            lastMessage = null;
+        }
+
+    }
+
+    @NonNull
+    protected EmojiKeyboard getEmojiKeyboard() {
+        return new EmojiKeyboard(getActivity(), messageEditText);
     }
 
     public void requestFocus() {
@@ -585,6 +575,39 @@ public class InputBarFragment extends BaseFragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        voiceRecordActor = ActorSystem.system().actorOf(Props.create(() -> new VoiceCaptureActor(getActivity(), new VoiceCaptureActor.VoiceCaptureCallback() {
+            @Override
+            public void onRecordProgress(final long time) {
+                getActivity().runOnUiThread(() -> {
+                    audioTimer.setText(messenger().getFormatter().formatDuration((int) (time / 1000)));
+                });
+            }
+
+            @Override
+            public void onRecordCrash() {
+                getActivity().runOnUiThread(() -> {
+                    hideAudio(true);
+                });
+            }
+
+            @Override
+            public void onRecordStop(long progress) {
+                if (progress < 1200) {
+                    //Cancel
+                } else {
+                    Fragment parent = getParentFragment();
+                    if (parent instanceof InputBarCallback) {
+                        ((InputBarCallback) parent).onAudioSent((int) progress, audioFile);
+                    }
+                }
+            }
+        })).changeDispatcher("voice_capture_dispatcher"), "actor/voice_capture");
+
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean("isAudioVisible", isAudioVisible);
@@ -610,5 +633,16 @@ public class InputBarFragment extends BaseFragment {
 
     public boolean onBackPressed() {
         return emojiKeyboard.onBackPressed();
+    }
+
+    @Override
+    public void onNewMessage(Message m) {
+        if (emojiKeyboard == null) {
+            // Inputbar fragment not yet created, store last message for later use
+            lastMessage = m;
+        }
+        if (emojiKeyboard instanceof MessagesFragment.NewMessageListener) {
+            ((MessagesFragment.NewMessageListener) emojiKeyboard).onNewMessage(m);
+        }
     }
 }

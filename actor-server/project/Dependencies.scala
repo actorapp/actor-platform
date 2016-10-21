@@ -5,7 +5,7 @@ import sbt._
 object Dependencies {
   object V {
     val actorCommons = "0.0.20"
-    val actorBotkit = "1.0.109"
+    val actorBotkit = "1.0.112"
     val akka = "2.4.10"
     val akkaHttpJson = "1.10.0"
     val cats = "0.7.2"
@@ -72,8 +72,8 @@ object Dependencies {
     val flywayCore              = "org.flywaydb"                  %  "flyway-core"                   % "3.1"
     val hikariCP                = "com.zaxxer"                    %  "HikariCP"                      % "2.4.6"
 
-    val amazonaws               = "com.amazonaws"                 %  "aws-java-sdk-s3"               % "1.9.31"
-    val awsWrap                 = "com.github.dwhjames"           %% "aws-wrap"                      % "0.7.2"
+    val amazonaws               = "com.amazonaws"                 %  "aws-java-sdk-s3"               % "1.11.32"
+    val awsWrap                 = "com.github.dwhjames"           %% "aws-wrap"                      % "0.8.0"
 
     val bcprov                  = "org.bouncycastle"              %  "bcprov-jdk15on"                % "1.50"
 

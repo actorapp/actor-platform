@@ -6,12 +6,12 @@ import UIKit
 
 public extension UIColor {
     
-    public convenience init(rgb: UInt) {
-        self.init(red: CGFloat((rgb & 0xFF0000) >> 16) / 255.0,
-            green: CGFloat((rgb & 0x00FF00) >> 8) / 255.0,
-            blue: CGFloat(rgb & 0x0000FF) / 255.0,
-            alpha: CGFloat(1.0))
-    }
+//    public convenience init(rgb: UInt) {
+//        self.init(red: CGFloat((rgb & 0xFF0000) >> 16) / 255.0,
+//            green: CGFloat((rgb & 0x00FF00) >> 8) / 255.0,
+//            blue: CGFloat(rgb & 0x0000FF) / 255.0,
+//            alpha: CGFloat(1.0))
+//    }
     
     public convenience init(rgb: UInt, alpha: Double) {
         self.init(red: CGFloat((rgb & 0xFF0000) >> 16) / 255.0,
@@ -27,15 +27,15 @@ public extension UIColor {
             alpha: CGFloat(1.0))
     }
     
-    public class func alphaBlack(alpha: Double) -> UIColor {
+    public class func alphaBlack(_ alpha: Double) -> UIColor {
         return UIColor(red: 0, green: 0, blue: 0, alpha: CGFloat(alpha))
     }
     
-    public class func alphaWhite(alpha: Double) -> UIColor {
+    public class func alphaWhite(_ alpha: Double) -> UIColor {
         return UIColor(red: 1, green: 1, blue: 1, alpha: CGFloat(alpha))
     }
     
-    public func alpha(alpha: Double) -> UIColor {
+    public func alpha(_ alpha: Double) -> UIColor {
         var r:CGFloat = 0
         var g:CGFloat = 0
         var b:CGFloat = 0

@@ -127,6 +127,16 @@ private[group] sealed trait Commands extends UserAcl {
       GroupEnvelope(groupId)
       .withDeleteGroup(DeleteGroup(clientUserId, clientAuthId))).mapTo[SeqState]
 
+  def addExt(groupId: Int, ext: GroupExt): Future[Unit] =
+    (processorRegion.ref ?
+      GroupEnvelope(groupId)
+      .withAddExt(AddExt(Some(ext)))).mapTo[AddExtAck] map (_ ⇒ ())
+
+  def removeExt(groupId: Int, key: String): Future[Unit] =
+    (processorRegion.ref ?
+      GroupEnvelope(groupId)
+      .withRemoveExt(RemoveExt(key))).mapTo[RemoveExtAck] map (_ ⇒ ())
+
 }
 
 private[group] sealed trait Queries {

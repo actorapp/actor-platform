@@ -113,9 +113,11 @@ public class ChatFragment extends BaseFragment implements InputBarCallback, Mess
             if (quoteFragment == null) {
                 quoteFragment = new QuoteFragment();
             }
+            MessagesDefaultFragment messagesDefaultFragment = MessagesDefaultFragment.create(peer);
+            messagesDefaultFragment.setNewMessageListener(inputBarFragment);
             getChildFragmentManager().beginTransaction()
                     .add(toolbarFragment, "toolbar")
-                    .add(R.id.messagesFragment, MessagesDefaultFragment.create(peer))
+                    .add(R.id.messagesFragment, messagesDefaultFragment)
                     .add(R.id.sendFragment, inputBarFragment)
                     .add(R.id.quoteFragment, quoteFragment)
                     .add(R.id.emptyPlaceholder, new EmptyChatPlaceholder())
@@ -205,6 +207,13 @@ public class ChatFragment extends BaseFragment implements InputBarCallback, Mess
                     inputOverlayText.setTextColor(style.getListActionColor());
                     inputOverlayText.setClickable(true);
                     inputOverlayText.setEnabled(true);
+                    showView(inputOverlayContainer, false);
+                    goneView(inputContainer, false);
+                } else if (groupVM.getIsDeleted().get()) {
+                    inputOverlayText.setText(groupVM.getGroupType() == GroupType.CHANNEL ? R.string.channel_deleted : R.string.group_deleted);
+                    inputOverlayText.setTextColor(style.getListActionColor());
+                    inputOverlayText.setClickable(false);
+                    inputOverlayText.setEnabled(false);
                     showView(inputOverlayContainer, false);
                     goneView(inputContainer, false);
                 } else {

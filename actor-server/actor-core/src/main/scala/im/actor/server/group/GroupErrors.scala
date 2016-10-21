@@ -39,9 +39,13 @@ object GroupErrors {
 
   case object BlockedByUser extends Exception with NoStackTrace
 
+  case object UserIsBanned extends Exception with NoStackTrace
+
   case object NoPermission extends Exception with NoStackTrace
 
   case object CantLeaveGroup extends Exception with NoStackTrace
 
   final case class IncorrectGroupType(value: Int) extends Exception with NoStackTrace
+
+  case object InvalidExtension extends Exception with NoStackTrace
 }

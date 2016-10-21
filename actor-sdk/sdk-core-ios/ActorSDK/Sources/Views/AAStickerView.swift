@@ -5,16 +5,16 @@
 import Foundation
 import YYImage
 
-public class AAStickerView: UIView, YYAsyncLayerDelegate, ACFileEventCallback {
+open class AAStickerView: UIView, YYAsyncLayerDelegate, ACFileEventCallback {
     
-    private var file: ACFileReference?
+    fileprivate var file: ACFileReference?
     
     public init() {
-        super.init(frame: CGRectZero)
+        super.init(frame: CGRect.zero)
         layer.delegate = self
-        layer.contentsScale = UIScreen.mainScreen().scale
-        backgroundColor = UIColor.clearColor()
-        Actor.subscribeToDownloads(self)
+        layer.contentsScale = UIScreen.main.scale
+        backgroundColor = UIColor.clear
+        Actor.subscribe(toDownloads: self)
     }
 
     public required init?(coder aDecoder: NSCoder) {
@@ -22,10 +22,10 @@ public class AAStickerView: UIView, YYAsyncLayerDelegate, ACFileEventCallback {
     }
     
     deinit {
-        Actor.unsubscribeFromDownloads(self)
+        Actor.unsubscribe(fromDownloads: self)
     }
     
-    public func onDownloadedWithLong(fileId: jlong) {
+    open func onDownloaded(withLong fileId: jlong) {
         if self.file?.getFileId() == fileId {
             dispatchOnUi {
                 if self.file?.getFileId() == fileId {
@@ -35,16 +35,16 @@ public class AAStickerView: UIView, YYAsyncLayerDelegate, ACFileEventCallback {
         }
     }
     
-    public func setSticker(file: ACFileReference?) {
+    open func setSticker(_ file: ACFileReference?) {
         self.file = file
         self.layer.setNeedsDisplay()
     }
     
-    public override class func layerClass() -> AnyClass {
+    open override class var layerClass : AnyClass {
         return YYAsyncLayer.self
     }
     
-    public func newAsyncDisplayTask() -> YYAsyncLayerDisplayTask {
+    open func newAsyncDisplayTask() -> YYAsyncLayerDisplayTask {
         
         let res = YYAsyncLayerDisplayTask()
         
@@ -52,7 +52,7 @@ public class AAStickerView: UIView, YYAsyncLayerDelegate, ACFileEventCallback {
         
         res.display = { (context: CGContext,  size: CGSize, isCancelled: () -> Bool) -> () in
              if _file != nil {
-                let desc = Actor.findDownloadedDescriptorWithFileId(_file!.getFileId())
+                let desc = Actor.findDownloadedDescriptor(withFileId: _file!.getFileId())
                 if isCancelled() {
                     return
                 }
@@ -62,10 +62,10 @@ public class AAStickerView: UIView, YYAsyncLayerDelegate, ACFileEventCallback {
                     if isCancelled() {
                         return
                     }
-                    image?.drawInRect(CGRectMake(0, 0, size.width, size.height), withContentMode: UIViewContentMode.ScaleAspectFit, clipsToBounds: true)
+                    image?.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height), with: UIViewContentMode.scaleAspectFit, clipsToBounds: true)
                 } else {
                     // Request if not available
-                    Actor.startDownloadingWithReference(_file!)
+                    Actor.startDownloading(with: _file!)
                 }
             }
         }

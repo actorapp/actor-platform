@@ -12,13 +12,14 @@ import im.actor.env.ActorEnv
 import im.actor.server.activation.common.ActivationStateActor.{ ForgetSentCode, Send, SendAck }
 import im.actor.server.activation.common._
 import im.actor.server.db.DbExtension
-import im.actor.server.email.{ Content, EmailConfig, Message, SmtpEmailSender }
+import im.actor.server.email._
 import im.actor.server.model.AuthEmailTransaction
 import im.actor.server.persist.auth.AuthTransactionRepo
 import im.actor.util.misc.EmailUtils.isTestEmail
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
+import scala.util.Try
 
 private[activation] final class SMTPProvider(system: ActorSystem) extends ActivationProvider with CommonAuthCodes {
 
@@ -28,12 +29,14 @@ private[activation] final class SMTPProvider(system: ActorSystem) extends Activa
 
   private implicit val timeout = Timeout(20.seconds)
 
-  private val emailConfig = EmailConfig.load.getOrElse(throw new RuntimeException("Failed to load email config"))
-  private val emailSender = new SmtpEmailSender(emailConfig)
+  private val emailSender = EmailExtension(system).sender
+
   private val emailTemplateLocation =
     ActorEnv.getAbsolutePath(Paths.get(ActorConfig.load().getString("services.activation.email.template")))
 
-  private val emailTemplate = new String(Files.readAllBytes(emailTemplateLocation))
+  private val emailTemplate =
+    Try(new String(Files.readAllBytes(emailTemplateLocation)))
+      .getOrElse(throw new RuntimeException(s"Failed to read template file. Make sure you put it in ${emailTemplateLocation}"))
 
   private val smtpStateActor = system.actorOf(ActivationStateActor.props[String, EmailCode](
     repeatLimit = activationConfig.repeatLimit,

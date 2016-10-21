@@ -10,19 +10,19 @@ import Foundation
     let preferences = UDPreferencesStorage()
     
     override init() {
-        self.dbPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory,
-            .UserDomainMask, true)[0].asNS.stringByAppendingPathComponent("actor.db")
+        self.dbPath = NSSearchPathForDirectoriesInDomains(.documentDirectory,
+            .userDomainMask, true)[0].asNS.appendingPathComponent("actor.db")
     }
     
     func createPreferencesStorage() -> ARPreferencesStorage! {
         return preferences
     }
     
-    func createKeyValueWithName(name: String!) -> ARKeyValueStorage! {
+    func createKeyValue(withName name: String!) -> ARKeyValueStorage! {
         return FMDBKeyValue(databasePath: dbPath, tableName: name)
     }
     
-    func createListWithName(name: String!) -> ARListStorage! {
+    func createList(withName name: String!) -> ARListStorage! {
         return FMDBList(databasePath: dbPath, tableName: name)
     }
     
@@ -30,8 +30,8 @@ import Foundation
         preferences.clear()
         
         let db = FMDatabase(path: dbPath)
-        db.open()
-        db.executeStatements("select 'drop table ' || name || ';' from sqlite_master where type = 'table';")
-        db.close()
+        db?.open()
+        db?.executeStatements("select 'drop table ' || name || ';' from sqlite_master where type = 'table';")
+        db?.close()
     }
 }

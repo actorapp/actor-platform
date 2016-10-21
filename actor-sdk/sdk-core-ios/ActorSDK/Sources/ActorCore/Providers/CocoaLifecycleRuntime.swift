@@ -17,16 +17,16 @@ import Foundation
 
 @objc class CocoaWakeLock: NSObject, ARWakeLock {
     
-    private var background: UIBackgroundTaskIdentifier?
+    fileprivate var background: UIBackgroundTaskIdentifier?
     
     override init() {
-        background = UIApplication.sharedApplication().beginBackgroundTaskWithExpirationHandler(nil)
+        background = UIApplication.shared.beginBackgroundTask(expirationHandler: nil)
         super.init()
     }
     
-    func releaseLock() {
+    public func close() {
         if background != nil {
-            UIApplication.sharedApplication().endBackgroundTask(background!)
+            UIApplication.shared.endBackgroundTask(background!)
             background = nil
         }
     }

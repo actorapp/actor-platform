@@ -4,25 +4,25 @@
 
 import Foundation
 
-public class AAMapPinPointView: UIView {
+open class AAMapPinPointView: UIView {
     
     let pinView = UIImageView()
     let pinPointView = UIImageView()
     let pinShadowView = UIImageView()
     
     public init() {
-        super.init(frame: CGRectMake(0, 0, 100, 100))
+        super.init(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
         
-        pinShadowView.frame = CGRectMake(43, 47, 32, 39)
+        pinShadowView.frame = CGRect(x: 43, y: 47, width: 32, height: 39)
         pinShadowView.alpha = 0.9
         pinShadowView.image = UIImage.bundled("LocationPinShadow.png")
         addSubview(pinShadowView)
         
-        pinPointView.frame = CGRectMake(100 / 2 - 2, 100 - 18.5, 3.5, 1.5)
+        pinPointView.frame = CGRect(x: 100 / 2 - 2, y: 100 - 18.5, width: 3.5, height: 1.5)
         pinPointView.image = UIImage.bundled("LocationPinPoint.png")
         addSubview(pinPointView)
         
-        pinView.frame = CGRectMake(100 / 2 - 7, 47, 13.5, 36)
+        pinView.frame = CGRect(x: 100 / 2 - 7, y: 47, width: 13.5, height: 36)
         pinView.image = UIImage.bundled("LocationPin.png")
         addSubview(pinView)
     }
@@ -31,44 +31,44 @@ public class AAMapPinPointView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func risePin(rised: Bool, animated: Bool) {
+    func risePin(_ rised: Bool, animated: Bool) {
 
         self.pinShadowView.layer.removeAllAnimations()
         self.pinView.layer.removeAllAnimations()
         
         if animated {
             if rised {
-                UIView.animateWithDuration(0.2, delay: 0.0, options: .BeginFromCurrentState, animations: { () -> Void in
-                    self.pinView.frame = CGRectMake(100 / 2 - 7, 7, 13.5, 36)
-                    self.pinShadowView.frame = CGRectMake(87, -33, 32, 39)
+                UIView.animate(withDuration: 0.2, delay: 0.0, options: .beginFromCurrentState, animations: { () -> Void in
+                    self.pinView.frame = CGRect(x: 100 / 2 - 7, y: 7, width: 13.5, height: 36)
+                    self.pinShadowView.frame = CGRect(x: 87, y: -33, width: 32, height: 39)
                 }, completion: nil)
             } else {
-                UIView.animateWithDuration(0.2, delay: 0.0, options: .BeginFromCurrentState, animations: { () -> Void in
-                    self.pinView.frame = CGRectMake(100 / 2 - 7, 47, 13.5, 36)
-                    self.pinShadowView.frame = CGRectMake(43, 47, 32, 39)
+                UIView.animate(withDuration: 0.2, delay: 0.0, options: .beginFromCurrentState, animations: { () -> Void in
+                    self.pinView.frame = CGRect(x: 100 / 2 - 7, y: 47, width: 13.5, height: 36)
+                    self.pinShadowView.frame = CGRect(x: 43, y: 47, width: 32, height: 39)
                 }, completion: { finished in
                     if !finished {
                         return
                     }
-                    UIView.animateWithDuration(0.1, delay: 0.0, options: .BeginFromCurrentState, animations: { () -> Void in
-                        self.pinView.frame = CGRectMake(100 / 2 - 7, 47 + 2, 13.5, 36 - 2)
+                    UIView.animate(withDuration: 0.1, delay: 0.0, options: .beginFromCurrentState, animations: { () -> Void in
+                        self.pinView.frame = CGRect(x: 100 / 2 - 7, y: 47 + 2, width: 13.5, height: 36 - 2)
                     }, completion: { (finished) -> Void in
                         if !finished {
                             return
                         }
-                        UIView.animateWithDuration(0.1, delay: 0.0, options: .BeginFromCurrentState, animations: { () -> Void in
-                            self.pinView.frame = CGRectMake(100 / 2 - 7, 47, 13.5, 36)
+                        UIView.animate(withDuration: 0.1, delay: 0.0, options: .beginFromCurrentState, animations: { () -> Void in
+                            self.pinView.frame = CGRect(x: 100 / 2 - 7, y: 47, width: 13.5, height: 36)
                         }, completion: nil)
                     })
                 })
             }
         } else {
             if rised {
-                self.pinView.frame = CGRectMake(100 / 2 - 7, 7, 13.5, 36)
-                self.pinShadowView.frame = CGRectMake(87, -33, 32, 39)
+                self.pinView.frame = CGRect(x: 100 / 2 - 7, y: 7, width: 13.5, height: 36)
+                self.pinShadowView.frame = CGRect(x: 87, y: -33, width: 32, height: 39)
             } else {
-                self.pinView.frame = CGRectMake(100 / 2 - 7, 47, 13.5, 36)
-                self.pinShadowView.frame = CGRectMake(43, 47, 32, 39)
+                self.pinView.frame = CGRect(x: 100 / 2 - 7, y: 47, width: 13.5, height: 36)
+                self.pinShadowView.frame = CGRect(x: 43, y: 47, width: 32, height: 39)
             }
         }
     }

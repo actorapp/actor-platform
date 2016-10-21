@@ -37,6 +37,7 @@ import im.actor.core.network.NetworkState;
 import im.actor.core.utils.AppStateActor;
 import im.actor.core.utils.IOUtils;
 import im.actor.core.utils.ImageHelper;
+import im.actor.core.viewmodel.AppStateVM;
 import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.GalleryVM;
 import im.actor.runtime.Runtime;
@@ -319,6 +320,8 @@ public class AndroidMessenger extends im.actor.core.Messenger {
             String mimeType;
             String fileName;
 
+            String ext = "";
+
             Cursor cursor = context.getContentResolver().query(uri, filePathColumn, null, null, null);
             if (cursor != null) {
                 cursor.moveToFirst();
@@ -331,7 +334,8 @@ public class AndroidMessenger extends im.actor.core.Messenger {
                 fileName = new File(uri.getPath()).getName();
                 int index = fileName.lastIndexOf(".");
                 if (index > 0) {
-                    mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileName.substring(index + 1));
+                    ext = fileName.substring(index + 1);
+                    mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext);
                 } else {
                     mimeType = "?/?";
                 }
@@ -354,8 +358,11 @@ public class AndroidMessenger extends im.actor.core.Messenger {
                         "/");
                 dest.mkdirs();
 
-                boolean isGif = picturePath != null && picturePath.endsWith(".gif");
-                File outputFile = new File(dest, "upload_" + random.nextLong() + (isGif ? ".gif" : ".jpg"));
+                if (ext.isEmpty() && picturePath != null) {
+                    int index = picturePath.lastIndexOf(".");
+                    ext = picturePath.substring(index + 1);
+                }
+                File outputFile = new File(dest, "upload_" + random.nextLong() + "." + ext);
                 picturePath = outputFile.getAbsolutePath();
 
                 try {
@@ -371,6 +378,8 @@ public class AndroidMessenger extends im.actor.core.Messenger {
                 fileName = picturePath;
             }
 
+            if (!ext.isEmpty() && !fileName.endsWith(ext))
+                fileName += "." + ext;
             if (mimeType.startsWith("video/")) {
                 sendVideo(peer, picturePath, fileName);
 //                            trackVideoSend(peer);
@@ -536,6 +545,14 @@ public class AndroidMessenger extends im.actor.core.Messenger {
 
     public EventBus getEvents() {
         return modules.getEvents();
+    }
+
+    public AppStateVM getAppStateVM() {
+        return modules.getConductor().getAppStateVM();
+    }
+
+    public void startImport() {
+        modules.getContactsModule().startImport();
     }
 
 }

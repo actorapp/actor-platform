@@ -9,7 +9,7 @@ import com.github.ghik.silencer.silent
 import im.actor.api.rpc.files.ApiAvatar
 import im.actor.api.rpc.groups._
 import im.actor.server.file.{ Avatar, ImageUtils }
-import im.actor.server.group.GroupCommands.{ MakeHistoryShared, UpdateAbout, UpdateAvatar, UpdateAvatarAck, UpdateShortName, UpdateTitle, UpdateTopic }
+import im.actor.server.group.GroupCommands.{ AddExt, AddExtAck, MakeHistoryShared, RemoveExt, RemoveExtAck, UpdateAbout, UpdateAvatar, UpdateAvatarAck, UpdateShortName, UpdateTitle, UpdateTopic }
 import im.actor.server.group.GroupErrors._
 import im.actor.server.group.GroupEvents.{ AboutUpdated, AvatarUpdated, ShortNameUpdated, TitleUpdated, TopicUpdated }
 import im.actor.server.model.AvatarData
@@ -326,6 +326,33 @@ private[group] trait InfoCommandHandlers {
       }
     }
   }
+
+  protected def addExt(cmd: AddExt): Unit =
+    cmd.ext match {
+      case Some(ext) ⇒
+        persist(GroupEvents.ExtAdded(Instant.now, ext)) { evt ⇒
+          val newState = commit(evt)
+          sendExtUpdate(newState) map (_ ⇒ AddExtAck()) pipeTo sender()
+        }
+      case None ⇒
+        sender() ! Status.Failure(InvalidExtension)
+    }
+
+  protected def removeExt(cmd: RemoveExt): Unit =
+    if (state.exts.exists(_.key == cmd.key)) {
+      persist(GroupEvents.ExtRemoved(Instant.now, cmd.key)) { evt ⇒
+        val newState = commit(evt)
+        sendExtUpdate(newState) map (_ ⇒ RemoveExtAck()) pipeTo sender()
+      }
+    } else {
+      sender() ! RemoveExtAck()
+    }
+
+  private def sendExtUpdate(state: GroupState): Future[Unit] =
+    seqUpdExt.broadcastPeopleUpdate(
+      userIds = state.memberIds,
+      update = UpdateGroupExtChanged(groupId, Some(extToApi(state.exts)))
+    )
 
   private def getAvatarData(avatar: Option[Avatar]): AvatarData =
     avatar

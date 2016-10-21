@@ -33,26 +33,32 @@ final class S3StorageAdapter(_system: ActorSystem) extends FileStorageAdapter {
   private implicit val ec: ExecutionContext = system.dispatcher
   private implicit val mat: Materializer = ActorMaterializer()
 
+  private val db = DbExtension(system).db
+
   private val config = S3StorageAdapterConfig.load
   private val bucketName = config.bucketName
   private val awsCredentials = new BasicAWSCredentials(config.key, config.secret)
-  private val db = DbExtension(system).db
 
-  val s3Client = {
-    val blueprint = new AmazonS3ScalaClient(awsCredentials)
-    config.endpoint foreach { endpoint ⇒
-      blueprint.client.setEndpoint(endpoint)
-    }
+  private val s3Client = {
+    val cl = new AmazonS3ScalaClient(awsCredentials)
     config.region foreach { region ⇒
-      blueprint.client.setRegion(Region.getRegion(Regions.fromName(region)))
+      cl.client.setRegion(Region.getRegion(Regions.fromName(region)))
+    }
+    config.endpoint foreach { endpoint ⇒
+      cl.client.setEndpoint(endpoint)
     }
     if (config.pathStyleAccess) {
-      blueprint.client.setS3ClientOptions(new S3ClientOptions().withPathStyleAccess(true))
+      val co = S3ClientOptions.builder()
+        .setPathStyleAccess(true)
+        .setPayloadSigningEnabled(true)
+        .build()
+      cl.client.setS3ClientOptions(co)
     }
-    blueprint
+    System.setProperty("com.amazonaws.services.s3.disableGetObjectMD5Validation", "true")
+    cl
   }
 
-  val transferManager = new TransferManager(s3Client.client)
+  private val transferManager = new TransferManager(s3Client.client)
 
   override def uploadFile(name: UnsafeFileName, data: Array[Byte]): DBIO[FileLocation] =
     uploadFile(bucketName, name, data)
@@ -122,7 +128,6 @@ final class S3StorageAdapter(_system: ActorSystem) extends FileStorageAdapter {
     expiration.setTime(expiration.getTime + 1.day.toMillis)
     request.setMethod(HttpMethod.PUT)
     request.setExpiration(expiration)
-    request.setContentType("application/octet-stream")
 
     for (url ← s3Client.generatePresignedUrlRequest(request)) yield partKey → url.toString
   }
@@ -141,10 +146,10 @@ final class S3StorageAdapter(_system: ActorSystem) extends FileStorageAdapter {
   override def completeFileUpload(fileId: Long, fileSize: Long, fileName: UnsafeFileName, partNames: Seq[String]): Future[Unit] = {
     for {
       tempDir ← createTempDir()
-      fk = uploadKey(fileId).key
-      _ ← FutureTransfer.listenFor {
-        transferManager.downloadDirectory(bucketName, s"upload_part_$fk", tempDir)
-      } map (_.waitForCompletion())
+      _ ← Future.sequence(partNames map { part ⇒
+        val path = tempDir.toPath.resolve(part)
+        FutureTransfer.listenFor(transferManager.download(bucketName, part, path.toFile)).map(_.waitForCompletion())
+      })
       concatFile ← concatFiles(tempDir, partNames)
       _ ← FutureTransfer.listenFor {
         transferManager.upload(bucketName, s3Key(fileId, fileName.safe), concatFile)

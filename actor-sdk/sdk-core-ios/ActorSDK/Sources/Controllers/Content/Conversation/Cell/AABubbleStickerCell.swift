@@ -6,7 +6,7 @@ import UIKit
 import VBFPopFlatButton
 import YYImage
 
-public class AABubbleStickerCell: AABubbleBaseFileCell {
+open class AABubbleStickerCell: AABubbleBaseFileCell {
 
     // Views
     
@@ -20,7 +20,7 @@ public class AABubbleStickerCell: AABubbleBaseFileCell {
     var bindedLayout: StikerCellLayout!
     var contentLoaded = false
     
-    private var callback: AAFileCallback? = nil
+    fileprivate var callback: AAFileCallback? = nil
     
     // Constructors
     
@@ -29,12 +29,12 @@ public class AABubbleStickerCell: AABubbleBaseFileCell {
         
         timeBg.image = ActorSDK.sharedActor().style.statusBackgroundImage
         
-        timeLabel.font = UIFont.italicSystemFontOfSize(11)
+        timeLabel.font = UIFont.italicSystemFont(ofSize: 11)
         timeLabel.textColor = appStyle.chatMediaDateColor
         
-        statusView.contentMode = UIViewContentMode.Center
+        statusView.contentMode = UIViewContentMode.center
         
-        preview.contentMode = .ScaleAspectFit
+        preview.contentMode = .scaleAspectFit
         
         contentView.addSubview(preview)
         
@@ -43,7 +43,7 @@ public class AABubbleStickerCell: AABubbleBaseFileCell {
         contentView.addSubview(statusView)
         
         preview.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(AABubbleStickerCell.mediaDidTap)))
-        preview.userInteractionEnabled = true
+        preview.isUserInteractionEnabled = true
         
         contentInsets = UIEdgeInsets(top: 1, left: 1, bottom: 1, right: 1)
     }
@@ -54,7 +54,7 @@ public class AABubbleStickerCell: AABubbleBaseFileCell {
     
     // Binding
     
-    public override func bind(message: ACMessage, receiveDate: jlong, readDate: jlong, reuse: Bool, cellLayout: AACellLayout, setting: AACellSetting) {
+    open override func bind(_ message: ACMessage, receiveDate: jlong, readDate: jlong, reuse: Bool, cellLayout: AACellLayout, setting: AACellSetting) {
         self.bindedLayout = cellLayout as! StikerCellLayout
         
         bubbleInsets = UIEdgeInsets(
@@ -66,7 +66,7 @@ public class AABubbleStickerCell: AABubbleBaseFileCell {
         if (!reuse) {
             
             
-            bindBubbleType(BubbleType.Sticker, isCompact: false)
+            bindBubbleType(BubbleType.sticker, isCompact: false)
             
             // Reset content state
             preview.image = nil
@@ -82,7 +82,7 @@ public class AABubbleStickerCell: AABubbleBaseFileCell {
         
         // Update status
         if (isOut) {
-            statusView.hidden = false
+            statusView.isHidden = false
             switch(message.messageState.toNSEnum()) {
             case .SENT:
                 if message.sortDate <= readDate {
@@ -106,13 +106,13 @@ public class AABubbleStickerCell: AABubbleBaseFileCell {
                 break;
             }
         } else {
-            statusView.hidden = true
+            statusView.isHidden = true
         }
     }
     
     // File state binding
     
-    public override func fileStateChanged(reference: String?, progress: Int?, isPaused: Bool, isUploading: Bool, selfGeneration: Int) {
+    open override func fileStateChanged(_ reference: String?, progress: Int?, isPaused: Bool, isUploading: Bool, selfGeneration: Int) {
         if let r = reference {
             if (contentLoaded) {
                 return
@@ -133,14 +133,14 @@ public class AABubbleStickerCell: AABubbleBaseFileCell {
 
     // Media Action
     
-    public func mediaDidTap() {
+    open func mediaDidTap() {
         
         
     }
     
     // Layouting
     
-    public override func layoutContent(maxWidth: CGFloat, offsetX: CGFloat) {
+    open override func layoutContent(_ maxWidth: CGFloat, offsetX: CGFloat) {
         let insets = fullContentInsets
         let contentWidth = self.contentView.frame.width
         _ = self.contentView.frame.height
@@ -150,26 +150,26 @@ public class AABubbleStickerCell: AABubbleBaseFileCell {
         layoutBubble(bubbleWidth, contentHeight: bubbleHeight)
         
         if (isOut) {
-            preview.frame = CGRectMake(contentWidth - insets.left - bubbleWidth, insets.top, bubbleWidth, bubbleHeight)
+            preview.frame = CGRect(x: contentWidth - insets.left - bubbleWidth, y: insets.top, width: bubbleWidth, height: bubbleHeight)
         } else {
-            preview.frame = CGRectMake(insets.left, insets.top, bubbleWidth, bubbleHeight)
+            preview.frame = CGRect(x: insets.left, y: insets.top, width: bubbleWidth, height: bubbleHeight)
         }
         
         //progress.frame = CGRectMake(preview.frame.origin.x + preview.frame.width/2 - 32, preview.frame.origin.y + preview.frame.height/2 - 32, 64, 64)
         
-        timeLabel.frame = CGRectMake(0, 0, 1000, 1000)
+        timeLabel.frame = CGRect(x: 0, y: 0, width: 1000, height: 1000)
         timeLabel.sizeToFit()
         
         let timeWidth = (isOut ? 23 : 0) + timeLabel.bounds.width
         let timeHeight: CGFloat = 20
         
-        timeLabel.frame = CGRectMake(preview.frame.maxX - timeWidth - 18, preview.frame.maxY - timeHeight - 6, timeLabel.frame.width, timeHeight)
+        timeLabel.frame = CGRect(x: preview.frame.maxX - timeWidth - 18, y: preview.frame.maxY - timeHeight - 6, width: timeLabel.frame.width, height: timeHeight)
         
         if (isOut) {
-            statusView.frame = CGRectMake(timeLabel.frame.maxX, timeLabel.frame.minY, 23, timeHeight)
+            statusView.frame = CGRect(x: timeLabel.frame.maxX, y: timeLabel.frame.minY, width: 23, height: timeHeight)
         }
         
-        timeBg.frame = CGRectMake(timeLabel.frame.minX - 4, timeLabel.frame.minY - 1, timeWidth + 8, timeHeight + 2)
+        timeBg.frame = CGRect(x: timeLabel.frame.minX - 4, y: timeLabel.frame.minY - 1, width: timeWidth + 8, height: timeHeight + 2)
     }
     
 }
@@ -177,12 +177,12 @@ public class AABubbleStickerCell: AABubbleBaseFileCell {
 /**
  Media cell layout
  */
-public class StikerCellLayout: AACellLayout {
+open class StikerCellLayout: AACellLayout {
     
     // public let fastThumb: NSData?
-    public let contentSize: CGSize
-    public let screenSize: CGSize
-    public let autoDownload: Bool
+    open let contentSize: CGSize
+    open let screenSize: CGSize
+    open let autoDownload: Bool
     
     /**
      Creting layout for media bubble
@@ -190,7 +190,7 @@ public class StikerCellLayout: AACellLayout {
     public init(id: Int64, width: CGFloat, height:CGFloat, date: Int64, stickerContent: ACStickerContent?, autoDownload: Bool, layouter: AABubbleLayouter) {
         
         // Saving content size
-        self.contentSize = CGSizeMake(width, height)
+        self.contentSize = CGSize(width: width, height: height)
         
         // Saving autodownload flag
         self.autoDownload = autoDownload
@@ -228,9 +228,9 @@ public class StikerCellLayout: AACellLayout {
 /**
  Layouter for media bubbles
  */
-public class AABubbleStickerCellLayouter: AABubbleLayouter {
+open class AABubbleStickerCellLayouter: AABubbleLayouter {
     
-    public func isSuitable(message: ACMessage) -> Bool {
+    open func isSuitable(_ message: ACMessage) -> Bool {
         if message.content is ACStickerContent {
             return true
         }
@@ -238,11 +238,11 @@ public class AABubbleStickerCellLayouter: AABubbleLayouter {
         return false
     }
     
-    public func buildLayout(peer: ACPeer, message: ACMessage) -> AACellLayout {
+    open func buildLayout(_ peer: ACPeer, message: ACMessage) -> AACellLayout {
         return StikerCellLayout(message: message, layouter: self)
     }
     
-    public func cellClass() -> AnyClass {
+    open func cellClass() -> AnyClass {
         return AABubbleStickerCell.self
     }
 }
