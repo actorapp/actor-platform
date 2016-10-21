@@ -46,7 +46,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="12dp"
-                    android:hint="@string/sign_in_edit_text_hint"
                     android:imeOptions="actionGo"
                     android:maxLines="1"
                     android:textColorHint="#a6a6a6"
@@ -54,7 +53,7 @@
                     android:digits="0123456789"
                     android:textAlignment="center"
                     android:gravity="center_horizontal"
-                    android:textSize="20sp"
+                    android:textSize="30sp"
                     android:background="@android:color/transparent"/>
 
             </LinearLayout>
