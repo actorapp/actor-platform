@@ -7,6 +7,7 @@ import akka.actor.{ ActorRef, ActorSystem, Props, ReceiveTimeout, Status }
 import akka.cluster.sharding.ShardRegion
 import akka.http.scaladsl.util.FastFuture
 import com.github.benmanes.caffeine.cache.{ Cache, Caffeine }
+import im.actor.api.rpc.collections.{ ApiInt32Value, ApiMapValue, ApiMapValueItem, ApiStringValue }
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.concurrent.ActorFutures
 import im.actor.serialization.ActorSerializer
@@ -15,6 +16,7 @@ import im.actor.server.db.DbExtension
 import im.actor.server.dialog._
 import im.actor.server.group.GroupErrors._
 import im.actor.server.group.GroupCommands._
+import im.actor.server.group.GroupExt.Value.{ BoolValue, StringValue }
 import im.actor.server.group.GroupQueries._
 import im.actor.server.names.GlobalNamesStorageKeyValueStorage
 import im.actor.server.sequence.SeqUpdatesExtension
@@ -54,6 +56,8 @@ object GroupProcessor {
       20024 → classOf[GroupCommands.UpdateAdminSettings],
       20025 → classOf[GroupCommands.MakeHistoryShared],
       20026 → classOf[GroupCommands.DeleteGroup],
+      20027 → classOf[GroupCommands.AddExt],
+      20028 → classOf[GroupCommands.RemoveExt],
 
       21001 → classOf[GroupQueries.GetIntegrationToken],
       21002 → classOf[GroupQueries.GetIntegrationTokenResponse],
@@ -96,7 +100,9 @@ object GroupProcessor {
       22020 → classOf[GroupEvents.AdminStatusChanged],
       22021 → classOf[GroupEvents.HistoryBecameShared],
       22022 → classOf[GroupEvents.GroupDeleted],
-      22023 → classOf[GroupEvents.MembersBecameAsync]
+      22023 → classOf[GroupEvents.MembersBecameAsync],
+      22024 → classOf[GroupEvents.ExtAdded],
+      22025 → classOf[GroupEvents.ExtRemoved]
     )
 
   def persistenceIdFor(groupId: Int): String = s"Group-${groupId}"
@@ -152,6 +158,8 @@ private[group] final class GroupProcessor
     case u: UpdateTopic                        ⇒ updateTopic(u)
     case u: UpdateAbout                        ⇒ updateAbout(u)
     case u: UpdateShortName                    ⇒ updateShortName(u)
+    case a: AddExt                             ⇒ addExt(a)
+    case r: RemoveExt                          ⇒ removeExt(r)
 
     // admin actions
     case r: RevokeIntegrationToken             ⇒ revokeIntegrationToken(r)
@@ -194,6 +202,15 @@ private[group] final class GroupProcessor
     case LoadAdminSettings(clientUserId)              ⇒ loadAdminSettings(clientUserId)
   }
 
+  protected def extToApi(exts: Seq[GroupExt]): ApiMapValue = {
+    ApiMapValue(
+      exts.toVector map {
+        case GroupExt(key, BoolValue(b))   ⇒ ApiMapValueItem(key, ApiInt32Value(if (b) 1 else 0))
+        case GroupExt(key, StringValue(s)) ⇒ ApiMapValueItem(key, ApiStringValue(s))
+      }
+    )
+  }
+
   override def afterCommit(e: Event) = {
     super.afterCommit(e)
     if (recoveryFinished) {
@@ -202,7 +219,7 @@ private[group] final class GroupProcessor
         updateCanCall(state)
       }
       // from 50+ members we make group with async members
-      if (state.membersCount >= 50 && !state.isAsyncMembers) {
+      if (!state.isAsyncMembers && state.membersCount >= 50) {
         makeMembersAsync()
       }
     }
