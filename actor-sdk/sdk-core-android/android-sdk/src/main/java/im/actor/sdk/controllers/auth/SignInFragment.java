@@ -157,7 +157,7 @@ public class SignInFragment extends BaseAuthFragment {
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         menu.clear();
-        getActivity().getMenuInflater().inflate(R.menu.sign_in, menu);
+       // getActivity().getMenuInflater().inflate(R.menu.sign_in, menu);
 //        MenuItem item = menu.findItem(R.id.change_endpoint);
 //        if (item != null) {
 //            item.setVisible(ActorSDK.sharedActor().isUseAlternateEndpointsEnabled());
