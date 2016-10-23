@@ -32,7 +32,7 @@ public abstract class Mask {
         final int maxNumberLength = 11;
 
         ediTxt.setKeyListener(keylistenerNumber);
-        ediTxt.setText("(  )     -     ");
+        ediTxt.setText("(--) ----- ----");
 
         ediTxt.postDelayed(()->{
             ediTxt.setSelection(1);
@@ -67,23 +67,22 @@ public abstract class Mask {
 
                 String paddedNumber = padNumber(number, maxNumberLength);
 
-
                 String ddd = "";
                 String part1 = "";
                 String part2 = "";
+                String phone = "";
 
                 if(length < 11){
                     ddd = paddedNumber.substring(0, 2);
                     part1 = paddedNumber.substring(2, 6);
-                    part2 = paddedNumber.substring(6, 11).trim();
+                    part2 = paddedNumber.substring(6, paddedNumber.length()).trim();
                 }else{
                     ddd = paddedNumber.substring(0, 2);
                     part1 = paddedNumber.substring(2, 7);
-                    part2 = paddedNumber.substring(7, 11).trim();
+                    part2 = paddedNumber.substring(7, paddedNumber.length()).trim();
                 }
 
-
-                String phone = "(" + ddd + ") " + part1 + "-" + part2;
+                phone = "(" + ddd + ") " + part1 + " " + part2;
 
                 isUpdating = true;
 
@@ -96,7 +95,8 @@ public abstract class Mask {
     private static String padNumber(String number, int maxLength) {
         String padded = new String(number);
         for (int i = 0; i < maxLength - number.length(); i++)
-            padded += " ";
+            padded += "-";
+
         return padded;
 
     }

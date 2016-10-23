@@ -52,7 +52,7 @@
                     android:inputType="number|phone"
                     android:digits="0123456789"
                     android:textAlignment="center"
-                    android:gravity="center"
+                    android:gravity="center_vertical|center_horizontal"
                     android:textSize="30sp"
                     android:background="@android:color/transparent"/>
 
