@@ -182,7 +182,7 @@ public class GroupVM extends BaseValueModel<Group> {
         this.theme = new StringValueModel("group." + groupId + ".theme", rawObj.getTopic());
         this.about = new StringValueModel("group." + groupId + ".about", rawObj.getAbout());
         this.shortName = new StringValueModel("group." + groupId + ".shortname", rawObj.getShortName());
-        this.ext = new ValueModel<>("group." + groupId + ".ext", null);
+        this.ext = new ValueModel<>("group." + groupId + ".ext", rawObj.getExt());
     }
 
     /**
