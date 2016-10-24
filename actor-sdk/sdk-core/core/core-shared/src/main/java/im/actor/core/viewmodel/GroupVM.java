@@ -534,6 +534,15 @@ public class GroupVM extends BaseValueModel<Group> {
         return presence;
     }
 
+    /**
+     * Get ext Value Model
+     *
+     * @return Value Model of ext
+     */
+    @NotNull
+    public ValueModel<ApiMapValue> getExt() {
+        return ext;
+    }
 
     /**
      * Subscribe for GroupVM updates
