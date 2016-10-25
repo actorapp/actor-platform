@@ -100,7 +100,7 @@ public class ContentDescription extends BserObject {
             return new ContentDescription(ContentType.SERVICE,
                     ((ServiceContent) msg).getCompatText(), 0, false);
         } else if (msg instanceof JsonContent) {
-            return new ContentDescription(ContentType.CUSTOM_JSON_MESSAGE, ((JsonContent) msg).getContentDescription());
+            return new ContentDescription(ContentType.TEXT, ((JsonContent) msg).getContentDescription());
         } else {
             return new ContentDescription(ContentType.UNKNOWN_CONTENT);
         }
