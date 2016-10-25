@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.MenuItem;
 
+import java.util.Observable;
+import java.util.Observer;
+
 import im.actor.core.AuthState;
 import im.actor.core.entity.AuthCodeRes;
 import im.actor.core.entity.AuthRes;
@@ -31,7 +34,7 @@ import im.actor.sdk.controllers.activity.BaseFragmentActivity;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
-public class AuthActivity extends BaseFragmentActivity {
+public class AuthActivity extends BaseFragmentActivity implements Observer{
 
     public static final String AUTH_TYPE_KEY = "auth_type";
     public static final String SIGN_TYPE_KEY = "sign_type";
@@ -80,6 +83,8 @@ public class AuthActivity extends BaseFragmentActivity {
         String savedState = preferences.getString("auth_state");
         state = Enum.valueOf(AuthState.class, savedState != null ? savedState : "AUTH_START");
         updateState(state, true);
+
+        SMSActivationObservable.getInstance().addObserver(this);
     }
 
 
@@ -476,6 +481,16 @@ public class AuthActivity extends BaseFragmentActivity {
 
     public String getTransactionHash() {
         return transactionHash;
+    }
+
+    @Override
+    public void update(Observable o, Object data) {
+        if(data instanceof String){
+            currentCode = data.toString();
+        }
+        if(data instanceof Promise){
+            validateCode((Promise<AuthCodeRes>) data , currentCode);
+        }
     }
 }
 
