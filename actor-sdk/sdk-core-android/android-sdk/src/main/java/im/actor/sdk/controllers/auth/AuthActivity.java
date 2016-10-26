@@ -486,10 +486,7 @@ public class AuthActivity extends BaseFragmentActivity implements Observer{
     @Override
     public void update(Observable o, Object data) {
         if(data instanceof String){
-            currentCode = data.toString();
-        }
-        if(data instanceof Promise){
-            validateCode((Promise<AuthCodeRes>) data , currentCode);
+            validateCode(messenger().doValidateCode(data.toString(), getTransactionHash()), data.toString());
         }
     }
 }
