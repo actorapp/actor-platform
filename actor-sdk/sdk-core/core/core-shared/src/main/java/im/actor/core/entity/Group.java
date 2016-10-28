@@ -68,6 +68,8 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
     private boolean isCanJoin;
     @Property("readonly, nonatomic")
     private boolean isCanViewInfo;
+    @Property("readonly, nonatomic")
+    private ApiMapValue ext;
     @NotNull
     @Property("readonly, nonatomic")
     @SuppressWarnings("NullableProblems")
@@ -294,6 +296,10 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
 
     public boolean isCanDeleteForeign() {
         return isCanDeleteForeign;
+    }
+
+    public ApiMapValue getExt() {
+        return ext;
     }
 
     public Group updateExt(@Nullable ApiGroupFull ext) {
@@ -746,6 +752,7 @@ public class Group extends WrapperExtEntity<ApiGroupFull, ApiGroup> implements K
         this.membersCount = wrapped.getMembersCount() != null ? wrapped.getMembersCount() : 0;
         this.isMember = wrapped.isMember() != null ? wrapped.isMember() : true;
         this.isDeleted = wrapped.isDeleted() != null ? wrapped.isDeleted() : false;
+        this.ext = wrapped.getExt();
 
         if (wrapped.getGroupType() == null) {
             this.groupType = GroupType.GROUP;
