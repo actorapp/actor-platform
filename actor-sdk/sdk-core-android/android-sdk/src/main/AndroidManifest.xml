@@ -81,7 +81,7 @@
                     android:pathPrefix="/join/"
                     android:scheme="https" />
                 <data
-                    android:host="join-group.actor.diegosilva.com.br"
+                    android:host="msg.xloto.com.br"
                     android:pathPrefix="/join/"
                     android:scheme="https" />
             </intent-filter>
