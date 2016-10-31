@@ -217,4 +217,12 @@ public interface ActorSDKDelegate {
      * @param layouters default layouters
      */
     void configureChatViewHolders(ArrayList<BubbleLayouter> layouters);
+
+    /**
+     * If not null returned, overrides dialog title
+     *
+     * @param dialogTitle
+     * @return String dialog title
+     */
+    String getDialogTitle(String dialogTitle);
 }

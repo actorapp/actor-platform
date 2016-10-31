@@ -158,4 +158,9 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
     @Override
     public void configureChatViewHolders(ArrayList<BubbleLayouter> layouters) {
     }
+
+    @Override
+    public String getDialogTitle(String dialogTitle) {
+        return dialogTitle;
+    }
 }

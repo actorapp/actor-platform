@@ -371,7 +371,9 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
             maxTitleWidth -= Screen.dp(20);
         }
 
-        res.setTitleLayout(singleLineText(arg.getDialogTitle(),
+        String dialogTitle = ActorSDK.sharedActor().getDelegate().getDialogTitle(arg.getDialogTitle());
+
+        res.setTitleLayout(singleLineText(dialogTitle,
                 arg.getPeer().getPeerType() == PeerType.PRIVATE_ENCRYPTED
                         ? titleSecurePaint
                         : titlePaint,
