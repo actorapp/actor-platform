@@ -29,7 +29,7 @@ final class MagfaClient(config: Config)(implicit system: ActorSystem) {
       "password" -> config.getString("password"),
       "from" → config.getString("from"),
       "to" → phoneNumber.toString,
-      "message" → "code"
+      "message" → code
     )) map { _ ⇒
       system.log.debug("Message sent via magfa")
     }
