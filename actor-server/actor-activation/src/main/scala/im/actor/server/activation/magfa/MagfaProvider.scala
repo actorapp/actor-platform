@@ -22,8 +22,8 @@ private[activation] final class MagfaProvider(implicit system: ActorSystem) exte
   protected val db = DbExtension(system).db
   protected implicit val ec = system.dispatcher
 
-  private val telesignClient = new MagfaClient(ActorConfig.load().getConfig("services.magfa"))
-  private val smsEngine = new MagfaSmsEngine(telesignClient)
+  private val magfaClient = new MagfaClient(ActorConfig.load().getConfig("services.magfa"))
+  private val smsEngine = new MagfaSmsEngine(magfaClient)
 
   private implicit val timeout = Timeout(20.seconds)
 
@@ -31,7 +31,7 @@ private[activation] final class MagfaProvider(implicit system: ActorSystem) exte
     repeatLimit = activationConfig.repeatLimit,
     sendAction = (code: SmsCode) ⇒ smsEngine.sendCode(code.phone, code.code),
     id = (code: SmsCode) ⇒ code.phone
-  ), "telesign-sms-state")
+  ), "magfa-sms-state")
 
   override def send(txHash: String, code: Code): Future[CodeFailure Xor Unit] = code match {
     case s: SmsCode ⇒

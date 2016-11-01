@@ -19,14 +19,17 @@ final class MagfaClient(config: Config)(implicit system: ActorSystem) {
   private implicit val ec: ExecutionContext = system.dispatcher
 
   private val BaseUrl = config.getString("url")
-  //  private val ResourcePath = config.getString("/services/send")
-  private val ResourcePath = "/services/send?"
+  private val ResourcePath = "/magfaHttpService?"
 
   def sendSmsCode(phoneNumber: Long, code: String): Future[Unit] = {
     postRequest(ResourcePath, Map(
+      "service" -> config.getString("service"),
+      "domain" -> config.getString("domain"),
+      "username" -> config.getString("username"),
+      "password" -> config.getString("password"),
       "from" → config.getString("from"),
       "to" → phoneNumber.toString,
-      "message" → code
+      "message" → "code"
     )) map { _ ⇒
       system.log.debug("Message sent via magfa")
     }
