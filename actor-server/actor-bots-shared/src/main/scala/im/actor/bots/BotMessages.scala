@@ -553,10 +553,16 @@ object BotMessages {
   @key("CreateGroupWithOwner")
   final case class CreateGroupWithOwner(
     @beanGetter title: String,
-    @beanGetter user:  UserPeer
+    @beanGetter user:  UserPeer,
+    members:           Seq[UserPeer]
   ) extends RequestBody {
     override type Response = ResponseCreateGroup
     override val service: String = Services.Groups
+
+    def this(title: String, user: UserPeer, members: java.util.List[UserPeer]) =
+      this(title, user, members.toIndexedSeq)
+
+    def getMembers = seqAsJavaList(members)
 
     override def readResponse(obj: Js.Obj): Response = readJs[Response](obj)
   }
