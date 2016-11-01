@@ -222,6 +222,6 @@ public interface ActorSDKDelegate {
      * @param layouters default layouters
      */
     void configureChatViewHolders(ArrayList<BubbleLayouter> layouters);
-    
+
     DialogsDefaultFragment fragmentForDialogs();
 }
