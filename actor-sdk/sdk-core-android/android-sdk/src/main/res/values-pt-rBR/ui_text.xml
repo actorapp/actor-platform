@@ -137,7 +137,7 @@
     <string name="auth_profile_done">COMEÇAR A CONVERSAR</string>
 
     <!-- Auth errors -->
-    <string name="auth_error_wrong_auth_id">Por favor, informe um telefone ou email válido</string>
+    <string name="auth_error_wrong_auth_id">Por favor, informe um telefone válido</string>
     <string name="auth_error_empty_phone">Por favor, insira seu número de telefone</string>
     <string name="auth_error_empty_email">por favor, insira seu e-mail</string>
     <string name="auth_error_code_expired">O código expirou. Por favor reinicie o processo de validação.</string>

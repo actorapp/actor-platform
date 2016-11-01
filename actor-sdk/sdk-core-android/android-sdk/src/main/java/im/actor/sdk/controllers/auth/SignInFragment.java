@@ -141,8 +141,12 @@ public class SignInFragment extends BaseAuthFragment {
             startEmailAuth(rawId);
         } else {
             try {
-               // startPhoneAuth(Long.parseLong("55"+rawId.replace("+", "")));
-                startPhoneAuth(Long.parseLong("55"+rawId.replaceAll("[^0-9]*", "")));
+                String numero = "55"+rawId.replaceAll("[^0-9]*", "");
+                if(numero.length() < 12){
+                   throw new Exception("Numero invalido");
+                }else{
+                    startPhoneAuth(Long.parseLong(numero));
+                }
             } catch (Exception e) {
                 new AlertDialog.Builder(getActivity())
                         .setMessage(message)
