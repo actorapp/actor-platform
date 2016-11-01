@@ -50,7 +50,7 @@ open class ConversationViewController:
     //
     
     fileprivate var stickersView: AAStickersKeyboard!
-    fileprivate var stickersButton : UIButton!
+    open var stickersButton : UIButton!
     fileprivate var stickersOpen = false
     
     
@@ -1054,13 +1054,13 @@ open class ConversationViewController:
     // MARK: - Stickers actions
     ////////////////////////////////////////////////////////////
     
-    func updateStickersStateOnCloseKeyboard() {
+    open func updateStickersStateOnCloseKeyboard() {
         self.stickersOpen = false
         self.stickersButton.setImage(UIImage.bundled("sticker_button"), for: UIControlState())
         self.textInputbar.textView.inputView = nil
     }
     
-    func changeKeyboard() {
+    open func changeKeyboard() {
         if self.stickersOpen == false {
             // self.stickersView.loadStickers()
             
