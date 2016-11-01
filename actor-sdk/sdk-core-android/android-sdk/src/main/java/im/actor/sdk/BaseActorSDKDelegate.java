@@ -16,6 +16,7 @@ import im.actor.sdk.controllers.conversation.inputbar.InputBarFragment;
 import im.actor.sdk.controllers.conversation.mentions.AutocompleteFragment;
 import im.actor.sdk.controllers.conversation.messages.BubbleLayouter;
 import im.actor.sdk.controllers.conversation.quote.QuoteFragment;
+import im.actor.sdk.controllers.dialogs.DialogsDefaultFragment;
 import im.actor.sdk.intents.ActorIntent;
 import im.actor.sdk.intents.ActorIntentFragmentActivity;
 
@@ -157,5 +158,10 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
 
     @Override
     public void configureChatViewHolders(ArrayList<BubbleLayouter> layouters) {
+    }
+
+    @Override
+    public DialogsDefaultFragment fragmentForDialogs() {
+        return null;
     }
 }
