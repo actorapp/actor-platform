@@ -21,7 +21,7 @@ def baseVersion = "3.0"
 android {
 
     compileSdkVersion 24
-    buildToolsVersion '24.0.0'
+    buildToolsVersion '24.0.2'
 
     defaultConfig {
         minSdkVersion 15
@@ -95,13 +95,13 @@ dependencies {
     compile 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.0.2'
 
     // Android Support
-    compile 'com.android.support:support-v4:24.0.0'
-    compile 'com.android.support:support-v13:24.0.0'
-    compile 'com.android.support:appcompat-v7:24.0.0'
-    compile 'com.android.support:palette-v7:24.0.0'
-    compile 'com.android.support:recyclerview-v7:24.0.0'
-    compile 'com.android.support:design:24.0.0'
-    compile 'com.android.support:customtabs:24.0.0'
+    compile 'com.android.support:support-v4:24.2.1'
+    compile 'com.android.support:support-v13:24.2.1'
+    compile 'com.android.support:appcompat-v7:24.2.1'
+    compile 'com.android.support:palette-v7:24.2.1'
+    compile 'com.android.support:recyclerview-v7:24.2.1'
+    compile 'com.android.support:design:24.2.1'
+    compile 'com.android.support:customtabs:24.2.1'
 }
 
 //

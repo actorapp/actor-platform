@@ -14,7 +14,7 @@ apply plugin: 'me.tatarka.retrolambda'
 
 android {
     compileSdkVersion 24
-    buildToolsVersion '24.0.0'
+    buildToolsVersion '24.0.2'
 
     defaultConfig {
         minSdkVersion 15
@@ -50,7 +50,7 @@ android {
 
 dependencies {
     compile project(':actor-sdk:sdk-core:runtime:runtime-android')
-    compile 'com.android.support:recyclerview-v7:24.0.0'
+    compile 'com.android.support:recyclerview-v7:24.2.1'
     compile 'com.squareup.okhttp:okhttp:2+'
     compile 'io.pristine:libjingle:11139@aar'
 }
