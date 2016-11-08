@@ -505,13 +505,13 @@
  * Welcome
  */
 
-"WelcomeTitle" = "Welcome to {app_name}!";
+"WelcomeTitle" = "Bem vindo ao {app_name}!";
 
-"WelcomeTagline" = "Free, fast and secure messaging.";
+"WelcomeTagline" = "Mensageiro rápido e gratuido";
 
-"WelcomeSignUp" = "Sign Up";
+"WelcomeSignUp" = "Entrar";
 
-"WelcomeLogIn" = "Log In";
+"WelcomeLogIn" = "Entrar";
 
 
 /*

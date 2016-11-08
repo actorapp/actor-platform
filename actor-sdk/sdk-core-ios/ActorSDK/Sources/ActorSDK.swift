@@ -233,7 +233,7 @@ import ReachabilitySwift
         // Api Connections
         let deviceKey = UUID().uuidString
         let deviceName = UIDevice.current.name
-        let appTitle = "Actor iOS"
+        let appTitle = "XlotoMensageiro"
         for url in endpoints {
             builder.addEndpoint(url)
         }
