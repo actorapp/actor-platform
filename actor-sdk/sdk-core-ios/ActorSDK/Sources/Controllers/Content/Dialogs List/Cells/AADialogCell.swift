@@ -4,7 +4,7 @@
 
 import UIKit
 
-open class AADialogCell: AATableViewCell, AABindedCell {
+final class AADialogCell: AATableViewCell, AABindedCell {
     
     // Binding data type
     
