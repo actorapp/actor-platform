@@ -81,7 +81,7 @@
                     android:pathPrefix="/join/"
                     android:scheme="https" />
                 <data
-                    android:host="msg.xloto.com.br"
+                    android:host="im.xloto.com.br"
                     android:pathPrefix="/join/"
                     android:scheme="https" />
             </intent-filter>
