@@ -27,6 +27,7 @@ import im.actor.core.api.rpc.RequestGetIntegrationToken;
 import im.actor.core.api.rpc.RequestInviteUser;
 import im.actor.core.api.rpc.RequestJoinGroup;
 import im.actor.core.api.rpc.RequestJoinGroupByPeer;
+import im.actor.core.api.rpc.RequestJoinGroupByPeer2;
 import im.actor.core.api.rpc.RequestKickUser;
 import im.actor.core.api.rpc.RequestLeaveAndDelete;
 import im.actor.core.api.rpc.RequestLeaveGroup;
@@ -358,6 +359,13 @@ public class GroupsModule extends AbsModule implements BusSubscriber {
                 .flatMap(group ->
                         api(new RequestJoinGroupByPeer(
                                 new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()))))
+                .chain(r -> updates().waitForUpdate(r.getSeq()))
+                .map(r -> null);
+    }
+
+    public Promise<Void> joinGroup2(int gid) {
+        return api(new RequestJoinGroupByPeer2(
+                new ApiGroupOutPeer(gid, 0L)))
                 .chain(r -> updates().waitForUpdate(r.getSeq()))
                 .map(r -> null);
     }
