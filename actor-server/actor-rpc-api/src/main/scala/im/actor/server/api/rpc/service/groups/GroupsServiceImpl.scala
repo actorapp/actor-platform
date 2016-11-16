@@ -7,31 +7,32 @@ import akka.http.scaladsl.util.FastFuture
 import cats.data.Xor
 import com.github.ghik.silencer.silent
 import im.actor.api.rpc.PeerHelpers._
+import im.actor.api.rpc.Refs.{ApiGroupOutPeer, ResponseSeq}
 import im.actor.api.rpc._
 import im.actor.api.rpc.files.ApiFileLocation
 import im.actor.api.rpc.groups._
-import im.actor.api.rpc.misc.{ ResponseSeq, ResponseSeqDate, ResponseVoid }
-import im.actor.api.rpc.peers.{ ApiGroupOutPeer, ApiUserOutPeer }
+import im.actor.api.rpc.misc.{ResponseSeq, ResponseSeqDate, ResponseVoid}
+import im.actor.api.rpc.peers.{ApiGroupOutPeer, ApiUserOutPeer}
 import im.actor.api.rpc.sequence.ApiUpdateOptimization
 import im.actor.api.rpc.users.ApiUser
 import im.actor.concurrent.FutureExt
 import im.actor.server.acl.ACLUtils
 import im.actor.server.db.DbExtension
 import im.actor.server.dialog.DialogExtension
-import im.actor.server.file.{ FileErrors, ImageUtils }
+import im.actor.server.file.{FileErrors, ImageUtils}
 import im.actor.server.group._
 import im.actor.server.model.GroupInviteToken
 import im.actor.server.names.GlobalNamesStorageKeyValueStorage
-import im.actor.server.persist.{ GroupInviteTokenRepo, GroupUserRepo }
+import im.actor.server.persist.{GroupInviteTokenRepo, GroupUserRepo}
 import im.actor.server.presences.GroupPresenceExtension
-import im.actor.server.sequence.{ SeqState, SeqStateDate, SeqUpdatesExtension }
+import im.actor.server.sequence.{SeqState, SeqStateDate, SeqUpdatesExtension}
 import im.actor.server.user.UserExtension
 import im.actor.util.ThreadLocalSecureRandom
-import im.actor.util.misc.{ IdUtils, StringUtils }
+import im.actor.util.misc.{IdUtils, StringUtils}
 import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit actorSystem: ActorSystem) extends GroupsService {
 
@@ -648,4 +649,27 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
     case GroupErrors.UserIsBanned            ⇒ GroupRpcErrors.UserIsBanned
   }
 
+  /**
+    * Join group by peer without a necessity of invite
+    *
+    * @param groupPeer Groups peer
+    */
+  override protected def doHandleJoinGroupByPeer2(groupPeer: ApiGroupOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
+    authorized(clientData) { implicit client ⇒
+      withGroupOutPeer(groupPeer) {
+        val action = for {
+          apiGroup ← fromFuture(groupExt.getApiStruct(groupPeer.groupId, client.userId))
+          _ ← fromBoolean(GroupRpcErrors.CantJoinGroup)(canJoin(apiGroup.permissions))
+          joinResp ← fromFuture(groupExt.joinGroup(
+            groupId = groupPeer.groupId,
+            joiningUserId = client.userId,
+            joiningUserAuthId = client.authId,
+            invitingUserId = None
+          ))
+          SeqStateDate(seq, state, _) = joinResp._1
+        } yield ResponseSeq(seq, state.toByteArray)
+
+        action.value
+      }
+  }
 }
