@@ -1,14 +1,14 @@
 Pod::Spec.new do |s|
-  s.name         		= "ActorSDK-iOS"
-  s.version      		= "0.0.26"
-  s.summary      		= "Actor SDK for intergration Actor Messaging to your apps"
+  s.name            = "ActorSDK-iOS"
+  s.version         = "3.0.457.2"
+  s.summary         = "Actor SDK for intergration Actor Messaging Lotericas to your apps"
   s.homepage        = "https://actor.im/"
   s.license         = { :type => 'MIT', :file => 'LICENSE' }
-  s.author       		= { "Actor LLC" => "steve@actor.im" }
-  s.source          = { :http => "https://github.com/actorapp/ActorSDK-iOS/releases/download/v#{s.version}/ActorSDK.zip"}
+  s.author          = { "Actor LLC" => "steve@actor.im" }
+  s.source          = { :http => "file:///Users/diego/Documents/projetos/actor-platform/actor-sdk/sdk-core-ios/build/ActorSDK.zip"}
 
-  s.platform     		= :ios, "8.0"
-  s.requires_arc 		= true
+  s.platform        = :ios, "8.0"
+  s.requires_arc    = true
 
   # Core
   s.dependency 'RegexKitLite'
