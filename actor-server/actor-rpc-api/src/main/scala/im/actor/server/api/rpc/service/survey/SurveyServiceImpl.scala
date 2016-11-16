@@ -7,14 +7,13 @@ import akka.http.scaladsl.util.FastFuture
 import cats.data.Xor
 import com.github.ghik.silencer.silent
 import im.actor.api.rpc.PeerHelpers._
-import im.actor.api.rpc.Refs.{ ApiSurvey }
 import im.actor.api.rpc._
 import im.actor.api.rpc.files.ApiFileLocation
 import im.actor.api.rpc.groups._
 import im.actor.api.rpc.misc.{ ResponseSeq, ResponseSeqDate, ResponseVoid }
 import im.actor.api.rpc.peers.{ ApiGroupOutPeer, ApiUserOutPeer }
 import im.actor.api.rpc.sequence.ApiUpdateOptimization
-import im.actor.api.rpc.surveys.SurveysService
+import im.actor.api.rpc.surveys.{ ApiSurvey, SurveysService }
 import im.actor.api.rpc.users.ApiUser
 import im.actor.concurrent.FutureExt
 import im.actor.server.acl.ACLUtils
@@ -37,7 +36,7 @@ import scala.concurrent.{ ExecutionContext, Future }
 /**
  * Created by 98379720172 on 16/11/16.
  */
-class SurveyServiceImpl()(implicit actorSystem: ActorSystem) extends SurveysService {
+final class SurveyServiceImpl()(implicit actorSystem: ActorSystem) extends SurveysService {
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 

@@ -7,7 +7,6 @@ import akka.http.scaladsl.util.FastFuture
 import cats.data.Xor
 import com.github.ghik.silencer.silent
 import im.actor.api.rpc.PeerHelpers._
-import im.actor.api.rpc.Refs.{ ApiGroupOutPeer, ResponseSeq }
 import im.actor.api.rpc._
 import im.actor.api.rpc.files.ApiFileLocation
 import im.actor.api.rpc.groups._
