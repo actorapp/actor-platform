@@ -1935,12 +1935,12 @@
 "Join group by peer",{"type":"reference","argument":"groupPeer","category":"full","description":"Group's peer"}],"attributes":[
 {"type":{"type":"struct","childType":"GroupOutPeer"},"id":1,"name":"groupPeer"}
 ]}},{"type":"rpc","content":{
-"name":"JoinGroupByPeer2",
+"name":"JoinGroupByGroupId",
 "header":44561,
 "response":{"type":"reference","name":"Seq"},
 "doc":[
-"Join group by peer without a necessity of invite",{"type":"reference","argument":"groupPeer","category":"hidden","description":"Groups peer"}],"attributes":[
-{"type":{"type":"struct","childType":"GroupOutPeer"},"id":1,"name":"groupPeer"}
+"Join group by peer without a necessity of invite",{"type":"reference","argument":"groupId","category":"hidden","description":"Groups peer"}],"attributes":[
+{"type":{"type":"alias","childType":"groupId"},"id":1,"name":"groupId"}
 ]}},{"type":"comment","content":"Administration"},{"type":"rpc","content":{
 "name":"MakeUserAdmin",
 "header":2784,

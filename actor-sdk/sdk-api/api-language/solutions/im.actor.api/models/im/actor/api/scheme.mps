@@ -8978,12 +8978,12 @@
         </node>
       </node>
       <node concept="2m6fVq" id="5uZ_hMrfjip" role="2m5mJr">
-        <property role="TrG5h" value="JoinGroupByPeer2" />
+        <property role="TrG5h" value="JoinGroupByGroupId" />
         <node concept="2m7Kf5" id="5uZ_hMrfjxR" role="2m0hLx">
           <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="groupPeer" />
-          <node concept="2m5mGg" id="5uZ_hMrfjxV" role="2m7DVh">
-            <ref role="2m5mJy" node="GBscvBB6j2" resolve="GroupOutPeer" />
+          <property role="TrG5h" value="groupId" />
+          <node concept="wb0Ql" id="5WsZrvigLlo" role="2m7DVh">
+            <ref role="wb18D" node="5qm50Y0e3uO" resolve="groupId" />
           </node>
         </node>
         <node concept="Nu42z" id="5uZ_hMrfjiq" role="NuuwV">
@@ -8997,7 +8997,7 @@
         </node>
         <node concept="NX1gA" id="5uZ_hMrfkzU" role="1GBnQ6">
           <property role="NX6R2" value="Groups peer" />
-          <ref role="NX6Kv" node="5uZ_hMrfjxR" resolve="groupPeer" />
+          <ref role="NX6Kv" node="5uZ_hMrfjxR" resolve="groupId" />
         </node>
       </node>
       <node concept="NvWBy" id="3c_gimmPEMd" role="2m5mJr">
