@@ -9,7 +9,7 @@ import AddressBook
 import AddressBookUI
 import AVFoundation
 
-final class ConversationViewController:
+final public class ConversationViewController:
     AAConversationContentController,
     UIDocumentMenuDelegate,
     UIDocumentPickerDelegate,

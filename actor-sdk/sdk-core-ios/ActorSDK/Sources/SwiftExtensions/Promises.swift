@@ -5,7 +5,7 @@
 import Foundation
 import MBProgressHUD
 
-extension ARPromise {
+public extension ARPromise {
     
     func startUserAction(_ ignore: [String] = []) -> ARPromise {
         

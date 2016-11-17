@@ -8977,6 +8977,29 @@
           <ref role="NX6Kv" node="3iWZ2kgyrUz" resolve="groupPeer" />
         </node>
       </node>
+      <node concept="2m6fVq" id="5uZ_hMrfjip" role="2m5mJr">
+        <property role="TrG5h" value="JoinGroupByGroupId" />
+        <node concept="2m7Kf5" id="5uZ_hMrfjxR" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupId" />
+          <node concept="wb0Ql" id="5WsZrvigLlo" role="2m7DVh">
+            <ref role="wb18D" node="5qm50Y0e3uO" resolve="groupId" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="5uZ_hMrfjiq" role="NuuwV">
+          <property role="Nu42W" value="AE11" />
+        </node>
+        <node concept="2m1Rp1" id="5uZ_hMrfjxY" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_W" resolve="Seq" />
+        </node>
+        <node concept="NXeRC" id="5uZ_hMrfk4v" role="1GBnQ6">
+          <property role="NXePf" value="Join group by peer without a necessity of invite" />
+        </node>
+        <node concept="NX1gA" id="5uZ_hMrfkzU" role="1GBnQ6">
+          <property role="NX6R2" value="Groups peer" />
+          <ref role="NX6Kv" node="5uZ_hMrfjxR" resolve="groupId" />
+        </node>
+      </node>
       <node concept="NvWBy" id="3c_gimmPEMd" role="2m5mJr">
         <property role="NvWrd" value="Administration" />
       </node>
@@ -18496,6 +18519,83 @@
       </node>
       <node concept="1Dx9M1" id="2WAO9Y$lrKc" role="1Dx9rD">
         <property role="1Dx9K7" value="Flexible raw collections without structure" />
+      </node>
+    </node>
+    <node concept="2m5mJO" id="1kmWHIzQaSl" role="2m5lHt">
+      <property role="TrG5h" value="Surveys" />
+      <property role="3XOG$Z" value="surveys" />
+      <node concept="2m5naR" id="1kmWHIzQgei" role="2m5mJr">
+        <property role="TrG5h" value="Survey" />
+        <node concept="2m7Kf5" id="1kmWHIzQgel" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="id" />
+          <node concept="2m5ndQ" id="1kmWHIzQgep" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="1kmWHIzQges" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="titulo" />
+          <node concept="2m5ndX" id="1kmWHIzQgey" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="1kmWHIzQge_" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="uf" />
+          <node concept="2m5nlT" id="1kmWHIzQgeH" role="2m7DVh">
+            <node concept="2m5ndX" id="1kmWHIzQgeN" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="1kmWHIzQgeQ" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="creationTime" />
+          <node concept="wb0Ql" id="1kmWHIzQgf1" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="1kmWHIzQgf4" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="endTime" />
+          <node concept="wb0Ql" id="1kmWHIzQgfh" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="1kmWHIzQh$e" role="2m0hLx">
+          <property role="TrG5h" value="ownerId" />
+          <property role="2m7DUN" value="6" />
+          <node concept="wb0Ql" id="1kmWHIzQh$t" role="2m7DVh">
+            <ref role="wb18D" node="5qm50Y0e3uz" resolve="userId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="1kmWHIzQh$w" role="2m0hLx">
+          <property role="2m7DUN" value="7" />
+          <property role="TrG5h" value="answers" />
+          <node concept="2m5nlk" id="1kmWHIzQh$L" role="2m7DVh">
+            <node concept="2m5ndX" id="1kmWHIzQh$R" role="3GJlyp" />
+          </node>
+        </node>
+        <node concept="NXeRC" id="1kmWHIzQh_J" role="NXodf">
+          <property role="NXePf" value="Main Survey Struct" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="1kmWHIzQhA5" role="2m5mJr">
+        <property role="TrG5h" value="CreateSurvey" />
+        <node concept="2m7Kf5" id="1kmWHIzQhAv" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="survey" />
+          <node concept="2m5mGg" id="1kmWHIzQhAz" role="2m7DVh">
+            <ref role="2m5mJy" node="1kmWHIzQgei" resolve="Survey" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="1kmWHIzQhA6" role="NuuwV">
+          <property role="Nu42W" value="8b" />
+        </node>
+        <node concept="2m1Rp1" id="1kmWHIzQhAA" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
+        </node>
+        <node concept="NXeRC" id="30CiObRcz3G" role="1GBnQ6">
+          <property role="NXePf" value="Criar uma nova enquete" />
+        </node>
+      </node>
+      <node concept="1Dx9M1" id="1kmWHIzQccH" role="1Dx9rD">
+        <property role="1Dx9K7" value="Surveys implementation for messages" />
       </node>
     </node>
   </node>
