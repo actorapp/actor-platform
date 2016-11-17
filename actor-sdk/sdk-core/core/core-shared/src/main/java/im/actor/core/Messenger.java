@@ -1769,15 +1769,15 @@ public class Messenger {
     }
 
     /**
-     * Join group
+     * Join group by Id
      *
      * @param gid group's id
      * @return Promise of Void
      */
     @NotNull
-    @ObjectiveCName("joinGroupWithGid2:")
-    public Promise<Void> joinGroup2(int gid) {
-        return modules.getGroupsModule().joinGroup2(gid);
+    @ObjectiveCName("joinGroupByGid:")
+    public Promise<Void> joinGroupById(int gid) {
+        return modules.getGroupsModule().joinGroupById(gid);
     }
 
     /**

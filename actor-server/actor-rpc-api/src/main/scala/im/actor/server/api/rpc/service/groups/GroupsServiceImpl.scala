@@ -649,27 +649,25 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
   }
 
   /**
-   * Join group by peer without a necessity of invite
+   * Join group by groupid without a necessity of invite
    *
-   * @param groupPeer Groups peer
+   * @param groupId Groups peer
    */
-  override protected def doHandleJoinGroupByPeer2(groupPeer: ApiGroupOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
+  override protected def doHandleJoinGroupByGroupId(groupId: Int, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     authorized(clientData) { implicit client ⇒
-     // withGroupOutPeer(groupPeer) {
-        val action = for {
-          apiGroup ← fromFuture(groupExt.getApiStruct(groupPeer.groupId, client.userId))
-          _ ← fromBoolean(GroupRpcErrors.CantJoinGroup)(canJoin(apiGroup.permissions))
-          joinResp ← fromFuture(groupExt.joinGroup(
-            groupId = groupPeer.groupId,
-            joiningUserId = client.userId,
-            joiningUserAuthId = client.authId,
-            invitingUserId = None
-          ))
-          SeqStateDate(seq, state, _) = joinResp._1
-        } yield ResponseSeq(seq, state.toByteArray)
+      val action = for {
+        apiGroup ← fromFuture(groupExt.getApiStruct(groupId, client.userId))
+        _ ← fromBoolean(GroupRpcErrors.CantJoinGroup)(canJoin(apiGroup.permissions))
+        joinResp ← fromFuture(groupExt.joinGroup(
+          groupId = groupId,
+          joiningUserId = client.userId,
+          joiningUserAuthId = client.authId,
+          invitingUserId = None
+        ))
+        SeqStateDate(seq, state, _) = joinResp._1
+      } yield ResponseSeq(seq, state.toByteArray)
 
-        action.value
-     // }
+      action.value
     }
   }
 }

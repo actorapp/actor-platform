@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import im.actor.core.api.ApiAdminSettings;
 import im.actor.core.api.ApiGroupOutPeer;
 import im.actor.core.api.ApiGroupType;
 import im.actor.core.api.ApiMember;
@@ -26,8 +25,8 @@ import im.actor.core.api.rpc.RequestGetGroupInviteUrl;
 import im.actor.core.api.rpc.RequestGetIntegrationToken;
 import im.actor.core.api.rpc.RequestInviteUser;
 import im.actor.core.api.rpc.RequestJoinGroup;
+import im.actor.core.api.rpc.RequestJoinGroupByGroupId;
 import im.actor.core.api.rpc.RequestJoinGroupByPeer;
-import im.actor.core.api.rpc.RequestJoinGroupByPeer2;
 import im.actor.core.api.rpc.RequestKickUser;
 import im.actor.core.api.rpc.RequestLeaveAndDelete;
 import im.actor.core.api.rpc.RequestLeaveGroup;
@@ -363,9 +362,8 @@ public class GroupsModule extends AbsModule implements BusSubscriber {
                 .map(r -> null);
     }
 
-    public Promise<Void> joinGroup2(int gid) {
-        return api(new RequestJoinGroupByPeer2(
-                new ApiGroupOutPeer(gid, 0L)))
+    public Promise<Void> joinGroupById(int gid) {
+        return api(new RequestJoinGroupByGroupId(gid))
                 .chain(r -> updates().waitForUpdate(r.getSeq()))
                 .map(r -> null);
     }
