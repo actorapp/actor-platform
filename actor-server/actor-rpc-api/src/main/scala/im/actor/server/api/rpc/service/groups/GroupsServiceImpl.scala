@@ -655,7 +655,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
    */
   override protected def doHandleJoinGroupByPeer2(groupPeer: ApiGroupOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     authorized(clientData) { implicit client ⇒
-      withGroupOutPeer(groupPeer) {
+     // withGroupOutPeer(groupPeer) {
         val action = for {
           apiGroup ← fromFuture(groupExt.getApiStruct(groupPeer.groupId, client.userId))
           _ ← fromBoolean(GroupRpcErrors.CantJoinGroup)(canJoin(apiGroup.permissions))
@@ -669,7 +669,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
         } yield ResponseSeq(seq, state.toByteArray)
 
         action.value
-      }
+     // }
     }
   }
 }
