@@ -17,7 +17,7 @@ import im.actor.sdk.R;
 
 public class BaseFragmentActivity extends BaseActivity {
 
-    public class CompleteCustonAnimation{
+    public static class CompleteCustonAnimation{
         int enter;
         int exit;
         int popEnter;
@@ -93,13 +93,13 @@ public class BaseFragmentActivity extends BaseActivity {
 
     public void showNextFragment(Fragment fragment, boolean addToBackStack, CompleteCustonAnimation cca) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        if(cca != null)
+            transaction.setCustomAnimations(cca.enter, cca.exit, cca.popEnter, cca.popExit);
+
         transaction.replace(R.id.content_frame, fragment);
         if (addToBackStack) {
             transaction.addToBackStack(null);
         }
-
-        if(cca != null)
-            transaction.setCustomAnimations(cca.enter, cca.exit, cca.popEnter, cca.popExit);
 
         transaction.commit();
     }
