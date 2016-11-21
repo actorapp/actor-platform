@@ -17,6 +17,20 @@ import im.actor.sdk.R;
 
 public class BaseFragmentActivity extends BaseActivity {
 
+    public static class CompleteCustonAnimation{
+        int enter;
+        int exit;
+        int popEnter;
+        int popExit;
+
+        public CompleteCustonAnimation(int enter, int exit, int popEnter, int popExit) {
+            this.enter = enter;
+            this.exit = exit;
+            this.popEnter = popEnter;
+            this.popExit = popExit;
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,11 +91,24 @@ public class BaseFragmentActivity extends BaseActivity {
         transaction.commit();
     }
 
+    public void showNextFragment(Fragment fragment, boolean addToBackStack, CompleteCustonAnimation cca) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        if(cca != null)
+            transaction.setCustomAnimations(cca.enter, cca.exit, cca.popEnter, cca.popExit);
+
+        transaction.replace(R.id.content_frame, fragment);
+        if (addToBackStack) {
+            transaction.addToBackStack(null);
+        }
+
+        transaction.commit();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                finish();
+                onBackPressed();
                 return true;
         }
         return false;
