@@ -26,11 +26,15 @@
 
 "ContactsActionAdd" = "Añadir amigo";
 
+"ContactsBack" = "Contactos";
+
 /*
  * Dialogs
  */
 
 "DialogsHint" = "Tocar para más opciones";
+
+"DialogsBack" = "Chats";
 
 /*
  * Settings
@@ -67,7 +71,7 @@
 "SettingsChangeAboutHint" = "Modifica tu estado";
 
 
-"SettingsSecurity" = "Privacy and Security";
+"SettingsSecurity" = "Privacidad y Seguridad";
 
 "SettingsWallpapers" = "Fondos de chats";
 
@@ -85,9 +89,9 @@
 
 "SettingsMobilePhone"    = "Móvil";
 
-"SettingsGroupChats" = "Groups";
+"SettingsGroupChats" = "Grupos";
 
-"SettingsPrivateChats" = "Private Chats";
+"SettingsPrivateChats" = "Chats privados";
 
 /*
  * Notifications
@@ -131,22 +135,22 @@
 
 "MediaTitle" = "Media Settings";
 
-"MediaPhotoDownloadHeader"= "Automatic Photo Download";
+"MediaPhotoDownloadHeader"= "Descarga automatica de foto";
 
-"MediaAudioDownloadHeader"= "Automatic Audio Download";
+"MediaAudioDownloadHeader"= "Descarga automatica de audio";
 
-"MediaOtherHeader"= "Other";
+"MediaOtherHeader"= "Otros";
 
-"MediaAutoplayGif"= "Autoplay GIFs";
+"MediaAutoplayGif"= "Reproducir automaticamente Gifs";
 
 /*
  * Privacy
  */
 
-"PrivacyTitle" = "Privacy and Security";
+"PrivacyTitle" = "Privacidad y Seguridad";
 
 
-"PrivacyHeader" = "Privacy";
+"PrivacyHeader" = "Privacidad";
 
 "PrivacyLastSeen" = "Ultima vez visto";
 
@@ -159,9 +163,9 @@
 "PrivacyLastSeenNone"    = "Nadie";
 
 
-"PrivacySecurityHeader" = "Security";
+"PrivacySecurityHeader" = "Seguridad";
 
-"PrivacyAllSessions" = "Active Sessions";
+"PrivacyAllSessions" = "Sesiones Activadas";
 
 "PrivacyTerminate" = "Terminar todas las demás sesiones";
 
@@ -281,7 +285,78 @@
 
 "GroupIntegrations" = "Integraciones";
 
-"GroupMembers" = "{0} MIEMBROS";
+"GroupViewMembers" = "Miembros";
+
+"GroupDescription" = "Descripción";
+
+
+
+"GroupAdministration" = "Administrador";
+
+"GroupTypeTitle" = "Tipo de Grupo";
+
+"GroupTypeTitleChannel" = "Tipo de Canal";
+
+"GroupTypePublic" = "Público";
+
+"GroupTypePrivate" = "Privado";
+
+"ChannelTypePublic" = "Público";
+
+"ChannelTypePrivate" = "Privado";
+
+"GroupTypePublicFull" = "Grupo público";
+
+"GroupTypePrivateFull" = "Grupo privado";
+
+"ChannelTypePublicFull" = "Canal público";
+
+"ChannelTypePrivateFull" = "Canal privado";
+
+"GroupPermissionsHint" = "Controlar lo que es posible en este grupo";
+
+"GroupPermissionsHintChannel" = "Controlar lo que es posible en este canal";
+
+"GroupTypeHintPublic" = "Los grupos públicos se pueden encontrar en la búsqueda y cualquiera puede unirse";
+
+"GroupTypeHintPrivate" = "Los grupos privados pueden unirse sólo a través de invitación personal";
+
+"GroupTypeHintPublicChannel" = "Los canales públicos se pueden encontrar en la búsqueda y cualquiera puede unirse";
+
+"GroupTypeHintPrivateChannel" = "Los canales privados se pueden unir únicamente a través de invitación personal";
+
+"GroupTypeLinkHint" = "People can share this link with others and find your group using search";
+
+"GroupTypeLinkHintChannel" = "Las personas pueden compartir este enlace con los demás y encontrar su grupo mediante la búsqueda";
+
+"GroupDeleteHint" = "Perderá todos los mensajes de este grupo";
+
+"GroupDeleteHintChannel" = "Usted perderá todos los mensajes de este canal";
+
+
+
+"GroupShareTitle" = "Historial compartido";
+
+"GroupShareEnabled" = "Compartir";
+
+"GroupShareHint" = "Todos los miembros podrán ver todos los mensajes";
+
+"GroupShareMessage" = "¿Seguro desea compartir todos los mensajes a todos los miembros? Esta acción es irreversible.";
+
+"GroupShareAction" = "Compartir";
+
+
+"GroupEditTitle" = "Editar Grupo";
+
+"GroupEditTitleChannel" = "Editar Canal";
+
+"GroupEditName" = "Nombre de Grupo";
+
+"GroupEditNameChannel" = "Nombre del Canal";
+
+"GroupEditDescription" = "Descripción";
+
+
 
 "GroupMemberAdmin" = "admin";
 
@@ -311,11 +386,7 @@
 
 "GroupAddParticipantUrl" = "Invitar al grupo a través de Enlace";
 
-"GroupLeave" = "Salir de grupo";
 
-"GroupLeaveConfirm" = "¿Seguro que quieres dejar de grupo?";
-
-"GroupLeaveConfirmAction" = "Salir";
 
 "GroupInviteLinkPageTitle" = "invitar por Enlace";
 
@@ -327,17 +398,7 @@
 
 "GroupInviteLinkRevokeAction" = "Revocar";
 
-"GroupIntegrationPageTitle" = "Integración de API";
 
-"GroupIntegrationLinkTitle" = "LINK";
-
-"GroupIntegrationLinkHint" = "Puedes usar este enlace para enviar mensajes desde cualquier sistema externo.";
-
-"GroupIntegrationDoc" = "Abrir Documentación";
-
-"GroupIntegrationLinkRevokeMessage" = "¿Seguro que quieres revocar este enlace? Una vez hecho, nadie va a ser capaz de enviar mensajes al grupo de usarlo.";
-
-"GroupIntegrationLinkRevokeAction" = "Revocar";
 
 "GroupJoinMessage" = "¿Seguro quieres unirte al grupo?";
 
@@ -349,13 +410,24 @@
 
 "ComposeTitle" = "Nuevo mensaje";
 
+
 "CreateGroup" = "Crear grupo";
+
+"CreateChannel" = "Crear canal";
+
 
 "CreateGroupTitle" = "Crear grupo";
 
 "CreateGroupHint" = "Por favor, introduce un nombre de grupo e inserta una imagen.";
 
-"CreateGroupNamePlaceholder" = "Grupo Asunto";
+"CreateGroupNamePlaceholder" = "Asunto del Grupo";
+
+"CreateChannelTitle" = "Crear Canal";
+
+"CreateChannelHint" = "Por favor, proporcione el nombre del canal y un icono de canal opcional";
+
+"CreateChannelNamePlaceholder" = "Nombre del canal";
+
 
 "CreateGroupMembersTitle" = "Invitar a los miembros";
 
@@ -388,6 +460,9 @@
 
 "ChatSlideUpToCancel" = "Deslizar para cancelar";
 
+"ChatDeleted" = "This chat was deleted by owner.";
+
+"ChatJoin" = "Join";
 
 /*
  * Chat attachment menu
@@ -415,7 +490,7 @@
 
 "Placeholder_Empty_Title" = "Invita a tus amigos";
 
-"Placeholder_Empty_Message" = "Ninguno de tus contactos usar {appname}. Utiliza el botón de abajo para invitarlos.";
+"Placeholder_Empty_Message" = "Ninguno de tus contactos usan {appname}. Utiliza el botón de abajo para invitarlos.";
 
 "Placeholder_Empty_Action" = "CONTAR A UN AMIGO";
 
@@ -605,7 +680,48 @@
 
 "ActionAddPhoto2" = "foto";
 
-"ActionOpenCode" = "View Code";
+"ActionOpenCode" = "Ver código";
+
+"ActionMute" = "Silenciar";
+
+"ActionUnmute" = "No silenciado";
+
+
+"ActionDelete" = "Eliminar";
+
+"ActionDeleteMessage" = "¿Seguro desea borrar el chat?";
+
+
+"ActionDeleteChannel" = "Eliminar canal";
+
+"ActionDeleteChannelMessage" = "Wait! Deleting this channel will remove all members and all messages will be lost. Delete the channel anyway?";
+
+"ActionDeleteGroup" = "Delete Group";
+
+"ActionDeleteGroupMessage" = "¡Espere! La eliminación de este canal, eliminará todos los miembros y se perderán todos los mensajes. Eliminar el canal de todos modos?";
+
+
+"ActionLeaveChannel" = "Abandonar Canal";
+
+"ActionLeaveChannelMessage" = "¿Seguro que quieres abandonar el canal?";
+
+"ActionLeaveChannelAction" = "Abandonar";
+
+
+
+"ActionDeleteAndExit" = "Eliminar y Salir";
+
+"ActionDeleteAndExitMessage" = "¿Seguro desea salir del grupo y eliminar todos los mensajes?";
+
+"ActionDeleteAndExitAction" = "Salir";
+
+
+
+"ActionClearHistory" = "Borrar historial";
+
+"ActionClearHistoryMessage" = "¿Seguro desea borrar el historial?";
+
+"ActionClearHistoryAction" = "Borrar";
 
 /*
  * Network
@@ -625,4 +741,4 @@
 
 "ErrorAlreadyJoined" = "Ya eres miembro del grupo";
 
-"ErrorUnableToJoin" = "Unable to join to group";
+"ErrorUnableToJoin" = "No es posible unirse al grupo";

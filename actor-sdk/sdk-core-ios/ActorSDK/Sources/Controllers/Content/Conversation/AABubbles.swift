@@ -28,7 +28,7 @@ class AABubbles {
     
     static var layouters: [AABubbleLayouter] = builtInLayouters
     
-    class func layouterForMessage(message: ACMessage) -> AABubbleLayouter {
+    class func layouterForMessage(_ message: ACMessage) -> AABubbleLayouter {
         for layouter in layouters {
             if layouter.isSuitable(message) {
                 return layouter
@@ -37,7 +37,7 @@ class AABubbles {
         return textLayouter
     }
     
-    class func buildLayout(peer: ACPeer, message: ACMessage) -> AACellLayout {
+    class func buildLayout(_ peer: ACPeer, message: ACMessage) -> AACellLayout {
         
         for layouter in layouters {
             if (layouter.isSuitable(message)) {

@@ -94,6 +94,27 @@
 				"avatar_changed": "{name} تصویر گروه را عوض کرد",
 				"avatar_removed": "{name} تصویر گروه را عوض کرد"
 			},
+			"channels": {
+				"created": " گروه را ایجاد کرد",
+				"invited": "{name} {name_added} را دعوت کرد",
+				"joined": "{name} به گروه پیوست",
+				"kicked": "{name} {name_kicked} را از گروه حذف کرد",
+				"left": "{name} از گروه رفت",
+				"title_changed": {
+					"full":  "{name} نام گروه را با\"{title}\" جایگزین کرد",
+					"compact": "{name} نام گروه را جایگزین کرد"
+				},
+				"topic_changed": {
+					"full":  "جناب {name} موضوع گروه را با \"{topic}\" جای‌گزین کردید",
+					"compact": "موضوع گروه را عوض کرد {name}"
+				},
+				"about_changed": {
+					"full":  "جناب {name} متن درباره گروه را با \"{about}\" جای‌گزین کردید",
+					"compact": "متن درباره گروه را عوض کرد {name}"
+				},
+				"avatar_changed": "{name} تصویر گروه را عوض کرد",
+				"avatar_removed": "{name} تصویر گروه را عوض کرد"
+			},
 			"calls": {
 				"missed": "تماس از دست رفته",
 				"ended": "تماس تمام شد"

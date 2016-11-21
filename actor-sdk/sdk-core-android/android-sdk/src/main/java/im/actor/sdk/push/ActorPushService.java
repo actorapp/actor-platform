@@ -7,7 +7,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
@@ -23,7 +22,7 @@ import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import im.actor.core.util.ExponentialBackoff;
+import im.actor.runtime.util.ExponentialBackoff;
 
 /**
  * Actor Push service based on MQTT
@@ -348,18 +347,5 @@ public class ActorPushService extends Service implements MqttCallback {
         // Making Service restart after killing
         // TODO: May not work correctly on 4.4+ on some devices - need to implement workaround
         return START_STICKY;
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Intent localIntent = new Intent();
-        localIntent.setClass(this, ActorPushService.class); //销毁时重新启动Service
-        String[] hosts = {"tcp://104.155.92.40:1883"};
-        this.startService(localIntent
-                .putExtra("mqtt_urls", hosts)
-                .putExtra("mqtt_topic", "actor/31337/subscription/c63db75b-a4a4-42d0-9440-f03a6f4744e2")
-                .putExtra("mqtt_username", "actor-client")
-                .putExtra("mqtt_password", "ohgh5eeC"));
     }
 }

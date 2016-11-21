@@ -45,6 +45,8 @@
 
     <!-- Selector & divider colors -->
 
+    <color name="dialog_overlay">#33000000</color>
+
     <color name="selector_selected">#66999999</color>
     <color name="selector_hover">#33999999</color>
 
@@ -57,6 +59,10 @@
 
     <color name="selector_messages">#44000000</color>
     <color name="selector_messages_selected">#66000000</color>
+
+    <color name="selector_background_common">#ffffff</color>
+    <color name="selector_background_selected">#999999</color>
+    <color name="selector_background_hovered">#dddddd</color>
 
     <!--<color name="divider">#1e000000</color>-->
     <!--<color name="dividerInvColor">#1effffff</color>-->
@@ -107,7 +113,7 @@
 
     <!--<color name="conv_date_line">#14000000</color>-->
     <!--<color name="conv_date_text">#ffffff</color>-->
-    <color name="conv_date_bg">#99000000</color>
+    <color name="conv_date_bg">#64000000</color>
 
     <!--<color name="conv_text">@color/text_primary</color>-->
     <!--<color name="conv_time">#60000000</color>-->

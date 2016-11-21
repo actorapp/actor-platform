@@ -23,9 +23,9 @@ public class RequestTransferOwnership extends Request<ResponseSeqDate> {
     }
 
     private ApiGroupOutPeer groupPeer;
-    private int newOwner;
+    private ApiUserOutPeer newOwner;
 
-    public RequestTransferOwnership(@NotNull ApiGroupOutPeer groupPeer, int newOwner) {
+    public RequestTransferOwnership(@NotNull ApiGroupOutPeer groupPeer, @NotNull ApiUserOutPeer newOwner) {
         this.groupPeer = groupPeer;
         this.newOwner = newOwner;
     }
@@ -39,14 +39,15 @@ public class RequestTransferOwnership extends Request<ResponseSeqDate> {
         return this.groupPeer;
     }
 
-    public int getNewOwner() {
+    @NotNull
+    public ApiUserOutPeer getNewOwner() {
         return this.newOwner;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
         this.groupPeer = values.getObj(1, new ApiGroupOutPeer());
-        this.newOwner = values.getInt(2);
+        this.newOwner = values.getObj(2, new ApiUserOutPeer());
     }
 
     @Override
@@ -55,7 +56,10 @@ public class RequestTransferOwnership extends Request<ResponseSeqDate> {
             throw new IOException();
         }
         writer.writeObject(1, this.groupPeer);
-        writer.writeInt(2, this.newOwner);
+        if (this.newOwner == null) {
+            throw new IOException();
+        }
+        writer.writeObject(2, this.newOwner);
     }
 
     @Override

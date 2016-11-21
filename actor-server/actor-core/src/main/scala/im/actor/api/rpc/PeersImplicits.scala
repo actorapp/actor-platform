@@ -24,6 +24,9 @@ trait PeersImplicits {
 
     lazy val asPeer: ApiPeer =
       ApiPeer(ApiPeerType.Group, groupOutPeer.groupId)
+
+    lazy val asModel: Peer =
+      Peer(PeerType.Group, groupOutPeer.groupId)
   }
 
   implicit class ExtPeerModel(model: Peer) {

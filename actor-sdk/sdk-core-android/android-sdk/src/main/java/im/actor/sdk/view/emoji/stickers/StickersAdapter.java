@@ -6,17 +6,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.core.api.ApiStickerDescriptor;
 import im.actor.core.entity.Sticker;
 import im.actor.core.entity.StickerPack;
-import im.actor.core.viewmodel.StickersVM;
 import im.actor.runtime.mvvm.Value;
 import im.actor.runtime.mvvm.ValueChangedListener;
-import im.actor.sdk.controllers.fragment.ActorBinder;
+import im.actor.sdk.controllers.ActorBinder;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.emoji.keyboard.emoji.EmojiKeyboard;
 

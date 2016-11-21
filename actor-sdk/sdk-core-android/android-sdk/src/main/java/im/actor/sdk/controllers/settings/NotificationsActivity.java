@@ -14,7 +14,7 @@ public class NotificationsActivity extends BaseFragmentActivity {
         getSupportActionBar().setTitle(R.string.not_title);
 
         if (savedInstanceState == null) {
-            showFragment(new NotificationsFragment(), false, false);
+            showFragment(new NotificationsFragment(), false);
         }
     }
 }

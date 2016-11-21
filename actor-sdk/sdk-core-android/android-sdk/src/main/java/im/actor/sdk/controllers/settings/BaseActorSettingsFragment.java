@@ -1,5 +1,6 @@
 package im.actor.sdk.controllers.settings;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -8,13 +9,16 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.ActionBar;
-import android.text.TextUtils;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,7 +26,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -35,6 +38,7 @@ import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.UserEmail;
@@ -42,18 +46,17 @@ import im.actor.core.viewmodel.UserPhone;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.core.viewmodel.generics.ArrayListUserEmail;
 import im.actor.core.viewmodel.generics.ArrayListUserPhone;
-import im.actor.runtime.android.AndroidLogProvider;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorStyle;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.activity.BaseActivity;
-import im.actor.sdk.controllers.fragment.BaseFragment;
+import im.actor.sdk.controllers.BaseFragment;
 import im.actor.sdk.controllers.fragment.help.HelpActivity;
 import im.actor.sdk.controllers.fragment.preview.ViewAvatarActivity;
 import im.actor.sdk.util.Screen;
-import im.actor.sdk.view.BackgroundPreviewView;
-import im.actor.sdk.view.avatar.CoverAvatarView;
+import im.actor.sdk.view.adapters.HeaderViewRecyclerAdapter;
+import im.actor.sdk.view.avatar.AvatarView;
 import im.actor.sdk.view.TintImageView;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.Value;
@@ -64,12 +67,34 @@ import static im.actor.sdk.util.ActorSDKMessenger.users;
 
 public abstract class BaseActorSettingsFragment extends BaseFragment implements IActorSettingsFragment {
 
+    private boolean animateToolbar = true;
     private int baseColor;
-    private CoverAvatarView avatarView;
+    private AvatarView avatarView;
     protected SharedPreferences shp;
 
     private boolean noPhones = false;
     private boolean noEmails = false;
+    private HeaderViewRecyclerAdapter wallpaperAdapter;
+
+    public BaseActorSettingsFragment() {
+        setHasOptionsMenu(true);
+    }
+
+    public boolean isAnimateToolbar() {
+        return animateToolbar;
+    }
+
+    public void setAnimateToolbar(boolean animateToolbar) {
+        this.animateToolbar = animateToolbar;
+    }
+
+    @Override
+    public void onCreate(Bundle saveInstance) {
+        super.onCreate(saveInstance);
+        if (saveInstance != null) {
+            animateToolbar = saveInstance.getBoolean("animateToolbar", true);
+        }
+    }
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -103,17 +128,17 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
 
         final LinearLayout nickContainer = (LinearLayout) view.findViewById(R.id.nickContainer);
         final LinearLayout contactsContainer = (LinearLayout) view.findViewById(R.id.phoneContainer);
-        final FrameLayout about = (FrameLayout) view.findViewById(R.id.about);
+        final LinearLayout about = (LinearLayout) view.findViewById(R.id.about);
 
         // TODO: Move bindings to onResume
         bind(userModel.getNick(), new ValueChangedListener<String>() {
             @Override
             public void onChanged(final String val, Value<String> Value) {
                 final View recordView = inflater.inflate(R.layout.contact_record, nickContainer, false);
-                recordView.findViewById(R.id.divider).setBackgroundColor(style.getDividerColor());
                 ImageView nickIcon = (ImageView) recordView.findViewById(R.id.recordIcon);
-                Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_star_white_24dp));
-                DrawableCompat.setTint(drawable, style.getSettingsCategoryTextColor());
+                Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_mention_24_dp));
+                drawable.mutate();
+                DrawableCompat.setTint(drawable, style.getSettingsIconColor());
                 nickIcon.setImageDrawable(drawable);
 
                 String value = (val != null && !val.isEmpty()) ? val : getString(R.string.nickname_empty);
@@ -132,7 +157,7 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
                 recordView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-//                        getActivity().startActivity(Intents.editUserNick(getActivity()));
+                        getActivity().startActivity(Intents.editUserNick(getActivity()));
                     }
                 });
             }
@@ -140,15 +165,11 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
 
         final TextView aboutTitle = (TextView) about.findViewById(R.id.value);
         ImageView nickIcon = (ImageView) about.findViewById(R.id.recordIcon);
-        Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_format_quote_white_24dp));
-        DrawableCompat.setTint(drawable, style.getSettingsCategoryTextColor());
+        Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_info_black_24dp));
+        drawable.mutate();
+        DrawableCompat.setTint(drawable, style.getSettingsIconColor());
         nickIcon.setImageDrawable(drawable);
-        TextView aboutValue = (TextView) about.findViewById(R.id.title);
         aboutTitle.setTextColor(style.getTextPrimaryColor());
-        aboutValue.setTextColor(style.getTextSecondaryColor());
-        aboutValue.setText(getString(R.string.about_user_me));
-        aboutTitle.setEllipsize(TextUtils.TruncateAt.END);
-        about.findViewById(R.id.divider).setBackgroundColor(style.getDividerColor());
         about.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -182,7 +203,8 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
                         ImageView tintImageView = (ImageView) recordView.findViewById(R.id.recordIcon);
                         if (i == 0) {
                             Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_phone_white_24dp));
-                            DrawableCompat.setTint(drawable, style.getSettingsCategoryTextColor());
+                            drawable = drawable.mutate();
+                            DrawableCompat.setTint(drawable, style.getSettingsIconColor());
                             tintImageView.setImageDrawable(drawable);
                         } else {
                             tintImageView.setVisibility(View.INVISIBLE);
@@ -281,7 +303,8 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
                         ImageView tintImageView = (ImageView) recordView.findViewById(R.id.recordIcon);
                         if (i == 0) {
                             Drawable drawable = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_email_white_24dp));
-                            DrawableCompat.setTint(drawable, style.getSettingsCategoryTextColor());
+                            drawable.mutate();
+                            DrawableCompat.setTint(drawable, style.getSettingsIconColor());
                             tintImageView.setImageDrawable(drawable);
                         } else {
                             tintImageView.setVisibility(View.INVISIBLE);
@@ -347,10 +370,6 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
             }
         });
 
-        if (noEmails && noPhones) {
-            contactsContainer.setVisibility(View.GONE);
-            about.findViewById(R.id.divider).setVisibility(View.INVISIBLE);
-        }
 
         view.findViewById(R.id.chatSettings).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -452,7 +471,6 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
 
         if (ActorSDK.sharedActor().getTwitterAcc() == null || ActorSDK.sharedActor().getTwitterAcc().isEmpty()) {
             twitterView.setVisibility(View.GONE);
-            view.findViewById(R.id.divider5).setVisibility(View.GONE);
         }
         twitterView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -473,7 +491,6 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
 
         if (ActorSDK.sharedActor().getHomePage() == null || ActorSDK.sharedActor().getHomePage().isEmpty()) {
             homePageView.setVisibility(View.GONE);
-            view.findViewById(R.id.divider6).setVisibility(View.GONE);
         }
         homePageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -489,9 +506,14 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
         TintImageView homePageIcon = (TintImageView) view.findViewById(R.id.settings_home_page_icon);
         homePageIcon.setTint(style.getSettingsIconColor());
 
+        TextView profileHeaderText = (TextView) view.findViewById(R.id.profile_info_header_text);
+        profileHeaderText.setTextColor(style.getSettingsCategoryTextColor());
 
         TextView settingsHeaderText = (TextView) view.findViewById(R.id.settings_header_text);
         settingsHeaderText.setTextColor(style.getSettingsCategoryTextColor());
+
+        TextView aboutHeaderText = (TextView) view.findViewById(R.id.about_header_text);
+        aboutHeaderText.setTextColor(style.getSettingsCategoryTextColor());
 
         TextView settingsNotificationsTitle = (TextView) view.findViewById(R.id.settings_notifications_title);
         settingsNotificationsTitle.setTextColor(style.getSettingsTitleColor());
@@ -529,16 +551,6 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
         TintImageView chatSettingsIcon = (TintImageView) view.findViewById(R.id.settings_chat_icon);
         chatSettingsIcon.setTint(style.getSettingsIconColor());
 
-        view.findViewById(R.id.after_phone_divider).setBackgroundColor(style.getBackyardBackgroundColor());
-        view.findViewById(R.id.bottom_divider).setBackgroundColor(style.getBackyardBackgroundColor());
-
-        view.findViewById(R.id.divider1).setBackgroundColor(style.getDividerColor());
-        view.findViewById(R.id.divider2).setBackgroundColor(style.getDividerColor());
-        view.findViewById(R.id.divider3).setBackgroundColor(style.getDividerColor());
-        view.findViewById(R.id.divider4).setBackgroundColor(style.getDividerColor());
-        view.findViewById(R.id.divider5).setBackgroundColor(style.getDividerColor());
-        view.findViewById(R.id.divider6).setBackgroundColor(style.getDividerColor());
-        view.findViewById(R.id.divider7).setBackgroundColor(style.getDividerColor());
 
         if (getBeforeNickSettingsView() != null) {
             FrameLayout beforeNick = (FrameLayout) view.findViewById(R.id.before_nick_container);
@@ -567,61 +579,29 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
             addCategories(afterSettings, getAfterSettingsCategories(), inflater);
         }
 
-        avatarView = (CoverAvatarView) view.findViewById(R.id.avatar);
-//        ImageView avatarBkgrnd = (ImageView) view.findViewById(R.id.avatar_bgrnd);
-//        if (style.getAvatarBackgroundResourse() != 0) {
-//            avatarBkgrnd.setImageResource(style.getAvatarBackgroundResourse());
-//        } else {
-//            avatarBkgrnd.setBackgroundColor(style.getAvatarBackgroundColor());
-//        }
-//        avatarView.setBkgrnd(avatarBkgrnd);
+        view.findViewById(R.id.avatarContainer).setBackgroundColor(style.getToolBarColor());
 
-        bind(avatarView, users().get(myUid()).getAvatar());
+        avatarView = (AvatarView) view.findViewById(R.id.avatar);
+        avatarView.init(Screen.dp(96), 44);
+        avatarView.bind(users().get(myUid()));
 
         //Wallpaper
         if (showWallpaperCategory()) {
-            LinearLayout wallpaperContainer = (LinearLayout) view.findViewById(R.id.background_container);
-            wallpaperContainer.setBackgroundColor(style.getMainBackgroundColor());
             ((TextView) view.findViewById(R.id.settings_wallpaper_title)).setTextColor(style.getSettingsCategoryTextColor());
-            view.findViewById(R.id.wallpaperDivider).setBackgroundColor(style.getBackyardBackgroundColor());
-            View.OnClickListener ocl = new View.OnClickListener() {
-
-                @Override
-                public void onClick(final View v) {
-                    Intent i = new Intent(getActivity(), PickWallpaperActivity.class);
-                    int j = 0;
-                    Object tag = v.getTag();
-                    if (tag != null && tag instanceof Integer) {
-                        j = (int) tag;
-                    }
-                    i.putExtra("EXTRA_ID", j);
-                    startActivity(i);
-                }
-            };
-            int previewSize = 80;
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(Screen.dp(previewSize), Screen.dp(previewSize));
-            for (int i = 0; i < 3; i++) {
-                FrameLayout frame = new FrameLayout(getActivity());
-                BackgroundPreviewView bckgrnd = new BackgroundPreviewView(getActivity());
-                bckgrnd.init(Screen.dp(previewSize), Screen.dp(previewSize));
-                bckgrnd.bind(i);
-                //bckgrnd.setPadding(Screen.dp(5), Screen.dp(10), Screen.dp(5), Screen.dp(20));
-                frame.setTag(i);
-                frame.setOnClickListener(ocl);
-                frame.addView(bckgrnd);
-                wallpaperContainer.addView(frame, params);
-
-            }
-            TintImageView next = new TintImageView(getActivity());
-            next.setResource(R.drawable.ic_keyboard_arrow_right_white_36dp);
-            next.setTint(style.getSettingsIconColor());
-            next.setOnClickListener(ocl);
-            next.setTag(-1);
-            wallpaperContainer.addView(next, new LinearLayout.LayoutParams(Screen.dp(40), Screen.dp(previewSize)));
-
+            RecyclerView wallpapers = (RecyclerView) view.findViewById(R.id.wallpapers_list);
+            wallpaperAdapter = new HeaderViewRecyclerAdapter(new WallpapersAdapter());
+            FrameLayout fl = new FrameLayout(getActivity());
+            ImageView icon = new ImageView(getActivity());
+            icon.setImageResource(R.drawable.ic_image_black_24dp);
+            icon.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            icon.setColorFilter(ActorSDK.sharedActor().style.getSettingsIconColor(), PorterDuff.Mode.SRC_IN);
+            fl.addView(icon, new FrameLayout.LayoutParams(Screen.dp(72), Screen.dp(85), Gravity.CENTER));
+            fl.setLayoutParams(new ViewGroup.LayoutParams(Screen.dp(72), Screen.dp(85)));
+            wallpaperAdapter.addHeaderView(fl);
+            wallpapers.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+            wallpapers.setAdapter(wallpaperAdapter);
         } else {
-            view.findViewById(R.id.background_container).setVisibility(View.GONE);
-            view.findViewById(R.id.wallpaperDivider).setVisibility(View.GONE);
+            view.findViewById(R.id.wallpapers_list).setVisibility(View.GONE);
             view.findViewById(R.id.settings_wallpaper_title).setVisibility(View.GONE);
         }
 
@@ -647,14 +627,11 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
         return view;
     }
 
-    private void addCategories(LinearLayout container, ActorSettingsCategory[] categories, LayoutInflater inflater) {
-        Context context = getActivity();
-        for (IActorSettingsCategory category : categories) {
+    private void addCategories(LinearLayout container, ActorSettingsCategories categories, LayoutInflater inflater) {
+        for (ActorSettingsCategory category : categories) {
             LinearLayout categoryContainer = (LinearLayout) inflater.inflate(R.layout.actor_settings_category, null);
             FrameLayout settingsContainer = (FrameLayout) categoryContainer.findViewById(R.id.settings_container);
-            categoryContainer.findViewById(R.id.divider).setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackgroundColor());
             TextView categoryName = (TextView) categoryContainer.findViewById(R.id.category_name);
-            categoryName.setTextColor(ActorSDK.sharedActor().style.getSettingsMainTitleColor());
             categoryName.setTextColor(ActorSDK.sharedActor().style.getSettingsCategoryTextColor());
 
             //Icon
@@ -668,10 +645,8 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
             } else {
                 icon.setVisibility(View.INVISIBLE);
             }
-            categoryName.setText(category.getCategoryName());
-            if (category.getView(context) != null) {
-                settingsContainer.addView(category.getView(getActivity()), FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-            } else if (category.getFields() != null) {
+            categoryName.setText(category.getText());
+            if (category.getFields() != null) {
                 addFields(settingsContainer, category.getFields(), inflater);
             }
 
@@ -679,8 +654,7 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
         }
     }
 
-    private void addFields(FrameLayout container, ActorSettingsField[] fields, LayoutInflater inflater) {
-        Context context = getActivity();
+    private void addFields(FrameLayout container, ArrayList<ActorSettingsField> fields, LayoutInflater inflater) {
         LinearLayout ll = new LinearLayout(getActivity());
         ll.setOrientation(LinearLayout.VERTICAL);
         container.addView(ll, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
@@ -717,29 +691,29 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
                     fieldLayout.addView(rightView, field.getRightViewWidth(), field.getRightViewHeight());
                 }
                 //Click
-                if (field.getOnclickListener() != null) {
-                    fieldLayout.setOnClickListener(field.getOnclickListener());
+                if (getMenuFieldOnClickListener() != null) {
+                    fieldLayout.setId(field.getId());
+                    fieldLayout.setOnClickListener(getMenuFieldOnClickListener());
                 }
                 //Field
                 ll.addView(fieldLayout, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             }
-            //Divider
-            if (field.addBottomDivider()) {
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 1);
-                params.leftMargin = Screen.dp(72);
-                params.rightMargin = Screen.dp(16);
-                View divider = inflater.inflate(R.layout.actor_settings_divider, null);
-                divider.setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
-                ll.addView(divider, params);
-            }
+
         }
     }
 
     private void updateActionBar(int offset) {
-
-        avatarView.setOffset(offset);
-
+        if (!animateToolbar) {
+            return;
+        }
+        Activity activity = getActivity();
+        if (!(activity instanceof BaseActivity)) {
+            return;
+        }
         ActionBar bar = ((BaseActivity) getActivity()).getSupportActionBar();
+        if (bar == null) {
+            return;
+        }
         int fullColor = baseColor;
         ActorStyle style = ActorSDK.sharedActor().style;
         if (style.getToolBarColor() != 0) {
@@ -777,6 +751,9 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
     @Override
     public void onResume() {
         super.onResume();
+        if (wallpaperAdapter != null) {
+            ((WallpapersAdapter) wallpaperAdapter.getWrappedAdapter()).setSelected(getActivity().getSharedPreferences("wallpaper", Context.MODE_PRIVATE).getInt("wallpaper", 0));
+        }
     }
 
     @Override
@@ -799,18 +776,50 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        avatarView.unbind();
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("animateToolbar", animateToolbar);
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (avatarView != null) {
-            avatarView.unbind();
-            avatarView = null;
-        }
+    public View getBeforeNickSettingsView() {
+        return null;
     }
 
+    @Override
+    public View getAfterPhoneSettingsView() {
+        return null;
+    }
+
+    @Override
+    public View getSettingsTopView() {
+        return null;
+    }
+
+    @Override
+    public View getSettingsBottomView() {
+        return null;
+    }
+
+    @Override
+    public boolean showWallpaperCategory() {
+        return true;
+    }
+
+    @Override
+    public boolean showAskQuestion() {
+        return true;
+    }
+
+    public abstract View.OnClickListener getMenuFieldOnClickListener();
+
+    @Override
+    public ActorSettingsCategories getBeforeSettingsCategories() {
+        return null;
+    }
+
+    @Override
+    public ActorSettingsCategories getAfterSettingsCategories() {
+        return null;
+    }
 }

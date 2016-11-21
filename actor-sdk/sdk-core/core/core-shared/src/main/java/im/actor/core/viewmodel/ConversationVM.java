@@ -16,6 +16,7 @@ public class ConversationVM extends BaseValueModel<ConversationState> {
     };
 
     private BooleanValueModel isLoaded;
+    private BooleanValueModel isEmpty;
     private ValueModel<Long> ownReadDate;
     private ValueModel<Long> ownSendDate;
 
@@ -26,6 +27,7 @@ public class ConversationVM extends BaseValueModel<ConversationState> {
         super(rawObj);
 
         isLoaded = new BooleanValueModel("chat.is_loaded." + rawObj.getPeer(), rawObj.isLoaded());
+        isEmpty = new BooleanValueModel("chat.is_empty." + rawObj.getPeer(), rawObj.isEmpty());
         ownReadDate = new ValueModel<>("chat.own_read_date" + rawObj.getPeer(), rawObj.getInReadDate());
         ownSendDate = new ValueModel<>("chat.own_send_date" + rawObj.getPeer(), rawObj.getOutSendDate());
         readDate = new ValueModel<>("chat.read_date" + rawObj.getPeer(), rawObj.getOutReadDate());
@@ -34,6 +36,10 @@ public class ConversationVM extends BaseValueModel<ConversationState> {
 
     public BooleanValueModel getIsLoaded() {
         return isLoaded;
+    }
+
+    public BooleanValueModel getIsEmpty() {
+        return isEmpty;
     }
 
     public ValueModel<Long> getOwnReadDate() {
@@ -52,13 +58,14 @@ public class ConversationVM extends BaseValueModel<ConversationState> {
         return receiveDate;
     }
 
-    public long getLastMessageDate() {
+    public long getLastReadMessageDate() {
         return Math.max(ownReadDate.get(), ownSendDate.get());
     }
 
     @Override
     protected void updateValues(ConversationState rawObj) {
         isLoaded.change(rawObj.isLoaded());
+        isEmpty.change(rawObj.isEmpty());
         ownReadDate.change(rawObj.getInReadDate());
         ownSendDate.change(rawObj.getOutSendDate());
         readDate.change(rawObj.getOutReadDate());

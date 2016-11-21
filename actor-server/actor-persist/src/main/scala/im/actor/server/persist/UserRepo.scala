@@ -40,11 +40,13 @@ object UserRepo {
   val byIdC = Compiled(byId _)
   val nameByIdC = Compiled(nameById _)
 
-  def byNickname(nickname: Rep[String]) = users filter (_.nickname.toLowerCase === nickname.toLowerCase)
-  def idsByNickname(nickname: Rep[String]) = byNickname(nickname).map(_.id)
+  private def byNickname(nickname: Rep[String]) =
+    users filter (_.nickname.toLowerCase === nickname.toLowerCase)
+  private def byNicknamePrefix(nickPrefix: Rep[String]) =
+    users filter (_.nickname.toLowerCase.like(nickPrefix.toLowerCase))
 
-  val byNicknameC = Compiled(byNickname _)
-  val idsByNicknameC = Compiled(idsByNickname _)
+  private val byNicknameC = Compiled(byNickname _)
+  private val byNicknamePrefixC = Compiled(byNicknamePrefix _)
 
   def byPhone(phone: Rep[Long]) = (for {
     phones ← UserPhoneRepo.phones.filter(_.number === phone)
@@ -98,6 +100,7 @@ object UserRepo {
   def find(id: Int) =
     byIdC(id).result.headOption
 
+  @deprecated("Duplicates ", "2016-07-07")
   def findName(id: Int) =
     nameById(id).result.headOption
 
@@ -105,14 +108,19 @@ object UserRepo {
   def findSalts(ids: Set[Int]) =
     users.filter(_.id inSet ids).map(u ⇒ (u.id, u.accessSalt)).result
 
-  def findByNickname(query: String) = {
+  @deprecated("user GlobalNamesStorageKeyValueStorage instead", "2016-07-17")
+  def findByNickname(query: String): DBIO[Option[User]] = {
     val nickname =
       if (query.startsWith("@")) query.drop(1) else query
     byNicknameC(nickname).result.headOption
   }
 
-  def findIdsByNickname(nickname: String) =
-    idsByNicknameC(nickname).result.headOption
+  @deprecated("user GlobalNamesStorageKeyValueStorage instead", "2016-07-17")
+  def findByNicknamePrefix(query: String): DBIO[Seq[User]] = {
+    val nickname: String =
+      if (query.startsWith("@")) query.drop(1) else query
+    byNicknamePrefixC(nickname).result
+  }
 
   def findIdsByEmail(email: String) =
     idsByEmailC(email).result.headOption
@@ -120,19 +128,20 @@ object UserRepo {
   def findIds(query: String)(implicit ec: ExecutionContext) =
     for {
       e ← idsByEmailC(query).result
-      n ← idsByNicknameC(query).result
       p ← PhoneNumberUtils.normalizeStr(query)
         .headOption
         .map(idByPhoneC(_).result)
         .getOrElse(DBIO.successful(Nil))
-    } yield e ++ n ++ p
+    } yield e ++ p
 
+  @deprecated("user GlobalNamesStorageKeyValueStorage instead", "2016-07-17")
   def setNickname(userId: Int, nickname: Option[String]) =
     byId(userId).map(_.nickname).update(nickname)
 
   def setAbout(userId: Int, about: Option[String]) =
     byId(userId).map(_.about).update(about)
 
+  @deprecated("user GlobalNamesStorageKeyValueStorage instead", "2016-07-17")
   def nicknameExists(nickname: String) =
     users.filter(_.nickname.toLowerCase === nickname.toLowerCase).exists.result
 

@@ -7,14 +7,14 @@ import MBProgressHUD
 
 extension ARPromise {
     
-    func startUserAction(ignore: [String] = []) -> ARPromise {
+    func startUserAction(_ ignore: [String] = []) -> ARPromise {
         
-        let window = UIApplication.sharedApplication().windows[1]
+        let window = UIApplication.shared.windows[1]
         let hud = MBProgressHUD(window: window)
-        hud.mode = MBProgressHUDMode.Indeterminate
+        hud.mode = MBProgressHUDMode.indeterminate
         hud.removeFromSuperViewOnHide = true
         window.addSubview(hud)
-        window.bringSubviewToFront(hud)
+        window.bringSubview(toFront: hud)
         hud.show(true)
         
         then { (t: AnyObject!) -> () in
@@ -34,12 +34,17 @@ extension ARPromise {
         return self
     }
     
-    func then<T>(closure: (T!) -> ()) -> ARPromise {
+    func then<T>(_ closure: @escaping (T!) -> ()) -> ARPromise {
         then(PromiseConsumer(closure: closure))
         return self
     }
     
-    func failure(withClosure closure: (JavaLangException!) -> ()) -> ARPromise {
+    func after(_ closure: @escaping () -> ()) -> ARPromise {
+        then(PromiseConsumerEmpty(closure: closure))
+        return self
+    }
+    
+    func failure(withClosure closure: @escaping (JavaLangException!) -> ()) -> ARPromise {
         failure(PromiseConsumer(closure: closure))
         return self
     }
@@ -49,11 +54,24 @@ class PromiseConsumer<T>: NSObject, ARConsumer {
     
     let closure: (T!) -> ()
     
-    init(closure: (T!) -> ()) {
+    init(closure: @escaping (T!) -> ()) {
         self.closure = closure
     }
 
-    func applyWithId(t: AnyObject!) {
+    func apply(withId t: Any!) {
         closure(t as? T)
+    }
+}
+
+class PromiseConsumerEmpty: NSObject, ARConsumer {
+    
+    let closure: () -> ()
+    
+    init(closure: @escaping () -> ()) {
+        self.closure = closure
+    }
+    
+    func apply(withId t: Any!) {
+        closure()
     }
 }

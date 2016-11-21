@@ -197,7 +197,7 @@ final class SessionResendSpec extends BaseSessionSpec(
       subscribeToSeq(authId, sessionId, user.id)
 
       val update = UpdateContactRegistered(1, false, 1L, 2L)
-      seqUpdExt.deliverSingleUpdate(user.id, update)
+      seqUpdExt.deliverUserUpdate(user.id, update)
       expectSeqUpdate(authId, sessionId, None)
 
       // Still no ack
@@ -274,11 +274,11 @@ final class SessionResendSpec extends BaseSessionSpec(
       val upd4 = UpdateContactsAdded(Vector(4))
 
       whenReady(for {
-        _ ← seqUpdExt.deliverSingleUpdate(user.id, upd1, reduceKey = Some("reduceKey 1 (uniq)"))
-        _ ← seqUpdExt.deliverSingleUpdate(user.id, upd2first, reduceKey = Some("reduceKey 2 (same)"))
-        _ ← seqUpdExt.deliverSingleUpdate(user.id, upd2second, reduceKey = Some("reduceKey 2 (same)"))
-        _ ← seqUpdExt.deliverSingleUpdate(user.id, upd3, reduceKey = Some("reduceKey 3 (uniq)"))
-        _ ← seqUpdExt.deliverSingleUpdate(user.id, upd4, reduceKey = Some("reduceKey 4 (uniq)"))
+        _ ← seqUpdExt.deliverUserUpdate(user.id, upd1, reduceKey = Some("reduceKey 1 (uniq)"))
+        _ ← seqUpdExt.deliverUserUpdate(user.id, upd2first, reduceKey = Some("reduceKey 2 (same)"))
+        _ ← seqUpdExt.deliverUserUpdate(user.id, upd2second, reduceKey = Some("reduceKey 2 (same)"))
+        _ ← seqUpdExt.deliverUserUpdate(user.id, upd3, reduceKey = Some("reduceKey 3 (uniq)"))
+        _ ← seqUpdExt.deliverUserUpdate(user.id, upd4, reduceKey = Some("reduceKey 4 (uniq)"))
       } yield ())(identity)
 
       expectContactsAdded(authId, sessionId, 1)

@@ -3,6 +3,7 @@ package im.actor.sdk.controllers.calls;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.WindowManager;
 
@@ -26,17 +27,17 @@ public class CallActivity extends BaseFragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Thread.setDefaultUncaughtExceptionHandler(
-                new UnhandledExceptionHandler(this));
-
-        AndroidWebRTCRuntimeProvider.postToHandler(new Runnable() {
-            @Override
-            public void run() {
-                Thread.setDefaultUncaughtExceptionHandler(
-                        new UnhandledExceptionHandler(CallActivity.this));
-
-            }
-        });
+//        Thread.setDefaultUncaughtExceptionHandler(
+//                new UnhandledExceptionHandler(this));
+////
+//        AndroidWebRTCRuntimeProvider.postToHandler(new Runnable() {
+//            @Override
+//            public void run() {
+//                Thread.setDefaultUncaughtExceptionHandler(
+//                        new UnhandledExceptionHandler(CallActivity.this));
+//
+//            }
+//        });
 
         getSupportActionBar().setTitle("Call");
         getSupportActionBar().hide();
@@ -44,7 +45,11 @@ public class CallActivity extends BaseFragmentActivity {
 
         if (savedInstanceState == null) {
             callId = getIntent().getLongExtra("callId", -1);
-            showFragment(new CallFragment(callId), false, false);
+            Fragment callFragment = ActorSDK.sharedActor().getDelegate().fragmentForCall(callId);
+            if (callFragment == null) {
+                callFragment = CallFragment.create(callId);
+            }
+            showFragment(callFragment, false);
         }
     }
 

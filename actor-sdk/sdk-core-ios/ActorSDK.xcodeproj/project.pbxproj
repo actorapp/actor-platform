@@ -224,6 +224,7 @@
 		066A53371BC537CA000E606E /* ConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53361BC537CA000E606E /* ConversationViewController.swift */; };
 		066A53391BC5456B000E606E /* ActorStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53381BC5456B000E606E /* ActorStyle.swift */; };
 		066CBCDC1C8D419F004507E2 /* AAAuthEmailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066CBCDB1C8D419F004507E2 /* AAAuthEmailViewController.swift */; };
+		067B67541D45341D00B9A238 /* AAGroupViewMembersController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 067B67531D45341D00B9A238 /* AAGroupViewMembersController.swift */; };
 		068AFC391C94A0050055F503 /* AADialogListProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 068AFC381C94A0050055F503 /* AADialogListProcessor.swift */; };
 		069CF4CC1BCB909A00C66E12 /* CLBackspaceDetectingTextField.h in Headers */ = {isa = PBXBuildFile; fileRef = 069CF4C41BCB909A00C66E12 /* CLBackspaceDetectingTextField.h */; };
 		069CF4CD1BCB909A00C66E12 /* CLBackspaceDetectingTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 069CF4C51BCB909A00C66E12 /* CLBackspaceDetectingTextField.m */; };
@@ -233,11 +234,15 @@
 		069CF4D11BCB909A00C66E12 /* CLTokenInputView.m in Sources */ = {isa = PBXBuildFile; fileRef = 069CF4C91BCB909A00C66E12 /* CLTokenInputView.m */; };
 		069CF4D21BCB909A00C66E12 /* CLTokenView.h in Headers */ = {isa = PBXBuildFile; fileRef = 069CF4CA1BCB909A00C66E12 /* CLTokenView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		069CF4D31BCB909A00C66E12 /* CLTokenView.m in Sources */ = {isa = PBXBuildFile; fileRef = 069CF4CB1BCB909A00C66E12 /* CLTokenView.m */; };
+		06ABFE331D3FAF800031A0D6 /* GCDAsyncSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 06ABFE2F1D3FAF800031A0D6 /* GCDAsyncSocket.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		06ABFE341D3FAF800031A0D6 /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ABFE301D3FAF800031A0D6 /* GCDAsyncSocket.m */; };
+		06ABFE381D3FCCE30031A0D6 /* AAGroupEditInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABFE371D3FCCE30031A0D6 /* AAGroupEditInfoViewController.swift */; };
+		06ABFE3A1D410D2D0031A0D6 /* AAGroupTypeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABFE391D410D2D0031A0D6 /* AAGroupTypeController.swift */; };
+		06ABFE3D1D41283A0031A0D6 /* AAGroupAdministrationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABFE3C1D41283A0031A0D6 /* AAGroupAdministrationViewController.swift */; };
 		06B489ED1C9F6EBD0054245B /* AAStickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B489EC1C9F6EBC0054245B /* AAStickerView.swift */; };
 		06C1D0771C8BC9FC00B73632 /* AAAuthNameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06C1D0761C8BC9FC00B73632 /* AAAuthNameViewController.swift */; };
 		06C1D07B1C8BFE5C00B73632 /* AAAuthPhoneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06C1D07A1C8BFE5C00B73632 /* AAAuthPhoneViewController.swift */; };
 		06C1D07E1C8D0DEA00B73632 /* Telephony.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06C1D07D1C8D0DE900B73632 /* Telephony.swift */; };
-		06CE898A1BD8401C005A5530 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CE89891BD8401C005A5530 /* Reachability.swift */; };
 		06CE898C1BD841C9005A5530 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06CE898B1BD841C9005A5530 /* SystemConfiguration.framework */; };
 		06CE89901BD84DF5005A5530 /* ActorSDKAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CE898F1BD84DF5005A5530 /* ActorSDKAnalytics.swift */; };
 		06D5C0571C8D6E20002D5045 /* AAAuthLogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D5C0561C8D6E20002D5045 /* AAAuthLogInViewController.swift */; };
@@ -596,6 +601,7 @@
 		066A53361BC537CA000E606E /* ConversationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationViewController.swift; sourceTree = "<group>"; };
 		066A53381BC5456B000E606E /* ActorStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActorStyle.swift; sourceTree = "<group>"; };
 		066CBCDB1C8D419F004507E2 /* AAAuthEmailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthEmailViewController.swift; sourceTree = "<group>"; };
+		067B67531D45341D00B9A238 /* AAGroupViewMembersController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAGroupViewMembersController.swift; sourceTree = "<group>"; };
 		068AFC381C94A0050055F503 /* AADialogListProcessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AADialogListProcessor.swift; sourceTree = "<group>"; };
 		069CF4C41BCB909A00C66E12 /* CLBackspaceDetectingTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLBackspaceDetectingTextField.h; sourceTree = "<group>"; };
 		069CF4C51BCB909A00C66E12 /* CLBackspaceDetectingTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLBackspaceDetectingTextField.m; sourceTree = "<group>"; };
@@ -605,11 +611,15 @@
 		069CF4C91BCB909A00C66E12 /* CLTokenInputView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLTokenInputView.m; sourceTree = "<group>"; };
 		069CF4CA1BCB909A00C66E12 /* CLTokenView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLTokenView.h; sourceTree = "<group>"; };
 		069CF4CB1BCB909A00C66E12 /* CLTokenView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLTokenView.m; sourceTree = "<group>"; };
+		06ABFE2F1D3FAF800031A0D6 /* GCDAsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncSocket.h; sourceTree = "<group>"; };
+		06ABFE301D3FAF800031A0D6 /* GCDAsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncSocket.m; sourceTree = "<group>"; };
+		06ABFE371D3FCCE30031A0D6 /* AAGroupEditInfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAGroupEditInfoViewController.swift; sourceTree = "<group>"; };
+		06ABFE391D410D2D0031A0D6 /* AAGroupTypeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAGroupTypeController.swift; sourceTree = "<group>"; };
+		06ABFE3C1D41283A0031A0D6 /* AAGroupAdministrationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAGroupAdministrationViewController.swift; sourceTree = "<group>"; };
 		06B489EC1C9F6EBC0054245B /* AAStickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAStickerView.swift; sourceTree = "<group>"; };
 		06C1D0761C8BC9FC00B73632 /* AAAuthNameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthNameViewController.swift; sourceTree = "<group>"; };
 		06C1D07A1C8BFE5C00B73632 /* AAAuthPhoneViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthPhoneViewController.swift; sourceTree = "<group>"; };
 		06C1D07D1C8D0DE900B73632 /* Telephony.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Telephony.swift; sourceTree = "<group>"; };
-		06CE89891BD8401C005A5530 /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		06CE898B1BD841C9005A5530 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		06CE898F1BD84DF5005A5530 /* ActorSDKAnalytics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActorSDKAnalytics.swift; sourceTree = "<group>"; };
 		06D5C0561C8D6E20002D5045 /* AAAuthLogInViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthLogInViewController.swift; sourceTree = "<group>"; };
@@ -974,7 +984,6 @@
 				066A51581BC4C14A000E606E /* AASwiftlyLRU.swift */,
 				066A51641BC4C366000E606E /* AATools.swift */,
 				065975381BC7CA7B00B8C7DF /* Bundle.swift */,
-				06CE89891BD8401C005A5530 /* Reachability.swift */,
 				06C1D07D1C8D0DE900B73632 /* Telephony.swift */,
 			);
 			path = Utils;
@@ -1092,7 +1101,6 @@
 		066A525F1BC50E53000E606E /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				9AAE96461CF81F140092E366 /* Ringtones */,
 				06C1D0751C8BC55100B73632 /* Welcome */,
 				066A52601BC50E6B000E606E /* Auth */,
 				066A52F91BC52FA0000E606E /* Compose */,
@@ -1102,6 +1110,7 @@
 				06E7B2451C0F8D410090660C /* Location */,
 				066A53051BC5317B000E606E /* Recent */,
 				066A527B1BC51EC6000E606E /* Root */,
+				9AAE96461CF81F140092E366 /* Ringtones */,
 				066A52EB1BC52AF8000E606E /* Settings */,
 				066A53091BC53197000E606E /* User */,
 				06E323131C6A7AA300D66F53 /* Calls */,
@@ -1228,8 +1237,12 @@
 			isa = PBXGroup;
 			children = (
 				066A52E81BC52A25000E606E /* Cells */,
-				066A52E31BC52A20000E606E /* AAAddParticipantViewController.swift */,
 				066A52E21BC52A20000E606E /* AAGroupViewController.swift */,
+				06ABFE371D3FCCE30031A0D6 /* AAGroupEditInfoViewController.swift */,
+				067B67531D45341D00B9A238 /* AAGroupViewMembersController.swift */,
+				06ABFE3C1D41283A0031A0D6 /* AAGroupAdministrationViewController.swift */,
+				06ABFE391D410D2D0031A0D6 /* AAGroupTypeController.swift */,
+				066A52E31BC52A20000E606E /* AAAddParticipantViewController.swift */,
 				066A52E41BC52A20000E606E /* AAInviteLinkViewController.swift */,
 			);
 			path = Group;
@@ -1416,6 +1429,15 @@
 			path = CLTokenInputView;
 			sourceTree = "<group>";
 		};
+		06ABFE261D3FAF1A0031A0D6 /* CocoaAsyncSocket */ = {
+			isa = PBXGroup;
+			children = (
+				06ABFE2F1D3FAF800031A0D6 /* GCDAsyncSocket.h */,
+				06ABFE301D3FAF800031A0D6 /* GCDAsyncSocket.m */,
+			);
+			name = CocoaAsyncSocket;
+			sourceTree = "<group>";
+		};
 		06C1D0751C8BC55100B73632 /* Welcome */ = {
 			isa = PBXGroup;
 			children = (
@@ -1436,6 +1458,7 @@
 		06E322CB1C69392F00D66F53 /* Libs */ = {
 			isa = PBXGroup;
 			children = (
+				06ABFE261D3FAF1A0031A0D6 /* CocoaAsyncSocket */,
 				06E164921C96FF15005AFB94 /* CommonCrypto */,
 				061850A31C95CBF000C522D5 /* YYKit */,
 				15D35F0A1C20182900E3717A /* AudioRecorder */,
@@ -1813,6 +1836,7 @@
 				152AA8AA1C2989270030DEEE /* SLKTextView.h in Headers */,
 				152AA8B01C2989270030DEEE /* SLKTypingIndicatorProtocol.h in Headers */,
 				152AA8AC1C2989270030DEEE /* SLKTextView+SLKAdditions.h in Headers */,
+				06ABFE331D3FAF800031A0D6 /* GCDAsyncSocket.h in Headers */,
 				152AA8AE1C2989270030DEEE /* SLKTextViewController.h in Headers */,
 				152AA8B31C2989270030DEEE /* SLKUIConstants.h in Headers */,
 				152AA8B61C2989270030DEEE /* UIScrollView+SLKAdditions.h in Headers */,
@@ -1909,6 +1933,7 @@
 					066A50D11BC4AE63000E606E = {
 						CreatedOnToolsVersion = 7.0;
 						DevelopmentTeam = HVJR44Y5B6;
+						LastSwiftMigration = 0800;
 					};
 				};
 			};
@@ -1993,7 +2018,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		A2ED258362D73946D3AE7FB4 /* [CP] Copy Pods Resources */ = {
@@ -2039,6 +2064,7 @@
 				061850DB1C95CBF000C522D5 /* YYTextContainerView.m in Sources */,
 				15D35F301C20187200E3717A /* info.c in Sources */,
 				066A532E1BC53406000E606E /* AABubbleBaseFileCell.swift in Sources */,
+				06ABFE3D1D41283A0031A0D6 /* AAGroupAdministrationViewController.swift in Sources */,
 				066A514A1BC4BCE0000E606E /* Dispatch.swift in Sources */,
 				066A52401BC4EECD000E606E /* AABigPlaceholderView.swift in Sources */,
 				BED5A1F51C48396A0045FDB0 /* NYTPhotosDataSource.m in Sources */,
@@ -2073,6 +2099,7 @@
 				061850E31C95CBF000C522D5 /* YYTextKeyboardManager.m in Sources */,
 				066A52571BC4EF61000E606E /* AACollectionViewController.swift in Sources */,
 				066A532F1BC53406000E606E /* AABubbleMediaCell.swift in Sources */,
+				06ABFE3A1D410D2D0031A0D6 /* AAGroupTypeController.swift in Sources */,
 				15D35F631C20187E00E3717A /* AAModernConversationAudioPlayer.m in Sources */,
 				066A527F1BC51ED0000E606E /* AARootSplitViewController.swift in Sources */,
 				066A52481BC4EED5000E606E /* AAProgressView.swift in Sources */,
@@ -2114,6 +2141,7 @@
 				066A51241BC4B56D000E606E /* Colors.swift in Sources */,
 				066A53171BC533DD000E606E /* AABubbles.swift in Sources */,
 				153F6B8B1C2D7BA400C0B960 /* AATapLabel.swift in Sources */,
+				06ABFE341D3FAF800031A0D6 /* GCDAsyncSocket.m in Sources */,
 				061850E71C95CBF000C522D5 /* YYTextLine.m in Sources */,
 				066A52081BC4E962000E606E /* Makefile in Sources */,
 				066A53231BC533F5000E606E /* Caches.swift in Sources */,
@@ -2232,7 +2260,6 @@
 				061850ED1C95CBF000C522D5 /* YYTextArchiver.m in Sources */,
 				066A50E21BC4AF9F000E606E /* ActorSDK.swift in Sources */,
 				15D35F761C201B6B00E3717A /* AACustomPresentationAnimationController.swift in Sources */,
-				06CE898A1BD8401C005A5530 /* Reachability.swift in Sources */,
 				06E7B24C1C0FAB500090660C /* AAMapFastView.swift in Sources */,
 				BED5A1F11C48396A0045FDB0 /* NYTPhotoCaptionView.m in Sources */,
 				BED5A20F1C4839880045FDB0 /* NSBundle+NYTPhotoViewer.m in Sources */,
@@ -2260,7 +2287,9 @@
 				066A52231BC4EEAC000E606E /* AAManagedSection.swift in Sources */,
 				066A52D11BC52204000E606E /* AADialogCell.swift in Sources */,
 				066A51901BC4C383000E606E /* CocoaNetworkRuntime.swift in Sources */,
+				06ABFE381D3FCCE30031A0D6 /* AAGroupEditInfoViewController.swift in Sources */,
 				06E7B24A1C0F92140090660C /* AABubbleLocationCell.swift in Sources */,
+				067B67541D45341D00B9A238 /* AAGroupViewMembersController.swift in Sources */,
 				066A52581BC4EF61000E606E /* Alerts.swift in Sources */,
 				066A51691BC4C366000E606E /* AATools.swift in Sources */,
 				066A53201BC533F5000E606E /* AABubbleBackgroundProcessor.swift in Sources */,
@@ -2430,6 +2459,7 @@
 				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/ActorSDK/Sources/Libs/CommonCrypto $(PROJECT_DIR)/IDZSwiftCommonCrypto/Frameworks/$(PLATFORM_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 				VALID_ARCHS = "arm64 armv7";
 				WARNING_CFLAGS = "-Wno-nullability-completeness";
 			};
@@ -2485,6 +2515,7 @@
 				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/ActorSDK/Sources/Libs/CommonCrypto $(PROJECT_DIR)/IDZSwiftCommonCrypto/Frameworks/$(PLATFORM_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
 				VALID_ARCHS = "arm64 armv7";
 				WARNING_CFLAGS = "-Wno-nullability-completeness";
 			};

@@ -27,7 +27,7 @@ import im.actor.core.network.parser.Update;
 import im.actor.runtime.*;
 import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.ActorCreator;
-import im.actor.runtime.actors.Cancellable;
+import im.actor.runtime.actors.ActorCancellable;
 import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.power.WakeLock;
 
@@ -43,6 +43,7 @@ public class SequenceActor extends ModuleActor {
     private static final String TAG = "Updates";
     private static final int INVALIDATE_GAP = 2000;// 2 Secs
     private static final int INVALIDATE_MAX_SEC_HOLE = 10;
+    private static final boolean PROCESS_EXTERNAL_PUSH_SEQ = false;
 
     private static final String KEY_SEQ = "updates_seq";
     private static final String KEY_STATE = "updates_state";
@@ -57,7 +58,7 @@ public class SequenceActor extends ModuleActor {
     private int finishedSeq;
     private byte[] finishedState;
 
-    private Cancellable forceInvalidateCancellable;
+    private ActorCancellable forceInvalidateCancellable;
 
     private UpdateValidator validator;
 
@@ -100,13 +101,21 @@ public class SequenceActor extends ModuleActor {
         handler.onWeakUpdate(update, date);
     }
 
-    private void onPushSeqReceived(int seq) {
-        if (seq <= this.seq) {
-            Log.d(TAG, "Ignored PushSeq {seq:" + seq + "}");
-        } else {
-            Log.w(TAG, "External Out of sequence: starting timer for invalidation");
-            startInvalidationTimer();
+    private void onPushSeqReceived(int seq, long authId) {
+        if (context().getApiModule() == null) {
+            return;
         }
+        context().getApiModule().checkIsCurrentAuthId(authId).then(same -> {
+            if (same) {
+                if (seq <= this.seq) {
+                    Log.d(TAG, "Ignored PushSeq {seq:" + seq + "}");
+                } else {
+                    Log.w(TAG, "External Out of sequence: starting timer for invalidation");
+                    startInvalidationTimer();
+                }
+            }
+        });
+
     }
 
     @Deprecated
@@ -302,11 +311,11 @@ public class SequenceActor extends ModuleActor {
     //
 
     private void onUpdateStarted() {
-        context().getAppStateModule().getGlobalStateVM().getIsSyncing().change(true);
+        context().getConductor().getGlobalStateVM().getIsSyncing().change(true);
     }
 
     private void onUpdateEnded() {
-        context().getAppStateModule().getGlobalStateVM().getIsSyncing().change(false);
+        context().getConductor().getGlobalStateVM().getIsSyncing().change(false);
     }
 
     //
@@ -413,7 +422,7 @@ public class SequenceActor extends ModuleActor {
                 stash();
                 return;
             }
-            onPushSeqReceived(((PushSeq) message).seq);
+            onPushSeqReceived(((PushSeq) message).seq, ((PushSeq) message).authId);
         } else if (message instanceof WeakUpdate) {
             WeakUpdate weakUpdate = (WeakUpdate) message;
             onWeakUpdateReceived(weakUpdate.getUpdateHeader(), weakUpdate.getUpdate(),
@@ -432,9 +441,11 @@ public class SequenceActor extends ModuleActor {
     }
 
     public static class PushSeq {
+        private long authId;
         private int seq;
 
-        public PushSeq(int seq) {
+        public PushSeq(int seq, long authId) {
+            this.authId = authId;
             this.seq = seq;
         }
     }

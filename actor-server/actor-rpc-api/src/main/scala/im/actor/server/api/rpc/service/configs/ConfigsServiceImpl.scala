@@ -19,7 +19,7 @@ final class ConfigsServiceImpl(implicit system: ActorSystem) extends ConfigsServ
   override def doHandleEditParameter(rawKey: String, value: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
     authorized(clientData) { implicit client ⇒
       for {
-        SeqState(seq, state) ← configExt.editParameter(client.userId, rawKey, value)
+        SeqState(seq, state) ← configExt.editParameter(client.userId, client.authId, rawKey, value)
         _ ← configExt.hooks.runAll(client.userId, rawKey, value)
       } yield Ok(ResponseSeq(seq, state.toByteArray))
     }

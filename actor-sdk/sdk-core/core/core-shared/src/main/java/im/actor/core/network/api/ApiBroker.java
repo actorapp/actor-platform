@@ -14,10 +14,8 @@ import im.actor.core.network.parser.ApiParserConfig;
 import im.actor.core.network.parser.ParsingExtension;
 import im.actor.runtime.*;
 import im.actor.runtime.Runtime;
-import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorRef;
-import im.actor.runtime.actors.ActorSystem;
-import im.actor.runtime.actors.Props;
+import im.actor.runtime.actors.AskcableActor;
 import im.actor.core.util.RandomUtils;
 import im.actor.core.network.mtp.MTProto;
 import im.actor.core.network.mtp.MTProtoCallback;
@@ -32,30 +30,25 @@ import im.actor.core.network.mtp.entity.rpc.RpcRequest;
 import im.actor.core.network.parser.Request;
 import im.actor.core.network.parser.Response;
 import im.actor.core.network.parser.RpcScope;
+import im.actor.runtime.promise.Promise;
 import im.actor.runtime.threading.AtomicIntegerCompat;
 import im.actor.runtime.threading.CommonTimer;
 
-public class ApiBroker extends Actor {
+public class ApiBroker extends AskcableActor {
 
-    public static ActorRef get(final Endpoints endpoints, final AuthKeyStorage keyStorage, final ActorApiCallback callback,
+    public static ApiBrokerInt get(final Endpoints endpoints, final AuthKeyStorage keyStorage, final ActorApiCallback callback,
                                final boolean isEnableLog, int id, final int minDelay,
                                final int maxDelay,
                                final int maxFailureCount) {
-        return ActorSystem.system().actorOf(Props.create(() ->
-                new ApiBroker(endpoints,
-                        keyStorage,
-                        callback,
-                        isEnableLog,
-                        minDelay,
-                        maxDelay,
-                        maxFailureCount)), "api/broker#" + id);
+
+        return new ApiBrokerInt(endpoints, keyStorage, callback, isEnableLog, id, minDelay, maxDelay, maxFailureCount);
     }
 
     private static final String TAG = "ApiBroker";
 
     private static final AtomicIntegerCompat NEXT_PROTO_ID = im.actor.runtime.Runtime.createAtomicInt(1);
 
-    private final Endpoints endpoints;
+    private Endpoints endpoints;
     private final AuthKeyStorage keyStorage;
     private final ActorApiCallback callback;
     private final boolean isEnableLog;
@@ -103,6 +96,14 @@ public class ApiBroker extends Actor {
         }
     }
 
+    public void changeEndpoints(Endpoints endpoints) {
+        if (endpoints.equals(this.endpoints)) {
+            return;
+        }
+        this.endpoints = endpoints;
+        recreateAuthId();
+    }
+
     @Override
     public void postStop() {
         if (proto != null) {
@@ -140,12 +141,16 @@ public class ApiBroker extends Actor {
 
         Log.w(TAG, "Auth id invalidated");
 
+        callback.onAuthIdInvalidated();
+
+        recreateAuthId();
+    }
+
+    private void recreateAuthId() {
         keyStorage.saveAuthKey(0);
         keyStorage.saveMasterKey(null);
         currentAuthId = 0;
         proto = null;
-
-        callback.onAuthIdInvalidated();
 
         this.keyManager.send(new AuthKeyActor.StartKeyCreation(this.endpoints), self());
     }
@@ -256,6 +261,11 @@ public class ApiBroker extends Actor {
                 response = (Response) parserConfig.parseRpc(ok.responseType, ok.payload);
             } catch (IOException e) {
                 e.printStackTrace();
+                requests.remove(rid);
+                if (holder.protoId != 0) {
+                    idMap.remove(holder.protoId);
+                }
+                holder.callback.onError(new RpcInternalException());
                 return;
             }
 
@@ -364,6 +374,10 @@ public class ApiBroker extends Actor {
         callback.onConnectionsChanged(count);
     }
 
+    private Promise<Boolean> checkIsCurrentAuthId(long authId) {
+        return new Promise<>(resolver -> resolver.result(authId == currentAuthId));
+    }
+
     public static class PerformRequest {
 
         private Request message;
@@ -430,6 +444,18 @@ public class ApiBroker extends Actor {
 
     public static class ForceNetworkCheck {
 
+    }
+
+    public static class ChangeEndpoints {
+        Endpoints endpoints;
+
+        public ChangeEndpoints(Endpoints endpoints) {
+            this.endpoints = endpoints;
+        }
+
+        public Endpoints getEndpoints() {
+            return endpoints;
+        }
     }
 
     private class InitMTProto {
@@ -617,6 +643,14 @@ public class ApiBroker extends Actor {
     }
 
     @Override
+    public Promise onAsk(Object message) throws Exception {
+        if (message instanceof CheckIsCurrentAuthId) {
+            return checkIsCurrentAuthId(((CheckIsCurrentAuthId) message).getAuthId());
+        }
+        return super.onAsk(message);
+    }
+
+    @Override
     public void onReceive(Object message) {
         if (message instanceof InitMTProto) {
             InitMTProto initMTProto = (InitMTProto) message;
@@ -652,6 +686,8 @@ public class ApiBroker extends Actor {
         } else if (message instanceof AuthKeyActor.KeyCreated) {
             onKeyCreated(((AuthKeyActor.KeyCreated) message).getAuthKeyId(),
                     ((AuthKeyActor.KeyCreated) message).getAuthKey());
+        } else if (message instanceof ChangeEndpoints) {
+            changeEndpoints(((ChangeEndpoints) message).getEndpoints());
         } else {
             super.onReceive(message);
         }

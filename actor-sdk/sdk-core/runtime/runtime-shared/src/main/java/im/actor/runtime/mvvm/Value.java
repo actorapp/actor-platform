@@ -11,7 +11,7 @@ import java.util.ArrayList;
  */
 public abstract class Value<T> {
 
-    private ArrayList<ValueChangedListener<T>> listeners = new ArrayList<ValueChangedListener<T>>();
+    private ArrayList<ValueChangedListener<T>> listeners = new ArrayList<>();
 
     private String name;
 
@@ -99,8 +99,7 @@ public abstract class Value<T> {
      * @param value new value
      */
     protected void notifyInMainThread(final T value) {
-        for (ValueChangedListener<T> listener :
-                listeners.toArray(new ValueChangedListener[listeners.size()])) {
+        for (ValueChangedListener<T> listener : listeners) {
             listener.onChanged(value, Value.this);
         }
     }

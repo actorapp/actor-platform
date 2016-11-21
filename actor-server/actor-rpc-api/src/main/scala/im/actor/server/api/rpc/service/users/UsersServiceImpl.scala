@@ -1,6 +1,7 @@
 package im.actor.server.api.rpc.service.users
 
 import akka.actor._
+import akka.http.scaladsl.util.FastFuture
 import akka.util.Timeout
 import cats.data.Xor
 import im.actor.api.rpc._
@@ -40,29 +41,30 @@ final class UsersServiceImpl(implicit actorSystem: ActorSystem) extends UsersSer
               if (accessHash == ACLUtils.userAccessHash(client.authId, user)) {
                 val seqstateF = db.run(UserContactRepo.find(client.userId, userId)) flatMap {
                   case Some(contact) ⇒
-                    userExt.editLocalName(client.userId, userId, Some(validName))
+                    userExt.editLocalName(client.userId, client.authId, userId, Some(validName))
                   case None ⇒
                     for {
                       optPhone ← db.run(UserPhoneRepo.findByUserId(userId).headOption)
                       optEmail ← db.run(UserEmailRepo.findByUserId(userId).headOption)
-                      seqstate ← userExt.addContact(
+                      seqState ← userExt.addContact(
                         userId = client.userId,
+                        authId = client.authId,
                         contactUserId = userId,
                         localName = Some(validName),
                         phone = optPhone map (_.number),
                         email = optEmail map (_.email)
                       )
-                    } yield seqstate
+                    } yield seqState
                 }
                 for {
-                  seqstate ← seqstateF
-                } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
+                  seqState ← seqstateF
+                } yield Ok(ResponseSeq(seqState.seq, seqState.state.toByteArray))
               } else {
-                Future.successful(Error(CommonRpcErrors.InvalidAccessHash))
+                FastFuture.successful(Error(CommonRpcErrors.InvalidAccessHash))
               }
-            case None ⇒ Future.successful(Error(CommonRpcErrors.UserNotFound))
+            case None ⇒ FastFuture.successful(Error(CommonRpcErrors.UserNotFound))
           }
-        case Xor.Left(err) ⇒ Future.successful(Error(UserErrors.NameInvalid))
+        case Xor.Left(err) ⇒ FastFuture.successful(Error(UserErrors.NameInvalid))
       }
     }
   }
@@ -77,7 +79,7 @@ final class UsersServiceImpl(implicit actorSystem: ActorSystem) extends UsersSer
     clientData: ClientData
   ): Future[HandlerResult[ResponseLoadFullUsers]] =
     authorized(clientData) { implicit client ⇒
-      withUserOutPeersF(userPeers) {
+      withUserOutPeers(userPeers) {
         for {
           fullUsers ← Future.sequence(userPeers map (u ⇒ userExt.getApiFullStruct(u.userId, client.userId, client.authId)))
         } yield Ok(ResponseLoadFullUsers(fullUsers.toVector))

@@ -48,10 +48,10 @@ final class DialogProcessorSpec extends BaseAppSuite
     val bobPeer = ApiPeer(ApiPeerType.Private, bob.id)
 
     def sendMessageToBob(text: String): Future[SeqStateDate] =
-      dialogExt.sendMessage(bobPeer, alice.id, aliceAuthSid, Some(aliceAuthId), ACLUtils.randomLong(), textMessage(text))
+      dialogExt.sendMessage(bobPeer, alice.id, aliceAuthId, ACLUtils.randomLong(), textMessage(text), getOutPeer(bob.id, aliceAuthId).accessHash)
 
     def sendMessageToAlice(text: String): Future[SeqStateDate] =
-      dialogExt.sendMessage(alicePeer, bob.id, bobAuthSid, Some(bobAuthId), ACLUtils.randomLong(), textMessage(text))
+      dialogExt.sendMessage(alicePeer, bob.id, bobAuthId, ACLUtils.randomLong(), textMessage(text), getOutPeer(alice.id, bobAuthId).accessHash)
 
     val dateToAlice = whenReady(sendMessageToAlice("Hi"))(_.date)
     val dateToBob = whenReady(sendMessageToBob("Hi"))(_.date)
@@ -77,10 +77,10 @@ final class DialogProcessorSpec extends BaseAppSuite
     val bobPeer = ApiPeer(ApiPeerType.Private, bob.id)
 
     def sendMessageToBob(text: String): Future[SeqStateDate] =
-      dialogExt.sendMessage(bobPeer, alice.id, aliceAuthSid, Some(aliceAuthId), ACLUtils.randomLong(), textMessage(text))
+      dialogExt.sendMessage(bobPeer, alice.id, aliceAuthId, ACLUtils.randomLong(), textMessage(text), getOutPeer(bob.id, aliceAuthId).accessHash)
 
     def sendMessageToAlice(text: String): Future[SeqStateDate] =
-      dialogExt.sendMessage(alicePeer, bob.id, bobAuthSid, Some(bobAuthId), ACLUtils.randomLong(), textMessage(text))
+      dialogExt.sendMessage(alicePeer, bob.id, bobAuthId, ACLUtils.randomLong(), textMessage(text), getOutPeer(alice.id, bobAuthId).accessHash)
 
     val toAlice = for (i ← 1 to 50) yield sendMessageToAlice(s"Hello $i")
     val toBob = for (i ← 1 to 50) yield sendMessageToBob(s"Hello you back $i")
@@ -135,7 +135,7 @@ final class DialogProcessorSpec extends BaseAppSuite
     val aliceRids = (1 to 100) map { i ⇒
       implicit val cd = aliceCd
       val rid = ACLUtils.randomLong()
-      dialogExt.sendMessage(groupPeer, alice.id, aliceAuthSid, Some(aliceAuthId), rid, textMessage(s"Hello from Alice #$i")) map (_ ⇒ rid)
+      dialogExt.sendMessage(groupPeer, alice.id, aliceAuthId, rid, textMessage(s"Hello from Alice #$i"), groupOutPeer.accessHash) map (_ ⇒ rid)
     } map (e ⇒ whenReady(e)(identity))
 
     val dates = whenReady(db.run(HistoryMessageRepo.find(alice.id, groupPeer.asModel, aliceRids.toSet))) { messages ⇒
@@ -214,16 +214,14 @@ final class DialogProcessorSpec extends BaseAppSuite
     }
 
     // UpdateMessageReadByMe should be reduces in final difference
-    whenReady(seqExt.getDifference(bob.id, 0, bobAuthSid, Long.MaxValue)) {
-      case (diff, _) ⇒
-        val readsByMe = diff flatMap { seq ⇒
-          val upd = seq.getMapping.getDefault
-          if (upd.header == UpdateMessageReadByMe.header) {
-            Xor.fromEither(UpdateMessageReadByMe.parseFrom(upd.body)).toOption
-          } else None
-        }
-        readsByMe should have length 1L
-        readsByMe.head shouldEqual UpdateMessageReadByMe(groupPeer, dates.last, Some(0))
+    whenReady(seqExt.getDifference(bob.id, 0, Array.empty, bobAuthId, bobAuthSid, Long.MaxValue)) { diff ⇒
+      val readsByMe = diff.updates flatMap { upd ⇒
+        if (upd.header == UpdateMessageReadByMe.header) {
+          Xor.fromEither(UpdateMessageReadByMe.parseFrom(upd.body)).toOption
+        } else None
+      }
+      readsByMe should have length 1L
+      readsByMe.head shouldEqual UpdateMessageReadByMe(groupPeer, dates.last, Some(0))
     }
   }
 
@@ -248,7 +246,7 @@ final class DialogProcessorSpec extends BaseAppSuite
     val aliceRids = (1 to 100) map { i ⇒
       implicit val cd = aliceCd
       val rid = ACLUtils.randomLong()
-      dialogExt.sendMessage(groupPeer, alice.id, aliceAuthSid, Some(aliceAuthId), rid, textMessage(s"Hello from Alice #$i")) map (_ ⇒ rid)
+      dialogExt.sendMessage(groupPeer, alice.id, aliceAuthId, rid, textMessage(s"Hello from Alice #$i"), groupOutPeer.accessHash) map (_ ⇒ rid)
     } map (e ⇒ whenReady(e)(identity))
 
     val messageDates = whenReady(db.run(HistoryMessageRepo.find(alice.id, groupPeer.asModel, aliceRids.toSet))) { messages ⇒
@@ -331,8 +329,6 @@ final class DialogProcessorSpec extends BaseAppSuite
 
       readsByMe should have length bobsUpdatesCount.toLong
 
-      readsByMe foreach { e ⇒ println(s"============: ${e}") }
-
       readsByMe.zip(readsByMe.tail) foreach {
         case ((fSeq, fTs, fUpd), (sSeq, sTs, sUpd)) ⇒
           assert(fUpd.startDate < sUpd.startDate, "Update start dates are not ascending")
@@ -343,16 +339,14 @@ final class DialogProcessorSpec extends BaseAppSuite
     }
 
     // UpdateMessageReadByMe should be reduces in final difference
-    whenReady(seqExt.getDifference(bob.id, 0, bobAuthSid, Long.MaxValue)) {
-      case (diff, _) ⇒
-        val readsByMe = diff flatMap { seq ⇒
-          val upd = seq.getMapping.getDefault
-          if (upd.header == UpdateMessageReadByMe.header) {
-            Xor.fromEither(UpdateMessageReadByMe.parseFrom(upd.body)).toOption
-          } else None
-        }
-        readsByMe should have length 1L
-        readsByMe.head shouldEqual UpdateMessageReadByMe(groupPeer, messageDates.last, Some(0))
+    whenReady(seqExt.getDifference(bob.id, 0, Array.empty, bobAuthId, bobAuthSid, Long.MaxValue)) { diff ⇒
+      val readsByMe = diff.updates flatMap { upd ⇒
+        if (upd.header == UpdateMessageReadByMe.header) {
+          Xor.fromEither(UpdateMessageReadByMe.parseFrom(upd.body)).toOption
+        } else None
+      }
+      readsByMe should have length 1L
+      readsByMe.head shouldEqual UpdateMessageReadByMe(groupPeer, messageDates.last, Some(0))
     }
 
     // Checking Eve's difference
@@ -372,16 +366,14 @@ final class DialogProcessorSpec extends BaseAppSuite
     }
 
     // UpdateMessageReadByMe should be reduces in final difference
-    whenReady(seqExt.getDifference(eve.id, 0, eveAuthSid, Long.MaxValue)) {
-      case (diff, _) ⇒
-        val readsByMe = diff flatMap { seq ⇒
-          val upd = seq.getMapping.getDefault
-          if (upd.header == UpdateMessageReadByMe.header) {
-            Xor.fromEither(UpdateMessageReadByMe.parseFrom(upd.body)).toOption
-          } else None
-        }
-        readsByMe should have length 1L
-        readsByMe.head shouldEqual UpdateMessageReadByMe(groupPeer, messageDates.last, Some(0))
+    whenReady(seqExt.getDifference(eve.id, 0, Array.empty, eveAuthId, eveAuthSid, Long.MaxValue)) { diff ⇒
+      val readsByMe = diff.updates flatMap { upd ⇒
+        if (upd.header == UpdateMessageReadByMe.header) {
+          Xor.fromEither(UpdateMessageReadByMe.parseFrom(upd.body)).toOption
+        } else None
+      }
+      readsByMe should have length 1L
+      readsByMe.head shouldEqual UpdateMessageReadByMe(groupPeer, messageDates.last, Some(0))
     }
 
   }
@@ -390,7 +382,7 @@ final class DialogProcessorSpec extends BaseAppSuite
     updates flatMap { seq ⇒
       val upd = seq.getMapping.getDefault
       if (upd.header == UpdateMessageReadByMe.header) {
-        Xor.fromEither(UpdateMessageReadByMe.parseFrom(upd.body)).toOption map (upd ⇒ (seq.seq, seq.timestamp, upd))
+        Xor.fromEither(UpdateMessageReadByMe.parseFrom(upd.body)).toOption map (upd ⇒ (seq.commonSeq, seq.timestamp, upd))
       } else None
     }
 
@@ -402,10 +394,10 @@ final class DialogProcessorSpec extends BaseAppSuite
     val bobPeer = ApiPeer(ApiPeerType.Private, bob.id)
 
     def sendMessageToBob(text: String): Future[SeqStateDate] =
-      dialogExt.sendMessage(bobPeer, alice.id, aliceAuthSid, Some(aliceAuthId), ACLUtils.randomLong(), textMessage(text))
+      dialogExt.sendMessage(bobPeer, alice.id, aliceAuthId, ACLUtils.randomLong(), textMessage(text), getOutPeer(bob.id, aliceAuthId).accessHash)
 
     def sendMessageToAlice(text: String): Future[SeqStateDate] =
-      dialogExt.sendMessage(alicePeer, bob.id, bobAuthSid, Some(bobAuthId), ACLUtils.randomLong(), textMessage(text))
+      dialogExt.sendMessage(alicePeer, bob.id, bobAuthId, ACLUtils.randomLong(), textMessage(text), getOutPeer(alice.id, bobAuthId).accessHash)
 
     val toAlice = for (i ← 1 to 50) yield sendMessageToAlice(s"Hello $i")
     val toBob = for (i ← 1 to 50) yield sendMessageToBob(s"Hello you back $i")

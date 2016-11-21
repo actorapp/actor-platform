@@ -67,8 +67,8 @@ class WebhookHandlerSpec
 
       val groupResponse = createGroup("Bot test group", Set(user2.id))
       val groupOutPeer = groupResponse.groupPeer
-      val initSeq = groupResponse.seq
-      val initState = groupResponse.state
+
+      val initState = mkSeqState(groupResponse.seq, groupResponse.state)
 
       Thread.sleep(1000)
 
@@ -79,23 +79,20 @@ class WebhookHandlerSpec
 
       val firstMessage = Text("Alert! All tests are failed!")
       whenReady(handler.send(firstMessage, token)) { _ ⇒
-        expectUpdate(initSeq, classOf[UpdateMessage]) { upd ⇒
+        expectUpdate(initState, classOf[UpdateMessage]) { upd ⇒
           upd.message shouldEqual ApiTextMessage(firstMessage.text, Vector.empty, None)
         }
-        expectUpdate(initSeq, classOf[UpdateCountersChanged])(identity)
+        expectUpdate(initState, classOf[UpdateCountersChanged])(identity)
       }
 
-      val (seq1, state1) = whenReady(sequenceService.handleGetState(Vector.empty)) { resp ⇒
-        val ResponseSeq(seq, state) = resp.toOption.get
-        (seq, state)
-      }
+      val state1 = getCurrentState
 
       val secondMessage = Text("It's ok now!")
       whenReady(handler.send(secondMessage, token)) { _ ⇒
-        expectUpdate(seq1, classOf[UpdateMessage]) { upd ⇒
+        expectUpdate(state1, classOf[UpdateMessage]) { upd ⇒
           upd.message shouldEqual ApiTextMessage(secondMessage.text, Vector.empty, None)
         }
-        expectUpdate(seq1, classOf[UpdateCountersChanged])(identity)
+        expectUpdate(state1, classOf[UpdateCountersChanged])(identity)
       }
     }
 
@@ -123,8 +120,11 @@ class WebhookHandlerSpec
     def reverseHooks() = {
       val handler = new WebhooksHttpHandler()
 
-      val hook3000 = new DummyHookListener(3000)
-      val hook4000 = new DummyHookListener(4000)
+      val port1 = NetworkHelpers.randomPort()
+      val hook1 = new DummyHookListener(port1)
+
+      val port2 = NetworkHelpers.randomPort()
+      val hook2 = new DummyHookListener(port2)
 
       val group = createGroup(s"Reverse hooks group", Set(user2.id)).groupPeer
 
@@ -135,10 +135,8 @@ class WebhookHandlerSpec
         optToken.get
       }
 
-      whenReady(handler.register(token, "http://localhost:3000"))(_.isRight shouldBe true)
-      whenReady(handler.register(token, "http://localhost:4000"))(_.isRight shouldBe true)
-
-      Thread.sleep(4000)
+      whenReady(handler.register(token, s"http://localhost:$port1"))(_.isRight shouldBe true)
+      whenReady(handler.register(token, s"http://localhost:$port2"))(_.isRight shouldBe true)
 
       val sendText = List("/task jump", "/task eat", "/command sleep", "/command die")
 
@@ -155,15 +153,18 @@ class WebhookHandlerSpec
       whenReady(messagingService.handleSendMessage(group.asOutPeer, 6L, ApiDocumentMessage(1L, 2L, 1, "", "", None, None), None, None))(_ ⇒ ())
 
       whenReady(messagingService.handleSendMessage(group.asOutPeer, 7L, ApiTextMessage(sendText(3), Vector.empty, None), None, None))(_ ⇒ ())
-      Thread.sleep(4000)
 
-      val messages3000 = hook3000.getMessages
-      messages3000 should have size 4
-      messages3000.map(m ⇒ Some(m.command → m.text)) should contain theSameElementsAs commands
+      repeatAfterSleep(10) {
+        val messages1 = hook1.getMessages
+        messages1 should have size 4
+        messages1.map(m ⇒ Some(m.command → m.text)) should contain theSameElementsAs commands
+      }
 
-      val messages4000 = hook4000.getMessages
-      messages4000 should have size 4
-      messages4000.map(m ⇒ Some(m.command → m.text)) should contain theSameElementsAs commands
+      repeatAfterSleep(10) {
+        val messages2 = hook2.getMessages
+        messages2 should have size 4
+        messages2.map(m ⇒ Some(m.command → m.text)) should contain theSameElementsAs commands
+      }
     }
   }
 

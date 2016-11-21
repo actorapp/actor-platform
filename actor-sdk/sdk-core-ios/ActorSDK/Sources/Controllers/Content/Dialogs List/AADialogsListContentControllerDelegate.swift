@@ -6,7 +6,7 @@ import Foundation
 
 public protocol AADialogsListContentControllerDelegate {
     
-    func recentsDidTap(controller: AADialogsListContentController, dialog: ACDialog) -> Bool
+    func recentsDidTap(_ controller: AADialogsListContentController, dialog: ACDialog) -> Bool
     
-    func searchDidTap(controller: AADialogsListContentController, entity: ACSearchEntity)
+    func searchDidTap(_ controller: AADialogsListContentController, entity: ACSearchResult)
 }

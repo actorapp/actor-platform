@@ -1,8 +1,8 @@
 package im.actor.server.dialog
 
 import akka.actor._
-import akka.event.Logging
 import akka.http.scaladsl.util.FastFuture
+import akka.pattern.pipe
 import akka.util.Timeout
 import com.github.benmanes.caffeine.cache.Cache
 import im.actor.api.rpc.misc.ApiExtension
@@ -69,8 +69,8 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
 
   protected val selfPeer: Peer = Peer.privat(userId)
 
-  protected implicit val sendResponseCache: Cache[AuthSidRandomId, Future[SeqStateDate]] =
-    createCache[AuthSidRandomId, Future[SeqStateDate]](MaxCacheSize)
+  protected implicit val sendResponseCache: Cache[AuthIdRandomId, Future[SeqStateDate]] =
+    createCache[AuthIdRandomId, Future[SeqStateDate]](MaxCacheSize)
 
   override def persistenceId: String = DialogProcessor.persistenceId(userId, peer)
 
@@ -78,7 +78,6 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
 
   override protected def saveSnapshotIfNeeded(): Unit = {
     super.saveSnapshotIfNeeded()
-
   }
 
   override protected def handleQuery: PartialFunction[Any, Future[Any]] = {
@@ -115,6 +114,9 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
     case rr: RemoveReaction if invokes(rr)                          ⇒ removeReaction(rr)
     case WriteMessageSelf(_, senderUserId, date, randomId, message) ⇒ writeMessageSelf(senderUserId, date, randomId, message)
   }
+
+  // queries that dialog can actually reply when sending messages
+  def queries: Receive = handleQuery andThen (_ pipeTo sender())
 
   /**
    * dialog owner invokes `dc`

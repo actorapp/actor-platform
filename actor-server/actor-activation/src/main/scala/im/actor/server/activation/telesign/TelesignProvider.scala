@@ -1,6 +1,7 @@
 package im.actor.server.activation.telesign
 
 import akka.actor.ActorSystem
+import akka.http.scaladsl.util.FastFuture
 import akka.pattern.ask
 import akka.util.Timeout
 import cats.data.Xor
@@ -44,7 +45,7 @@ private[activation] final class TelesignProvider(implicit system: ActorSystem) e
     case s: SmsCode ⇒
       for {
         resp ← if (isTestPhone(s.phone))
-          Future.successful(Xor.right(()))
+          FastFuture.successful(Xor.right(()))
         else
           (smsStateActor ? Send(code)).mapTo[SendAck].map(_.result)
         _ ← createAuthCodeIfNeeded(resp, txHash, code.code)
@@ -52,7 +53,7 @@ private[activation] final class TelesignProvider(implicit system: ActorSystem) e
     case c: CallCode ⇒
       for {
         resp ← if (isTestPhone(c.phone))
-          Future.successful(Xor.right(()))
+          FastFuture.successful(Xor.right(()))
         else
           (callStateActor ? Send(code)).mapTo[SendAck].map(_.result)
         _ ← createAuthCodeIfNeeded(resp, txHash, code.code)

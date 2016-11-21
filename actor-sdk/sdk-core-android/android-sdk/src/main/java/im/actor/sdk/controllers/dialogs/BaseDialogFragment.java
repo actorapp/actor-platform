@@ -3,31 +3,25 @@ package im.actor.sdk.controllers.dialogs;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import im.actor.core.entity.Dialog;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
-import im.actor.core.viewmodel.CommandCallback;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
-import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.dialogs.view.DialogHolder;
 import im.actor.sdk.controllers.dialogs.view.DialogsAdapter;
-import im.actor.sdk.controllers.fragment.DisplayListFragment;
+import im.actor.sdk.controllers.DisplayListFragment;
 import im.actor.sdk.util.Screen;
-import im.actor.sdk.util.Fonts;
 import im.actor.sdk.view.adapters.OnItemClickedListener;
 import im.actor.runtime.android.view.BindedListAdapter;
-import im.actor.runtime.mvvm.ValueChangedListener;
-import im.actor.runtime.mvvm.Value;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
+import static im.actor.sdk.util.ActorSDKMessenger.users;
 
 public abstract class BaseDialogFragment extends DisplayListFragment<Dialog, DialogHolder> {
 
@@ -40,7 +34,19 @@ public abstract class BaseDialogFragment extends DisplayListFragment<Dialog, Dia
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View res = inflate(inflater, container, R.layout.fragment_dialogs, messenger().getDialogsDisplayList());
+        BindedDisplayList<Dialog> displayList = messenger().getDialogsDisplayList();
+        if (displayList.getListProcessor() == null) {
+            displayList.setListProcessor((items, previous) -> {
+                for (Dialog d : items) {
+                    if (d.getSenderId() != 0) {
+                        users().get(d.getSenderId());
+                    }
+                }
+                return null;
+            });
+        }
+
+        View res = inflate(inflater, container, R.layout.fragment_dialogs, displayList);
         res.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
 
         // Footer
@@ -53,20 +59,17 @@ public abstract class BaseDialogFragment extends DisplayListFragment<Dialog, Dia
         // Header
 
         View header = new View(getActivity());
-        header.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ActorSDK.sharedActor().style.getDialogsPaddingTop()));
+        header.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(ActorSDK.sharedActor().style.getDialogsPaddingTopDp())));
         header.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
         addHeaderView(header);
 
         // Empty View
         emptyDialogs = res.findViewById(R.id.emptyDialogs);
-        bind(messenger().getAppState().getIsDialogsEmpty(), new ValueChangedListener<Boolean>() {
-            @Override
-            public void onChanged(Boolean val, Value<Boolean> Value) {
-                if (val) {
-                    emptyDialogs.setVisibility(View.VISIBLE);
-                } else {
-                    emptyDialogs.setVisibility(View.GONE);
-                }
+        bind(messenger().getAppState().getIsDialogsEmpty(), (val, Value) -> {
+            if (val) {
+                emptyDialogs.setVisibility(View.VISIBLE);
+            } else {
+                emptyDialogs.setVisibility(View.GONE);
             }
         });
         ((TextView) res.findViewById(R.id.add_contact_hint_text)).setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());

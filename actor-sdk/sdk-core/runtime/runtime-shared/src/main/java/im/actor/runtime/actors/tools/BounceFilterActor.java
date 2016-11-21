@@ -3,7 +3,7 @@ package im.actor.runtime.actors.tools;
 import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorTime;
-import im.actor.runtime.actors.Cancellable;
+import im.actor.runtime.actors.ActorCancellable;
 
 public class BounceFilterActor extends Actor {
 
@@ -11,7 +11,7 @@ public class BounceFilterActor extends Actor {
 
     private long lastMessage = 0;
     private Message message;
-    private Cancellable flushCancellable;
+    private ActorCancellable flushCancellable;
 
     private void onMessage(Message message) {
         long time = ActorTime.currentTime();

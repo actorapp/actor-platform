@@ -4,17 +4,17 @@
 
 import Foundation
 
-public class AABubbleBaseFileCell: AABubbleCell {
+open class AABubbleBaseFileCell: AABubbleCell {
     
-    private var bindGeneration = 0;
+    fileprivate var bindGeneration = 0;
     
-    private var bindedDownloadFile: jlong? = nil
-    private var bindedDownloadCallback: AAFileCallback? = nil
+    fileprivate var bindedDownloadFile: jlong? = nil
+    fileprivate var bindedDownloadCallback: AAFileCallback? = nil
     
-    private var bindedUploadFile: jlong? = nil
-    private var bindedUploadCallback: AAUploadFileCallback? = nil
+    fileprivate var bindedUploadFile: jlong? = nil
+    fileprivate var bindedUploadCallback: AAUploadFileCallback? = nil
     
-    public func fileBind(message: ACMessage, autoDownload: Bool) {
+    open func fileBind(_ message: ACMessage, autoDownload: Bool) {
         if let doc = message.content as? ACDocumentContent {
             
             let selfGeneration = prepareBind()
@@ -22,7 +22,7 @@ public class AABubbleBaseFileCell: AABubbleCell {
             if let source = doc.getSource() as? ACFileRemoteSource {
                 let fileReference = source.getFileReference();
                 
-                bindedDownloadFile = fileReference.getFileId()
+                bindedDownloadFile = fileReference?.getFileId()
                 bindedDownloadCallback = AAFileCallback(notDownloaded: { () -> () in
                     if (self.bindGeneration != selfGeneration) {
                         return
@@ -40,7 +40,7 @@ public class AABubbleBaseFileCell: AABubbleCell {
                     self.fileStateChanged(reference, progress: nil, isPaused: false, isUploading: false, selfGeneration: selfGeneration)
                 })
                 
-                Actor.bindRawFileWithReference(fileReference, autoStart: autoDownload, withCallback: bindedDownloadCallback)
+                Actor.bindRawFile(with: fileReference, autoStart: autoDownload, with: bindedDownloadCallback)
             } else if let source = doc.getSource() as? ACFileLocalSource {
                 let fileReference = source.getFileDescriptor();
                 
@@ -62,7 +62,7 @@ public class AABubbleBaseFileCell: AABubbleCell {
                     self.fileStateChanged(fileReference, progress: nil, isPaused: false, isUploading: false, selfGeneration: selfGeneration)
                 });
                 
-                Actor.bindRawUploadFileWithRid(message.rid, withCallback: bindedUploadCallback)
+                Actor.bindRawUploadFile(withRid: message.rid, with: bindedUploadCallback)
             } else {
                 fatalError("Unsupported file source")
             }
@@ -72,7 +72,7 @@ public class AABubbleBaseFileCell: AABubbleCell {
             
             let selfGeneration = prepareBind()
             
-            bindedDownloadFile = file.reference.getFileId()
+            bindedDownloadFile = file?.reference.getFileId()
             bindedDownloadCallback = AAFileCallback(notDownloaded: { () -> () in
                 if (self.bindGeneration != selfGeneration) {
                     return
@@ -90,13 +90,13 @@ public class AABubbleBaseFileCell: AABubbleCell {
                 self.fileStateChanged(reference, progress: nil, isPaused: false, isUploading: false, selfGeneration: selfGeneration)
             })
             
-            Actor.bindRawFileWithReference(ACFileReference(ARApiFileLocation: file.reference.getFileLocation(), withNSString: file.reference.fileName, withInt: file.reference.fileSize), autoStart: autoDownload, withCallback: bindedDownloadCallback)
+            Actor.bindRawFile(with: ACFileReference(arApiFileLocation: file?.reference.getFileLocation(), with: file?.reference.fileName, with: (file?.reference.fileSize)!), autoStart: autoDownload, with: bindedDownloadCallback)
         } else {
             fatalError("Unsupported message type")
         }
     }
     
-    public func bindFile(fileReference: ACFileReference, autoDownload: Bool) {
+    open func bindFile(_ fileReference: ACFileReference, autoDownload: Bool) {
         
         let selfGeneration = prepareBind()
         
@@ -118,10 +118,10 @@ public class AABubbleBaseFileCell: AABubbleCell {
             self.fileStateChanged(reference, progress: nil, isPaused: false, isUploading: false, selfGeneration: selfGeneration)
         })
         
-        Actor.bindRawFileWithReference(fileReference, autoStart: autoDownload, withCallback: bindedDownloadCallback)
+        Actor.bindRawFile(with: fileReference, autoStart: autoDownload, with: bindedDownloadCallback)
     }
     
-    private func prepareBind() -> Int {
+    fileprivate func prepareBind() -> Int {
         
         // Next generation of binding
         bindGeneration += 1
@@ -134,11 +134,11 @@ public class AABubbleBaseFileCell: AABubbleCell {
         return selfGeneration
     }
     
-    public func fileStateChanged(reference: String?, progress: Int?, isPaused: Bool, isUploading: Bool, selfGeneration: Int) {
+    open func fileStateChanged(_ reference: String?, progress: Int?, isPaused: Bool, isUploading: Bool, selfGeneration: Int) {
         
     }
     
-    public func runOnUiThread(selfGeneration: Int, closure: (()->())?) -> Bool {
+    open func runOnUiThread(_ selfGeneration: Int, closure: (()->())?) -> Bool {
         if (selfGeneration != self.bindGeneration) {
             return false
         }
@@ -157,14 +157,14 @@ public class AABubbleBaseFileCell: AABubbleCell {
         return res
     }
     
-    public func fileUnbind() {
+    open func fileUnbind() {
         if (bindedDownloadFile != nil && bindedDownloadCallback != nil) {
-            Actor.unbindRawFileWithFileId(bindedDownloadFile!, autoCancel: false, withCallback: bindedDownloadCallback)
+            Actor.unbindRawFile(withFileId: bindedDownloadFile!, autoCancel: false, with: bindedDownloadCallback)
             bindedDownloadFile = nil
             bindedDownloadCallback = nil
         }
         if (bindedUploadFile != nil && bindedUploadCallback != nil) {
-            Actor.unbindRawUploadFileWithRid(bindedUploadFile!, withCallback: bindedUploadCallback)
+            Actor.unbindRawUploadFile(withRid: bindedUploadFile!, with: bindedUploadCallback)
             bindedUploadFile = nil
             bindedUploadCallback = nil
         }

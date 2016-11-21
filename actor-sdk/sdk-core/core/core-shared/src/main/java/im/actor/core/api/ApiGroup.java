@@ -24,16 +24,11 @@ public class ApiGroup extends BserObject {
     private Boolean isMember;
     private Boolean isHidden;
     private ApiGroupType groupType;
-    private Boolean canSendMessage;
+    private Long permissions;
+    private Boolean isDeleted;
     private ApiMapValue ext;
-    private Boolean isAdmin;
-    private int creatorUid;
-    private List<ApiMember> members;
-    private long createDate;
-    private String theme;
-    private String about;
 
-    public ApiGroup(int id, long accessHash, @NotNull String title, @Nullable ApiAvatar avatar, @Nullable Integer membersCount, @Nullable Boolean isMember, @Nullable Boolean isHidden, @Nullable ApiGroupType groupType, @Nullable Boolean canSendMessage, @Nullable ApiMapValue ext, @Nullable Boolean isAdmin, int creatorUid, @NotNull List<ApiMember> members, long createDate, @Nullable String theme, @Nullable String about) {
+    public ApiGroup(int id, long accessHash, @NotNull String title, @Nullable ApiAvatar avatar, @Nullable Integer membersCount, @Nullable Boolean isMember, @Nullable Boolean isHidden, @Nullable ApiGroupType groupType, @Nullable Long permissions, @Nullable Boolean isDeleted, @Nullable ApiMapValue ext) {
         this.id = id;
         this.accessHash = accessHash;
         this.title = title;
@@ -42,14 +37,9 @@ public class ApiGroup extends BserObject {
         this.isMember = isMember;
         this.isHidden = isHidden;
         this.groupType = groupType;
-        this.canSendMessage = canSendMessage;
+        this.permissions = permissions;
+        this.isDeleted = isDeleted;
         this.ext = ext;
-        this.isAdmin = isAdmin;
-        this.creatorUid = creatorUid;
-        this.members = members;
-        this.createDate = createDate;
-        this.theme = theme;
-        this.about = about;
     }
 
     public ApiGroup() {
@@ -95,41 +85,18 @@ public class ApiGroup extends BserObject {
     }
 
     @Nullable
-    public Boolean canSendMessage() {
-        return this.canSendMessage;
+    public Long getPermissions() {
+        return this.permissions;
+    }
+
+    @Nullable
+    public Boolean isDeleted() {
+        return this.isDeleted;
     }
 
     @Nullable
     public ApiMapValue getExt() {
         return this.ext;
-    }
-
-    @Nullable
-    public Boolean isAdmin() {
-        return this.isAdmin;
-    }
-
-    public int getCreatorUid() {
-        return this.creatorUid;
-    }
-
-    @NotNull
-    public List<ApiMember> getMembers() {
-        return this.members;
-    }
-
-    public long getCreateDate() {
-        return this.createDate;
-    }
-
-    @Nullable
-    public String getTheme() {
-        return this.theme;
-    }
-
-    @Nullable
-    public String getAbout() {
-        return this.about;
     }
 
     @Override
@@ -145,18 +112,9 @@ public class ApiGroup extends BserObject {
         if (val_groupType != 0) {
             this.groupType = ApiGroupType.parse(val_groupType);
         }
-        this.canSendMessage = values.optBool(26);
+        this.permissions = values.optLong(26);
+        this.isDeleted = values.optBool(27);
         this.ext = values.optObj(22, new ApiMapValue());
-        this.isAdmin = values.optBool(16);
-        this.creatorUid = values.getInt(8);
-        List<ApiMember> _members = new ArrayList<ApiMember>();
-        for (int i = 0; i < values.getRepeatedCount(9); i ++) {
-            _members.add(new ApiMember());
-        }
-        this.members = values.getRepeatedObj(9, _members);
-        this.createDate = values.getLong(10);
-        this.theme = values.optString(17);
-        this.about = values.optString(18);
         if (values.hasRemaining()) {
             setUnmappedObjects(values.buildRemaining());
         }
@@ -185,23 +143,14 @@ public class ApiGroup extends BserObject {
         if (this.groupType != null) {
             writer.writeInt(25, this.groupType.getValue());
         }
-        if (this.canSendMessage != null) {
-            writer.writeBool(26, this.canSendMessage);
+        if (this.permissions != null) {
+            writer.writeLong(26, this.permissions);
+        }
+        if (this.isDeleted != null) {
+            writer.writeBool(27, this.isDeleted);
         }
         if (this.ext != null) {
             writer.writeObject(22, this.ext);
-        }
-        if (this.isAdmin != null) {
-            writer.writeBool(16, this.isAdmin);
-        }
-        writer.writeInt(8, this.creatorUid);
-        writer.writeRepeatedObj(9, this.members);
-        writer.writeLong(10, this.createDate);
-        if (this.theme != null) {
-            writer.writeString(17, this.theme);
-        }
-        if (this.about != null) {
-            writer.writeString(18, this.about);
         }
         if (this.getUnmappedObjects() != null) {
             SparseArray<Object> unmapped = this.getUnmappedObjects();
@@ -222,11 +171,9 @@ public class ApiGroup extends BserObject {
         res += ", isMember=" + this.isMember;
         res += ", isHidden=" + this.isHidden;
         res += ", groupType=" + this.groupType;
-        res += ", canSendMessage=" + this.canSendMessage;
+        res += ", permissions=" + this.permissions;
+        res += ", isDeleted=" + this.isDeleted;
         res += ", ext=" + this.ext;
-        res += ", isAdmin=" + this.isAdmin;
-        res += ", members=" + this.members.size();
-        res += ", createDate=" + this.createDate;
         res += "}";
         return res;
     }

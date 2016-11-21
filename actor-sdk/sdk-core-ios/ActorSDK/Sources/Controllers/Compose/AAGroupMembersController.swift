@@ -4,15 +4,15 @@
 
 import UIKit
 
-public class GroupMembersController: AAContactsListContentController, AAContactsListContentControllerDelegate, CLTokenInputViewDelegate {
+open class GroupMembersController: AAContactsListContentController, AAContactsListContentControllerDelegate, CLTokenInputViewDelegate {
 
-    private var groupTitle: String!
-    private var groupImage: UIImage?
+    fileprivate var groupTitle: String!
+    fileprivate var groupImage: UIImage?
     
-    private var tokenView = CLTokenInputView()
-    private var tokenViewHeight: CGFloat = 48
+    fileprivate var tokenView = CLTokenInputView()
+    fileprivate var tokenViewHeight: CGFloat = 48
 
-    private var selected = [TokenRef]()
+    fileprivate var selected = [TokenRef]()
 
     public init(title: String, image: UIImage?) {
         super.init()
@@ -25,17 +25,17 @@ public class GroupMembersController: AAContactsListContentController, AAContacts
         navigationItem.title = AALocalized("CreateGroupMembersTitle")
         
         if AADevice.isiPad {
-            self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: UIBarButtonItemStyle.Plain, target: self, action: Selector("dismiss"))
+            self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: UIBarButtonItemStyle.plain, target: self, action: #selector(self.dismissController))
         }
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationDone"), style: UIBarButtonItemStyle.Done, target: self, action: #selector(GroupMembersController.doNext))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationDone"), style: UIBarButtonItemStyle.done, target: self, action: #selector(GroupMembersController.doNext))
     }
 
     public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func tableDidLoad() {
+    open override func tableDidLoad() {
         super.tableDidLoad()
         
         tokenView.delegate = self
@@ -52,22 +52,22 @@ public class GroupMembersController: AAContactsListContentController, AAContacts
         
         self.view.addSubview(tokenView)
         
-        tableView.keyboardDismissMode = UIScrollViewKeyboardDismissMode.OnDrag
+        tableView.keyboardDismissMode = UIScrollViewKeyboardDismissMode.onDrag
     }
     
-    public func contactDidTap(controller: AAContactsListContentController, contact: ACContact) -> Bool {
+    open func contactDidTap(_ controller: AAContactsListContentController, contact: ACContact) -> Bool {
         
         for i in 0..<selected.count {
             let n = selected[i]
             if (n.contact.uid == contact.uid) {
-                selected.removeAtIndex(i)
-                tokenView.removeToken(n.token)
+                selected.remove(at: i)
+                tokenView.remove(n.token)
                 return true
             }
         }
         
         let token = CLToken(displayText: contact.name, context: nil)
-        tokenView.addToken(token)
+        tokenView.add(token)
         selected.append(TokenRef(contact: contact, token: token))
         
         contactRows.filter("")
@@ -75,43 +75,43 @@ public class GroupMembersController: AAContactsListContentController, AAContacts
         return true
     }
     
-    public func doNext() {
+    open func doNext() {
         let res = IOSIntArray(length: UInt(selected.count))
         for i in 0..<selected.count {
-            res.replaceIntAtIndex(UInt(i), withInt: selected[i].contact.uid)
+            res?.replaceInt(at: UInt(i), with: selected[i].contact.uid)
         }
         
-        executeSafeOnlySuccess(Actor.createGroupCommandWithTitle(groupTitle, withAvatar: nil, withUids: res)!) { (val) -> Void in
-            let gid = (val as! JavaLangInteger).intValue
+        executePromise(Actor.createGroup(withTitle: groupTitle, withAvatar: nil, withUids: res)).then { (res: JavaLangInteger!) in
+            let gid = res.int32Value
             if self.groupImage != nil {
                 Actor.changeGroupAvatar(gid, image: self.groupImage!)
             }
-            if let customController = ActorSDK.sharedActor().delegate.actorControllerForConversation(ACPeer.groupWithInt(gid)) {
+            if let customController = ActorSDK.sharedActor().delegate.actorControllerForConversation(ACPeer.group(with: gid)) {
                 self.navigateDetail(customController)
             } else {
-                self.navigateDetail(ConversationViewController(peer: ACPeer.groupWithInt(gid)))
+                self.navigateDetail(ConversationViewController(peer: ACPeer.group(with: gid)))
             }
-            self.dismiss()
+            self.dismissController()
         }
     }
     
     // Handling token input updates
     
-    public func tokenInputView(view: CLTokenInputView, didChangeText text: String?) {
+    open func tokenInputView(_ view: CLTokenInputView, didChangeText text: String?) {
         contactRows.filter(text!)
     }
     
-    public func tokenInputView(view: CLTokenInputView, didChangeHeightTo height: CGFloat) {
+    open func tokenInputView(_ view: CLTokenInputView, didChangeHeightTo height: CGFloat) {
         tokenViewHeight = height
         
         self.view.setNeedsLayout()
     }
     
-    public func tokenInputView(view: CLTokenInputView, didRemoveToken token: CLToken) {
+    open func tokenInputView(_ view: CLTokenInputView, didRemove token: CLToken) {
         for i in 0..<selected.count {
             let n = selected[i]
             if (n.token == token) {
-                selected.removeAtIndex(i)
+                selected.remove(at: i)
                 return
             }
         }
@@ -119,15 +119,15 @@ public class GroupMembersController: AAContactsListContentController, AAContacts
 
     // Hacking layout 
     
-    public override func viewDidLayoutSubviews() {
+    open override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
         if AADevice.isiPad {
-            tokenView.frame = CGRectMake(0, 44, view.frame.width, tokenViewHeight)
-            tableView.frame = CGRectMake(0, tokenViewHeight, view.frame.width, view.frame.height - tokenViewHeight)
+            tokenView.frame = CGRect(x: 0, y: 44, width: view.frame.width, height: tokenViewHeight)
+            tableView.frame = CGRect(x: 0, y: tokenViewHeight, width: view.frame.width, height: view.frame.height - tokenViewHeight)
         } else {
-            tokenView.frame = CGRectMake(0, 64, view.frame.width, tokenViewHeight)
-            tableView.frame = CGRectMake(0, tokenViewHeight, view.frame.width, view.frame.height - tokenViewHeight)
+            tokenView.frame = CGRect(x: 0, y: 64, width: view.frame.width, height: tokenViewHeight)
+            tableView.frame = CGRect(x: 0, y: tokenViewHeight, width: view.frame.width, height: view.frame.height - tokenViewHeight)
         }
     }
 }

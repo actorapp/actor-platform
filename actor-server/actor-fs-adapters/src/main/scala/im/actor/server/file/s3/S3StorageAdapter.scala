@@ -3,11 +3,13 @@ package im.actor.server.file.s3
 import java.io.ByteArrayInputStream
 
 import akka.actor._
+import akka.http.scaladsl.util.FastFuture
 import akka.stream.scaladsl.FileIO
 import akka.stream.{ ActorMaterializer, Materializer }
 import akka.util.ByteString
 import com.amazonaws.HttpMethod
 import com.amazonaws.auth.BasicAWSCredentials
+import com.amazonaws.regions.{ Region, Regions }
 import com.amazonaws.services.s3.model.{ GeneratePresignedUrlRequest, ObjectMetadata }
 import com.amazonaws.services.s3.S3ClientOptions
 import com.amazonaws.services.s3.transfer.TransferManager
@@ -31,21 +33,32 @@ final class S3StorageAdapter(_system: ActorSystem) extends FileStorageAdapter {
   private implicit val ec: ExecutionContext = system.dispatcher
   private implicit val mat: Materializer = ActorMaterializer()
 
-  private val config = S3StorageAdapterConfig.load(system.settings.config.getConfig("services.aws.s3")).get
-  private val bucketName = config.bucketName
-  private val awsCredentials = new BasicAWSCredentials(config.key, config.secret)
   private val db = DbExtension(system).db
 
-  val s3Client = new AmazonS3ScalaClient(awsCredentials)
-  if (!config.endpoint.isEmpty) {
-    s3Client.client.setEndpoint(config.endpoint)
+  private val config = S3StorageAdapterConfig.load
+  private val bucketName = config.bucketName
+  private val awsCredentials = new BasicAWSCredentials(config.key, config.secret)
 
-    if (config.pathStyleAccess) {
-      s3Client.client.setS3ClientOptions(new S3ClientOptions().withPathStyleAccess(true));
+  private val s3Client = {
+    val cl = new AmazonS3ScalaClient(awsCredentials)
+    config.region foreach { region ⇒
+      cl.client.setRegion(Region.getRegion(Regions.fromName(region)))
     }
+    config.endpoint foreach { endpoint ⇒
+      cl.client.setEndpoint(endpoint)
+    }
+    if (config.pathStyleAccess) {
+      val co = S3ClientOptions.builder()
+        .setPathStyleAccess(true)
+        .setPayloadSigningEnabled(true)
+        .build()
+      cl.client.setS3ClientOptions(co)
+    }
+    System.setProperty("com.amazonaws.services.s3.disableGetObjectMD5Validation", "true")
+    cl
   }
 
-  val transferManager = new TransferManager(s3Client.client)
+  private val transferManager = new TransferManager(s3Client.client)
 
   override def uploadFile(name: UnsafeFileName, data: Array[Byte]): DBIO[FileLocation] =
     uploadFile(bucketName, name, data)
@@ -76,7 +89,7 @@ final class S3StorageAdapter(_system: ActorSystem) extends FileStorageAdapter {
       presignedRequest.setMethod(HttpMethod.GET)
 
       s3Client.generatePresignedUrlRequest(presignedRequest).map(_.toString).map(Some(_))
-    } else Future.successful(None)
+    } else FastFuture.successful(None)
   }
 
   private def downloadFile(bucketName: String, id: Long, name: String) = {
@@ -115,7 +128,6 @@ final class S3StorageAdapter(_system: ActorSystem) extends FileStorageAdapter {
     expiration.setTime(expiration.getTime + 1.day.toMillis)
     request.setMethod(HttpMethod.PUT)
     request.setExpiration(expiration)
-    request.setContentType("application/octet-stream")
 
     for (url ← s3Client.generatePresignedUrlRequest(request)) yield partKey → url.toString
   }
@@ -134,10 +146,10 @@ final class S3StorageAdapter(_system: ActorSystem) extends FileStorageAdapter {
   override def completeFileUpload(fileId: Long, fileSize: Long, fileName: UnsafeFileName, partNames: Seq[String]): Future[Unit] = {
     for {
       tempDir ← createTempDir()
-      fk = uploadKey(fileId).key
-      _ ← FutureTransfer.listenFor {
-        transferManager.downloadDirectory(bucketName, s"upload_part_$fk", tempDir)
-      } map (_.waitForCompletion())
+      _ ← Future.sequence(partNames map { part ⇒
+        val path = tempDir.toPath.resolve(part)
+        FutureTransfer.listenFor(transferManager.download(bucketName, part, path.toFile)).map(_.waitForCompletion())
+      })
       concatFile ← concatFiles(tempDir, partNames)
       _ ← FutureTransfer.listenFor {
         transferManager.upload(bucketName, s3Key(fileId, fileName.safe), concatFile)

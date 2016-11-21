@@ -8,19 +8,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/search"
-        android:icon="@drawable/ic_search_white_24dp"
-        android:title="@string/main_menu_search"
-        app:actionViewClass="android.support.v7.widget.SearchView"
-        app:showAsAction="always|collapseActionView" />
-
-    <item
         android:id="@+id/contacts"
-        android:title="@string/contacts_title"
+        android:title="Contacts"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/profile"
-        android:title="@string/profile_title"
+        android:title="Profile"
         app:showAsAction="never" />
 </menu>

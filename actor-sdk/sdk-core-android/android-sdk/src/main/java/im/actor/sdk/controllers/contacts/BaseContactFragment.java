@@ -22,7 +22,7 @@ import im.actor.core.entity.Contact;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
-import im.actor.sdk.controllers.fragment.DisplayListFragment;
+import im.actor.sdk.controllers.DisplayListFragment;
 import im.actor.sdk.controllers.contacts.view.ContactHolder;
 import im.actor.sdk.controllers.contacts.view.ContactsAdapter;
 import im.actor.sdk.controllers.fragment.help.HelpActivity;
@@ -70,13 +70,14 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
             }
         }
 
+        setAnimationsEnabled(false);
+
         View headerPadding = new View(getActivity());
         headerPadding.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
         headerPadding.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, useCompactVersion ? 0 : ActorSDK.sharedActor().style.getContactsMainPaddingTop()));
         addHeaderView(headerPadding);
 
         addFootersAndHeaders();
-
 
         if (emptyView != null) {
             if (messenger().getAppState().getIsContactsEmpty().get()) {

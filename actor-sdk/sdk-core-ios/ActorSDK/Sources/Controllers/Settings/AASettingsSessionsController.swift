@@ -4,23 +4,23 @@
 
 import UIKit
 
-public class AASettingsSessionsController: AAContentTableController {
+open class AASettingsSessionsController: AAContentTableController {
 
-    private var sessionsCell: AAManagedArrayRows<ARApiAuthSession, AACommonCell>?
+    fileprivate var sessionsCell: AAManagedArrayRows<ARApiAuthSession, AACommonCell>?
     
     public init() {
-        super.init(style: AAContentTableStyle.SettingsGrouped)
+        super.init(style: AAContentTableStyle.settingsGrouped)
         
         navigationItem.title = AALocalized("PrivacyAllSessions")
         
-        content = ACAllEvents_Settings.PRIVACY()
+        content = ACAllEvents_Settings.privacy()
     }
     
     public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func tableDidLoad() {
+    open override func tableDidLoad() {
         
         section { (s) -> () in
             
@@ -42,20 +42,20 @@ public class AASettingsSessionsController: AAContentTableController {
         section { (s) -> () in
             self.sessionsCell = s.arrays() { (r: AAManagedArrayRows<ARApiAuthSession, AACommonCell>) -> () in
                 r.bindData = { (c: AACommonCell, d: ARApiAuthSession) -> () in
-                    if d.getAuthHolder().ordinal() != ARApiAuthHolder.THISDEVICE().ordinal() {
-                        c.style = .Normal
+                    if d.getAuthHolder().ordinal() != ARApiAuthHolder.thisdevice().ordinal() {
+                        c.style = .normal
                         c.setContent(d.getDeviceTitle())
                     } else {
-                        c.style = .Hint
+                        c.style = .hint
                         c.setContent("(Current) \(d.getDeviceTitle())")
                     }
                 }
                 
                 r.selectAction = { (d) -> Bool in
-                    if d.getAuthHolder().ordinal() != ARApiAuthHolder.THISDEVICE().ordinal() {
+                    if d.getAuthHolder().ordinal() != ARApiAuthHolder.thisdevice().ordinal() {
                         self.confirmDangerSheetUser("PrivacyTerminateAlertSingle", tapYes: { [unowned self] () -> () in
                             // Terminating session and reload list
-                            self.executeSafe(Actor.terminateSessionCommandWithId(d.getId()), successBlock: { [unowned self] (val) -> Void in
+                            self.executeSafe(Actor.terminateSessionCommand(withId: d.getId()), successBlock: { [unowned self] (val) -> Void in
                                 self.loadSessions()
                                 })
                             }, tapNo: nil)
@@ -70,7 +70,7 @@ public class AASettingsSessionsController: AAContentTableController {
         loadSessions()
     }
     
-    private func loadSessions() {
+    fileprivate func loadSessions() {
         execute(Actor.loadSessionsCommand(), successBlock: { [unowned self] (val) -> Void in
             self.sessionsCell!.data = (val as! JavaUtilList).toArray().toSwiftArray()
             self.managedTable.tableView.reloadData()

@@ -4,6 +4,7 @@ import java.net.InetAddress
 
 import akka.actor.{ ActorPath, ActorSystem }
 import akka.cluster.client.{ ClusterClient, ClusterClientSettings }
+import akka.http.scaladsl.util.FastFuture
 import akka.pattern.ask
 import akka.util.Timeout
 import com.typesafe.config.ConfigFactory
@@ -14,11 +15,12 @@ import scala.concurrent.duration._
 import scala.reflect.ClassTag
 
 private case class Config(
-  command:       String        = "help",
-  createBot:     CreateBot     = CreateBot(),
-  updateIsAdmin: UpdateIsAdmin = UpdateIsAdmin(),
-  httpToken:     HttpToken     = HttpToken(),
-  key:           Key           = Key()
+  command:       String         = "help",
+  createBot:     CreateBot      = CreateBot(),
+  updateIsAdmin: UpdateIsAdmin  = UpdateIsAdmin(),
+  httpToken:     HttpToken      = HttpToken(),
+  key:           Key            = Key(),
+  host:          Option[String] = None // remote actor system host
 )
 
 private[cli] trait Request {
@@ -74,6 +76,9 @@ object ActorCli extends App {
     cmd(Commands.CreateBot) action { (_, c) ⇒
       c.copy(command = Commands.CreateBot)
     } children (
+      opt[String]("host") abbr "h" optional () action { (x, c) ⇒
+        c.copy(host = Some(x))
+      },
       opt[String]("username") abbr "u" required () action { (x, c) ⇒
         c.copy(createBot = c.createBot.copy(username = x))
       },
@@ -87,6 +92,9 @@ object ActorCli extends App {
     cmd(Commands.AdminGrant) action { (_, c) ⇒
       c.copy(command = Commands.AdminGrant)
     } children (
+      opt[String]("host") abbr "h" optional () action { (x, c) ⇒
+        c.copy(host = Some(x))
+      },
       opt[Int]("userId") abbr "u" required () action { (x, c) ⇒
         c.copy(updateIsAdmin = UpdateIsAdmin(x, isAdmin = true))
       }
@@ -94,19 +102,29 @@ object ActorCli extends App {
     cmd(Commands.AdminRevoke) action { (_, c) ⇒
       c.copy(command = Commands.AdminRevoke)
     } children (
+      opt[String]("host") abbr "h" optional () action { (x, c) ⇒
+        c.copy(host = Some(x))
+      },
       opt[Int]("userId") abbr "u" required () action { (x, c) ⇒
         c.copy(updateIsAdmin = UpdateIsAdmin(x, isAdmin = false))
       }
     )
     cmd(Commands.MigrateUserSequence) action { (_, c) ⇒
       c.copy(command = Commands.MigrateUserSequence)
-    }
+    } children (
+      opt[String]("host") abbr "h" optional () action { (x, c) ⇒
+        c.copy(host = Some(x))
+      }
+    )
     cmd(Commands.HttpToken) action { (_, c) ⇒
       c.copy(command = Commands.HttpToken)
     } children (
       cmd("create") action { (_, c) ⇒
         c.copy(httpToken = c.httpToken.copy(command = "create"))
       } children (
+        opt[String]("host") abbr "h" optional () action { (x, c) ⇒
+          c.copy(host = Some(x))
+        },
         opt[Unit]("admin") abbr "a" optional () action { (x, c) ⇒
           c.copy(httpToken = c.httpToken.copy(create = c.httpToken.create.copy(isAdmin = true)))
         }
@@ -115,6 +133,9 @@ object ActorCli extends App {
     cmd(Commands.Key) action { (_, c) ⇒
       c.copy(command = Commands.Key)
     } children (
+      opt[String]("host") abbr "h" optional () action { (x, c) ⇒
+        c.copy(host = Some(x))
+      },
       opt[Unit]("create") abbr "c" required () action { (x, c) ⇒
         c.copy(key = c.key.copy(create = true))
       },
@@ -125,13 +146,13 @@ object ActorCli extends App {
   }
 
   parser.parse(args, Config()) foreach { config ⇒
-    val handlers = new CliHandlers
+    val handlers = new CliHandlers(config.host)
     val migrationHandlers = new MigrationHandlers
     val securityHandlers = new SecurityHandlers
 
     config.command match {
       case Commands.Help ⇒
-        cmd(Future.successful(parser.showUsage))
+        cmd(FastFuture.successful(parser.showUsage))
       case Commands.CreateBot ⇒
         cmd(handlers.createBot(config.createBot))
       case Commands.AdminGrant | Commands.AdminRevoke ⇒
@@ -156,7 +177,7 @@ object ActorCli extends App {
   }
 }
 
-final class CliHandlers extends BotHandlers with UsersHandlers with HttpHandlers {
+final class CliHandlers(host: Option[String]) extends BotHandlers with UsersHandlers with HttpHandlers {
   protected val BotService = "bots"
   protected val UsersService = "users"
   protected val HttpService = "http"
@@ -168,7 +189,7 @@ final class CliHandlers extends BotHandlers with UsersHandlers with HttpHandlers
     ActorSystem("actor-cli", config)
   }
 
-  protected lazy val remoteHost = InetAddress.getLocalHost.getHostAddress
+  protected lazy val remoteHost = host.getOrElse(InetAddress.getLocalHost.getHostAddress)
 
   protected lazy val initialContacts = Set(ActorPath.fromString(s"akka.tcp://actor-server@$remoteHost:2552/system/receptionist"))
 

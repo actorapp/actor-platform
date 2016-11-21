@@ -4,15 +4,15 @@
 
 import Foundation
 
-public class AADialogsListContentController: AAContentTableController, UISearchBarDelegate, UISearchDisplayDelegate {
+open class AADialogsListContentController: AAContentTableController, UISearchBarDelegate, UISearchDisplayDelegate {
     
-    public var enableDeletion: Bool = true
-    public var enableSearch: Bool = true
+    open var enableDeletion: Bool = true
+    open var enableSearch: Bool = true
     
-    public var delegate: AADialogsListContentControllerDelegate!
+    open var delegate: AADialogsListContentControllerDelegate!
     
     public init() {
-        super.init(style: .Plain)
+        super.init(style: .plain)
         
         unbindOnDissapear = true
     }
@@ -21,7 +21,7 @@ public class AADialogsListContentController: AAContentTableController, UISearchB
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func tableDidLoad() {
+    open override func tableDidLoad() {
         
         managedTable.canEditAll = true
         managedTable.canDeleteAll = true
@@ -32,7 +32,7 @@ public class AADialogsListContentController: AAContentTableController, UISearchB
         if enableSearch {
             search(AADialogSearchCell.self) { (s) -> () in
             
-                s.searchList = Actor.buildSearchDisplayList()
+                s.searchModel = Actor.buildGlobalSearchModel()
             
                 s.selectAction = { (itm) -> () in
                     self.delegate?.searchDidTap(self, entity: itm)
@@ -51,7 +51,7 @@ public class AADialogsListContentController: AAContentTableController, UISearchB
                 r.animated = true
                 
                 r.displayList = Actor.getDialogsDisplayList()
-                if r.displayList.getListProcessor() == nil {
+                if r.displayList.getProcessor() == nil {
                    r.displayList.setListProcessor(AADialogListProcessor())
                 }
                 
@@ -67,7 +67,64 @@ public class AADialogsListContentController: AAContentTableController, UISearchB
                 }
                 
                 r.editAction = { (dialog: ACDialog) -> () in
-                    self.executeSafe(Actor.deleteChatCommandWithPeer(dialog.peer))
+                    if dialog.peer.isGroup {
+                        let g = Actor.getGroupWithGid(dialog.peer.peerId)
+                        let isChannel = g.groupType == ACGroupType.channel()
+                        self.alertSheet({ (a) in
+                            
+                            // Clear History
+                            if g.isCanClear.get().booleanValue() {
+                                a.action(AALocalized("ActionClearHistory"), closure: {
+                                    self.confirmAlertUserDanger("ActionClearHistoryMessage", action: "ActionClearHistoryAction", tapYes: {
+                                        self.executeSafe(Actor.clearChatCommand(with: dialog.peer))
+                                    })
+                                })
+                            }
+                            
+                            // Delete
+                            if g.isCanLeave.get().booleanValue() && g.isMember.get().booleanValue() {
+                                if isChannel {
+                                    a.destructive(AALocalized("ActionLeaveChannel"), closure: {
+                                        self.confirmAlertUserDanger("ActionLeaveChannelMessage", action: "ActionLeaveChannelAction", tapYes: {
+                                            self.executePromise(Actor.leaveAndDeleteGroup(withGid: dialog.peer.peerId))
+                                        })
+                                    })
+                                } else {
+                                    a.destructive(AALocalized("ActionDeleteAndExit"), closure: {
+                                        self.confirmAlertUserDanger("ActionDeleteAndExitMessage", action: "ActionDeleteAndExitAction", tapYes: {
+                                            self.executePromise(Actor.leaveAndDeleteGroup(withGid: dialog.peer.peerId))
+                                        })
+                                    })
+                                }
+                            } else if g.isCanDelete.get().booleanValue()  && g.isMember.get().booleanValue(){
+                                a.destructive(AALocalized(isChannel ? "ActionDeleteChannel" : "ActionDeleteGroup"), closure: {
+                                    self.confirmAlertUserDanger(isChannel ? "ActionDeleteChannelMessage" : "ActionDeleteGroupMessage", action: "ActionDelete", tapYes: {
+                                        self.executePromise(Actor.deleteGroup(withGid: g.groupId))
+                                    })
+                                })
+                            } else {
+                                a.destructive(AALocalized("ActionDelete"), closure: {
+                                    self.confirmAlertUserDanger("ActionDeleteMessage", action: "ActionDelete", tapYes: {
+                                        self.executeSafe(Actor.deleteChatCommand(with: dialog.peer))
+                                    })
+                                })
+                            }
+                            
+                            // Cancel
+                            a.cancel = AALocalized("ActionCancel")
+                        })
+                        
+                    } else {
+                        self.alertSheet({ (a) in
+                            a.action(AALocalized("ActionClearHistory"), closure: {
+                                self.executeSafe(Actor.clearChatCommand(with: dialog.peer))
+                            })
+                            a.destructive(AALocalized("ActionDelete"), closure: {
+                                self.executeSafe(Actor.deleteChatCommand(with: dialog.peer))
+                            })
+                            a.cancel = AALocalized("ActionCancel")
+                        })
+                    }
                 }
             }
         }
@@ -81,7 +138,7 @@ public class AADialogsListContentController: AAContentTableController, UISearchB
         
     }
     
-    public override func viewWillAppear(animated: Bool) {
+    open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         // Binding empty dialogs placeholder
@@ -93,7 +150,7 @@ public class AADialogsListContentController: AAContentTableController, UISearchB
                     self.showPlaceholder()
                 } else {
                     self.hidePlaceholder()
-                    self.navigationItem.leftBarButtonItem = self.editButtonItem()
+                    self.navigationItem.leftBarButtonItem = self.editButtonItem
                 }
             }
         })

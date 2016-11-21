@@ -41,6 +41,9 @@ public class BookImportActor extends ModuleActor {
 
     private static final int MAX_IMPORT_SIZE = 50;
 
+    // Is Started
+    private boolean isStarted = false;
+
     // Reading Phone Book
     private boolean phoneBookReadingIsInProgress = false;
 
@@ -71,13 +74,20 @@ public class BookImportActor extends ModuleActor {
                 e.getLocalizedMessage();
             }
         }
+    }
 
-        self().send(new PerformSync());
+    private void start() {
+        if (!isStarted) {
+            isStarted = true;
+            self().send(new PerformSync());
+        }
     }
 
     private void performSync() {
         // Ignoring syncing if not enabled
         if (!config().isEnablePhoneBookImport()) {
+            // Marking as everything is imported
+            context().getConductor().getConductor().onPhoneBookImported();
             return;
         }
 
@@ -167,7 +177,7 @@ public class BookImportActor extends ModuleActor {
                 Log.d(TAG, "performImportIfRequired:exiting:nothing to import");
             }
             // Marking as everything is imported
-            context().getAppStateModule().onBookImported();
+            context().getConductor().getConductor().onPhoneBookImported();
             return;
         }
 
@@ -279,12 +289,21 @@ public class BookImportActor extends ModuleActor {
     @Override
     public void onReceive(Object message) {
         if (message instanceof PerformSync) {
+            if (!isStarted) {
+                return;
+            }
             performSync();
         } else if (message instanceof PhoneBookLoaded) {
             onPhoneBookLoaded(((PhoneBookLoaded) message).getPhoneBook());
+        } else if (message instanceof Start) {
+            start();
         } else {
             super.onReceive(message);
         }
+    }
+
+    public static class Start {
+
     }
 
     public static class PerformSync {

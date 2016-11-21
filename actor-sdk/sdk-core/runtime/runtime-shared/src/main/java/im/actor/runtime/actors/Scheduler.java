@@ -23,11 +23,11 @@ public class Scheduler {
         this.destDispatcher = destDispatcher;
     }
 
-    public Cancellable schedule(final Runnable runnable, long delay) {
+    public ActorCancellable schedule(final Runnable runnable, long delay) {
         if (LOG) {
             Log.d(TAG, "schedule " + ref.getPath());
         }
-        final TaskCancellable res = new TaskCancellable();
+        final TaskActorCancellable res = new TaskActorCancellable();
         res.setDispatchCancel(destDispatcher.dispatch(new Runnable() {
             @Override
             public void run() {
@@ -48,7 +48,7 @@ public class Scheduler {
         return res;
     }
 
-    private class TaskCancellable implements Cancellable {
+    private class TaskActorCancellable implements ActorCancellable {
 
         private volatile boolean isCancelled = false;
         private volatile DispatchCancel dispatchCancel;

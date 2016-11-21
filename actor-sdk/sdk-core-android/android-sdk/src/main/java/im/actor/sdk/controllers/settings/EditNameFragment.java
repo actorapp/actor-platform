@@ -14,7 +14,7 @@ import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.actors.messages.Void;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
-import im.actor.sdk.controllers.fragment.BaseFragment;
+import im.actor.sdk.controllers.BaseFragment;
 import im.actor.sdk.util.KeyboardHelper;
 
 import static im.actor.sdk.util.ActorSDKMessenger.groups;
@@ -117,18 +117,6 @@ public class EditNameFragment extends BaseFragment {
                     execute(messenger().editName(id, name), R.string.edit_name_process, new CommandCallback<Boolean>() {
                         @Override
                         public void onResult(Boolean res) {
-                            getActivity().finish();
-                        }
-
-                        @Override
-                        public void onError(Exception e) {
-                            Toast.makeText(getActivity(), R.string.toast_unable_change, Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                } else if (type == EditNameActivity.TYPE_GROUP) {
-                    execute(messenger().editGroupTitle(id, name), R.string.edit_name_process, new CommandCallback<Void>() {
-                        @Override
-                        public void onResult(Void res) {
                             getActivity().finish();
                         }
 

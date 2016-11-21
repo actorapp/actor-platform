@@ -15,13 +15,13 @@ import im.actor.core.network.mtp.MTProto;
 import im.actor.core.network.mtp.entity.EncryptedCBCPackage;
 import im.actor.core.network.mtp.entity.EncryptedPackage;
 import im.actor.core.network.mtp.entity.ProtoMessage;
-import im.actor.core.util.ExponentialBackoff;
+import im.actor.runtime.util.ExponentialBackoff;
 import im.actor.runtime.*;
 import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSelection;
 import im.actor.runtime.actors.ActorSystem;
-import im.actor.runtime.actors.Cancellable;
+import im.actor.runtime.actors.ActorCancellable;
 import im.actor.runtime.actors.Props;
 import im.actor.runtime.bser.DataInput;
 import im.actor.runtime.bser.DataOutput;
@@ -72,7 +72,7 @@ public class ManagerActor extends Actor {
     // Creating
     private boolean isCheckingConnections = false;
     private final ExponentialBackoff backoff;
-    private Cancellable checkCancellable;
+    private ActorCancellable checkCancellable;
 
     private ActorRef receiver;
     private ActorRef sender;

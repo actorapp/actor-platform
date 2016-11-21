@@ -37,8 +37,8 @@ import im.actor.core.network.NetworkState;
 import im.actor.core.utils.AppStateActor;
 import im.actor.core.utils.IOUtils;
 import im.actor.core.utils.ImageHelper;
+import im.actor.core.viewmodel.AppStateVM;
 import im.actor.core.viewmodel.Command;
-import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.GalleryVM;
 import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.Actor;
@@ -49,8 +49,6 @@ import im.actor.runtime.actors.Props;
 import im.actor.runtime.android.AndroidContext;
 import im.actor.runtime.eventbus.EventBus;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
-import im.actor.runtime.mvvm.Value;
-import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.core.utils.GalleryScannerActor;
 import me.leolin.shortcutbadger.ShortcutBadger;
 
@@ -91,7 +89,7 @@ public class AndroidMessenger extends im.actor.core.Messenger {
                                 }));
 
         // Counters
-        modules.getAppStateModule()
+        modules.getConductor()
                 .getGlobalStateVM()
                 .getGlobalCounter()
                 .subscribe((val, valueModel) -> {
@@ -258,16 +256,25 @@ public class AndroidMessenger extends im.actor.core.Messenger {
             }
             Bitmap fastThumb = ImageHelper.scaleFit(bmp, 90, 90);
 
-            String resultFileName = getExternalUploadTempFile("image", "jpg");
+            byte[] fastThumbData = ImageHelper.save(fastThumb);
+
+            boolean isGif = fullFilePath.endsWith(".gif");
+
+            String resultFileName = getExternalUploadTempFile("image", isGif ? "gif" : "jpg");
             if (resultFileName == null) {
                 return;
             }
-            ImageHelper.save(bmp, resultFileName);
 
-            byte[] fastThumbData = ImageHelper.save(fastThumb);
+            if (isGif) {
+                IOUtils.copy(new File(fullFilePath), new File(resultFileName));
+                sendAnimation(peer, fileName, bmp.getWidth(), bmp.getHeight(), new FastThumb(fastThumb.getWidth(), fastThumb.getHeight(),
+                        fastThumbData), resultFileName);
+            } else {
+                ImageHelper.save(bmp, resultFileName);
+                sendPhoto(peer, fileName, bmp.getWidth(), bmp.getHeight(), new FastThumb(fastThumb.getWidth(), fastThumb.getHeight(),
+                        fastThumbData), resultFileName);
+            }
 
-            sendPhoto(peer, fileName, bmp.getWidth(), bmp.getHeight(), new FastThumb(fastThumb.getWidth(), fastThumb.getHeight(),
-                    fastThumbData), resultFileName);
         } catch (Throwable t) {
             t.printStackTrace();
         }
@@ -302,6 +309,10 @@ public class AndroidMessenger extends im.actor.core.Messenger {
     }
 
     public Command<Boolean> sendUri(final Peer peer, final Uri uri) {
+        return sendUri(peer, uri, "Actor");
+    }
+
+    public Command<Boolean> sendUri(final Peer peer, final Uri uri, String appName) {
         return callback -> fileDownloader.execute(() -> {
             String[] filePathColumn = {MediaStore.Images.Media.DATA, MediaStore.Video.Media.MIME_TYPE,
                     MediaStore.Video.Media.TITLE};
@@ -309,25 +320,29 @@ public class AndroidMessenger extends im.actor.core.Messenger {
             String mimeType;
             String fileName;
 
+            String ext = "";
+
             Cursor cursor = context.getContentResolver().query(uri, filePathColumn, null, null, null);
             if (cursor != null) {
                 cursor.moveToFirst();
                 picturePath = cursor.getString(cursor.getColumnIndex(filePathColumn[0]));
                 mimeType = cursor.getString(cursor.getColumnIndex(filePathColumn[1]));
                 fileName = cursor.getString(cursor.getColumnIndex(filePathColumn[2]));
-                if (mimeType == null) {
-                    mimeType = "?/?";
-                }
                 cursor.close();
             } else {
                 picturePath = uri.getPath();
                 fileName = new File(uri.getPath()).getName();
                 int index = fileName.lastIndexOf(".");
                 if (index > 0) {
-                    mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileName.substring(index + 1));
+                    ext = fileName.substring(index + 1);
+                    mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext);
                 } else {
                     mimeType = "?/?";
                 }
+            }
+
+            if (mimeType == null) {
+                mimeType = "?/?";
             }
 
             if (picturePath == null || !uri.getScheme().equals("file")) {
@@ -338,10 +353,16 @@ public class AndroidMessenger extends im.actor.core.Messenger {
                 }
                 String externalPath = externalFile.getAbsolutePath();
 
-                File dest = new File(externalPath + "/Actor/");
+                File dest = new File(externalPath + "/" +
+                        appName +
+                        "/");
                 dest.mkdirs();
 
-                File outputFile = new File(dest, "upload_" + random.nextLong() + ".jpg");
+                if (ext.isEmpty() && picturePath != null) {
+                    int index = picturePath.lastIndexOf(".");
+                    ext = picturePath.substring(index + 1);
+                }
+                File outputFile = new File(dest, "upload_" + random.nextLong() + "." + ext);
                 picturePath = outputFile.getAbsolutePath();
 
                 try {
@@ -357,6 +378,8 @@ public class AndroidMessenger extends im.actor.core.Messenger {
                 fileName = picturePath;
             }
 
+            if (!ext.isEmpty() && !fileName.endsWith(ext))
+                fileName += "." + ext;
             if (mimeType.startsWith("video/")) {
                 sendVideo(peer, picturePath, fileName);
 //                            trackVideoSend(peer);
@@ -499,6 +522,13 @@ public class AndroidMessenger extends im.actor.core.Messenger {
     public GalleryVM getGalleryVM() {
         if (galleryVM == null) {
             galleryVM = new GalleryVM();
+            checkGalleryScannerActor();
+        }
+        return galleryVM;
+    }
+
+    protected void checkGalleryScannerActor() {
+        if (galleryScannerActor == null) {
             galleryScannerActor = ActorSystem.system().actorOf(Props.create(new ActorCreator() {
                 @Override
                 public Actor create() {
@@ -506,15 +536,23 @@ public class AndroidMessenger extends im.actor.core.Messenger {
                 }
             }), "actor/gallery_scanner");
         }
-        return galleryVM;
     }
 
     public ActorRef getGalleryScannerActor() {
+        checkGalleryScannerActor();
         return galleryScannerActor;
     }
 
     public EventBus getEvents() {
         return modules.getEvents();
+    }
+
+    public AppStateVM getAppStateVM() {
+        return modules.getConductor().getAppStateVM();
+    }
+
+    public void startImport() {
+        modules.getContactsModule().startImport();
     }
 
 }

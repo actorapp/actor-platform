@@ -13,6 +13,7 @@ import im.actor.core.entity.ContentType;
 import im.actor.core.entity.Dialog;
 import im.actor.core.entity.DialogBuilder;
 import im.actor.core.entity.Group;
+import im.actor.core.entity.GroupType;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.User;
@@ -86,14 +87,18 @@ public class DialogsActor extends ModuleActor {
                     .setMessageType(contentDescription.getContentType())
                     .setText(contentDescription.getText())
                     .setRelatedUid(contentDescription.getRelatedUser())
-                    .setSenderId(message.getSenderId());
+                    .setSenderId(message.getSenderId())
+                    .setDialogTitle(peerDesc.getTitle())
+                    .setDialogAvatar(peerDesc.getAvatar())
+                    .setIsBot(peerDesc.isBot())
+                    .setIsChannel(peerDesc.isChannel());
 
             if (counter >= 0) {
                 builder.setUnreadCount(counter);
             }
 
             boolean forceUpdate = false;
-
+            boolean needUpdateSearch = false;
             if (dialog != null) {
                 // Ignore old messages if no force
                 if (!forceWrite && dialog.getSortDate() > message.getSortDate()) {
@@ -102,8 +107,6 @@ public class DialogsActor extends ModuleActor {
                 }
 
                 builder.setPeer(dialog.getPeer())
-                        .setDialogTitle(dialog.getDialogTitle())
-                        .setDialogAvatar(dialog.getDialogAvatar())
                         .setSortKey(dialog.getSortDate())
                         .updateKnownReceiveDate(dialog.getKnownReceiveDate())
                         .updateKnownReadDate(dialog.getKnownReadDate());
@@ -121,14 +124,16 @@ public class DialogsActor extends ModuleActor {
                 }
 
                 builder.setPeer(peer)
-                        .setDialogTitle(peerDesc.getTitle())
-                        .setDialogAvatar(peerDesc.getAvatar())
                         .setSortKey(message.getSortDate());
-
+                needUpdateSearch = true;
                 forceUpdate = true;
             }
 
-            addOrUpdateItem(builder.createDialog());
+            Dialog dialog1 = builder.createDialog();
+            addOrUpdateItem(dialog1);
+            if (needUpdateSearch) {
+                updateSearch(dialog1);
+            }
             notifyState(forceUpdate);
         }
 
@@ -301,7 +306,6 @@ public class DialogsActor extends ModuleActor {
         }
         addOrUpdateItems(updated);
         updateSearch(updated);
-        context().getAppStateModule().onDialogsLoaded();
         notifyState(true);
         return Promise.success(null);
     }
@@ -333,7 +337,7 @@ public class DialogsActor extends ModuleActor {
 
         if (!isEmpty.equals(emptyNotified)) {
             emptyNotified = isEmpty;
-            context().getAppStateModule().onDialogsUpdate(isEmpty);
+            context().getConductor().getConductor().onDialogsChanged(isEmpty);
         }
     }
 
@@ -342,10 +346,10 @@ public class DialogsActor extends ModuleActor {
         switch (peer.getPeerType()) {
             case PRIVATE:
                 User u = getUser(peer.getPeerId());
-                return new PeerDesc(u.getName(), u.getAvatar());
+                return new PeerDesc(u.getName(), u.getAvatar(), u.isBot(), false);
             case GROUP:
                 Group g = getGroup(peer.getPeerId());
-                return new PeerDesc(g.getTitle(), g.getAvatar());
+                return new PeerDesc(g.getTitle(), g.getAvatar(), false, g.getGroupType() == GroupType.CHANNEL);
             default:
                 return null;
         }
@@ -355,10 +359,14 @@ public class DialogsActor extends ModuleActor {
 
         private String title;
         private Avatar avatar;
+        private boolean isBot;
+        private boolean isChannel;
 
-        private PeerDesc(String title, Avatar avatar) {
+        private PeerDesc(String title, Avatar avatar, boolean isBot, boolean isChannel) {
             this.title = title;
             this.avatar = avatar;
+            this.isBot = isBot;
+            this.isChannel = isChannel;
         }
 
         public String getTitle() {
@@ -367,6 +375,14 @@ public class DialogsActor extends ModuleActor {
 
         public Avatar getAvatar() {
             return avatar;
+        }
+
+        public boolean isBot() {
+            return isBot;
+        }
+
+        public boolean isChannel() {
+            return isChannel;
         }
     }
 

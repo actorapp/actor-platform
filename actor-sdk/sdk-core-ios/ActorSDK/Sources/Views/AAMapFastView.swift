@@ -5,9 +5,9 @@
 import Foundation
 import MapKit
 
-public class AAMapFastView: UIImageView {
+open class AAMapFastView: UIImageView {
     
-    static private var mapCache = AASwiftlyLRU<String, UIImage>(capacity: 16)
+    static fileprivate var mapCache = AASwiftlyLRU<String, UIImage>(capacity: 16)
     
     let mapWidth: CGFloat
     let mapHeight: CGFloat
@@ -23,7 +23,7 @@ public class AAMapFastView: UIImageView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func bind(latitude: Double, longitude: Double) {
+    func bind(_ latitude: Double, longitude: Double) {
         let key = "\(Int(latitude * 1000000))_\(Int(longitude * 1000000))"
         
         // Same Key
@@ -41,11 +41,11 @@ public class AAMapFastView: UIImageView {
         
         let options = MKMapSnapshotOptions()
         options.region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: latitude, longitude: longitude), span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005))
-        options.size = CGSizeMake(mapWidth, mapHeight)
-        options.scale = UIScreen.mainScreen().scale
+        options.size = CGSize(width: mapWidth, height: mapHeight)
+        options.scale = UIScreen.main.scale
         
         let snapshotter = MKMapSnapshotter(options: options)
-        snapshotter.startWithCompletionHandler { snapshot, error in
+        snapshotter.start (completionHandler: { snapshot, error in
             if let img = snapshot?.image {
                 let rounded = img.roundCorners(img.size.width, h: img.size.height, roundSize: 14)
                 dispatchOnUi {
@@ -53,6 +53,6 @@ public class AAMapFastView: UIImageView {
                     self.image = rounded
                 }
             }
-        }
+        })
     }
 }

@@ -374,10 +374,10 @@ public class MarkdownParser {
      * @return is good anchor
      */
     private boolean isGoodAnchor(String text, int index) {
-        // Check if there is space after block
+        // Check if there is space and punctuation mark after block
+        String punct = " .,:!?\t\n";
         if (index >= 0 && index < text.length()) {
-            char postfix = text.charAt(index);
-            if (postfix != ' ' && postfix != '\t' && postfix != '\n') {
+            if (punct.indexOf(text.charAt(index)) == -1) {
                 return false;
             }
         }

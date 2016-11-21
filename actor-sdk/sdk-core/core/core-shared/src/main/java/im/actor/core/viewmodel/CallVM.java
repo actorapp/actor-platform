@@ -8,9 +8,6 @@ import im.actor.core.entity.Peer;
 import im.actor.core.viewmodel.generics.ArrayListMediaTrack;
 import im.actor.core.viewmodel.generics.BooleanValueModel;
 import im.actor.runtime.mvvm.ValueModel;
-import im.actor.runtime.webrtc.WebRTCMediaStream;
-import im.actor.runtime.webrtc.WebRTCMediaTrack;
-import im.actor.runtime.webrtc.WebRTCPeerConnection;
 
 public class CallVM {
 
@@ -38,6 +35,8 @@ public class CallVM {
     private final BooleanValueModel isAudioEnabled;
     @Property("nonatomic, readonly")
     private final BooleanValueModel isVideoEnabled;
+    @Property("nonatomic, readonly")
+    private final boolean isVideoPreferred;
 
     @Property("nonatomic, readonly")
     private final ValueModel<ArrayList<CallMember>> members;
@@ -48,7 +47,7 @@ public class CallVM {
     @Property("nonatomic, readonly")
     private final boolean isOutgoing;
 
-    public CallVM(long callId, Peer peer, boolean isOutgoing, boolean isVideoEnabled, ArrayList<CallMember> initialMembers, CallState state) {
+    public CallVM(long callId, Peer peer, boolean isOutgoing, boolean isVideoEnabled, boolean isVideoPreferred, ArrayList<CallMember> initialMembers, CallState state) {
         this.callId = callId;
         this.peer = peer;
         this.isOutgoing = isOutgoing;
@@ -60,6 +59,7 @@ public class CallVM {
         this.members = new ValueModel<>("calls." + callId + ".members", new ArrayList<>(initialMembers));
         this.isAudioEnabled = new BooleanValueModel("calls." + callId + ".audio_enabled", true);
         this.isVideoEnabled = new BooleanValueModel("calls." + callId + ".video_enabled", isVideoEnabled);
+        this.isVideoPreferred = isVideoPreferred;
         this.callStart = 0;
     }
 
@@ -89,6 +89,10 @@ public class CallVM {
 
     public ValueModel<ArrayList<CallMember>> getMembers() {
         return members;
+    }
+
+    public boolean isVideoPreferred() {
+        return isVideoPreferred;
     }
 
     public void setCallStart(long callStart) {

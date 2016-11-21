@@ -2,7 +2,6 @@ package im.actor.server
 
 import akka.actor.ActorSystem
 import akka.stream.Materializer
-import im.actor.server.activation.ActivationContext
 import im.actor.server.api.rpc.service.auth.AuthServiceImpl
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.session.SessionRegion
@@ -14,8 +13,16 @@ trait ImplicitAuthService {
   protected implicit val db: Database
   protected implicit val sessionRegion: SessionRegion
 
-  private val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
-  private implicit lazy val oauth2Service = new GoogleProvider(oauthGoogleConfig)
-
-  implicit lazy val authService = new AuthServiceImpl
+  protected val oauthConfig = OAuth2GoogleConfig(
+    "http://localhost:3000/o/oauth2/auth",
+    "http://localhost:3000",
+    "http://localhost:3000",
+    "actor",
+    "AA1865139A1CACEABFA45E6635AA7761",
+    "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile"
+  )
+  implicit lazy val authService = {
+    val oauth2Service = new GoogleProvider(oauthConfig)
+    new AuthServiceImpl(oauth2Service)
+  }
 }

@@ -4,7 +4,7 @@
 
 import UIKit
 
-public class AAAddParticipantViewController: AAContactsListContentController, AAContactsListContentControllerDelegate {
+open class AAAddParticipantViewController: AAContactsListContentController, AAContactsListContentControllerDelegate {
 
     public init (gid: Int) {
         super.init()
@@ -17,46 +17,48 @@ public class AAAddParticipantViewController: AAContactsListContentController, AA
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func viewDidLoad() {
+    open override func viewDidLoad() {
         super.viewDidLoad()
         
         title = AALocalized("GroupAddParticipantTitle")
         
-        navigationItem.leftBarButtonItem = UIBarButtonItem(
-                    title: AALocalized("NavigationCancel"),
-                    style: UIBarButtonItemStyle.Plain,
-                    target: self, action: #selector(AAViewController.dismiss))
+//        navigationItem.leftBarButtonItem = UIBarButtonItem(
+//                    title: AALocalized("NavigationCancel"),
+//                    style: UIBarButtonItemStyle.plain,
+//                    target: self, action: #selector(AAViewController.dismiss))
     }
     
-    public func willAddContacts(controller: AAContactsListContentController, section: AAManagedSection) {
-        section.custom { (r:AACustomRow<AAContactActionCell>) -> () in
-            r.height = 56
-            r.closure = { (cell) -> () in
-                cell.bind("ic_invite_user", actionTitle: AALocalized("GroupAddParticipantUrl"))
-            }
-            r.selectAction = { () -> Bool in
-                self.navigateNext(AAInviteLinkViewController(gid: self.gid), removeCurrent: false)
-                return false
+    open func willAddContacts(_ controller: AAContactsListContentController, section: AAManagedSection) {
+        if group.isCanInviteViaLink.get().booleanValue() {
+            section.custom { (r:AACustomRow<AAContactActionCell>) -> () in
+                r.height = 56
+                r.closure = { (cell) -> () in
+                    cell.bind("ic_invite_user", actionTitle: AALocalized("GroupAddParticipantUrl"))
+                }
+                r.selectAction = { () -> Bool in
+                    self.navigateNext(AAInviteLinkViewController(gid: self.gid), removeCurrent: false)
+                    return false
+                }
             }
         }
     }
     
-    public func contactDidBind(controller: AAContactsListContentController, contact: ACContact, cell: AAContactCell) {
+    open func contactDidBind(_ controller: AAContactsListContentController, contact: ACContact, cell: AAContactCell) {
         cell.bindDisabled(isAlreadyMember(contact.uid))
     }
     
-    public func contactDidTap(controller: AAContactsListContentController, contact: ACContact) -> Bool {
+    open func contactDidTap(_ controller: AAContactsListContentController, contact: ACContact) -> Bool {
         
         if !isAlreadyMember(contact.uid) {
-            self.executeSafeOnlySuccess(Actor.inviteMemberCommandWithGid(jint(gid), withUid: jint(contact.uid))!) { (val) -> () in
-                self.dismiss()
+            self.executeSafeOnlySuccess(Actor.inviteMemberCommand(withGid: jint(gid), withUid: jint(contact.uid))) { (val) -> () in
+                self.dismissController()
             }
         }
         return true
     }
     
-    public func isAlreadyMember(uid: jint) -> Bool {
-        let members: [ACGroupMember] = group.getMembersModel().get().toArray().toSwiftArray()
+    open func isAlreadyMember(_ uid: jint) -> Bool {
+        let members: [ACGroupMember] = (group.getMembersModel().get() as AnyObject).toArray().toSwiftArray()
         for m in members {
             if m.uid == uid {
                 return true

@@ -29,10 +29,10 @@
 
         <LinearLayout
             android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical"
             android:gravity="center_vertical"
-            android:layout_height="match_parent">
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/name"
@@ -49,11 +49,13 @@
                 android:id="@+id/online"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:drawablePadding="4dp"
                 android:ellipsize="end"
-                android:text="@string/online"
                 android:gravity="center_vertical"
+                android:text="@string/online"
                 android:textColor="@color/conv_online" />
         </LinearLayout>
+
         <TextView
             android:id="@+id/adminFlag"
             android:layout_width="wrap_content"
@@ -64,9 +66,9 @@
             android:textSize="16sp" />
     </LinearLayout>
 
-    <View
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/div_size"
-        android:layout_marginLeft="72dp" />
+    <!--<View-->
+    <!--android:id="@+id/divider"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="@dimen/div_size"-->
+    <!--android:layout_marginLeft="72dp" />-->
 </LinearLayout>

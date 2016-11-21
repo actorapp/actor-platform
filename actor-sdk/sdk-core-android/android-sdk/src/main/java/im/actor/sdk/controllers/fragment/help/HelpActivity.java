@@ -12,6 +12,6 @@ public class HelpActivity extends BaseFragmentActivity {
 
         getSupportActionBar().setTitle(R.string.help_title);
 
-        showFragment(new HelpFragment(), false, false);
+        showFragment(new HelpFragment(), false);
     }
 }

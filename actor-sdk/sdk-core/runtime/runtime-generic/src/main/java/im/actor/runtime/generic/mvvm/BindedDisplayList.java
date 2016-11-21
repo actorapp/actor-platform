@@ -91,7 +91,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
     @MainThread
     @ObjectiveCName("touchWithIndex:")
     public void touch(int index) {
-        im.actor.runtime.Runtime.checkMainThread();
+        // im.actor.runtime.Runtime.checkMainThread();
 
         if (index >= getSize() - loadGap) {
             if (window.isForwardCompleted()) {
@@ -127,7 +127,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
     @MainThread
     @ObjectiveCName("initEmpty")
     public void initEmpty() {
-        im.actor.runtime.Runtime.checkMainThread();
+        // im.actor.runtime.Runtime.checkMainThread();
 
         pendingModifications.clear();
         mode = ListMode.FORWARD;
@@ -143,7 +143,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
     @MainThread
     @ObjectiveCName("initTopWithRefresh:")
     public void initTop(boolean refresh) {
-        im.actor.runtime.Runtime.checkMainThread();
+        // im.actor.runtime.Runtime.checkMainThread();
 
         // Log.d(TAG, "initTop(:" + refresh + ")");
 
@@ -186,7 +186,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
     @MainThread
     @ObjectiveCName("initBottomWithRefresh:")
     public void initBottom(boolean refresh) {
-        im.actor.runtime.Runtime.checkMainThread();
+        // im.actor.runtime.Runtime.checkMainThread();
 
         if (isGlobalList) {
             throw new RuntimeException("Global DisplayList can't grow from bottom");
@@ -231,9 +231,9 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
     @MainThread
     @ObjectiveCName("initCenterWithKey:withRefresh:")
     public void initCenter(long centerSortKey, boolean refresh) {
-        im.actor.runtime.Runtime.checkMainThread();
+        // im.actor.runtime.Runtime.checkMainThread();
 
-        if (mode != null && mode == ListMode.CENTER) {
+        if (!refresh && mode != null && mode == ListMode.CENTER) {
             return;
         }
         mode = ListMode.CENTER;
@@ -273,7 +273,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
     @MainThread
     @ObjectiveCName("initSearchWithQuery:withRefresh:")
     public void initSearch(String query, boolean refresh) {
-        im.actor.runtime.Runtime.checkMainThread();
+        // im.actor.runtime.Runtime.checkMainThread();
 
         if (isGlobalList) {
             throw new RuntimeException("Global DisplayList can't perform search");
@@ -324,7 +324,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
 
     @MainThread
     private void loadMoreForward() {
-        im.actor.runtime.Runtime.checkMainThread();
+        // im.actor.runtime.Runtime.checkMainThread();
 
         // Log.d(TAG, "Requesting loading more...");
 
@@ -353,11 +353,16 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
 
                 if (items.size() == 0) {
                     window.onForwardCompleted();
+                    if (bindHook != null) {
+                        bindHook.onScrolledToEnd();
+                    }
                     // Log.d(TAG, "isLoadMoreForwardRequested = false: sync");
                     isLoadMoreForwardRequested = false;
                 } else {
                     window.onForwardSliceLoaded(bottomSortKey);
-                    if (linearLayoutCallback != null) linearLayoutCallback.setStackFromEnd(false);
+                    if (linearLayoutCallback != null) {
+                        linearLayoutCallback.setStackFromEnd(false);
+                    }
                     editList(Modifications.addLoadMore(items), new Runnable() {
                         @Override
                         public void run() {
@@ -382,7 +387,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
 
     @MainThread
     private void loadMoreBackward() {
-        im.actor.runtime.Runtime.checkMainThread();
+        // im.actor.runtime.Runtime.checkMainThread();
 
         if (isLoadMoreBackwardRequested) {
             return;

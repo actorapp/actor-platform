@@ -11,7 +11,6 @@ import im.actor.core.providers.NotificationProvider;
 import im.actor.core.providers.PhoneBookProvider;
 import im.actor.core.providers.CallsProvider;
 import im.actor.runtime.mtproto.ConnectionEndpoint;
-import im.actor.runtime.webrtc.WebRTCIceServer;
 
 /**
  * Configuration for Messenger
@@ -57,9 +56,17 @@ public class Configuration {
     @Property("readonly, nonatomic")
     private final boolean enablePhoneBookImport;
     @Property("readonly, nonatomic")
+    private final boolean enableOnClientPrivacy;
+    @Property("readonly, nonatomic")
     private final CallsProvider callsProvider;
     @Property("readonly, nonatomic")
+    private final RawUpdatesHandler rawUpdatesHandler;
+    @Property("readonly, nonatomic")
     private final boolean isEnabledGroupedChatList;
+    @Property("readonly, nonatomic")
+    private final String[] autoJoinGroups;
+    @Property("readonly, nonatomic")
+    private final AutoJoinType autoJoinType;
 
     Configuration(ConnectionEndpoint[] endpoints,
                   PhoneBookProvider phoneBookProvider,
@@ -78,10 +85,14 @@ public class Configuration {
                   String customAppName,
                   TrustedKey[] trustedKeys,
                   boolean enablePhoneBookImport,
+                  boolean enableOnClientPrivcy,
                   CallsProvider callsProvider,
+                  RawUpdatesHandler rawUpdatesHandler,
                   boolean voiceCallsEnabled,
                   boolean videoCallsEnabled,
-                  boolean isEnabledGroupedChatList) {
+                  boolean isEnabledGroupedChatList,
+                  String[] autoJoinGroups,
+                  AutoJoinType autoJoinType) {
         this.endpoints = endpoints;
         this.phoneBookProvider = phoneBookProvider;
         this.enableContactsLogging = enableContactsLogging;
@@ -99,10 +110,14 @@ public class Configuration {
         this.customAppName = customAppName;
         this.trustedKeys = trustedKeys;
         this.enablePhoneBookImport = enablePhoneBookImport;
+        this.enableOnClientPrivacy = enableOnClientPrivcy;
         this.callsProvider = callsProvider;
+        this.rawUpdatesHandler = rawUpdatesHandler;
         this.voiceCallsEnabled = voiceCallsEnabled;
         this.videoCallsEnabled = videoCallsEnabled;
         this.isEnabledGroupedChatList = isEnabledGroupedChatList;
+        this.autoJoinGroups = autoJoinGroups;
+        this.autoJoinType = autoJoinType;
     }
 
     /**
@@ -133,12 +148,30 @@ public class Configuration {
     }
 
     /**
+     * Getting RawUpdatesHandler if set
+     *
+     * @return raw updates handler
+     */
+    public RawUpdatesHandler getRawUpdatesHandler() {
+        return rawUpdatesHandler;
+    }
+
+    /**
      * Getting if app automatically imports phone book to server
      *
      * @return if phone book enabled
      */
     public boolean isEnablePhoneBookImport() {
         return enablePhoneBookImport;
+    }
+
+    /**
+     * Getting if app check if contact not in phone book and hides phone/email in that case
+     *
+     * @return if on client privacy enabled
+     */
+    public boolean isEnableOnClientPrivacy() {
+        return enableOnClientPrivacy;
     }
 
     /**
@@ -292,5 +325,23 @@ public class Configuration {
      */
     public boolean isEnabledGroupedChatList() {
         return isEnabledGroupedChatList;
+    }
+
+    /**
+     * Get Auto Join groups
+     *
+     * @return list of auto join groups
+     */
+    public String[] getAutoJoinGroups() {
+        return autoJoinGroups;
+    }
+
+    /**
+     * Get Auto Join Type
+     *
+     * @return auto join type
+     */
+    public AutoJoinType getAutoJoinType() {
+        return autoJoinType;
     }
 }

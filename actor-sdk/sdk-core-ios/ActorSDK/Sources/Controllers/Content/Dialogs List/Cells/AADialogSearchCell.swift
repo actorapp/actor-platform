@@ -4,21 +4,21 @@
 
 import UIKit
 
-public class AADialogSearchCell: AATableViewCell, AABindedSearchCell {
+open class AADialogSearchCell: AATableViewCell, AABindedSearchCell {
     
-    public typealias BindData = ACSearchEntity
+    public typealias BindData = ACSearchResult
     
-    public static func bindedCellHeight(item: BindData) -> CGFloat {
+    open static func bindedCellHeight(_ item: BindData) -> CGFloat {
         
         return 76
     }
     
-    private let avatarView: AAAvatarView = AAAvatarView()
-    private let titleView: UILabel = UILabel()
+    fileprivate let avatarView: AAAvatarView = AAAvatarView()
+    fileprivate let titleView: UILabel = UILabel()
     
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         
-        super.init(style: UITableViewCellStyle.Default, reuseIdentifier: reuseIdentifier)
+        super.init(style: UITableViewCellStyle.default, reuseIdentifier: reuseIdentifier)
         
         titleView.font = UIFont.mediumSystemFontOfSize(19)
         titleView.textColor = ActorSDK.sharedActor().style.dialogTextColor
@@ -31,24 +31,24 @@ public class AADialogSearchCell: AATableViewCell, AABindedSearchCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public func bind(item: ACSearchEntity, search: String?) {
+    open func bind(_ item: ACSearchResult, search: String?) {
         avatarView.bind(item.title, id: Int(item.peer.peerId), avatar: item.avatar)
         titleView.text = item.title
     }
     
-    public override func prepareForReuse() {
+    open override func prepareForReuse() {
         super.prepareForReuse()
         avatarView.unbind()
     }
     
-    public override func layoutSubviews() {
+    open override func layoutSubviews() {
         super.layoutSubviews()
         
         let width = self.contentView.frame.width
         let leftPadding = CGFloat(76)
         let padding = CGFloat(14)
         
-        avatarView.frame = CGRectMake(padding, padding, 52, 52)
-        titleView.frame = CGRectMake(leftPadding, 0, width - leftPadding - (padding + 50), contentView.bounds.size.height)
+        avatarView.frame = CGRect(x: padding, y: padding, width: 52, height: 52)
+        titleView.frame = CGRect(x: leftPadding, y: 0, width: width - leftPadding - (padding + 50), height: contentView.bounds.size.height)
     }
 }

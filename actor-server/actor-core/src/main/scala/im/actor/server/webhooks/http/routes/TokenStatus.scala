@@ -14,7 +14,7 @@ trait TokenStatus extends PlayJsonSupport {
 
   def status: Route = {
     path(Segment / "status") { token ⇒
-      onSuccess(integrationTokensKv.get(token)) {
+      onSuccess(integrationTokensKV.getGroupId(token)) {
         case Some(_) ⇒ complete(OK → Status("Ok"))
         case None    ⇒ complete(Gone → Errors("This token no longer exists(or never existed)"))
       }

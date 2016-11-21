@@ -40,8 +40,6 @@ final class RichMessageWorker(config: RichMessageConfig) extends Actor with Acto
 
   override val log = Logging(system, this)
 
-  private val previewMaker = PreviewMaker(config, "previewMaker")
-
   private val privateSubscribe = Subscribe(pubSubExt.privateMessagesTopic, groupId, self)
   private val publicSubscribe = Subscribe(pubSubExt.groupMessagesTopic, None, self)
 
@@ -82,9 +80,9 @@ final class RichMessageWorker(config: RichMessageConfig) extends Actor with Acto
         val ext = Try(mimeType.split("/").last).getOrElse("tmp")
         s"$name.$ext"
       }
-      val image = Image(imageBytes.toArray).toPar
+      val image = Image(imageBytes).toPar
       for {
-        location ← fsAdapter.uploadFileF(UnsafeFileName(fullName), imageBytes.toArray)
+        location ← fsAdapter.uploadFileF(UnsafeFileName(fullName), imageBytes)
         thumb ← ImageUtils.scaleTo(image, 90)
         thumbBytes = thumb.toImage.forWriter(JpegWriter()).bytes
 
@@ -94,16 +92,21 @@ final class RichMessageWorker(config: RichMessageConfig) extends Actor with Acto
         updated = ApiDocumentMessage(
           fileId = location.fileId,
           accessHash = location.accessHash,
-          fileSize = imageBytes.size,
+          fileSize = imageBytes.length,
           name = fullName,
           mimeType = mimeType,
           thumb = Some(ApiFastThumb(thumb.width, thumb.height, thumbBytes)),
           ext = Some(ApiDocumentExPhoto(image.width, image.height))
         )
-        _ ← updateMessageContent(clientUserId, peer, randomId, updated)
+        _ ← updateMessageContent(clientUserId, 0L, peer, randomId, updated)
       } yield ()
     case PreviewFailure(mess, randomId) ⇒
       log.debug("failed to make preview for message with randomId: {}, cause: {} ", randomId, mess)
+  }
+
+  private def previewMaker: ActorRef = {
+    val name = "preview-maker"
+    context.child(name).getOrElse(context.actorOf(PreviewMaker.props(config), name))
   }
 
 }

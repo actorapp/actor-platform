@@ -6,7 +6,7 @@ sealed trait EmailExtension extends Extension
 
 final class EmailExtensionImpl(system: ActorSystem) extends EmailExtension {
   import system.dispatcher
-  private val config = EmailConfig.load.get
+  private val config = EmailConfig.load.getOrElse(throw new RuntimeException("Failed to load email config"))
   val sender: EmailSender = new SmtpEmailSender(config)
 }
 

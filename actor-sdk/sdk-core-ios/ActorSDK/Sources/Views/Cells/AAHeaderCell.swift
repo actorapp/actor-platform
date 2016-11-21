@@ -4,22 +4,22 @@
 
 import Foundation
 
-public class AAHeaderCell: AATableViewCell {
+open class AAHeaderCell: AATableViewCell {
     
-    public var titleView = UILabel()
-    public var iconView = UIImageView()
+    open var titleView = UILabel()
+    open var iconView = UIImageView()
     
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         contentView.backgroundColor = appStyle.vcBackyardColor
-        selectionStyle = UITableViewCellSelectionStyle.None
+        selectionStyle = UITableViewCellSelectionStyle.none
         
         titleView.textColor = appStyle.cellHeaderColor
-        titleView.font = UIFont.systemFontOfSize(14)
+        titleView.font = UIFont.systemFont(ofSize: 14)
         contentView.addSubview(titleView)
         
-        iconView.contentMode = UIViewContentMode.ScaleAspectFill
+        iconView.contentMode = UIViewContentMode.scaleAspectFill
         contentView.addSubview(iconView)
     }
     
@@ -27,13 +27,13 @@ public class AAHeaderCell: AATableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func layoutSubviews() {
+    open override func layoutSubviews() {
         super.layoutSubviews()
         
         let height = self.contentView.bounds.height
         let width = self.contentView.bounds.width
         
-        titleView.frame = CGRectMake(15, height - 28, width - 48, 24)
-        iconView.frame = CGRectMake(width - 18 - 15, height - 18 - 4, 18, 18)
+        titleView.frame = CGRect(x: 15, y: height - 28, width: width - 48, height: 24)
+        iconView.frame = CGRect(x: width - 18 - 15, y: height - 18 - 4, width: 18, height: 18)
     }
 }

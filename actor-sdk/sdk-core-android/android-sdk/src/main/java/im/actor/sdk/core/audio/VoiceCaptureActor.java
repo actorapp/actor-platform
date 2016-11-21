@@ -14,13 +14,8 @@ import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.Props;
 
-/**
- * Created by root on 11/5/15.
- */
 public class VoiceCaptureActor extends Actor {
 
-
-    public static final AtomicInteger LAST_ID = new AtomicInteger(0);
 
     private static final int BUFFER_SIZE = 16 * 1024;
 

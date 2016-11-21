@@ -3,15 +3,15 @@ package im.actor.server.migrations
 import java.time.Instant
 
 import akka.actor.{ Actor, ActorLogging, ActorSystem }
+import akka.http.scaladsl.util.FastFuture
 import akka.persistence.PersistentActor
 import akka.util.Timeout
 import im.actor.config.ActorConfig
 import im.actor.server.KeyValueMappings
 import shardakka.{ InstantCodec, ShardakkaExtension }
-import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.duration._
-import scala.concurrent.{ Promise, Await, ExecutionContext, Future }
+import scala.concurrent.{ Await, Future, Promise }
 
 trait Migration {
 
@@ -19,15 +19,16 @@ trait Migration {
 
   protected def migrationTimeout: Duration
 
-  protected def startMigration()(implicit system: ActorSystem, db: Database, ec: ExecutionContext): Future[Unit]
+  protected def startMigration()(implicit system: ActorSystem): Future[Unit]
 
-  def migrate()(implicit system: ActorSystem, db: Database, ec: ExecutionContext): Unit = {
+  def migrate()(implicit system: ActorSystem): Unit = {
+    import system.dispatcher
     implicit val kvTimeout = Timeout(ActorConfig.defaultTimeout)
     val migrations = ShardakkaExtension(system).simpleKeyValue[Instant](KeyValueMappings.Migrations, InstantCodec)
     Await.result(migrations.get(migrationName) flatMap {
       case Some(date) ⇒
         system.log.debug(s"Migration $migrationName will not run. Already completed at $date")
-        Future.successful(())
+        FastFuture.successful(())
       case _ ⇒
         system.log.warning(s"Migration $migrationName started")
         startMigration() flatMap { _ ⇒

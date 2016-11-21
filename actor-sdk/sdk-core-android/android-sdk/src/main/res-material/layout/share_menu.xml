@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="232dp"
-    android:layout_above="@+id/fl_send_panel"
-    android:visibility="invisible"
-    android:orientation="vertical"
-    android:gravity="bottom|center_horizontal"
-    android:background="@android:color/transparent"
-    tools:showIn="@layout/activity_dialog">
+    android:layout_height="match_parent">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/fast_share"
+    <View
+        android:id="@+id/cancelField"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/fast_share_size" />
+        android:layout_height="match_parent"
+        android:clickable="true" />
 
-    <FrameLayout
-        android:id="@+id/share_row_one"
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent" />
+    <LinearLayout
+        android:id="@+id/menu_bg"
+        android:layout_width="match_parent"
+        android:layout_height="191dp"
+        android:paddingTop="10dp"
+        android:layout_gravity="bottom"
+        android:orientation="vertical">
+        <FrameLayout
+            android:id="@+id/share_row_one"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent" />
 
-</LinearLayout>
+    </LinearLayout>
+</FrameLayout>

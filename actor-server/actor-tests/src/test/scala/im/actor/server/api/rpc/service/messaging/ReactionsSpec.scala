@@ -27,7 +27,7 @@ final class ReactionsSpec
 
     val randomId = {
       implicit val clientData = aliceClient
-      sendMessageToUser(bob.id, textMessage("Hi bob, do you like me?"))
+      sendMessageToUser(bob.id, textMessage("Hi bob, do you like me?"))._1
     }
 
     {
@@ -65,7 +65,7 @@ final class ReactionsSpec
     val (peer, randomId) = {
       implicit val clientData = aliceClient
       val group = createGroup("Alice and Bob", Set(bob.id))
-      val randomId = sendMessageToGroup(group.groupPeer.groupId, textMessage("Do you like me?"))
+      val randomId = sendMessageToGroup(group.groupPeer.groupId, textMessage("Do you like me?"))._1
       (ApiOutPeer(ApiPeerType.Group, group.groupPeer.groupId, group.groupPeer.accessHash), randomId)
     }
 

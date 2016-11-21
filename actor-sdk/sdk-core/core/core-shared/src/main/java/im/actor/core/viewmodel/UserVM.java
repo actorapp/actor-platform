@@ -69,6 +69,8 @@ public class UserVM extends BaseValueModel<User> {
     @NotNull
     private BooleanValueModel isContact;
     @NotNull
+    private BooleanValueModel isInPhoneBook;
+    @NotNull
     private BooleanValueModel isBlocked;
     @NotNull
     private BooleanValueModel isVerified;
@@ -112,6 +114,7 @@ public class UserVM extends BaseValueModel<User> {
         about = new StringValueModel("user." + id + ".about", user.getAbout());
         avatar = new AvatarValueModel("user." + id + ".avatar", user.getAvatar());
         isContact = new BooleanValueModel("user." + id + ".contact", modules.getContactsModule().isUserContact(id));
+        isInPhoneBook = new BooleanValueModel("user." + id + ".in_pb", modules.getContactsModule().isUserInPhoneBook(id));
         isBlocked = new BooleanValueModel("user." + id + ".blocked", user.isBlocked());
         isVerified = new BooleanValueModel("user." + id + ".is_verified", user.isVerified());
         timeZone = new StringValueModel("user." + id + ".time_zone", user.getTimeZone());
@@ -265,6 +268,17 @@ public class UserVM extends BaseValueModel<User> {
     }
 
     /**
+     * Get ValueModel of flag if user is in phone book
+     *
+     * @return ValueModel of Boolean
+     */
+    @NotNull
+    @ObjectiveCName("isInPhoneBookModel")
+    public BooleanValueModel isInPhoneBook() {
+        return isInPhoneBook;
+    }
+
+    /**
      * Get ValueModel of flag if user is blocked
      *
      * @return ValueModel of Boolean
@@ -372,7 +386,7 @@ public class UserVM extends BaseValueModel<User> {
     @MainThread
     @ObjectiveCName("subscribeWithListener:")
     public void subscribe(@NotNull ModelChangedListener<UserVM> listener) {
-        Runtime.checkMainThread();
+        // Runtime.checkMainThread();
         if (listeners.contains(listener)) {
             return;
         }
@@ -388,7 +402,7 @@ public class UserVM extends BaseValueModel<User> {
     @MainThread
     @ObjectiveCName("subscribeWithListener:withNotify:")
     public void subscribe(@NotNull ModelChangedListener<UserVM> listener, boolean notify) {
-        Runtime.checkMainThread();
+        // Runtime.checkMainThread();
         if (listeners.contains(listener)) {
             return;
         }
@@ -406,17 +420,14 @@ public class UserVM extends BaseValueModel<User> {
     @MainThread
     @ObjectiveCName("unsubscribeWithListener:")
     public void unsubscribe(@NotNull ModelChangedListener<UserVM> listener) {
-        Runtime.checkMainThread();
+        // Runtime.checkMainThread();
         listeners.remove(listener);
     }
 
     private void notifyChange() {
-        Runtime.postToMainThread(new Runnable() {
-            @Override
-            public void run() {
-                for (ModelChangedListener<UserVM> l : listeners.toArray(new ModelChangedListener[listeners.size()])) {
-                    l.onChanged(UserVM.this);
-                }
+        Runtime.postToMainThread(() -> {
+            for (ModelChangedListener<UserVM> l : listeners) {
+                l.onChanged(UserVM.this);
             }
         });
     }

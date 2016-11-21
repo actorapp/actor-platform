@@ -1,6 +1,7 @@
 package im.actor.server
 
 import java.net.InetSocketAddress
+import java.time.Instant
 
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
 import com.amazonaws.services.s3.transfer.TransferManager
@@ -18,6 +19,7 @@ import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, Sequenc
 import im.actor.server.api.rpc.{ RpcApiExtension, RpcResultCodec }
 import im.actor.server.db.DbExtension
 import im.actor.server.frontend.TcpFrontend
+import im.actor.server.migrations.v2.{ MigrationNameList, MigrationTsActions }
 import im.actor.server.mtproto.codecs.protocol._
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport.{ MTPackage, TransportPackage }
@@ -58,22 +60,32 @@ final class SimpleServerE2eSpec extends ActorSuite(
     DbExtension(system).clean()
     DbExtension(system).migrate()
 
+    val conn = DbExtension(system).connector
+    MigrationTsActions.insertTimestamp(
+      MigrationNameList.MultiSequence,
+      Instant.now.toEpochMilli
+    )(conn)
+    MigrationTsActions.insertTimestamp(
+      MigrationNameList.GroupsV2,
+      Instant.now.toEpochMilli
+    )(conn)
+
     val serverConfig = system.settings.config
 
     val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
     val sequenceConfig = SequenceServiceConfig.load().toOption.get
 
-    implicit val sessionConfig = SessionConfig.load(system.settings.config.getConfig("session"))
-    Session.startRegion(Session.props)
+    private val sessionConfig = SessionConfig.load(system.settings.config.getConfig("session"))
+    Session.startRegion(sessionConfig)
     implicit val sessionRegion = Session.startRegionProxy()
 
     private val awsCredentials = new EnvironmentVariableCredentialsProvider()
     implicit val transferManager = new TransferManager(awsCredentials)
     implicit val ec: ExecutionContext = system.dispatcher
-    implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
+    private val oauth2Service = new GoogleProvider(oauthGoogleConfig)
 
     val services = Seq(
-      new AuthServiceImpl,
+      new AuthServiceImpl(oauth2Service),
       new ContactsServiceImpl,
       MessagingServiceImpl(),
       new SequenceServiceImpl(sequenceConfig),

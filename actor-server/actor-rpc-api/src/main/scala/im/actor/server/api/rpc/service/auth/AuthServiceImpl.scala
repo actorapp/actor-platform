@@ -21,9 +21,10 @@ import im.actor.server.auth.DeviceInfo
 import im.actor.server.db.DbExtension
 import im.actor.server.email.{ EmailConfig, SmtpEmailSender }
 import im.actor.server.model._
+import im.actor.server.names.GlobalNamesStorageKeyValueStorage
 import im.actor.server.oauth.GoogleProvider
 import im.actor.server.persist._
-import im.actor.server.persist.auth.{ AuthUsernameTransactionRepo, AuthPhoneTransactionRepo, AuthTransactionRepo, AuthEmailTransactionRepo }
+import im.actor.server.persist.auth.{ AuthEmailTransactionRepo, AuthPhoneTransactionRepo, AuthTransactionRepo, AuthUsernameTransactionRepo }
 import im.actor.server.session._
 import im.actor.server.social.{ SocialExtension, SocialManagerRegion }
 import im.actor.server.user.{ UserErrors, UserExtension }
@@ -40,11 +41,10 @@ import scala.concurrent._
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
-final class AuthServiceImpl(
+final class AuthServiceImpl(val oauth2Service: GoogleProvider)(
   implicit
-  val sessionRegion: SessionRegion,
   val actorSystem:   ActorSystem,
-  val oauth2Service: GoogleProvider
+  val sessionRegion: SessionRegion
 ) extends AuthService
   with AuthHelpers
   with Helpers
@@ -60,6 +60,7 @@ final class AuthServiceImpl(
   protected val userExt = UserExtension(actorSystem)
   protected implicit val socialRegion: SocialManagerRegion = SocialExtension(actorSystem).region
   protected val activationContext = new ActivationContext
+  protected val globalNamesStorage = new GlobalNamesStorageKeyValueStorage
 
   private implicit val mat = ActorMaterializer()
 
@@ -131,9 +132,9 @@ final class AuthServiceImpl(
           latitude = None,
           longitude = None
         )
-        _ ← fromDBIO(refreshAuthSession(transaction.deviceHash, authSession))
-        _ ← fromDBIO(AuthTransactionRepo.delete(transactionHash))
-        ack ← fromFuture(authorize(user.id, authSession.id, clientData))
+        //        _ ← fromDBIO(refreshAuthSession(transaction.deviceHash, authSession))
+        //        _ ← fromDBIO(AuthTransactionRepo.delete(transactionHash))
+        //        ack ← fromFuture(authorize(user.id, authSession.id, clientData))
       } yield ResponseAuth(userStruct, misc.ApiConfig(maxGroupSize))
     db.run(action.value)
   }
@@ -201,8 +202,8 @@ final class AuthServiceImpl(
     val action =
       for {
         normUsername ← fromOption(ProfileRpcErrors.NicknameInvalid)(StringUtils.normalizeUsername(username))
-        optUser ← fromDBIO(UserRepo.findByNickname(username))
-        _ ← optUser map (u ⇒ forbidDeletedUser(u.id)) getOrElse point(())
+        optUserId ← fromFuture(globalNamesStorage.getUserId(username))
+        _ ← optUserId map (id ⇒ forbidDeletedUser(id)) getOrElse point(())
         optAuthTransaction ← fromDBIO(AuthUsernameTransactionRepo.find(username, deviceHash))
         transactionHash ← optAuthTransaction match {
           case Some(transaction) ⇒ point(transaction.transactionHash)
@@ -211,7 +212,7 @@ final class AuthServiceImpl(
             val transactionHash = ACLUtils.authTransactionHash(accessSalt)
             val authTransaction = AuthUsernameTransaction(
               normUsername,
-              optUser map (_.id),
+              optUserId,
               transactionHash,
               appId,
               apiKey,
@@ -219,11 +220,11 @@ final class AuthServiceImpl(
               deviceTitle,
               accessSalt,
               DeviceInfo(timeZone.getOrElse(""), preferredLanguages).toByteArray,
-              isChecked = optUser.isEmpty // we don't need to check password if user signs up
+              isChecked = optUserId.isEmpty // we don't need to check password if user signs up
             )
             for (_ ← fromDBIO(AuthUsernameTransactionRepo.create(authTransaction))) yield transactionHash
         }
-      } yield ResponseStartUsernameAuth(transactionHash, optUser.isDefined)
+      } yield ResponseStartUsernameAuth(transactionHash, optUserId.isDefined)
 
     db.run(action.value)
   }
@@ -242,7 +243,7 @@ final class AuthServiceImpl(
       for {
         normUsername ← fromOption(ProfileRpcErrors.NicknameInvalid)(StringUtils.normalizeUsername(username))
         accessSalt = ACLUtils.nextAccessSalt()
-        nicknameExists ← fromDBIO(UserRepo.nicknameExists(normUsername))
+        nicknameExists ← fromFuture(globalNamesStorage.exists(normUsername))
         _ ← fromBoolean(ProfileRpcErrors.NicknameBusy)(!nicknameExists)
         transactionHash = ACLUtils.authTransactionHash(accessSalt)
         transaction = AuthAnonymousTransaction(

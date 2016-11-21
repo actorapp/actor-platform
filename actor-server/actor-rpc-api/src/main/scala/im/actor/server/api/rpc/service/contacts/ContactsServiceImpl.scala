@@ -24,6 +24,7 @@ import im.actor.api.rpc.misc._
 import im.actor.api.rpc.sequence.ApiUpdateOptimization
 import im.actor.api.rpc.users.ApiUser
 import im.actor.server.db.DbExtension
+import im.actor.server.names.GlobalNamesStorageKeyValueStorage
 import im.actor.server.sequence.{ SeqState, SeqUpdatesExtension }
 import im.actor.server.social.{ SocialExtension, SocialManager, SocialManagerRegion }
 import im.actor.server.user._
@@ -49,6 +50,7 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
   private val userExt = UserExtension(actorSystem)
   private implicit val seqUpdExt: SeqUpdatesExtension = SeqUpdatesExtension(actorSystem)
   private implicit val socialRegion: SocialManagerRegion = SocialExtension(actorSystem).region
+  private val globalNamesStorage = new GlobalNamesStorageKeyValueStorage
 
   case class EmailNameUser(email: String, name: Option[String], userId: Int)
 
@@ -119,9 +121,9 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
 
   override def doHandleRemoveContact(userId: Int, accessHash: Long, clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
     authorized(clientData) { implicit client ⇒
-      withUserOutPeerF(ApiUserOutPeer(userId, accessHash)) {
-        for (seqstate ← userExt.removeContact(client.userId, userId))
-          yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
+      withUserOutPeer(ApiUserOutPeer(userId, accessHash)) {
+        for (seqState ← userExt.removeContact(client.userId, client.authId, userId))
+          yield Ok(ResponseSeq(seqState.seq, seqState.state.toByteArray))
       }
     }
 
@@ -135,14 +137,15 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
         _ ← fromBoolean(ContactsRpcErrors.ContactAlreadyExists)(!exists)
         optPhone ← fromDBIO(UserPhoneRepo.findByUserId(user.id).headOption)
         optEmail ← fromDBIO(UserEmailRepo.findByUserId(user.id).headOption)
-        seqstate ← fromFuture(userExt.addContact(
+        seqState ← fromFuture(userExt.addContact(
           userId = client.userId,
+          authId = client.authId,
           contactUserId = user.id,
           localName = None,
           phone = optPhone map (_.number),
           email = optEmail map (_.email)
         ))
-      } yield ResponseSeq(seqstate.seq, seqstate.state.toByteArray)
+      } yield ResponseSeq(seqState.seq, seqState.state.toByteArray)
       db.run(action.value)
     }
 
@@ -169,8 +172,8 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
 
   private def findByNickname(nickname: String, client: AuthorizedClientData): Result[Vector[ApiUser]] = {
     for {
-      users ← fromDBIO(UserRepo.findByNickname(nickname) map (_.toList))
-      structs ← fromFuture(Future.sequence(users map (user ⇒ userExt.getApiStruct(user.id, client.userId, client.authId))))
+      optUserId ← fromFuture(globalNamesStorage.getUserId(nickname))
+      structs ← fromFuture(Future.sequence(optUserId.toSeq map (userId ⇒ userExt.getApiStruct(userId, client.userId, client.authId))))
     } yield structs.toVector
   }
 
@@ -219,7 +222,7 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
       //registering UserEmailContacts
       newEmailContactsM = newEmailContacts.map(e ⇒ e.email → e.userId).toMap
       emailsNamesUsers = newEmailContactsM.keySet.map(k ⇒ EmailNameUser(k, filtered(k), newEmailContactsM(k)))
-      (users, seqstate) ← createEmailContacts(user.id, emailsNamesUsers)
+      (users, seqState) ← createEmailContacts(user.id, emailsNamesUsers)
 
       //creating unregistered contacts
       unregisteredEmails = filteredEmails -- emailModels.map(_.email)
@@ -227,7 +230,7 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
         UnregisteredEmailContactRepo.createIfNotExists(email, user.id, filtered(email))
       }
       _ ← DBIO.sequence(unregisteredEmailActions.toSeq)
-    } yield (users, seqstate)
+    } yield (users, seqState)
   }
 
   private def importPhones(user: User, optPhone: Option[UserPhone], phones: IndexedSeq[ApiPhoneToImport])(client: AuthorizedClientData): DBIO[(Seq[ApiUser], SeqState)] = {
@@ -267,8 +270,8 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
         for {
           _ ← DBIO.sequence(unregInsertActions)
           _ ← DBIO.successful(newContactIds.toSeq foreach (id ⇒ recordRelation(id, user.id)))
-          (userStructs, seqstate) ← createPhoneContacts(user.id, usersPhonesNames)(client)
-        } yield (userStructs, seqstate)
+          (userStructs, seqState) ← createPhoneContacts(user.id, usersPhonesNames)(client)
+        } yield (userStructs, seqState)
     }
   }
 
@@ -296,8 +299,8 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
 
   private def addContactsGetStructs(contactsToAdd: Seq[ContactToAdd])(implicit client: AuthorizedClientData): Future[(Seq[ApiUser], SeqState)] = {
     for {
-      seqstate ← userExt.addContacts(client.userId, contactsToAdd)
+      seqState ← userExt.addContacts(client.userId, client.authId, contactsToAdd)
       structs ← FutureExt.ftraverse(contactsToAdd)(c ⇒ userExt.getApiStruct(c.contactUserId, client.userId, client.authId))
-    } yield (structs, seqstate)
+    } yield (structs, seqState)
   }
 }

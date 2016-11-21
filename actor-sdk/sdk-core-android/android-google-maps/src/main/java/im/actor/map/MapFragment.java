@@ -18,7 +18,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import im.actor.maps.google.R;
-import im.actor.sdk.controllers.fragment.BaseFragment;
+import im.actor.sdk.controllers.BaseFragment;
 
 public class MapFragment extends BaseFragment {
     double longitude;

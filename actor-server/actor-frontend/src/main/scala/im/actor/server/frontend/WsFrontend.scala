@@ -1,19 +1,16 @@
 package im.actor.server.frontend
 
-import java.net.InetAddress
-
 import akka.actor.ActorSystem
 import akka.event.Logging
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.ws.{ BinaryMessage, Message }
 import akka.http.scaladsl.server.{ Directives, Route }
 import akka.http.scaladsl.settings.ServerSettings
-import akka.stream.Materializer
+import akka.stream.{ ActorMaterializer, Materializer }
 import akka.stream.scaladsl._
 import akka.stream.stage.{ Context, PushStage, SyncDirective, TerminationDirective }
 import akka.util.ByteString
-import slick.driver.PostgresDriver.api.Database
-
+import com.github.ghik.silencer.silent
 import im.actor.server.session.SessionRegion
 
 import scala.concurrent.duration._
@@ -27,12 +24,11 @@ object WsFrontend extends Frontend("ws") {
   def start(host: String, port: Int, serverKeys: Seq[ServerKey])(
     implicit
     sessionRegion: SessionRegion,
-    db:            Database,
-    system:        ActorSystem,
-    mat:           Materializer
+    system:        ActorSystem
   ): Unit = {
     val log = Logging.getLogger(system, this)
     val defaultSettings = ServerSettings(system)
+    implicit val materializer: Materializer = ActorMaterializer()
 
     val connections = Http().bind(
       host,
@@ -48,12 +44,7 @@ object WsFrontend extends Frontend("ws") {
     }
   }
 
-  def route(flow: Flow[ByteString, ByteString, akka.NotUsed])(
-    implicit
-    db:     Database,
-    system: ActorSystem,
-    mat:    Materializer
-  ): Route = {
+  def route(flow: Flow[ByteString, ByteString, akka.NotUsed])(implicit system: ActorSystem): Route = {
     get {
       pathSingleSlash {
         handleWebSocketMessages(websocket(flow))
@@ -61,11 +52,7 @@ object WsFrontend extends Frontend("ws") {
     }
   }
 
-  def websocket(mtProtoFlow: Flow[ByteString, ByteString, akka.NotUsed])(
-    implicit
-    system: ActorSystem,
-    mat:    Materializer
-  ): Flow[Message, Message, akka.NotUsed] = {
+  def websocket(mtProtoFlow: Flow[ByteString, ByteString, akka.NotUsed])(implicit system: ActorSystem): Flow[Message, Message, akka.NotUsed] = {
     Flow[Message]
       .collect {
         case msg: BinaryMessage ⇒ msg
@@ -80,6 +67,7 @@ object WsFrontend extends Frontend("ws") {
       .via(completionFlow(System.currentTimeMillis()))
   }
 
+  @silent
   def completionFlow[T](connStartTime: Long)(implicit system: ActorSystem): Flow[T, T, akka.NotUsed] =
     Flow[T]
       .transform(() ⇒ new PushStage[T, T] {

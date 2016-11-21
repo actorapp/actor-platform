@@ -23,7 +23,7 @@ class AAVoiceRecorderView: UIView {
     //////////////////////////////////
     
     weak var binedController : ConversationViewController!
-    var meterTimer:NSTimer!
+    var meterTimer:Timer!
     
     //////////////////////////////////
     
@@ -68,28 +68,28 @@ class AAVoiceRecorderView: UIView {
         self.backgroundColor = appStyle.chatInputFieldBgColor
         
         self.timeLabel.text = "0:00"
-        self.timeLabel.font = UIFont.systemFontOfSize(15)
+        self.timeLabel.font = UIFont.systemFont(ofSize: 15)
         self.timeLabel.textColor = appStyle.vcHintColor
-        self.timeLabel.frame = CGRectMake(29, 12, 50, 20)
+        self.timeLabel.frame = CGRect(x: 29, y: 12, width: 50, height: 20)
         
         self.sliderLabel.text = "Slide to cancel"
-        self.sliderLabel.font = UIFont.systemFontOfSize(14)
-        self.sliderLabel.textAlignment = .Left
-        self.sliderLabel.frame = CGRectMake(140,12,100,20)
+        self.sliderLabel.font = UIFont.systemFont(ofSize: 14)
+        self.sliderLabel.textAlignment = .left
+        self.sliderLabel.frame = CGRect(x: 140,y: 12,width: 100,height: 20)
         self.sliderLabel.textColor = appStyle.vcHintColor
         
         self.sliderArrow.image = UIImage.tinted("aa_recorderarrow", color: appStyle.vcHintColor)
-        self.sliderArrow.frame = CGRectMake(110,12,20,20)
+        self.sliderArrow.frame = CGRect(x: 110,y: 12,width: 20,height: 20)
         
         self.recorderImageCircle.image = UIImage.tinted("aa_recordercircle", color: UIColor(red: 0.7287, green: 0.7252, blue: 0.7322, alpha: 1.0))
-        self.recorderImageCircle.frame = CGRectMake(10, 15, 14, 14)
+        self.recorderImageCircle.frame = CGRect(x: 10, y: 15, width: 14, height: 14)
         
         //
         
     }
     
     // update location views from track touch position
-    func updateLocation(offset:CGFloat,slideToRight:Bool) {
+    func updateLocation(_ offset:CGFloat,slideToRight:Bool) {
         
         var sliderLabelFrame = self.sliderLabel.frame
         sliderLabelFrame.origin.x += offset
@@ -133,17 +133,17 @@ class AAVoiceRecorderView: UIView {
     
     func startAnimation() {
         
-        self.timeLabel.frame = CGRectMake(-129, 12, 50, 20)
-        self.sliderLabel.frame = CGRectMake(440,12,100,20)
-        self.sliderArrow.frame = CGRectMake(310,12,20,20)
-        self.recorderImageCircle.frame = CGRectMake(-110, 15, 14, 14)
+        self.timeLabel.frame = CGRect(x: -129, y: 12, width: 50, height: 20)
+        self.sliderLabel.frame = CGRect(x: 440,y: 12,width: 100,height: 20)
+        self.sliderArrow.frame = CGRect(x: 310,y: 12,width: 20,height: 20)
+        self.recorderImageCircle.frame = CGRect(x: -110, y: 15, width: 14, height: 14)
         
-        UIView.animateWithDuration(1.5, delay: 0.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 1.0, options: UIViewAnimationOptions.CurveLinear, animations: { () -> Void in
+        UIView.animate(withDuration: 0.5, delay: 0.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 1.0, options: UIViewAnimationOptions.curveLinear, animations: { () -> Void in
             
-            self.timeLabel.frame = CGRectMake(29, 12, 50, 20)
-            self.sliderLabel.frame = CGRectMake(140,12,100,20)
-            self.sliderArrow.frame = CGRectMake(110,12,20,20)
-            self.recorderImageCircle.frame = CGRectMake(10, 15, 14, 14)
+            self.timeLabel.frame = CGRect(x: 29, y: 12, width: 50, height: 20)
+            self.sliderLabel.frame = CGRect(x: 140,y: 12,width: 100,height: 20)
+            self.sliderArrow.frame = CGRect(x: 110,y: 12,width: 20,height: 20)
+            self.recorderImageCircle.frame = CGRect(x: 10, y: 15, width: 14, height: 14)
             
             }, completion: { (complite) -> Void in
                 
@@ -155,22 +155,22 @@ class AAVoiceRecorderView: UIView {
     
     func recordingStarted() {
         
-        UIView.animateWithDuration(0.3, animations: { () -> Void in
+        UIView.animate(withDuration: 0.3, animations: { () -> Void in
             
                 self.recorderImageCircle.alpha = 0
             
-            }) { (comp) -> Void in
+            }, completion: { (comp) -> Void in
                 
                 self.recorderImageCircle.image = UIImage.bundled("aa_recordercircle")
                 
-                UIView.animateWithDuration(0.3, animations: { () -> Void in
+                UIView.animate(withDuration: 0.3, animations: { () -> Void in
                     self.recorderImageCircle.alpha = 1
                 })
                 
                 self.addAnimationsOnRecorderCircle()
                 self.startUpdateTimer()
                 
-        }
+        }) 
         
     }
     
@@ -180,29 +180,29 @@ class AAVoiceRecorderView: UIView {
         self.recorderImageCircle.layer.removeAllAnimations()
         self.recorderImageCircle.image = UIImage.tinted("aa_recordercircle", color: UIColor(red: 0.7287, green: 0.7252, blue: 0.7322, alpha: 1.0))
         
-        self.timeLabel.frame = CGRectMake(29, 12, 50, 20)
-        self.sliderLabel.frame = CGRectMake(140,12,100,20)
-        self.sliderArrow.frame = CGRectMake(110,12,20,20)
-        self.recorderImageCircle.frame = CGRectMake(10, 15, 14, 14)
+        self.timeLabel.frame = CGRect(x: 29, y: 12, width: 50, height: 20)
+        self.sliderLabel.frame = CGRect(x: 140,y: 12,width: 100,height: 20)
+        self.sliderArrow.frame = CGRect(x: 110,y: 12,width: 20,height: 20)
+        self.recorderImageCircle.frame = CGRect(x: 10, y: 15, width: 14, height: 14)
     }
     
     
     func startUpdateTimer() {
-        self.meterTimer = NSTimer.scheduledTimerWithTimeInterval(0.1,
+        self.meterTimer = Timer.scheduledTimer(timeInterval: 0.1,
             target:self,
             selector:#selector(AAVoiceRecorderView.updateAudioMeter(_:)),
             userInfo:nil,
             repeats:true)
     }
     
-    func updateAudioMeter(timer:NSTimer) {
+    func updateAudioMeter(_ timer:Timer) {
         
         if let recorder = self.binedController?.audioRecorder {
             
             let dur = recorder.currentDuration()
             
             let minutes = Int(dur / 60)
-            let seconds = Int(dur % 60)
+            let seconds = Int(dur.truncatingRemainder(dividingBy: 60))
             
             if seconds < 10 {
                 self.timeLabel.text = "\(minutes):0\(seconds)"
@@ -222,7 +222,7 @@ class AAVoiceRecorderView: UIView {
         circleAnimation.autoreverses = true
         circleAnimation.fromValue = 1.0
         circleAnimation.toValue = 0.1
-        self.recorderImageCircle.layer.addAnimation(circleAnimation, forKey: nil)
+        self.recorderImageCircle.layer.add(circleAnimation, forKey: nil)
         
     }
     

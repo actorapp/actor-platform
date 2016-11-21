@@ -19,6 +19,7 @@ import im.actor.core.util.StringMatch;
 import im.actor.runtime.Crypto;
 import im.actor.runtime.Log;
 import im.actor.runtime.mtproto.ConnectionEndpoint;
+import im.actor.runtime.mtproto.ConnectionEndpointArray;
 import im.actor.runtime.util.Hex;
 import im.actor.runtime.webrtc.WebRTCIceServer;
 
@@ -28,7 +29,7 @@ import im.actor.runtime.webrtc.WebRTCIceServer;
 public class ConfigurationBuilder {
 
     private ArrayList<TrustedKey> trustedKeys = new ArrayList<>();
-    private ArrayList<ConnectionEndpoint> endpoints = new ArrayList<>();
+    private ConnectionEndpointArray endpoints = new ConnectionEndpointArray();
 
     private PhoneBookProvider phoneBookProvider;
 
@@ -57,10 +58,28 @@ public class ConfigurationBuilder {
     private String customAppName;
 
     private boolean isPhoneBookImportEnabled = true;
+    private boolean isOnClientPrivacyEnabled = false;
 
     private CallsProvider callsProvider;
+    private RawUpdatesHandler rawUpdatesHandler;
 
     private boolean isEnabledGroupedChatList = true;
+
+    private ArrayList<String> autoJoinGroups = new ArrayList<>();
+    private AutoJoinType autoJoinType = AutoJoinType.AFTER_INIT;
+
+    /**
+     * Setting Auto Join to group type: when to join to your groups
+     *
+     * @param autoJoinType auto join type
+     * @return this
+     */
+    @ObjectiveCName("setAutoJoinType:")
+    public ConfigurationBuilder setAutoJoinType(AutoJoinType autoJoinType) {
+        this.autoJoinType = autoJoinType;
+        return this;
+    }
+
 
     /**
      * Setting if grouped chat list support enabled
@@ -112,6 +131,19 @@ public class ConfigurationBuilder {
     }
 
     /**
+     * Setting if application uses on client contacts privacy
+     *
+     * @param isOnClientPrivacyEnabled enabled flag
+     * @return this
+     */
+    @NotNull
+    @ObjectiveCName("setOnClientPrivacyEnabled:")
+    public ConfigurationBuilder setOnClientPrivacyEnabled(boolean isOnClientPrivacyEnabled) {
+        this.isOnClientPrivacyEnabled = isOnClientPrivacyEnabled;
+        return this;
+    }
+
+    /**
      * Setting Web RTC support provider
      *
      * @param callsProvider WebRTC provider
@@ -125,6 +157,19 @@ public class ConfigurationBuilder {
     }
 
     /**
+     * Setting raw updates handler
+     *
+     * @param rawUpdatesHandler raw updates handler
+     * @return this
+     */
+    @NotNull
+    @ObjectiveCName("setRawUpdatesHandler:")
+    public ConfigurationBuilder setRawUpdatesHandler(RawUpdatesHandler rawUpdatesHandler) {
+        this.rawUpdatesHandler = rawUpdatesHandler;
+        return this;
+    }
+
+    /**
      * Adding Trusted key for protocol encryption securing
      *
      * @param trustedKey hex representation of trusted key
@@ -134,6 +179,19 @@ public class ConfigurationBuilder {
     @ObjectiveCName("addTrustedKey:")
     public ConfigurationBuilder addTrustedKey(String trustedKey) {
         trustedKeys.add(new TrustedKey(trustedKey));
+        return this;
+    }
+
+    /**
+     * Adding group to auto join of users
+     *
+     * @param groupTokenOrShortName group's token or short name
+     * @return this
+     */
+    @NotNull
+    @ObjectiveCName("addAutoJoinGroupWithToken:")
+    public ConfigurationBuilder addAutoJoinGroup(String groupTokenOrShortName) {
+        autoJoinGroups.add(groupTokenOrShortName);
         return this;
     }
 
@@ -332,51 +390,10 @@ public class ConfigurationBuilder {
     @NotNull
     @ObjectiveCName("addEndpoint:")
     public ConfigurationBuilder addEndpoint(@NotNull String url) {
-
-        // Manual buggy parsing for GWT
-        // TODO: Correct URL parsing
-        String scheme = url.substring(0, url.indexOf(":")).toLowerCase();
-        String host = url.substring(url.indexOf("://") + "://".length());
-        String knownIp = null;
-
-        if (host.endsWith("/")) {
-            host = host.substring(0, host.length() - 1);
-        }
-        int port = -1;
-        if (host.contains(":")) {
-            String[] parts = host.split(":");
-            host = parts[0];
-            port = Integer.parseInt(parts[1]);
-        }
-
-        if (host.contains("@")) {
-            String[] parts = host.split("@");
-            host = parts[0];
-            knownIp = parts[1];
-        }
-
-        if (scheme.equals("ssl") || scheme.equals("tls")) {
-            if (port <= 0) {
-                port = 443;
-            }
-            endpoints.add(new ConnectionEndpoint(host, port, knownIp, ConnectionEndpoint.TYPE_TCP_TLS));
-        } else if (scheme.equals("tcp")) {
-            if (port <= 0) {
-                port = 80;
-            }
-            endpoints.add(new ConnectionEndpoint(host, port, knownIp, ConnectionEndpoint.TYPE_TCP));
-        } else if (scheme.equals("ws")) {
-            if (port <= 0) {
-                port = 80;
-            }
-            endpoints.add(new ConnectionEndpoint(host, port, knownIp, ConnectionEndpoint.TYPE_WS));
-        } else if (scheme.equals("wss")) {
-            if (port <= 0) {
-                port = 443;
-            }
-            endpoints.add(new ConnectionEndpoint(host, port, knownIp, ConnectionEndpoint.TYPE_WS_TLS));
-        } else {
-            throw new RuntimeException("Unknown scheme type: " + scheme);
+        try {
+            endpoints.addEndpoint(url);
+        } catch (ConnectionEndpointArray.UnknownSchemeException e) {
+            throw new RuntimeException(e.getMessage());
         }
         return this;
     }
@@ -416,9 +433,13 @@ public class ConfigurationBuilder {
                 customAppName,
                 trustedKeys.toArray(new TrustedKey[trustedKeys.size()]),
                 isPhoneBookImportEnabled,
+                isOnClientPrivacyEnabled,
                 callsProvider,
+                rawUpdatesHandler,
                 voiceCallsEnabled,
                 videoCallsEnabled,
-                isEnabledGroupedChatList);
+                isEnabledGroupedChatList,
+                autoJoinGroups.toArray(new String[autoJoinGroups.size()]),
+                autoJoinType);
     }
 }

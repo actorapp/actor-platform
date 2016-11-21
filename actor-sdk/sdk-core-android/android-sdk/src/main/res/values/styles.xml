@@ -12,7 +12,7 @@
 
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_hovered</item>
-        <item name="colorAccent">@color/primary</item>
+        <item name="colorAccent">@color/primary_hovered</item>
 
         <item name="android:colorPrimary">@color/primary</item>
         <item name="android:colorPrimaryDark">@color/primary_hovered</item>
@@ -37,7 +37,13 @@
     </style>
 
     <style name="ChatActivityTheme" parent="AppToolbarTheme">
+        <item name="android:windowBackground">@android:color/white</item>
 
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="windowActionModeOverlay">true</item>
     </style>
 
     <style name="CommonActivityTheme" parent="AppToolbarTheme">

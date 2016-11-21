@@ -20,7 +20,7 @@ import slick.dbio.DBIO
 import scala.concurrent.{ ExecutionContext, Future }
 
 object ACLUtils extends ACLBase with ACLFiles {
-  val PasswordMinLength = 0
+  val PasswordMinLength = 8
   val PasswordMaxLength = 160
 
   type Hash = Array[Byte]
@@ -60,31 +60,48 @@ object ACLUtils extends ACLBase with ACLFiles {
 
   def accessToken(rng: ThreadLocalSecureRandom): String = DigestUtils.sha256Hex(rng.nextLong().toString)
 
+  // check access hash for single out peer (group/user)
   def checkOutPeer(outPeer: ApiOutPeer, clientAuthId: Long)(implicit s: ActorSystem): Future[Boolean] = {
     outPeer.`type` match {
       case ApiPeerType.Group ⇒
-        GroupExtension(s).checkAccessHash(outPeer.id, outPeer.accessHash)
+        checkGroupOutPeerInternal(outPeer.id, outPeer.accessHash)
       case ApiPeerType.Private ⇒
-        UserExtension(s).checkAccessHash(outPeer.id, clientAuthId, outPeer.accessHash)
+        checkUserOutPeerInternal(outPeer.id, outPeer.accessHash, clientAuthId)
     }
   }
 
-  def checkOutPeers(
-    outPeers:     Seq[ApiUserOutPeer],
+  // check access hash for single `ApiUserOutPeer`
+  def checkUserOutPeer(userPeer: ApiUserOutPeer, clientAuthId: Long)(implicit s: ActorSystem): Future[Boolean] =
+    checkUserOutPeerInternal(userPeer.userId, userPeer.accessHash, clientAuthId)
+
+  // check access hash for single `ApiGroupOutPeer`
+  def checkGroupOutPeer(groupPeer: ApiGroupOutPeer)(implicit s: ActorSystem): Future[Boolean] =
+    checkGroupOutPeerInternal(groupPeer.groupId, groupPeer.accessHash)
+
+  def checkUserOutPeers(
+    userPeers:    Seq[ApiUserOutPeer],
     clientAuthId: Long
   )(implicit system: ActorSystem): Future[Boolean] = {
-    implicit val ec = system.dispatcher
+    import system.dispatcher
     FutureExt
-      .ftraverse(outPeers)(peer ⇒ UserExtension(system).checkAccessHash(peer.userId, clientAuthId, peer.accessHash))
+      .ftraverse(userPeers)(checkUserOutPeer(_, clientAuthId)) // TODO: if didn't check - return ASAP
       .map(!_.contains(false))
   }
 
-  def checkOutPeers(outPeers: Seq[ApiGroupOutPeer])(implicit system: ActorSystem): Future[Boolean] = {
+  def checkGroupOutPeers(outPeers: Seq[ApiGroupOutPeer])(implicit system: ActorSystem): Future[Boolean] = {
     implicit val ec = system.dispatcher
     FutureExt
-      .ftraverse(outPeers)(peer ⇒ GroupExtension(system).checkAccessHash(peer.groupId, peer.accessHash))
+      .ftraverse(outPeers)(checkGroupOutPeer) // TODO: if didn't check - return ASAP
       .map(!_.contains(false))
   }
+
+  // check access hash for single user out peer
+  private def checkUserOutPeerInternal(userId: Int, accessHash: Long, clientAuthId: Long)(implicit s: ActorSystem): Future[Boolean] =
+    UserExtension(s).checkAccessHash(userId, clientAuthId, accessHash)
+
+  // check access hash for single group out peer
+  private def checkGroupOutPeerInternal(groupId: Int, accessHash: Long)(implicit s: ActorSystem): Future[Boolean] =
+    GroupExtension(s).checkAccessHash(groupId, accessHash)
 
   def getOutPeer(peer: ApiPeer, clientAuthId: Long)(implicit s: ActorSystem): Future[ApiOutPeer] = {
     implicit val ec: ExecutionContext = s.dispatcher
@@ -114,19 +131,13 @@ object ACLUtils extends ACLBase with ACLFiles {
    * @param password
    * @return (hash, salt)
    */
-  lazy private val md5handle = java.security.MessageDigest.getInstance("MD5")
-  def md5(password: String): Hash = {
-    md5handle.digest(password.getBytes)
-
-  }
-
   def hashPassword(password: String): (Hash, Salt) = {
     val seedBytes = 20
 
     val random = new SecureRandom()
     val salt = random.generateSeed(seedBytes)
 
-    (md5(password), salt)
+    (hashPassword(password, salt), salt)
   }
 
   def hashPassword(password: String, salt: Array[Byte]): Hash = {
@@ -135,8 +146,7 @@ object ACLUtils extends ACLBase with ACLFiles {
 
     val spec = new PBEKeySpec(password.toCharArray, salt, iterations, hashBytes * 8)
     val skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1")
-    /*skf.generateSecret(spec).getEncoded*/
-    md5(password)
+    skf.generateSecret(spec).getEncoded
   }
 
   def checkPassword(userId: Int, password: String)(implicit ec: ExecutionContext): DBIO[Boolean] =

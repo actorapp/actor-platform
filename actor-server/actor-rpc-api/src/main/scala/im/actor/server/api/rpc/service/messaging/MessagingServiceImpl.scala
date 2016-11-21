@@ -6,6 +6,7 @@ import im.actor.api.rpc.messaging._
 import im.actor.server.db.DbExtension
 import im.actor.server.dialog.{ DialogErrors, DialogExtension, InvalidAccessHash, NotUniqueRandomId }
 import im.actor.server.group.{ GroupErrors, GroupExtension }
+import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.social.{ SocialExtension, SocialManagerRegion }
 import im.actor.server.user.UserExtension
 import slick.driver.PostgresDriver.api._
@@ -24,10 +25,12 @@ final class MessagingServiceImpl(implicit protected val actorSystem: ActorSystem
   protected val userExt = UserExtension(actorSystem)
   protected val groupExt = GroupExtension(actorSystem)
   protected val dialogExt = DialogExtension(actorSystem)
+  protected val seqUpdExt = SeqUpdatesExtension(actorSystem)
   protected implicit val socialRegion: SocialManagerRegion = SocialExtension(actorSystem).region
 
   override def onFailure: PartialFunction[Throwable, RpcError] = {
     case GroupErrors.NotAMember     ⇒ CommonRpcErrors.forbidden("You are not a group member.")
+    case GroupErrors.NotAdmin       ⇒ CommonRpcErrors.forbidden("Only admin can perform this action.")
     case DialogErrors.MessageToSelf ⇒ CommonRpcErrors.forbidden("Sending messages to self is not allowed.")
     case InvalidAccessHash          ⇒ CommonRpcErrors.InvalidAccessHash
     case DialogErrors.DialogAlreadyArchived(peer) ⇒

@@ -22,10 +22,8 @@ import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.runtime.Log;
 import im.actor.runtime.Storage;
-import im.actor.runtime.actors.ActorCreator;
+import im.actor.runtime.actors.ActorCancellable;
 import im.actor.runtime.actors.ActorRef;
-import im.actor.runtime.actors.Cancellable;
-import im.actor.runtime.actors.Props;
 
 import static im.actor.runtime.actors.ActorSystem.system;
 
@@ -137,7 +135,7 @@ public class JsFilesModule extends AbsModule {
         private boolean isLoading = false;
         private JsFilesModule filesModule;
         private ArrayList<FileRequest> filesQueue = new ArrayList<>();
-        private Cancellable performCancellable;
+        private ActorCancellable performCancellable;
 
         public FileBinderActor(JsFilesModule filesModule, ModuleContext context) {
             super(context);

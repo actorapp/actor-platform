@@ -58,6 +58,10 @@ public class ContactsModule extends AbsModule {
         return bookImportState;
     }
 
+    public void startImport() {
+        bookImportActor.send(new BookImportActor.Start());
+    }
+
     public ListEngine<Contact> getContacts() {
         return contacts;
     }
@@ -80,6 +84,18 @@ public class ContactsModule extends AbsModule {
 
     public boolean isUserContact(int uid) {
         return preferences().getBool("contact_" + uid, false);
+    }
+
+    public void markInPhoneBook(int uid) {
+        preferences().putBool("contact_in_pb_" + uid, true);
+    }
+
+    public void markNotInPhoneBook(int uid) {
+        preferences().putBool("contact_in_pb_" + uid, false);
+    }
+
+    public boolean isUserInPhoneBook(int uid) {
+        return preferences().getBool("contact_in_pb_" + uid, false);
     }
 
     public Promise<UserVM[]> findUsers(final String query) {

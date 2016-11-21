@@ -1,78 +1,40 @@
 package im.actor.server.group
 
 import java.time.Instant
+import java.util.concurrent.TimeUnit
 
-import akka.actor._
+import akka.actor.{ ActorRef, ActorSystem, Props, ReceiveTimeout, Status }
 import akka.cluster.sharding.ShardRegion
-import akka.pattern.pipe
-import akka.persistence.RecoveryCompleted
-import akka.stream.{ ActorMaterializer, ActorMaterializerSettings, Materializer }
-import akka.util.Timeout
-import im.actor.api.rpc.collections.ApiMapValue
-import im.actor.api.rpc.groups.ApiMember
+import akka.http.scaladsl.util.FastFuture
+import com.github.benmanes.caffeine.cache.{ Cache, Caffeine }
+import im.actor.api.rpc.collections.{ ApiInt32Value, ApiMapValue, ApiMapValueItem, ApiStringValue }
+import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
+import im.actor.concurrent.ActorFutures
 import im.actor.serialization.ActorSerializer
-import im.actor.server.KeyValueMappings
-import im.actor.server.cqrs.TaggedEvent
+import im.actor.server.cqrs.{ Event, Processor, TaggedEvent }
 import im.actor.server.db.DbExtension
-import im.actor.server.dialog.{ DialogEnvelope, DialogExtension, DirectDialogCommand }
-import im.actor.server.file.{ Avatar, FileStorageAdapter, FileStorageExtension }
-import im.actor.server.model.Group
-import im.actor.server.office.{ PeerProcessor, ProcessorState, StopOffice }
+import im.actor.server.dialog._
+import im.actor.server.group.GroupErrors._
+import im.actor.server.group.GroupCommands._
+import im.actor.server.group.GroupExt.Value.{ BoolValue, StringValue }
+import im.actor.server.group.GroupQueries._
+import im.actor.server.names.GlobalNamesStorageKeyValueStorage
 import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.user.UserExtension
-import shardakka.{ IntCodec, ShardakkaExtension }
-import slick.driver.PostgresDriver.api._
 
-import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
+import scala.concurrent.{ ExecutionContext, Future }
 
-private[group] case class Member(
-  userId:        Int,
-  inviterUserId: Int,
-  invitedAt:     Instant,
-  isAdmin:       Boolean
-)
-
-private[group] case class Bot(
-  userId: Int,
-  token:  String
-)
-
-private[group] case class GroupState(
-  id:              Int,
-  typ:             GroupType,
-  accessHash:      Long,
-  creatorUserId:   Int,
-  ownerUserId:     Int,
-  createdAt:       Instant,
-  members:         Map[Int, Member],
-  invitedUserIds:  Set[Int],
-  title:           String,
-  about:           Option[String],
-  bot:             Option[Bot],
-  avatar:          Option[Avatar],
-  topic:           Option[String],
-  isHidden:        Boolean,
-  isHistoryShared: Boolean,
-  extensions:      Seq[ApiMapValue]
-) extends ProcessorState
-
-trait GroupCommand {
-  val groupId: Int
-}
-
+//TODO: maybe add dateMillis
 trait GroupEvent extends TaggedEvent {
   val ts: Instant
 
   override def tags: Set[String] = Set("group")
 }
 
-trait GroupQuery {
-  val groupId: Int
-}
+case object StopProcessor
 
 object GroupProcessor {
-
   def register(): Unit =
     ActorSerializer.register(
       20001 → classOf[GroupCommands.Create],
@@ -82,17 +44,20 @@ object GroupProcessor {
       20005 → classOf[GroupCommands.Kick],
       20006 → classOf[GroupCommands.Leave],
       20010 → classOf[GroupCommands.UpdateAvatar],
-      20011 → classOf[GroupCommands.MakePublic],
-      20012 → classOf[GroupCommands.MakePublicAck],
       20013 → classOf[GroupCommands.UpdateTitle],
-      20015 → classOf[GroupCommands.ChangeTopic],
-      20016 → classOf[GroupCommands.ChangeAbout],
+      20015 → classOf[GroupCommands.UpdateTopic],
+      20016 → classOf[GroupCommands.UpdateAbout],
       20017 → classOf[GroupCommands.MakeUserAdmin],
       20018 → classOf[GroupCommands.RevokeIntegrationToken],
       20020 → classOf[GroupCommands.RevokeIntegrationTokenAck],
-      20023 → classOf[GroupCommands.JoinAfterFirstRead],
-      20024 → classOf[GroupCommands.CreateInternal],
-      20025 → classOf[GroupCommands.CreateInternalAck],
+      20021 → classOf[GroupCommands.TransferOwnership],
+      20022 → classOf[GroupCommands.UpdateShortName],
+      20023 → classOf[GroupCommands.DismissUserAdmin],
+      20024 → classOf[GroupCommands.UpdateAdminSettings],
+      20025 → classOf[GroupCommands.MakeHistoryShared],
+      20026 → classOf[GroupCommands.DeleteGroup],
+      20027 → classOf[GroupCommands.AddExt],
+      20028 → classOf[GroupCommands.RemoveExt],
 
       21001 → classOf[GroupQueries.GetIntegrationToken],
       21002 → classOf[GroupQueries.GetIntegrationTokenResponse],
@@ -102,13 +67,19 @@ object GroupProcessor {
       21006 → classOf[GroupQueries.GetMembersResponse],
       21007 → classOf[GroupQueries.GetApiStruct],
       21008 → classOf[GroupQueries.GetApiStructResponse],
-      21009 → classOf[GroupQueries.IsPublic],
-      21010 → classOf[GroupQueries.IsPublicResponse],
-      21011 → classOf[GroupQueries.GetIntegrationTokenInternal],
       21012 → classOf[GroupQueries.GetAccessHash],
       21013 → classOf[GroupQueries.GetAccessHashResponse],
       21014 → classOf[GroupQueries.IsHistoryShared],
       21015 → classOf[GroupQueries.IsHistorySharedResponse],
+      21016 → classOf[GroupQueries.GetTitle],
+      21017 → classOf[GroupQueries.LoadMembers],
+      21018 → classOf[GroupQueries.GetApiFullStruct],
+      21019 → classOf[GroupQueries.CanSendMessage],
+      21020 → classOf[GroupQueries.CanSendMessageResponse],
+      21021 → classOf[GroupQueries.LoadAdminSettings],
+      21022 → classOf[GroupQueries.LoadAdminSettingsResponse],
+      21023 → classOf[GroupQueries.IsChannel],
+      21024 → classOf[GroupQueries.IsChannelResponse],
 
       22003 → classOf[GroupEvents.UserInvited],
       22004 → classOf[GroupEvents.UserJoined],
@@ -123,200 +94,146 @@ object GroupProcessor {
       22013 → classOf[GroupEvents.TopicUpdated],
       22015 → classOf[GroupEvents.UserBecameAdmin],
       22016 → classOf[GroupEvents.IntegrationTokenRevoked],
-      22017 → classOf[GroupEvents.OwnerChanged]
+      22017 → classOf[GroupEvents.OwnerChanged],
+      22018 → classOf[GroupEvents.ShortNameUpdated],
+      22019 → classOf[GroupEvents.AdminSettingsUpdated],
+      22020 → classOf[GroupEvents.AdminStatusChanged],
+      22021 → classOf[GroupEvents.HistoryBecameShared],
+      22022 → classOf[GroupEvents.GroupDeleted],
+      22023 → classOf[GroupEvents.MembersBecameAsync],
+      22024 → classOf[GroupEvents.ExtAdded],
+      22025 → classOf[GroupEvents.ExtRemoved]
     )
 
-  def props: Props = Props(classOf[GroupProcessor])
+  def persistenceIdFor(groupId: Int): String = s"Group-${groupId}"
+
+  private[group] def props: Props = Props(classOf[GroupProcessor])
 }
 
+//FIXME: snapshots!!!
 private[group] final class GroupProcessor
-  extends PeerProcessor[GroupState, GroupEvent]
+  extends Processor[GroupState]
+  with ActorFutures
   with GroupCommandHandlers
-  with GroupQueryHandlers
-  with ActorLogging
-  with Stash
-  with GroupsImplicits {
-
-  import GroupCommands._
+  with GroupQueryHandlers {
 
   protected implicit val system: ActorSystem = context.system
-  protected implicit val ec: ExecutionContext = context.dispatcher
-  protected implicit val mat: Materializer = ActorMaterializer(ActorMaterializerSettings(system))
-
-  protected implicit val timeout: Timeout = Timeout(10.seconds)
-
-  protected val db: Database = DbExtension(system).db
-  protected val userExt = UserExtension(system)
-  protected lazy val dialogExt = DialogExtension(system)
-  protected implicit val fileStorageAdapter: FileStorageAdapter = FileStorageExtension(context.system).fsAdapter
+  protected implicit val ec: ExecutionContext = system.dispatcher
+  protected val db = DbExtension(system).db
+  protected val dialogExt = DialogExtension(system)
   protected val seqUpdExt = SeqUpdatesExtension(system)
+  protected val userExt = UserExtension(system)
 
-  protected val integrationTokensKv = ShardakkaExtension(system).simpleKeyValue[Int](KeyValueMappings.IntegrationTokens, IntCodec)
+  protected var integrationStorage: IntegrationTokensWriteOps = _
+  protected val globalNamesStorage = new GlobalNamesStorageKeyValueStorage
+
+  // short living cache to store member's names when user loads group members
+  protected implicit val memberNamesCache: Cache[java.lang.Integer, Future[String]] =
+    Caffeine.newBuilder()
+      .expireAfterAccess(3, TimeUnit.MINUTES)
+      .maximumSize(Long.MaxValue)
+      .build[java.lang.Integer, Future[String]]
 
   protected val groupId = self.path.name.toInt
-  override protected val notFoundError = GroupErrors.GroupNotFound(groupId)
-
-  override def persistenceId = GroupOffice.persistenceIdFor(groupId)
+  protected val apiGroupPeer = ApiPeer(ApiPeerType.Group, groupId)
 
   context.setReceiveTimeout(5.hours)
 
-  def updatedState(evt: GroupEvent, state: GroupState): GroupState = {
-    evt match {
-      case GroupEvents.BotAdded(_, userId, token) ⇒
-        state.copy(bot = Some(Bot(userId, token)))
-      case GroupEvents.UserInvited(ts, userId, inviterUserId) ⇒
-        state.copy(
-          members = state.members + (userId → Member(userId, inviterUserId, ts, isAdmin = userId == state.creatorUserId)),
-          invitedUserIds = state.invitedUserIds + userId
-        )
-      case GroupEvents.UserJoined(ts, userId, inviterUserId) ⇒
-        state.copy(
-          members = state.members + (userId → Member(userId, inviterUserId, ts, isAdmin = userId == state.creatorUserId)),
-          invitedUserIds = state.invitedUserIds - userId
-        )
-      case GroupEvents.UserKicked(_, userId, kickerUserId) ⇒
-        state.copy(members = state.members - userId)
-      case GroupEvents.UserLeft(_, userId) ⇒
-        state.copy(members = state.members - userId)
-      case GroupEvents.AvatarUpdated(_, avatar) ⇒
-        state.copy(avatar = avatar)
-      case GroupEvents.TitleUpdated(_, title) ⇒
-        state.copy(title = title)
-      case GroupEvents.BecamePublic(_) ⇒
-        state.copy(typ = GroupType.Public, isHistoryShared = true)
-      case GroupEvents.AboutUpdated(_, about) ⇒
-        state.copy(about = about)
-      case GroupEvents.TopicUpdated(_, topic) ⇒
-        state.copy(topic = topic)
-      case GroupEvents.UserBecameAdmin(_, userId, _) ⇒
-        state.copy(members = state.members.updated(userId, state.members(userId).copy(isAdmin = true)))
-      case GroupEvents.IntegrationTokenRevoked(_, token) ⇒
-        state.copy(bot = state.bot.map(_.copy(token = token)))
-      case GroupEvents.OwnerChanged(_, userId) ⇒
-        state.copy(ownerUserId = userId)
-    }
-  }
+  protected def handleCommand: Receive = {
+    // creation actions
+    case c: Create if state.isNotCreated       ⇒ create(c)
+    case _: Create                             ⇒ sender() ! Status.Failure(GroupIdAlreadyExists(groupId))
+    case _: GroupCommand if state.isNotCreated ⇒ sender() ! Status.Failure(GroupNotFound(groupId))
+    case _: GroupCommand if state.isDeleted    ⇒ sender() ! Status.Failure(GroupAlreadyDeleted(groupId))
 
-  override def handleQuery(state: GroupState): Receive = {
-    case GroupQueries.GetIntegrationToken(_, userId)              ⇒ getIntegrationToken(state, userId)
-    case GroupQueries.GetIntegrationTokenInternal(_)              ⇒ getIntegrationToken(state)
-    case GroupQueries.GetApiStruct(_, userId)                     ⇒ getApiStruct(state, userId)
-    case GroupQueries.GetApiFullStruct(_, userId)                 ⇒ getApiFullStruct(state, userId)
-    case GroupQueries.CheckAccessHash(_, accessHash)              ⇒ checkAccessHash(state, accessHash)
-    case GroupQueries.GetMembers(_)                               ⇒ getMembers(state)
-    case GroupQueries.IsPublic(_)                                 ⇒ isPublic(state)
-    case GroupQueries.GetAccessHash(_)                            ⇒ getAccessHash(state)
-    case GroupQueries.IsHistoryShared(_)                          ⇒ isHistoryShared(state)
-    case GroupQueries.GetTitle(_)                                 ⇒ getTitle(state)
-    case GroupQueries.LoadMembers(_, clientUserId, limit, offset) ⇒ loadMembers(state, clientUserId, limit, offset)
-  }
+    // members actions
+    case i: Invite                             ⇒ invite(i)
+    case j: Join                               ⇒ join(j)
+    case l: Leave                              ⇒ leave(l)
+    case k: Kick                               ⇒ kick(k)
 
-  override def handleInitCommand: Receive = {
-    case Create(_, typ, creatorUserId, creatorAuthSid, title, randomId, userIds) ⇒
-      create(groupId, typ, creatorUserId, creatorAuthSid, title, randomId, userIds.toSet)
-    case CreateInternal(_, typ, creatorUserId, title, userIds, isHidden, isHistoryShared, extensions) ⇒
-      createInternal(typ, creatorUserId, title, userIds, isHidden, isHistoryShared, extensions)
-  }
+    // group info actions
+    case u: UpdateAvatar                       ⇒ updateAvatar(u)
+    case u: UpdateTitle                        ⇒ updateTitle(u)
+    case u: UpdateTopic                        ⇒ updateTopic(u)
+    case u: UpdateAbout                        ⇒ updateAbout(u)
+    case u: UpdateShortName                    ⇒ updateShortName(u)
+    case a: AddExt                             ⇒ addExt(a)
+    case r: RemoveExt                          ⇒ removeExt(r)
 
-  override def handleCommand(state: GroupState): Receive = {
-    case Invite(_, inviteeUserId, inviterUserId, randomId) ⇒
-      if (!hasMember(state, inviteeUserId)) {
-        persist(GroupEvents.UserInvited(now(), inviteeUserId, inviterUserId)) { evt ⇒
-          context become working(updatedState(evt, state))
+    // admin actions
+    case r: RevokeIntegrationToken             ⇒ revokeIntegrationToken(r)
+    case m: MakeUserAdmin                      ⇒ makeUserAdmin(m)
+    case d: DismissUserAdmin                   ⇒ dismissUserAdmin(d)
+    case t: TransferOwnership                  ⇒ transferOwnership(t)
+    case s: UpdateAdminSettings                ⇒ updateAdminSettings(s)
+    case m: MakeHistoryShared                  ⇒ makeHistoryShared(m)
+    case d: DeleteGroup                        ⇒ deleteGroup(d)
 
-          val replyTo = sender()
-
-          invite(state, inviteeUserId, inviterUserId, randomId, evt.ts) pipeTo replyTo
-        }
-      } else {
-        sender() ! Status.Failure(GroupErrors.UserAlreadyInvited)
-      }
-    case JoinAfterFirstRead(_, joiningUserId, joiningUserAuthId) ⇒
-      val invitingUserId = state.members.get(joiningUserId).map(_.inviterUserId) getOrElse state.creatorUserId
-      setJoined(state, joiningUserId, joiningUserAuthId, invitingUserId)
-    case Join(_, joiningUserId, joiningUserAuthId, invitingUserId) ⇒
-      setJoined(state, joiningUserId, joiningUserAuthId, invitingUserId)
-    case Kick(_, kickedUserId, kickerUserId, kickerAuthId, randomId) ⇒
-      kick(state, kickedUserId, kickerUserId, kickerAuthId, randomId)
-    case Leave(_, userId, authId, randomId) ⇒
-      leave(state, userId, authId, randomId)
-    case UpdateAvatar(_, clientUserId, avatarOpt, randomId) ⇒
-      updateAvatar(state, clientUserId, avatarOpt, randomId)
-    case UpdateTitle(_, clientUserId, title, randomId) ⇒
-      updateTitle(state, clientUserId, title, randomId)
-    case MakePublic(_, description) ⇒
-      makePublic(state, description.getOrElse(""))
-    case ChangeTopic(_, clientUserId, topic, randomId) ⇒
-      updateTopic(state, clientUserId, topic, randomId)
-    case ChangeAbout(_, clientUserId, about, randomId) ⇒
-      updateAbout(state, clientUserId, about, randomId)
-    case MakeUserAdmin(_, clientUserId, candidateId) ⇒
-      makeUserAdmin(state, clientUserId, candidateId)
-    case RevokeIntegrationToken(_, userId) ⇒
-      revokeIntegrationToken(state, userId)
-    case TransferOwnership(_, clientUserId, clientAuthSid, userId) ⇒
-      transferOwnership(state, clientUserId, clientAuthSid, userId)
-    case StopOffice     ⇒ context stop self
-    case ReceiveTimeout ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
+    // dialogs envelopes coming through group.
     case de: DialogEnvelope ⇒
-      groupPeer forward de.getAllFields.values.head
+      groupPeerActor forward de.getAllFields.values.head
+
+    // actor's lifecycle
+    case StopProcessor  ⇒ context stop self
+    case ReceiveTimeout ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopProcessor)
   }
 
-  private[this] var groupStateMaybe: Option[GroupState] = None
-
-  override def receiveRecover = {
-    case created: GroupEvents.Created ⇒
-      groupStateMaybe = Some(initState(created).copy(isHistoryShared = created.typ.exists(t ⇒ t.isChannel || t.isPublic)))
-    case evt: GroupEvent ⇒
-      groupStateMaybe = groupStateMaybe map (updatedState(evt, _))
-    case RecoveryCompleted ⇒
-      groupStateMaybe match {
-        case Some(group) ⇒ context become working(group)
-        case None        ⇒ context become initializing
-      }
-    case unmatched ⇒
-      log.error("Unmatched recovery event {}", unmatched)
-  }
-
-  protected def initState(evt: GroupEvents.Created): GroupState = {
-    GroupState(
-      id = groupId,
-      typ = evt.typ.getOrElse(GroupType.General),
-      accessHash = evt.accessHash,
-      title = evt.title,
-      about = None,
-      creatorUserId = evt.creatorUserId,
-      ownerUserId = evt.creatorUserId,
-      createdAt = evt.ts,
-      members = (evt.userIds map (userId ⇒ userId → Member(userId, evt.creatorUserId, evt.ts, isAdmin = userId == evt.creatorUserId))).toMap,
-      bot = None,
-      invitedUserIds = evt.userIds.filterNot(_ == evt.creatorUserId).toSet,
-      avatar = None,
-      topic = None,
-      isHidden = evt.isHidden.getOrElse(false),
-      isHistoryShared = evt.isHistoryShared.getOrElse(false),
-      extensions = Vector.empty
-    )
-  }
-
-  private def groupPeer: ActorRef = {
+  // TODO: add backoff
+  private def groupPeerActor: ActorRef = {
     val groupPeer = "GroupPeer"
     context.child(groupPeer).getOrElse(context.actorOf(GroupPeer.props(groupId), groupPeer))
   }
 
-  protected def hasMember(group: GroupState, userId: Int): Boolean = group.members.keySet.contains(userId)
+  protected def handleQuery: PartialFunction[Any, Future[Any]] = {
+    case _: GroupQuery if state.isNotCreated          ⇒ FastFuture.failed(GroupNotFound(groupId))
+    //    case _: GroupQuery if state.isDeleted         ⇒ FastFuture.failed(GroupAlreadyDeleted(groupId)) // TODO: figure out how to propperly handle group deletion
+    case GetAccessHash()                              ⇒ getAccessHash
+    case GetTitle()                                   ⇒ getTitle
+    case GetIntegrationToken(optClient)               ⇒ getIntegrationToken(optClient)
+    case GetMembers()                                 ⇒ getMembers
+    case LoadMembers(clientUserId, limit, offset)     ⇒ loadMembers(clientUserId, limit, offset)
+    case IsChannel()                                  ⇒ isChannel
+    case IsHistoryShared()                            ⇒ isHistoryShared
+    case GetApiStruct(clientUserId, loadGroupMembers) ⇒ getApiStruct(clientUserId, loadGroupMembers)
+    case GetApiFullStruct(clientUserId)               ⇒ getApiFullStruct(clientUserId)
+    case CheckAccessHash(accessHash)                  ⇒ checkAccessHash(accessHash)
+    case CanSendMessage(clientUserId)                 ⇒ canSendMessage(clientUserId)
+    case LoadAdminSettings(clientUserId)              ⇒ loadAdminSettings(clientUserId)
+  }
 
-  protected def isInvited(group: GroupState, userId: Int): Boolean = group.invitedUserIds.contains(userId)
+  protected def extToApi(exts: Seq[GroupExt]): ApiMapValue = {
+    ApiMapValue(
+      exts.toVector map {
+        case GroupExt(key, BoolValue(b))   ⇒ ApiMapValueItem(key, ApiInt32Value(if (b) 1 else 0))
+        case GroupExt(key, StringValue(s)) ⇒ ApiMapValueItem(key, ApiStringValue(s))
+      }
+    )
+  }
 
-  protected def isBot(group: GroupState, userId: Int): Boolean = userId == 0 || (group.bot exists (_.userId == userId))
+  override def afterCommit(e: Event) = {
+    super.afterCommit(e)
+    if (recoveryFinished) {
+      // can't make calls in group with more than 25 members
+      if (state.membersCount == 26) {
+        updateCanCall(state)
+      }
+      // from 50+ members we make group with async members
+      if (!state.isAsyncMembers && state.membersCount >= 50) {
+        makeMembersAsync()
+      }
+    }
+  }
 
-  protected def isAdmin(group: GroupState, userId: Int): Boolean = group.members.get(userId) exists (_.isAdmin)
+  def persistenceId: String = GroupProcessor.persistenceIdFor(groupId)
 
-  protected def canInvitePeople(group: GroupState, clientUserId: Int) =
-    isMember(group, clientUserId)
+  protected def getInitialState: GroupState = GroupState.empty
 
-  protected def isMember(group: GroupState, clientUserId: Int) = hasMember(group, clientUserId)
-
-  protected def canViewMembers(group: GroupState, clientUserId: Int) =
-    (group.typ.isGeneral || group.typ.isPublic) && isMember(group, clientUserId)
+  override protected def onRecoveryCompleted(): Unit = {
+    super.onRecoveryCompleted()
+    // set integrationStorage only for created group
+    if (state.isCreated) {
+      integrationStorage = new IntegrationTokensWriteCompat(state.createdAt.get.toEpochMilli)
+    }
+  }
 }

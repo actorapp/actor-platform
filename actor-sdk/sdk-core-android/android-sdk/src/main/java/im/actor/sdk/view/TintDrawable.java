@@ -53,8 +53,8 @@ public class TintDrawable extends Drawable {
 
     @Override
     public void draw(Canvas canvas) {
-        int x = (getBounds().width() - src.getWidth()) / 2;
-        int y = (getBounds().height() - src.getHeight()) / 2;
+        int x = getBounds().left + (getBounds().width() - src.getWidth()) / 2;
+        int y = getBounds().top + (getBounds().height() - src.getHeight()) / 2;
 
         canvas.drawBitmap(src, x, y, PAINT);
     }

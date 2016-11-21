@@ -5,14 +5,34 @@
 import Foundation
 import UIKit
 import MessageUI
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
 
-public class AARootTabViewController : UITabBarController, MFMessageComposeViewControllerDelegate, UIAlertViewDelegate {
+fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l > r
+  default:
+    return rhs < lhs
+  }
+}
+
+
+open class AARootTabViewController : UITabBarController, MFMessageComposeViewControllerDelegate, UIAlertViewDelegate {
     
-    private let binder = AABinder()
+    fileprivate let binder = AABinder()
     
-    private var appEmptyContainer = UIView()
-    private var appIsSyncingPlaceholder = AABigPlaceholderView(topOffset: 44 + 20)
-    private var appIsEmptyPlaceholder = AABigPlaceholderView(topOffset: 44 + 20)
+    fileprivate var appEmptyContainer = UIView()
+    fileprivate var appIsSyncingPlaceholder = AABigPlaceholderView(topOffset: 44 + 20)
+    fileprivate var appIsEmptyPlaceholder = AABigPlaceholderView(topOffset: 44 + 20)
     
     public init() {
         super.init(nibName: nil, bundle: nil)
@@ -25,13 +45,13 @@ public class AARootTabViewController : UITabBarController, MFMessageComposeViewC
         fatalError("Not implemented")
     }
     
-    public override func viewDidLoad() {
+    open override func viewDidLoad() {
         super.viewDidLoad()
         
         tabBar.barTintColor = ActorSDK.sharedActor().style.tabBgColor
         
-        appEmptyContainer.hidden = true
-        appIsEmptyPlaceholder.hidden = true
+        appEmptyContainer.isHidden = true
+        appIsEmptyPlaceholder.isHidden = true
         appIsEmptyPlaceholder.setImage(
             UIImage.bundled("contacts_list_placeholder"),
             title: AALocalized("Placeholder_Empty_Title"),
@@ -43,7 +63,7 @@ public class AARootTabViewController : UITabBarController, MFMessageComposeViewC
             action2Selector: #selector(AARootTabViewController.doAddContact))
         appEmptyContainer.addSubview(appIsEmptyPlaceholder)
         
-        appIsSyncingPlaceholder.hidden = true
+        appIsSyncingPlaceholder.isHidden = true
         appIsSyncingPlaceholder.setImage(
             UIImage.bundled("chat_list_placeholder"),
             title: AALocalized("Placeholder_Loading_Title"),
@@ -65,23 +85,23 @@ public class AARootTabViewController : UITabBarController, MFMessageComposeViewC
         }
     }
     
-    public func showAppIsSyncingPlaceholder() {
-        appIsEmptyPlaceholder.hidden = true
-        appIsSyncingPlaceholder.hidden = false
-        appEmptyContainer.hidden = false
+    open func showAppIsSyncingPlaceholder() {
+        appIsEmptyPlaceholder.isHidden = true
+        appIsSyncingPlaceholder.isHidden = false
+        appEmptyContainer.isHidden = false
     }
 
-    public func showAppIsEmptyPlaceholder() {
-        appIsEmptyPlaceholder.hidden = false
-        appIsSyncingPlaceholder.hidden = true
-        appEmptyContainer.hidden = false
+    open func showAppIsEmptyPlaceholder() {
+        appIsEmptyPlaceholder.isHidden = false
+        appIsSyncingPlaceholder.isHidden = true
+        appEmptyContainer.isHidden = false
     }
     
-    public func hidePlaceholders() {
-        appEmptyContainer.hidden = true
+    open func hidePlaceholders() {
+        appEmptyContainer.isHidden = true
     }
     
-    public func showSmsInvitation(phone: String?) {
+    open func showSmsInvitation(_ phone: String?) {
         if MFMessageComposeViewController.canSendText() {
             let messageComposeController = MFMessageComposeViewController()
             messageComposeController.messageComposeDelegate = self
@@ -90,20 +110,21 @@ public class AARootTabViewController : UITabBarController, MFMessageComposeViewC
             }
             messageComposeController.body = AALocalized("InviteText")
                 .replace("{link}", dest: ActorSDK.sharedActor().inviteUrl)
+                .replace("{appname}", dest: ActorSDK.sharedActor().appName)
             messageComposeController.navigationBar.tintColor = ActorSDK.sharedActor().style.navigationTitleColor
-            presentViewController(messageComposeController, animated: true, completion: { () -> Void in
-//                ActorSDK.sharedActor().style.appl
+            present(messageComposeController, animated: true, completion: { () -> Void in
+
             })
         } else {
             UIAlertView(title: "Error", message: "Cannot send SMS", delegate: nil, cancelButtonTitle: "OK").show()
         }
     }
     
-    public func showSmsInvitation() {
+    open func showSmsInvitation() {
         showSmsInvitation(nil)
     }
     
-    public func doAddContact() {
+    open func doAddContact() {
         let alertView = UIAlertView(
             title: AALocalized("ContactsAddHeader"),
             message: AALocalized("ContactsAddHint"),
@@ -111,14 +132,14 @@ public class AARootTabViewController : UITabBarController, MFMessageComposeViewC
             cancelButtonTitle: AALocalized("AlertCancel"),
             otherButtonTitles: AALocalized("AlertNext"))
         
-        alertView.alertViewStyle = UIAlertViewStyle.PlainTextInput
+        alertView.alertViewStyle = UIAlertViewStyle.plainTextInput
         alertView.show()
     }
     
     // MARK: -
     // MARK: Layout
     
-    public override func viewWillLayoutSubviews() {
+    open override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         
         appEmptyContainer.frame = view.bounds
@@ -126,41 +147,41 @@ public class AARootTabViewController : UITabBarController, MFMessageComposeViewC
         appIsEmptyPlaceholder.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: view.bounds.height)
     }
     
-    public override func shouldAutorotate() -> Bool {
+    open override var shouldAutorotate : Bool {
         return false
     }
     
-    public override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
-        return UIInterfaceOrientationMask.Portrait
+    open override var supportedInterfaceOrientations : UIInterfaceOrientationMask {
+        return UIInterfaceOrientationMask.portrait
     }
     
-    public override func preferredStatusBarStyle() -> UIStatusBarStyle {
+    open override var preferredStatusBarStyle : UIStatusBarStyle {
         return ActorSDK.sharedActor().style.vcStatusBarStyle
     }
     
-    public func messageComposeViewController(controller: MFMessageComposeViewController, didFinishWithResult result: MessageComposeResult) {
-        controller.dismissViewControllerAnimated(true, completion: nil)
+    open func messageComposeViewController(_ controller: MFMessageComposeViewController, didFinishWith result: MessageComposeResult) {
+        controller.dismiss(animated: true, completion: nil)
     }
 
-    public func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
+    open func alertView(_ alertView: UIAlertView, clickedButtonAt buttonIndex: Int) {
         // TODO: Localize
         if buttonIndex == 1 {
-            let textField = alertView.textFieldAtIndex(0)!
+            let textField = alertView.textField(at: 0)!
             if textField.text?.length > 0 {
-                self.execute(Actor.findUsersCommandWithQuery(textField.text), successBlock: { (val) -> Void in
+                self.execute(Actor.findUsersCommand(withQuery: textField.text), successBlock: { (val) -> Void in
                     var user: ACUserVM?
                     user = val as? ACUserVM
                     if user == nil {
                         if let users = val as? IOSObjectArray {
                             if Int(users.length()) > 0 {
-                                if let tempUser = users.objectAtIndex(0) as? ACUserVM {
+                                if let tempUser = users.object(at: 0) as? ACUserVM {
                                     user = tempUser
                                 }
                             }
                         }
                     }
                     if user != nil {
-                        self.execute(Actor.addContactCommandWithUid(user!.getId())!, successBlock: { (val) -> () in
+                        self.execute(Actor.addContactCommand(withUid: user!.getId())!, successBlock: { (val) -> () in
                             // DO Nothing
                             }, failureBlock: { (val) -> () in
                                 self.showSmsInvitation(textField.text)

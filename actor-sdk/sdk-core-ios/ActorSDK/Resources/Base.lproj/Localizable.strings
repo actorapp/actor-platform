@@ -26,11 +26,15 @@
 
 "ContactsActionAdd" = "Add Friend";
 
+"ContactsBack" = "People";
+
 /*
  * Dialogs
  */
 
 "DialogsHint" = "Swipe for more options";
+
+"DialogsBack" = "Chats";
 
 /*
  * Settings
@@ -284,7 +288,78 @@
 
 "GroupIntegrations" = "Integrations";
 
-"GroupMembers" = "{0} MEMBERS";
+"GroupViewMembers" = "Members";
+
+"GroupDescription" = "Description";
+
+
+
+"GroupAdministration" = "Administration";
+
+"GroupTypeTitle" = "Group Type";
+
+"GroupTypeTitleChannel" = "Channel Type";
+
+"GroupPermissionsHint" = "Control what is possible in this group";
+
+"GroupPermissionsHintChannel" = "Control what is possible in this channel";
+
+"GroupTypeHintPublic" = "Public groups can be found in search and anyone can join";
+
+"GroupTypeHintPrivate" = "Private groups can be joined only via personal invitation";
+
+"GroupTypeHintPublicChannel" = "Public channels can be found in search and anyone can join";
+
+"GroupTypeHintPrivateChannel" = "Private channels can be joined only via personal invitation";
+
+"GroupTypeLinkHint" = "People can share this link with others and find your group using search";
+
+"GroupTypeLinkHintChannel" = "People can share this link with others and find your channel using search";
+
+"GroupTypePublic" = "Public";
+
+"GroupTypePrivate" = "Private";
+
+"ChannelTypePublic" = "Public";
+
+"ChannelTypePrivate" = "Private";
+
+"GroupTypePublicFull" = "Public Group";
+
+"GroupTypePrivateFull" = "Private Group";
+
+"ChannelTypePublicFull" = "Public Channel";
+
+"ChannelTypePrivateFull" = "Private Channel";
+
+"GroupDeleteHint" = "You will lose all messages in this group";
+
+"GroupDeleteHintChannel" = "You will lose all messages in this channel";
+
+
+
+"GroupShareTitle" = "Shared History";
+
+"GroupShareEnabled" = "Shared";
+
+"GroupShareHint" = "All members will see all messages";
+
+"GroupShareMessage" = "Are you sure want to share all messages to all members? This action is irreversible.";
+
+"GroupShareAction" = "Share";
+
+
+
+"GroupEditTitle" = "Edit Group";
+
+"GroupEditTitleChannel" = "Edit Channel";
+
+"GroupEditName" = "Group Name";
+
+"GroupEditNameChannel" = "Channel Name";
+
+"GroupEditDescription" = "Description";
+
 
 "GroupMemberAdmin" = "admin";
 
@@ -314,11 +389,6 @@
 
 "GroupAddParticipantUrl" = "Invite to Group via Link";
 
-"GroupLeave" = "Leave group";
-
-"GroupLeaveConfirm" = "Are you sure you want to leave group?";
-
-"GroupLeaveConfirmAction" = "Leave";
 
 "GroupInviteLinkPageTitle" = "Invite Link";
 
@@ -330,23 +400,11 @@
 
 "GroupInviteLinkRevokeAction" = "Revoke";
 
-"GroupIntegrationPageTitle" = "Integration API";
 
-"GroupIntegrationLinkTitle" = "LINK";
-
-"GroupIntegrationLinkHint" = "You can use this link to send a message from any external system.";
-
-"GroupIntegrationDoc" = "Open Documentation";
-
-"GroupIntegrationLinkRevokeMessage" = "Are you sure you want to revoke this link? Once you do, no one will be able to send messages to the group using it.";
-
-"GroupIntegrationLinkRevokeAction" = "Revoke";
 
 "GroupJoinMessage" = "Are you sure you want to join this group?";
 
 "GroupJoinAction" = "Join";
-
-"GroupMembers" = "MEMBERS";
 
 /*
  * Compose
@@ -354,13 +412,24 @@
 
 "ComposeTitle" = "New Message";
 
+
 "CreateGroup" = "Create Group";
+
+"CreateChannel" = "Create Channel";
+
 
 "CreateGroupTitle" = "Create Group";
 
-"CreateGroupHint" = "Please provide the group's subject and an optional group icon";
+"CreateGroupHint" = "Please provide the group name and an optional group icon";
 
-"CreateGroupNamePlaceholder" = "Group Subject";
+"CreateGroupNamePlaceholder" = "Group Name";
+
+"CreateChannelTitle" = "Create Channel";
+
+"CreateChannelHint" = "Please provide the channel name and an optional channel icon";
+
+"CreateChannelNamePlaceholder" = "Channel Name";
+
 
 "CreateGroupMembersTitle" = "Invite members";
 
@@ -393,6 +462,10 @@
 "ChatSlideUpToCancel" = "Slide up to cancel";
 
 "Chat.MicrophoneAccessDisabled" = "We need access to your microphone for voice messages. Please go to Settings — Privacy — Microphone turn them ОN";
+
+"ChatDeleted" = "This chat was deleted by owner.";
+
+"ChatJoin" = "Join";
 
 /*
  * Chat attachment menu
@@ -616,6 +689,47 @@
 "ActionAddPhoto2" = "photo";
 
 "ActionOpenCode" = "View Code";
+
+"ActionMute" = "Mute";
+
+"ActionUnmute" = "Unmute";
+
+
+"ActionDelete" = "Delete";
+
+"ActionDeleteMessage" = "Are you sure want to delete chat?";
+
+
+"ActionDeleteChannel" = "Delete Channel";
+
+"ActionDeleteChannelMessage" = "Wait! Deleting this channel will remove all members and all messages will be lost. Delete the channel anyway?";
+
+"ActionDeleteGroup" = "Delete Group";
+
+"ActionDeleteGroupMessage" = "Wait! Deleting this group will remove all members and all messages will be lost. Delete the group anyway?";
+
+
+"ActionLeaveChannel" = "Leave Channel";
+
+"ActionLeaveChannelMessage" = "Are you sure want to leave channel?";
+
+"ActionLeaveChannelAction" = "Leave";
+
+
+
+"ActionDeleteAndExit" = "Delete and Exit";
+
+"ActionDeleteAndExitMessage" = "Are you sure want to exit group and delete all messages?";
+
+"ActionDeleteAndExitAction" = "Exit";
+
+
+
+"ActionClearHistory" = "Clear History";
+
+"ActionClearHistoryMessage" = "Are you sure want to clear history?";
+
+"ActionClearHistoryAction" = "Clear";
 
 /*
  *  Network

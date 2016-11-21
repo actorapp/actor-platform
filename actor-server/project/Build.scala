@@ -6,8 +6,10 @@ import spray.revolver.RevolverPlugin._
 import com.trueaccord.scalapb.{ScalaPbPlugin => PB}
 import com.typesafe.sbt.SbtMultiJvm
 import com.typesafe.sbt.SbtMultiJvm.MultiJvmKeys.MultiJvm
+import com.typesafe.sbt.packager.archetypes.JavaServerAppPackaging
+import com.typesafe.sbt.packager.debian.JDebPackaging
 
-object Build extends sbt.Build with Versioning with Releasing {
+object Build extends sbt.Build with Versioning with Releasing with Packaging {
   val ScalaVersion = "2.11.8"
   val BotKitVersion = getVersion
 
@@ -21,7 +23,13 @@ object Build extends sbt.Build with Versioning with Releasing {
         organization := "im.actor.server",
         organizationHomepage := Some(url("https://actor.im")),
         resolvers ++= Resolvers.seq,
-        scalacOptions ++= Seq("-Yopt-warnings"),
+//        scalacOptions ++= Seq(
+//          "-Ywarn-unused",
+//          "-Ywarn-adapted-args",
+//          "-Ywarn-nullary-override",
+//          "-Ywarn-nullary-unit",
+//          "-Ywarn-value-discard"
+//        ),
         parallelExecution := true
       ) ++ Sonatype.sonatypeSettings
 
@@ -60,8 +68,8 @@ object Build extends sbt.Build with Versioning with Releasing {
           ActorHouseRules.PublishType.PublishToSonatype,
           pomExtraXml) ++
       PB.protobufSettings ++ Seq(
-      //PB.javaConversions in PB.protobufConfig := true,
-      libraryDependencies += "com.trueaccord.scalapb" %% "scalapb-runtime" % "0.5.21" % PB.protobufConfig,
+      PB.singleLineToString in PB.protobufConfig := true,
+      libraryDependencies += "com.trueaccord.scalapb" %% "scalapb-runtime" % "0.5.32" % PB.protobufConfig,
       dependencyOverrides ~= { overrides =>
         overrides + "com.google.protobuf" % "protobuf-java" % "3.0.0-beta-2"
       },
@@ -80,28 +88,32 @@ object Build extends sbt.Build with Versioning with Releasing {
         },
         resolvers ++= Resolvers.seq,
         fork in Test := false,
-        updateOptions := updateOptions.value.withCachedResolution(true)
+        updateOptions := updateOptions.value.withCachedResolution(true),
+        addCompilerPlugin("com.github.ghik" % "silencer-plugin" % "0.4")
       )
 
   lazy val root = Project(
     "actor",
     file("."),
     settings =
+      packagingSettings ++
       defaultSettingsServer ++
-        Revolver.settings ++
-        Seq(
-          libraryDependencies ++= Dependencies.root,
-          //Revolver.reStartArgs := Seq("im.actor.server.Main"),
-          mainClass in Revolver.reStart := Some("im.actor.server.Main"),
-          mainClass in Compile := Some("im.actor.server.Main"),
-          autoCompilerPlugins := true,
-          scalacOptions in(Compile, doc) ++= Seq(
-            "-groups",
-            "-implicits",
-            "-diagrams"
-          )
+      Revolver.settings ++
+      Seq(
+        libraryDependencies ++= Dependencies.root,
+        //Revolver.reStartArgs := Seq("im.actor.server.Main"),
+        mainClass in Revolver.reStart := Some("im.actor.server.Main"),
+        mainClass in Compile := Some("im.actor.server.Main"),
+        autoCompilerPlugins := true,
+        scalacOptions in(Compile, doc) ++= Seq(
+          "-Ywarn-unused-import",
+          "-groups",
+          "-implicits",
+          "-diagrams"
         )
-  ).settings(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*)
+      )
+  )
+    .settings(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*)
     .settings(releaseSettings)
     .dependsOn(actorServerSdk)
     .aggregate(
@@ -109,9 +121,8 @@ object Build extends sbt.Build with Versioning with Releasing {
       actorTestkit,
       actorTests
     )
-    .settings(
-    aggregate in Revolver.reStart := false
-  )
+    .settings(aggregate in Revolver.reStart := false)
+    .enablePlugins(JavaServerAppPackaging, JDebPackaging)
 
   lazy val actorActivation = Project(
     id = "actor-activation",
@@ -189,8 +200,7 @@ object Build extends sbt.Build with Versioning with Releasing {
     id = "actor-enrich",
     base = file("actor-enrich"),
     settings = defaultSettingsServer ++ Seq(
-      libraryDependencies ++= Dependencies.enrich,
-      scalacOptions in Compile := (scalacOptions in Compile).value.filterNot(_ == "-Xfatal-warnings")
+      libraryDependencies ++= Dependencies.enrich
     )
   )
     .dependsOn(actorRpcApi, actorRuntime)
@@ -229,7 +239,7 @@ object Build extends sbt.Build with Versioning with Releasing {
       libraryDependencies ++= Dependencies.session
     )
   )
-    .dependsOn(actorPersist, actorCore, actorCodecs, actorCore, actorRpcApi)
+    .dependsOn(actorCodecs, actorCore, actorPersist, actorRpcApi)
 
   lazy val actorSessionMessages = Project(
     id = "actor-session-messages",
@@ -263,8 +273,7 @@ object Build extends sbt.Build with Versioning with Releasing {
     id = "actor-fs-adapters",
     base = file("actor-fs-adapters"),
     settings = defaultSettingsServer ++ Seq(
-      libraryDependencies ++= Dependencies.fileAdapter,
-      scalacOptions in Compile := (scalacOptions in Compile).value.filterNot(_ == "-Xfatal-warnings")
+      libraryDependencies ++= Dependencies.fileAdapter
     )
   )
     .dependsOn(actorHttpApi, actorPersist)
@@ -273,8 +282,7 @@ object Build extends sbt.Build with Versioning with Releasing {
     id = "actor-frontend",
     base = file("actor-frontend"),
     settings = defaultSettingsServer ++ Seq(
-      libraryDependencies ++= Dependencies.frontend,
-      scalacOptions in Compile := (scalacOptions in Compile).value.filterNot(_ == "-Xfatal-warnings")
+      libraryDependencies ++= Dependencies.frontend
     )
   )
     .dependsOn(actorCore, actorSession)
@@ -372,6 +380,7 @@ object Build extends sbt.Build with Versioning with Releasing {
     settings = defaultSettingsServer ++ Testing.settings ++ Seq(
       libraryDependencies ++= Dependencies.tests,
       compile in MultiJvm <<= (compile in MultiJvm) triggeredBy (compile in Test),
+      scalacOptions in Compile := (scalacOptions in Compile).value.filterNot(_ == "-Xfatal-warnings"),
       executeTests in Test <<= (executeTests in Test, executeTests in MultiJvm) map {
         case (testResults, multiNodeResults)  =>
           val overall =

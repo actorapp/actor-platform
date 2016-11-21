@@ -3,19 +3,15 @@ package im.actor.server.migrations
 import java.time.Instant
 
 import akka.actor.{ ActorSystem, Props }
+import akka.http.scaladsl.util.FastFuture
 import akka.persistence.{ PersistentActor, RecoveryCompleted }
-import akka.util.Timeout
 import im.actor.concurrent.FutureExt
-import im.actor.server.event.TSEvent
+import im.actor.server.db.DbExtension
 import im.actor.server.persist.contact.UserContactRepo
 import im.actor.server.user.UserEvents
-import org.joda.time.DateTime
-import shardakka.ShardakkaExtension
-import slick.driver.PostgresDriver
-import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.duration._
-import scala.concurrent.{ ExecutionContext, Future, Promise }
+import scala.concurrent.{ Future, Promise }
 
 object LocalNamesFromKVMigrator extends Migration {
 
@@ -23,10 +19,11 @@ object LocalNamesFromKVMigrator extends Migration {
 
   override protected def migrationTimeout: Duration = 1.hour
 
-  override protected def startMigration()(implicit system: ActorSystem, db: PostgresDriver.api.Database, ec: ExecutionContext): Future[Unit] = {
+  override protected def startMigration()(implicit system: ActorSystem): Future[Unit] = {
+    import system.dispatcher
     system.log.warning("Migrating local names from KV")
 
-    db.run(UserContactRepo.fetchAll)
+    DbExtension(system).db.run(UserContactRepo.fetchAll)
       .flatMap { contacts ⇒
         FutureExt.ftraverse(contacts) { contact ⇒
           for {
@@ -37,7 +34,7 @@ object LocalNamesFromKVMigrator extends Migration {
       .map(_ ⇒ ())
   }
 
-  private def migrateSingle(ownerUserId: Int, contactUserId: Int, localNameOpt: Option[String])(implicit system: ActorSystem, db: Database): Future[Unit] = {
+  private def migrateSingle(ownerUserId: Int, contactUserId: Int, localNameOpt: Option[String])(implicit system: ActorSystem): Future[Unit] = {
     localNameOpt match {
       case Some(localName) ⇒
         system.log.debug("Moving contact of user: {}, {} ({})", ownerUserId, localName, contactUserId)
@@ -46,7 +43,7 @@ object LocalNamesFromKVMigrator extends Migration {
         promise.future
       case None ⇒
         system.log.debug("Not moving contact of user: {} ({})", ownerUserId, contactUserId)
-        Future.successful(())
+        FastFuture.successful(())
     }
   }
 }

@@ -1,9 +1,6 @@
 package im.actor.sdk.intents;
 
-import android.app.Fragment;
 import android.content.Intent;
-
-import im.actor.sdk.controllers.fragment.BinderCompatFragment;
 
 public class ActorIntentFragmentActivity extends ActorIntentActivity {
     android.support.v4.app.Fragment fragment;

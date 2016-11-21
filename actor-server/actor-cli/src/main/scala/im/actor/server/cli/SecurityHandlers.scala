@@ -2,6 +2,7 @@ package im.actor.server.cli
 
 import java.security.SecureRandom
 
+import akka.http.scaladsl.util.FastFuture
 import better.files._
 import im.actor.crypto.Curve25519
 
@@ -19,10 +20,10 @@ final class SecurityHandlers {
 
     if (pubFile.exists) {
       println(s"File $pubPath already exists!")
-      Future.successful(())
+      FastFuture.successful(())
     } else if (privateFile.exists) {
       println(s"File $privatePath already exists!")
-      Future.successful(())
+      FastFuture.successful(())
     } else {
       val randomBytes = new Array[Byte](32)
       random.nextBytes(randomBytes)
@@ -52,7 +53,7 @@ final class SecurityHandlers {
            |}
            |""".stripMargin
       )
-      Future.successful(())
+      FastFuture.successful(())
     }
   }
 }

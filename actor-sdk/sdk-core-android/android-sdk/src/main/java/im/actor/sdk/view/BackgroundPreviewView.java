@@ -9,6 +9,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
+import com.facebook.drawee.generic.RoundingParams;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.request.ImageRequest;
@@ -18,6 +19,7 @@ import java.io.File;
 
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.controllers.settings.BaseActorSettingsFragment;
+import im.actor.sdk.util.Screen;
 
 public class BackgroundPreviewView extends SimpleDraweeView {
 
@@ -42,6 +44,11 @@ public class BackgroundPreviewView extends SimpleDraweeView {
     }
 
     public void init(int width, int height) {
+        init(width, height, 0);
+    }
+
+
+    public void init(int width, int height, int corenerRadius) {
         this.width = width;
         this.height = height;
 
@@ -50,6 +57,9 @@ public class BackgroundPreviewView extends SimpleDraweeView {
 
         GenericDraweeHierarchy hierarchy = builder
                 .setFadeDuration(200)
+                .setRoundingParams(new RoundingParams()
+                        .setCornersRadius(corenerRadius)
+                        .setRoundingMethod(RoundingParams.RoundingMethod.BITMAP_ONLY))
                 .build();
         setHierarchy(hierarchy);
     }

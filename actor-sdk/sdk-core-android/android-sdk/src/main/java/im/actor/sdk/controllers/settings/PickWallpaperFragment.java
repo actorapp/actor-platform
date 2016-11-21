@@ -14,7 +14,7 @@ import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorStyle;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.conversation.view.ChatBackgroundView;
-import im.actor.sdk.controllers.fragment.BaseFragment;
+import im.actor.sdk.controllers.BaseFragment;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.BackgroundPreviewView;
 

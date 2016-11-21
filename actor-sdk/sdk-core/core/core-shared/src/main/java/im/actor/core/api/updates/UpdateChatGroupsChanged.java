@@ -54,7 +54,7 @@ public class UpdateChatGroupsChanged extends Update {
     @Override
     public String toString() {
         String res = "update ChatGroupsChanged{";
-        res += "dialogs=" + this.dialogs;
+        res += "dialogs=" + this.dialogs.size();
         res += "}";
         return res;
     }

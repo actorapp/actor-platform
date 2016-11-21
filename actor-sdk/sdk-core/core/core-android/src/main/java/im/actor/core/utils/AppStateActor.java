@@ -3,7 +3,7 @@ package im.actor.core.utils;
 import im.actor.core.AndroidMessenger;
 import im.actor.runtime.Log;
 import im.actor.runtime.actors.Actor;
-import im.actor.runtime.actors.Cancellable;
+import im.actor.runtime.actors.ActorCancellable;
 
 public class AppStateActor extends Actor {
 
@@ -16,7 +16,7 @@ public class AppStateActor extends Actor {
     private boolean isAppOpen = false;
     private boolean isScreenVisible = true;
     private int activityCount = 0;
-    private Cancellable closeCancellable;
+    private ActorCancellable closeCancellable;
 
     public AppStateActor(AndroidMessenger messenger) {
         this.messenger = messenger;

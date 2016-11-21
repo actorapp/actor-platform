@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.text.TextPaint;
 import android.util.TypedValue;
 
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.util.Fonts;
 
@@ -19,7 +20,6 @@ public class AvatarPlaceholderDrawable extends Drawable {
     private static float TEXT_SIZE;
     private float selfTextSize;
     private static Paint CIRCLE_PAINT;
-    private static int[] COLORS;
     private Context ctx;
 
     private String title;
@@ -36,24 +36,18 @@ public class AvatarPlaceholderDrawable extends Drawable {
         } else if (title.length() == 0) {
             title = "?";
         } else {
-            String[] parts = title.split(" ", 2);
-            title = parts[0].substring(0, 1).toUpperCase();
-            if (parts.length == 2 && parts[1].length() > 0) {
-                title += parts[1].substring(0, 1).toUpperCase();
+            String[] parts = title.trim().split(" ", 2);
+            if (parts.length == 0 || parts[0].length() == 0) {
+                title = "?";
+            } else {
+                title = parts[0].substring(0, 1).toUpperCase();
+                if (parts.length == 2 && parts[1].length() > 0) {
+                    title += parts[1].substring(0, 1).toUpperCase();
+                }
             }
         }
 
-        if (COLORS == null) {
-            COLORS = new int[]{
-                    context.getResources().getColor(R.color.placeholder_0),
-                    context.getResources().getColor(R.color.placeholder_1),
-                    context.getResources().getColor(R.color.placeholder_2),
-                    context.getResources().getColor(R.color.placeholder_3),
-                    context.getResources().getColor(R.color.placeholder_4),
-                    context.getResources().getColor(R.color.placeholder_5),
-                    context.getResources().getColor(R.color.placeholder_6),
-            };
-        }
+        int[] colors = ActorSDK.sharedActor().style.getDefaultAvatarPlaceholders();
 
         if (CIRCLE_PAINT == null) {
             CIRCLE_PAINT = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -70,7 +64,7 @@ public class AvatarPlaceholderDrawable extends Drawable {
         if (id == 0) {
             this.color = context.getResources().getColor(R.color.placeholder_empty);
         } else {
-            this.color = COLORS[Math.abs(id) % COLORS.length];
+            this.color = colors[Math.abs(id) % colors.length];
         }
 
         this.title = title;

@@ -44,7 +44,7 @@ public class BaseFragmentActivity extends BaseActivity {
         getWindow().setBackgroundDrawable(new ColorDrawable(STYLE.getMainBackgroundColor()));
     }
 
-    public void showFragment(final Fragment fragment, final boolean addToBackStack, final boolean isAnimated) {
+    public void showFragment(Fragment fragment, boolean addToBackStack) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.content_frame, fragment);
         if (addToBackStack) {
@@ -53,7 +53,7 @@ public class BaseFragmentActivity extends BaseActivity {
         transaction.commit();
     }
 
-    public void showNextFragment(final Fragment fragment, final boolean addToBackStack, final boolean isAnimated) {
+    public void showNextFragment(Fragment fragment, boolean addToBackStack) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.content_frame, fragment);
         if (addToBackStack) {

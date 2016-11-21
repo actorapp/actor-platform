@@ -25,7 +25,7 @@ public class EditAboutActivity extends BaseFragmentActivity {
         }
 
         if (savedInstanceState == null) {
-            showFragment(EditAboutFragment.editAbout(type, id), false, false);
+            showFragment(EditAboutFragment.editAbout(type, id), false);
         }
     }
 }

@@ -12,7 +12,7 @@ public class PickCountryActivity extends BaseFragmentActivity {
         getSupportActionBar().setTitle(R.string.auth_phone_country_title);
 
         if (savedInstanceState == null) {
-            showFragment(new PickCountryFragment(), false, false);
+            showFragment(new PickCountryFragment(), false);
         }
     }
 }

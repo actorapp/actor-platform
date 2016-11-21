@@ -12,7 +12,7 @@ import im.actor.core.api.rpc.ResponseGetFileUrls;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.ModuleActor;
 import im.actor.runtime.Log;
-import im.actor.runtime.actors.Cancellable;
+import im.actor.runtime.actors.ActorCancellable;
 import im.actor.runtime.actors.ask.AskMessage;
 import im.actor.runtime.function.Consumer;
 import im.actor.runtime.promise.Promise;
@@ -25,7 +25,7 @@ public class FileUrlLoader extends ModuleActor {
 
     private ArrayList<RequestedFile> pendingFiles = new ArrayList<>();
     private boolean isExecuting = false;
-    private Cancellable checkCancellable;
+    private ActorCancellable checkCancellable;
 
     public FileUrlLoader(ModuleContext context) {
         super(context);

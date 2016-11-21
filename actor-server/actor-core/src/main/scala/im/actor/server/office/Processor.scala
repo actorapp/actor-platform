@@ -22,6 +22,7 @@ case object StopOffice
 
 trait ProcessorState
 
+// TODO: replace with im.actor.server.cqrs.Processor
 trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorFutures with AlertingActor {
 
   case class BreakStashing(ts: Instant, evts: Seq[Event], state: State)

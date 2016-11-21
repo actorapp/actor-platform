@@ -3,10 +3,9 @@ package im.actor.server.encryption
 import akka.actor._
 import akka.event.Logging
 import akka.http.scaladsl.util.FastFuture
-import cats.std.all._
+import cats.instances.all._
 import cats.syntax.all._
 import cats.data.{ Xor, XorT }
-import com.google.protobuf.wrappers.Int32Value
 import im.actor.api.rpc.encryption._
 import im.actor.cats.dbio._
 import im.actor.server.db.DbExtension
@@ -92,7 +91,7 @@ final class EncryptionExtension(system: ActorSystem) extends Extension {
       apiKeyGroup ← XorT.fromXor[DBIO](toApi(keyGroup))
       relatedUserIds ← XorT.right[DBIO, Exception, Set[Int]](DBIO.from(socialExt.getRelations(userId)))
       _ ← XorT.right[DBIO, Exception, Int](EncryptionKeyGroupRepo.create(keyGroup))
-      _ ← XorT.right[DBIO, Exception, Any](DBIO.from(seqUpdExt.broadcastSingleUpdate(
+      _ ← XorT.right[DBIO, Exception, Any](DBIO.from(seqUpdExt.broadcastPeopleUpdate(
         userIds = relatedUserIds,
         update = UpdatePublicKeyGroupAdded(
           userId,
@@ -129,7 +128,7 @@ final class EncryptionExtension(system: ActorSystem) extends Extension {
       for {
         _ ← EncryptionKeyGroupRepo.delete(userId, id)
         relatedUserIds ← DBIO.from(socialExt.getRelations(userId))
-        _ ← DBIO.from(seqUpdExt.broadcastSingleUpdate(relatedUserIds, update))
+        _ ← DBIO.from(seqUpdExt.broadcastPeopleUpdate(relatedUserIds, update))
       } yield ()
 
     db.run(action.transactionally)
@@ -212,8 +211,8 @@ final class EncryptionExtension(system: ActorSystem) extends Extension {
   def checkBox(
     box:              ApiEncryptedBox,
     ignoredKeyGroups: Map[Int, Set[Int]]
-  ): Future[Either[(Vector[ApiKeyGroupId], Vector[ApiKeyGroupId]), Map[Int, Vector[(Long, ApiEncryptedBox)]]]] = {
-    val userChecksFu: Iterable[Future[(Seq[ApiKeyGroupId], Seq[ApiKeyGroupId], Seq[EncryptionKeyGroup])]] =
+  ): Future[Either[(Vector[ApiKeyGroupHolder], Vector[ApiKeyGroupId]), Map[Int, Vector[(Long, ApiEncryptedBox)]]]] = {
+    val userChecksFu: Iterable[Future[(Seq[ApiKeyGroupHolder], Seq[ApiKeyGroupId], Seq[EncryptionKeyGroup])]] =
       box.keys.groupBy(_.usersId) map {
         case (userId, keys) ⇒
           db.run(EncryptionKeyGroupRepo.fetch(userId)) map { kgs ⇒
@@ -223,7 +222,7 @@ final class EncryptionExtension(system: ActorSystem) extends Extension {
             val missingKgs = kgs.view
               .filterNot(kg ⇒ keys.exists(_.keyGroupId == kg.id))
               .filterNot(kg ⇒ ignored.contains(kg.id))
-              .map(kg ⇒ ApiKeyGroupId(userId, kg.id))
+              .flatMap(kg ⇒ toApi(kg).toOption map (ApiKeyGroupHolder(userId, _)))
               .force
 
             // kgs presented in box but deleted by receiver
@@ -237,7 +236,7 @@ final class EncryptionExtension(system: ActorSystem) extends Extension {
 
     Future.sequence(userChecksFu) map { checks ⇒
       val (missing, obs, kgs) =
-        checks.foldLeft((Vector.empty[ApiKeyGroupId], Vector.empty[ApiKeyGroupId], Vector.empty[EncryptionKeyGroup])) {
+        checks.foldLeft((Vector.empty[ApiKeyGroupHolder], Vector.empty[ApiKeyGroupId], Vector.empty[EncryptionKeyGroup])) {
           case ((macc, oacc, kgacc), (m, o, kg)) ⇒
             (macc ++ m, oacc ++ o, kgacc ++ kg)
         }

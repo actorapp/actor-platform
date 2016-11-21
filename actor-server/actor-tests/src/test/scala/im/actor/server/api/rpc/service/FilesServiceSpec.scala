@@ -5,9 +5,9 @@ import java.net.{ HttpURLConnection, URL }
 
 import im.actor.api.rpc.files._
 import im.actor.api.rpc.{ AuthData, ClientData, Ok }
-import im.actor.server.api.http.HttpApi
+import im.actor.server.api.http.{ HttpApi, HttpApiConfig }
 import im.actor.server.api.rpc.service.files.FilesServiceImpl
-import im.actor.server.{ BaseAppSuite, ImplicitAuthService, ImplicitSessionRegion }
+import im.actor.server.{ BaseAppSuite, ImplicitAuthService, ImplicitSessionRegion, NetworkHelpers }
 import org.apache.commons.io.IOUtils
 
 final class FilesServiceSpec
@@ -27,7 +27,11 @@ final class FilesServiceSpec
   it should "Generate valid upload part urls when same request comes twice" in validUploadPartUrlsDuplRequest
 
   lazy val service = new FilesServiceImpl
-  HttpApi(system).start()
+  val config = {
+    val port = NetworkHelpers.randomPort()
+    HttpApiConfig.load.get.copy(interface = "127.0.0.1", port = port, baseUri = s"http://localhost:$port")
+  }
+  HttpApi(system).start(config)
 
   val (user, authId, authSid, _) = createUser()
   val sessionId = createSessionId()

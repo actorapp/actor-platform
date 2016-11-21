@@ -8,108 +8,108 @@ public protocol AABindedCell {
     
     associatedtype BindData
     
-    static func bindedCellHeight(table: AAManagedTable, item: BindData) -> CGFloat
+    static func bindedCellHeight(_ table: AAManagedTable, item: BindData) -> CGFloat
     
-    func bind(item: BindData, table: AAManagedTable, index: Int, totalCount: Int)
+    func bind(_ item: BindData, table: AAManagedTable, index: Int, totalCount: Int)
 }
 
 public protocol AABindedSearchCell {
     associatedtype BindData
     
-    static func bindedCellHeight(item: BindData) -> CGFloat
+    static func bindedCellHeight(_ item: BindData) -> CGFloat
     
-    func bind(item: BindData, search: String?)
+    func bind(_ item: BindData, search: String?)
 }
 
-public class AABindedRows<BindCell where BindCell: UITableViewCell, BindCell: AABindedCell>: NSObject, AAManagedRange, ARDisplayList_AppleChangeListener, ARDisplayList_Listener {
+open class AABindedRows<BindCell>: NSObject, AAManagedRange, ARDisplayList_AppleChangeListener, ARDisplayList_Listener where BindCell: UITableViewCell, BindCell: AABindedCell {
     
-    public var topOffset: Int = 0
+    open var topOffset: Int = 0
     
-    public var displayList: ARBindedDisplayList!
+    open var displayList: ARBindedDisplayList!
     
-    public var selectAction: ((BindCell.BindData) -> Bool)?
+    open var selectAction: ((BindCell.BindData) -> Bool)?
     
-    public var canEditAction: ((BindCell.BindData) -> Bool)?
+    open var canEditAction: ((BindCell.BindData) -> Bool)?
     
-    public var editAction: ((BindCell.BindData) -> ())?
+    open var editAction: ((BindCell.BindData) -> ())?
     
-    public var didBind: ((BindCell, BindCell.BindData) -> ())?
+    open var didBind: ((BindCell, BindCell.BindData) -> ())?
     
-    public var autoHide = true
+    open var autoHide = true
     
-    public var animated = false
+    open var animated = false
     
-    public var differental = false
+    open var differental = false
     
-    private var table: AAManagedTable!
+    fileprivate var table: AAManagedTable!
     
-    private var lastItemsCount: Int = 0
+    fileprivate var lastItemsCount: Int = 0
     
-    private let cellReuseId = "Bind:\(BindCell.self)"
+    fileprivate let cellReuseId = "Bind:\(BindCell.self)"
     
     // Initing Table
     
-    public func initTable(table: AAManagedTable) {
-        table.tableView.registerClass(BindCell.self, forCellReuseIdentifier: cellReuseId)
+    open func initTable(_ table: AAManagedTable) {
+        table.tableView.register(BindCell.self, forCellReuseIdentifier: cellReuseId)
     }
     
     // Total items count
     
-    public func rangeNumberOfItems(table: AAManagedTable) -> Int {
+    open func rangeNumberOfItems(_ table: AAManagedTable) -> Int {
         return lastItemsCount
     }
     
     // Cells
     
-    public func rangeCellHeightForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> CGFloat {
-        let data = displayList.itemWithIndex(jint(indexPath.item)) as! BindCell.BindData
+    open func rangeCellHeightForItem(_ table: AAManagedTable, indexPath: AARangeIndexPath) -> CGFloat {
+        let data = displayList.item(with: jint(indexPath.item)) as! BindCell.BindData
         return BindCell.self.bindedCellHeight(table, item: data)
     }
     
-    public func rangeCellForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> UITableViewCell {
-        let data = displayList.itemWithIndex(jint(indexPath.item)) as! BindCell.BindData
-        let cell = self.table.tableView.dequeueReusableCellWithIdentifier(cellReuseId, forIndexPath: indexPath.indexPath) as! BindCell
+    open func rangeCellForItem(_ table: AAManagedTable, indexPath: AARangeIndexPath) -> UITableViewCell {
+        let data = displayList.item(with: jint(indexPath.item)) as! BindCell.BindData
+        let cell = self.table.tableView.dequeueReusableCell(withIdentifier: cellReuseId, for: indexPath.indexPath as IndexPath) as! BindCell
         cell.bind(data, table: table, index: indexPath.item, totalCount: lastItemsCount)
-        displayList.touchWithIndex(jint(indexPath.item))
+        displayList.touch(with: jint(indexPath.item))
         didBind?(cell, data)
         return cell
     }
     
     // Select
     
-    public func rangeCanSelect(table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool {
+    open func rangeCanSelect(_ table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool {
         
         return selectAction != nil
     }
     
-    public func rangeSelect(table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool {
+    open func rangeSelect(_ table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool {
         
-        return selectAction!(displayList.itemWithIndex(jint(indexPath.item)) as! BindCell.BindData)
+        return selectAction!(displayList.item(with: jint(indexPath.item)) as! BindCell.BindData)
     }
     
     // Delete
     
-    public func rangeCanDelete(table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool {
+    open func rangeCanDelete(_ table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool {
         if canEditAction != nil {
-            return canEditAction!(displayList.itemWithIndex(jint(indexPath.item)) as! BindCell.BindData)
+            return canEditAction!(displayList.item(with: jint(indexPath.item)) as! BindCell.BindData)
         }
         return false
     }
     
-    public func rangeDelete(table: AAManagedTable, indexPath: AARangeIndexPath) {
-        editAction!(displayList.itemWithIndex(jint(indexPath.item)) as! BindCell.BindData)
+    open func rangeDelete(_ table: AAManagedTable, indexPath: AARangeIndexPath) {
+        editAction!(displayList.item(with: jint(indexPath.item)) as! BindCell.BindData)
     }
     
     // Binding
     
-    public func rangeBind(table: AAManagedTable, binder: AABinder) {
+    open func rangeBind(_ table: AAManagedTable, binder: AABinder) {
         
         self.table = table
 
         if differental {
             displayList.addAppleListener(self)
         } else {
-            displayList.addListener(self)
+            displayList.add(self)
         }
         
         lastItemsCount = Int(displayList.size())
@@ -117,7 +117,7 @@ public class AABindedRows<BindCell where BindCell: UITableViewCell, BindCell: AA
         updateVisibility()
     }
     
-    @objc public func onCollectionChanged() {
+    @objc open func onCollectionChanged() {
         
         let oldCount = lastItemsCount
         lastItemsCount = Int(displayList.size())
@@ -132,9 +132,9 @@ public class AABindedRows<BindCell where BindCell: UITableViewCell, BindCell: AA
                     let index = indexes[i]
                     let cell = cells[i]
                     
-                    if index.section == 0 && index.row >= topOffset {
-                        let data = displayList.itemWithIndex(jint(index.row - topOffset)) as! BindCell.BindData
-                        (cell as! BindCell).bind(data, table: table, index: index.row - topOffset, totalCount: Int(displayList.size()))
+                    if (index as NSIndexPath).section == 0 && (index as NSIndexPath).row >= topOffset {
+                        let data = displayList.item(with: jint((index as NSIndexPath).row - topOffset)) as! BindCell.BindData
+                        (cell as! BindCell).bind(data, table: table, index: (index as NSIndexPath).row - topOffset, totalCount: Int(displayList.size()))
                     }
                 }
             }
@@ -143,7 +143,7 @@ public class AABindedRows<BindCell where BindCell: UITableViewCell, BindCell: AA
         updateVisibility()
     }
     
-    @objc public func onCollectionChangedWithChanges(modification: ARAppleListUpdate!) {
+    @objc open func onCollectionChanged(withChanges modification: ARAppleListUpdate!) {
         
         let tableView = self.table.tableView
         let section = 0
@@ -160,9 +160,9 @@ public class AABindedRows<BindCell where BindCell: UITableViewCell, BindCell: AA
             
             let animationType: UITableViewRowAnimation
             if animated && !modification.isLoadMore {
-                animationType = UITableViewRowAnimation.Automatic
+                animationType = UITableViewRowAnimation.automatic
             } else {
-                animationType = UITableViewRowAnimation.None
+                animationType = UITableViewRowAnimation.none
             }
             
             if modification.nonUpdateCount() > 0 {
@@ -170,27 +170,27 @@ public class AABindedRows<BindCell where BindCell: UITableViewCell, BindCell: AA
                 
                 // Removed rows
                 if modification.removedCount() > 0 {
-                    var rows = [NSIndexPath]()
+                    var rows = [IndexPath]()
                     for i in 0..<modification.removedCount() {
-                        rows.append(NSIndexPath(forRow: Int(modification.getRemoved(jint(i))) + topOffset, inSection: section))
+                        rows.append(IndexPath(row: Int(modification.getRemoved(jint(i))) + topOffset, section: section))
                     }
-                    tableView.deleteRowsAtIndexPaths(rows, withRowAnimation: animationType)
+                    tableView.deleteRows(at: rows, with: animationType)
                 }
                 
                 // Added rows
                 if modification.addedCount() > 0 {
-                    var rows = [NSIndexPath]()
+                    var rows = [IndexPath]()
                     for i in 0..<modification.addedCount() {
-                        rows.append(NSIndexPath(forRow: Int(modification.getAdded(jint(i)) + topOffset), inSection: section))
+                        rows.append(IndexPath(row: Int(modification.getAdded(jint(i)) + topOffset), section: section))
                     }
-                    tableView.insertRowsAtIndexPaths(rows, withRowAnimation: animationType)
+                    tableView.insertRows(at: rows, with: animationType)
                 }
                 
                 // Moved rows
                 if modification.movedCount() > 0 {
                     for i in 0..<modification.movedCount() {
                         let mov = modification.getMoved(jint(i))
-                        tableView.moveRowAtIndexPath(NSIndexPath(forRow: Int(mov.getSourceIndex()) + topOffset, inSection: section), toIndexPath: NSIndexPath(forRow: Int(mov.getDestIndex()) + topOffset, inSection: section))
+                        tableView.moveRow(at: IndexPath(row: Int((mov?.getSourceIndex())!) + topOffset, section: section), to: IndexPath(row: Int((mov?.getDestIndex())!) + topOffset, section: section))
                     }
                 }
                 
@@ -202,13 +202,13 @@ public class AABindedRows<BindCell where BindCell: UITableViewCell, BindCell: AA
                 let visibleIndexes = tableView.indexPathsForVisibleRows!
                 for i in 0..<modification.updatedCount() {
                     for visibleIndex in visibleIndexes {
-                        if (visibleIndex.row == Int(modification.getUpdated(jint(i))) + topOffset && visibleIndex.section == section) {
+                        if ((visibleIndex as NSIndexPath).row == Int(modification.getUpdated(jint(i))) + topOffset && (visibleIndex as NSIndexPath).section == section) {
                             
                             // Need to rebind manually because we need to keep cell reference same
-                            if let item = displayList.itemWithIndex(jint(visibleIndex.row - topOffset)) as? BindCell.BindData,
-                                let cell = tableView.cellForRowAtIndexPath(visibleIndex) as? BindCell {
+                            if let item = displayList.item(with: jint((visibleIndex as NSIndexPath).row - topOffset)) as? BindCell.BindData,
+                                let cell = tableView.cellForRow(at: visibleIndex) as? BindCell {
                                     
-                                    cell.bind(item, table: table, index: visibleIndex.row, totalCount: Int(displayList.size()))
+                                    cell.bind(item, table: table, index: (visibleIndex as NSIndexPath).row, totalCount: Int(displayList.size()))
                             }
                         }
                     }
@@ -232,9 +232,9 @@ public class AABindedRows<BindCell where BindCell: UITableViewCell, BindCell: AA
                         let index = indexes[i]
                         let cell = cells[i]
                         
-                        if index.section == 0 && index.row >= topOffset {
-                            let data = displayList.itemWithIndex(jint(index.row - topOffset)) as! BindCell.BindData
-                            (cell as! BindCell).bind(data, table: table, index: index.row - topOffset, totalCount: Int(displayList.size()))
+                        if (index as NSIndexPath).section == 0 && (index as NSIndexPath).row >= topOffset {
+                            let data = displayList.item(with: jint((index as NSIndexPath).row - topOffset)) as! BindCell.BindData
+                            (cell as! BindCell).bind(data, table: table, index: (index as NSIndexPath).row - topOffset, totalCount: Int(displayList.size()))
                         }
                     }
                 }
@@ -244,7 +244,7 @@ public class AABindedRows<BindCell where BindCell: UITableViewCell, BindCell: AA
         updateVisibility()
     }
     
-    public func updateVisibility() {
+    open func updateVisibility() {
         if autoHide {
             if displayList.size() == 0 {
                 table.hideTable()
@@ -254,26 +254,26 @@ public class AABindedRows<BindCell where BindCell: UITableViewCell, BindCell: AA
         }
     }
     
-    public func rangeUnbind(table: AAManagedTable, binder: AABinder) {
+    open func rangeUnbind(_ table: AAManagedTable, binder: AABinder) {
         
         self.table = nil
         
         if differental {
             displayList.removeAppleListener(self)
         } else {
-            displayList.removeListener(self)
+            displayList.remove(self)
         }
     }
     
-    public func filter(text: String) {
+    open func filter(_ text: String) {
         if (text.length == 0) {
-            self.displayList.initTopWithRefresh(false)
+            self.displayList.initTop(withRefresh: false)
         } else {
-            self.displayList.initSearchWithQuery(text, withRefresh: false)
+            self.displayList.initSearch(withQuery: text, withRefresh: false)
         }
     }
     
-    private func checkInstallation() {
+    fileprivate func checkInstallation() {
         if displayList == nil {
             fatalError("Display list not set!")
         }
@@ -283,14 +283,14 @@ public class AABindedRows<BindCell where BindCell: UITableViewCell, BindCell: AA
 
 public extension AAManagedSection {
     
-    public func binded<T where T: UITableViewCell, T: AABindedCell>(@noescape closure: (r: AABindedRows<T>) -> ()) -> AABindedRows<T> {
+    public func binded<T>(_ closure: (_ r: AABindedRows<T>) -> ()) -> AABindedRows<T> where T: UITableViewCell, T: AABindedCell {
         
         let topOffset = numberOfItems(self.table)
         
         let r = AABindedRows<T>()
         r.topOffset = topOffset
         regions.append(r)
-        closure(r: r)
+        closure(r)
         r.checkInstallation()
         r.initTable(self.table)
         return r

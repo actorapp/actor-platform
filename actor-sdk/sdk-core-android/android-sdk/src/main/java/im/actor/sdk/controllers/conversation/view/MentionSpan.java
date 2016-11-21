@@ -6,6 +6,7 @@ import android.text.TextPaint;
 import android.view.View;
 
 import im.actor.sdk.ActorSDK;
+import im.actor.sdk.ActorSDKLauncher;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.runtime.android.AndroidContext;
@@ -20,15 +21,7 @@ public class MentionSpan extends BaseUrlSpan {
     public MentionSpan(String nick, int userId, boolean hideUrlStyle) {
         super(nick, hideUrlStyle);
         this.userId = userId;
-        colors = new int[]{
-                AndroidContext.getContext().getResources().getColor(R.color.placeholder_0),
-                AndroidContext.getContext().getResources().getColor(R.color.placeholder_1),
-                AndroidContext.getContext().getResources().getColor(R.color.placeholder_2),
-                AndroidContext.getContext().getResources().getColor(R.color.placeholder_3),
-                AndroidContext.getContext().getResources().getColor(R.color.placeholder_4),
-                AndroidContext.getContext().getResources().getColor(R.color.placeholder_5),
-                AndroidContext.getContext().getResources().getColor(R.color.placeholder_6),
-        };
+        colors = ActorSDK.sharedActor().style.getDefaultAvatarPlaceholders();
     }
 
     @Override
@@ -59,7 +52,7 @@ public class MentionSpan extends BaseUrlSpan {
         if (hideUrlStyle) {
             //Do nothing
         } else {
-            ActorSDK.sharedActor().startProfileActivity(widget.getContext(), userId);
+            ActorSDKLauncher.startProfileActivity(widget.getContext(), userId);
         }
     }
 }

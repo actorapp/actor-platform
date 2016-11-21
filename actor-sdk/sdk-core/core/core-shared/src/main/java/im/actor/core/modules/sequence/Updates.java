@@ -4,6 +4,8 @@
 
 package im.actor.core.modules.sequence;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +27,7 @@ import im.actor.runtime.eventbus.BusSubscriber;
 import im.actor.runtime.eventbus.Event;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.PromiseFunc;
+import im.actor.runtime.promise.PromiseResolver;
 import im.actor.runtime.promise.Promises;
 import im.actor.runtime.promise.PromisesArray;
 
@@ -56,12 +59,11 @@ public class Updates extends AbsModule implements BusSubscriber {
         return updateHandlerInt;
     }
 
-    public void onPushReceived(int seq) {
+    public void onPushReceived(int seq, long authId) {
         if (updateActor != null) {
-            updateActor.send(new SequenceActor.PushSeq(seq));
+            updateActor.send(new SequenceActor.PushSeq(seq, authId));
         }
     }
-
 
     public Promise<Void> applyUpdate(int seq, byte[] state, Update update) {
         return new Promise<>((PromiseFunc<Void>) resolver -> {
@@ -75,7 +77,6 @@ public class Updates extends AbsModule implements BusSubscriber {
         ArrayList<ApiGroup> groups = new ArrayList<>();
         groups.add(group);
         return applyUpdate(seq, state, update, users, groups);
-
     }
 
     public Promise<Void> applyUpdate(int seq, byte[] state, Update update,
@@ -87,6 +88,11 @@ public class Updates extends AbsModule implements BusSubscriber {
         });
     }
 
+    public Promise<Void> waitForUpdate(int seq) {
+        return new Promise<>((PromiseFunc<Void>) resolver -> {
+            executeAfter(seq, () -> resolver.result(null));
+        });
+    }
 
     public Promise<Void> applyRelatedData(final List<ApiUser> users) {
         return applyRelatedData(users, new ArrayList<>());

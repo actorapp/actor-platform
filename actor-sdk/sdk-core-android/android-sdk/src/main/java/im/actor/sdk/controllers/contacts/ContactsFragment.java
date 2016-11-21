@@ -2,7 +2,6 @@ package im.actor.sdk.controllers.contacts;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,12 +9,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import im.actor.core.entity.Contact;
-import im.actor.core.entity.Dialog;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
-import im.actor.sdk.controllers.activity.ActorMainActivity;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
@@ -23,6 +20,9 @@ public class ContactsFragment extends BaseContactFragment {
 
     public ContactsFragment() {
         super(false, false, false);
+        setRootFragment(true);
+        setHomeAsUp(true);
+        setTitle(R.string.contacts_title);
     }
 
     @Override
@@ -54,34 +54,31 @@ public class ContactsFragment extends BaseContactFragment {
                 .setItems(new CharSequence[]{
                         getString(R.string.contacts_menu_remove).replace("{0}", contact.getName()),
                         getString(R.string.contacts_menu_edit),
-                }, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (which == 0) {
-                            new AlertDialog.Builder(getActivity())
-                                    .setMessage(getString(R.string.alert_remove_contact_text).replace("{0}", contact.getName()))
-                                    .setPositiveButton(R.string.alert_remove_contact_yes, new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            execute(messenger().removeContact(contact.getUid()), R.string.contacts_menu_remove_progress, new CommandCallback<Boolean>() {
-                                                @Override
-                                                public void onResult(Boolean res) {
+                }, (dialog, which) -> {
+                    if (which == 0) {
+                        new AlertDialog.Builder(getActivity())
+                                .setMessage(getString(R.string.alert_remove_contact_text).replace("{0}", contact.getName()))
+                                .setPositiveButton(R.string.alert_remove_contact_yes, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        execute(messenger().removeContact(contact.getUid()), R.string.contacts_menu_remove_progress, new CommandCallback<Boolean>() {
+                                            @Override
+                                            public void onResult(Boolean res) {
 
-                                                }
+                                            }
 
-                                                @Override
-                                                public void onError(Exception e) {
+                                            @Override
+                                            public void onError(Exception e) {
 
-                                                }
-                                            });
-                                        }
-                                    })
-                                    .setNegativeButton(R.string.dialog_cancel, null)
-                                    .show()
-                                    .setCanceledOnTouchOutside(true);
-                        } else if (which == 1) {
-                            startActivity(Intents.editUserName(contact.getUid(), getActivity()));
-                        }
+                                            }
+                                        });
+                                    }
+                                })
+                                .setNegativeButton(R.string.dialog_cancel, null)
+                                .show()
+                                .setCanceledOnTouchOutside(true);
+                    } else if (which == 1) {
+                        startActivity(Intents.editUserName(contact.getUid(), getActivity()));
                     }
                 })
                 .show()

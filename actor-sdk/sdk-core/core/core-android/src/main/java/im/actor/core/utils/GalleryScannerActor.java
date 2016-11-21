@@ -5,13 +5,15 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 
 import java.util.ArrayList;
-
+import java.util.HashMap;
 import im.actor.core.viewmodel.GalleryVM;
 import im.actor.runtime.Log;
 import im.actor.runtime.actors.Actor;
+import im.actor.runtime.collections.SparseArray;
 
 public class GalleryScannerActor extends Actor {
 
@@ -22,7 +24,7 @@ public class GalleryScannerActor extends Actor {
     Uri uri;
     Cursor cursor;
     int offset = 0;
-    int column_index_data, column_index_folder_name, column_index_date;
+    int column_index_data, column_index_folder_name, column_index_date, column_index_id, column_index_folder_id;
 
     ArrayList<String> listOfAllImages = new ArrayList<>();
     ArrayList<String> newMedia = new ArrayList<>();
@@ -50,15 +52,19 @@ public class GalleryScannerActor extends Actor {
 
     private void initScan() {
         Log.d(TAG, "init scan");
-        projection = new String[]{MediaStore.MediaColumns.DATA,
+        projection = new String[]{MediaStore.Images.Media.DATA,
+                MediaStore.Images.Media._ID,
+                MediaStore.Images.Media.BUCKET_ID,
                 MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
-                MediaStore.Images.Media.DATE_MODIFIED};
+                MediaStore.Images.Media.DATE_TAKEN};
 
         cursor = getQuery();
 
         if (cursor != null && cursor.getCount() > 0) {
-            column_index_data = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
-            column_index_date = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATE_MODIFIED);
+            column_index_data = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            column_index_id = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID);
+            column_index_folder_id = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_ID);
+            column_index_date = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_TAKEN);
             column_index_folder_name = cursor
                     .getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME);
 
@@ -68,7 +74,9 @@ public class GalleryScannerActor extends Actor {
             self().send(new Scan());
         } else {
             Log.d(TAG, "init scan - no media, let's check it in " + CHECK_NEW_DELAY);
-            schedule(new InitScan(), CHECK_NEW_DELAY);
+            if (visible) {
+                schedule(new InitScan(), CHECK_NEW_DELAY);
+            }
         }
 
     }
@@ -76,7 +84,7 @@ public class GalleryScannerActor extends Actor {
     private Cursor getQuery() {
         try {
             return context.getContentResolver().query(uri, projection, null,
-                    null, MediaStore.MediaColumns.DATE_MODIFIED + " DESC");
+                    null, MediaStore.Images.Media.DATE_TAKEN + " DESC");
         } catch (Exception e) {
             return null;
         }
@@ -92,18 +100,22 @@ public class GalleryScannerActor extends Actor {
         }
 
         offset += SCAN_COUNT;
-        if (offset < cursor.getCount()) {
-            Log.d(TAG, "scan - iterations, offset - " + offset + ", schedule next in " + SCAN_DELAY);
-            schedule(new Scan(), SCAN_DELAY);
-        } else {
-            Log.d(TAG, "scanned to end, offset - " + offset + ", schedule check new in " + CHECK_NEW_DELAY);
-            scanned = true;
-            schedule(new CheckNew(), CHECK_NEW_DELAY);
-        }
+        scanned = offset >= cursor.getCount();
 
-        if (offset % 100 == 0 || scanned) {
+        //
+        // Update VM after 1st batch, every 100 photos, when scanned to end
+        //
+        if (offset == SCAN_COUNT || offset % 100 == 0 || scanned) {
             Log.d(TAG, "scan - update vm, offset - " + offset);
             galleryVM.getGalleryMediaPath().change(new ArrayList<String>(listOfAllImages));
+        }
+
+        if (visible) {
+            if (!scanned) {
+                schedule(new Scan(), SCAN_DELAY);
+            } else {
+                schedule(new CheckNew(), CHECK_NEW_DELAY);
+            }
         }
     }
 

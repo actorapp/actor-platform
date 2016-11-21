@@ -35,10 +35,11 @@ final class UserSequenceSpec extends BaseAppSuite(
   val probe = TestProbe()
 
   def e1() = {
-    val (user, _, _, _) = createUser()
+    val (user, authId, _, _) = createUser()
     val update = UpdateContactsAdded(Vector(1, 2, 3))
     val deliverEnv = Envelope(user.id).withDeliverUpdate(
       DeliverUpdate(
+        authId = authId,
         mapping = Some(UpdateMapping(Some(SerializedUpdate(
           header = update.header,
           body = ByteString.copyFrom(update.toByteArray),
@@ -51,13 +52,13 @@ final class UserSequenceSpec extends BaseAppSuite(
     {
       probe.send(region.ref, deliverEnv)
       val msg = probe.receiveOne(5.seconds).asInstanceOf[SeqState]
-      msg.seq should ===(1)
+      msg.seq shouldEqual 2
     }
 
     {
       probe.send(region.ref, deliverEnv)
       val msg = probe.receiveOne(1.second).asInstanceOf[SeqState]
-      msg.seq should ===(2)
+      msg.seq shouldEqual 3
     }
 
     probe.expectNoMsg(3.seconds)
@@ -65,27 +66,28 @@ final class UserSequenceSpec extends BaseAppSuite(
     {
       probe.send(region.ref, deliverEnv)
       val msg = probe.receiveOne(1.second).asInstanceOf[SeqState]
-      msg.seq should ===(3)
+      msg.seq shouldEqual 4
     }
 
     for (a ← 1 to 600)
       probe.send(region.ref, deliverEnv)
 
-    probe.receiveN(600, 5.seconds) // seq = 603
+    probe.receiveN(600, 5.seconds) // seq = 604
     probe.expectNoMsg(4.seconds)
 
     {
       probe.send(region.ref, deliverEnv)
       val msg = probe.receiveOne(5.seconds).asInstanceOf[SeqState]
-      msg.seq should ===(604)
+      msg.seq shouldEqual 605
     }
   }
 
   def e2() = {
-    val (user, _, _, _) = createUser()
+    val (user, authId, _, _) = createUser()
     val update = UpdateContactsAdded(Vector(1, 2, 3))
     val deliverEnv = Envelope(user.id).withDeliverUpdate(
       DeliverUpdate(
+        authId = authId,
         mapping = Some(UpdateMapping(Some(SerializedUpdate(
           header = update.header,
           body = ByteString.copyFrom(update.toByteArray),
@@ -95,7 +97,7 @@ final class UserSequenceSpec extends BaseAppSuite(
       )
     )
 
-    val futures = for (i ← 1 to 500) yield {
+    val futures = for (i ← 2 to 501) yield {
       val f = (region.ref ? deliverEnv)
         .mapTo[SeqState]
 
@@ -104,14 +106,14 @@ final class UserSequenceSpec extends BaseAppSuite(
 
     futures foreach {
       case (f, expectedSeq) ⇒
-        whenReady(f) { seqstate ⇒
-          seqstate.seq shouldEqual expectedSeq
+        whenReady(f) { seqState ⇒
+          seqState.seq shouldEqual expectedSeq
         }
     }
   }
 
   def reduceUpdates() = {
-    val (user, _, authSid, _) = createUser()
+    val (user, authId, authSid, _) = createUser()
 
     val update = UpdateContactsAdded(Vector(1, 2, 3))
     val deliverUpd = DeliverUpdate(
@@ -125,7 +127,7 @@ final class UserSequenceSpec extends BaseAppSuite(
 
     val updateSame = UpdateContactRegistered(1, isSilent = false, 0L, 0L)
     val deliverUpdSame = DeliverUpdate(
-      reduceKey = Some(StringValue("same")),
+      reduceKey = Some("same"),
       mapping = Some(UpdateMapping(Some(SerializedUpdate(
         header = updateSame.header,
         body = ByteString.copyFrom(updateSame.toByteArray),
@@ -145,8 +147,8 @@ final class UserSequenceSpec extends BaseAppSuite(
 
     whenReady(region.ref ? Envelope(user.id).withDeliverUpdate(deliverUpdSame))(identity)
 
-    whenReady(SeqUpdatesExtension(system).getDifference(user.id, 0, authSid, Long.MaxValue) map (_._1)) { updates ⇒
-      updates.map(_.mapping.get.default.get.header) shouldBe Seq(
+    whenReady(SeqUpdatesExtension(system).getDifference(user.id, 0, Array.empty, authId, authSid, Long.MaxValue).map(_.updates)) { updates ⇒
+      updates.map(_.header) shouldBe Seq(
         UpdateContactsAdded.header,
         UpdateContactsAdded.header,
         UpdateContactsAdded.header,

@@ -2,8 +2,6 @@ package im.actor.sdk;
 
 import android.graphics.Color;
 
-import im.actor.sdk.util.Screen;
-
 /**
  * Actor Styling class
  */
@@ -14,14 +12,33 @@ public class ActorStyle {
     //     BACKGROUNDS      //
     //////////////////////////
 
-    private int[] defaultBackgrouds = new int[]{R.drawable.img_chat_background_default, R.drawable.bg_1, R.drawable.bg_2, R.drawable.bg_3};
+    private int[] defaultBackgrouds = new int[]{R.drawable.bg_default_pattern, R.drawable.bg_1, R.drawable.bg_2, R.drawable.bg_3};
 
     public int[] getDefaultBackgrouds() {
         return defaultBackgrouds;
     }
 
     public void setDefaultBackgrouds(int[] defaultBackgrouds) {
-        this.defaultBackgrouds = defaultBackgrouds;
+        if (defaultBackgrouds.length > 0) {
+            this.defaultBackgrouds = defaultBackgrouds;
+        }
+    }
+
+    private int[] defaultAvatarPlaceholders = new int[]{
+            0xff509dbb,
+            0xff52b3cd,
+            0xff7e6eeb,
+            0xffde5447,
+            0xffee7e37,
+            0xffed608b,
+            0xff6ac53c};
+
+    public int[] getDefaultAvatarPlaceholders() {
+        return defaultAvatarPlaceholders;
+    }
+
+    public void setDefaultAvatarPlaceholders(int[] defaultAvatarPlaceholders) {
+        this.defaultAvatarPlaceholders = defaultAvatarPlaceholders;
     }
 
     //////////////////////////
@@ -75,7 +92,7 @@ public class ActorStyle {
     }
 
     // accent colors
-    private int accentColor = 0xffd94335;
+    private int accentColor = 0xff009949;
 
     public int getAccentColor() {
         return accentColor;
@@ -356,6 +373,16 @@ public class ActorStyle {
         this.dialogsTitleColor = dialogsTitleColor;
     }
 
+    private int dialogsTitleSecureColor = 0xff559d44;
+
+    public int getDialogsTitleSecureColor() {
+        return getColorWithFallback(dialogsTitleSecureColor, getDialogsTitleColor());
+    }
+
+    public void setDialogsTitleSecureColor(int dialogsTitleSecureColor) {
+        this.dialogsTitleSecureColor = dialogsTitleSecureColor;
+    }
+
     private int dialogsTextColor = 0;
 
     public int getDialogsTextColor() {
@@ -498,6 +525,16 @@ public class ActorStyle {
         this.textSubheaderInvColor = textSubheaderInvColor;
     }
 
+    private int textDangerColor = 0xffe44b4b;
+
+    public int getTextDangerColor() {
+        return textDangerColor;
+    }
+
+    public void setTextDangerColor(int textDangerColor) {
+        this.textDangerColor = textDangerColor;
+    }
+
     //Settings
     private int settingsMainTitleColor = 0;
 
@@ -562,7 +599,7 @@ public class ActorStyle {
     private int settingsCategoryTextColor = 0;
 
     public int getSettingsCategoryTextColor() {
-        return getColorWithFallback(settingsCategoryTextColor, getMainColor());
+        return getColorWithFallback(settingsCategoryTextColor, getAccentColor());
     }
 
     public void setSettingsCategoryTextColor(int settingsCategoryTextColor) {
@@ -885,6 +922,10 @@ public class ActorStyle {
         return Color.argb(Color.alpha(color), (int) Math.round(Color.red(color) * percent), (int) Math.round(Color.green(color) * percent), (int) Math.round(Color.blue(color) * percent));
     }
 
+    public static int adjustColorAlpha(int color, int alpha) {
+        return (alpha << 24) | (color & 0x00ffffff);
+    }
+
     /**
      * Get color with fallback to default - if color is 0, returns fallback color
      *
@@ -905,14 +946,14 @@ public class ActorStyle {
     //////////////////////////
 
     // DialogsFragment layout settings
-    private int dialogsPaddingTop = Screen.dp(8);
+    private int dialogsPaddingTopDp = 8;
 
-    public int getDialogsPaddingTop() {
-        return dialogsPaddingTop;
+    public int getDialogsPaddingTopDp() {
+        return dialogsPaddingTopDp;
     }
 
-    public void setDialogsPaddingTop(int dialogsPaddingTop) {
-        this.dialogsPaddingTop = dialogsPaddingTop;
+    public void setDialogsPaddingTopDp(int dialogsPaddingTopDp) {
+        this.dialogsPaddingTopDp = dialogsPaddingTopDp;
     }
 
     // ContactsFragment layout settings
@@ -926,4 +967,22 @@ public class ActorStyle {
         this.contactsMainPaddingTop = contactsMainPaddingTop;
     }
 
+    private boolean showAvatarInTitle = true;
+    private boolean showAvatarPrivateInTitle = true;
+
+    public boolean isShowAvatarInTitle() {
+        return showAvatarInTitle;
+    }
+
+    public void setShowAvatarInTitle(boolean showAvatarInTitle) {
+        this.showAvatarInTitle = showAvatarInTitle;
+    }
+
+    public boolean isShowAvatarPrivateInTitle() {
+        return showAvatarPrivateInTitle;
+    }
+
+    public void setShowAvatarPrivateInTitle(boolean showAvatarPrivateInTitle) {
+        this.showAvatarPrivateInTitle = showAvatarPrivateInTitle;
+    }
 }

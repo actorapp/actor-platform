@@ -40,11 +40,10 @@ private[bot] final class MessagingBotService(system: ActorSystem) extends BotSer
         SeqStateDate(_, _, date) ← dialogExt.sendMessage(
           peer = peer,
           senderUserId = botUserId,
-          senderAuthSid = botAuthSid,
-          senderAuthId = Some(botAuthId),
+          senderAuthId = botAuthId,
           randomId = randomId,
           message = message,
-          accessHash = Some(peer.accessHash),
+          accessHash = peer.accessHash,
           isFat = false
         )
       } yield Right(MessageSent(date))
@@ -58,7 +57,7 @@ private[bot] final class MessagingBotService(system: ActorSystem) extends BotSer
       val botPeer = ModelPeer.privat(botUserId)
       (for {
         _ ← fromFutureBoolean(Forbidden)(db.run(HistoryMessageRepo.findBySender(botUserId, peerModel, randomId).headOption map (_.nonEmpty)))
-        _ ← fromFuture(updateMessageContent(botUserId, peerModel, randomId, updatedMessage)(system))
+        _ ← fromFuture(updateMessageContent(botUserId, 0L, peerModel, randomId, updatedMessage)(system))
       } yield MessageContentUpdated).value
     }
   )

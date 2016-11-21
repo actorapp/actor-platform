@@ -3,6 +3,7 @@ package im.actor.server.api.rpc.service.auth
 import java.time.{ LocalDateTime, ZoneOffset }
 
 import akka.actor.ActorSystem
+import akka.http.scaladsl.util.FastFuture
 import akka.pattern.ask
 import cats.data.Xor
 import im.actor.api.rpc._
@@ -15,7 +16,6 @@ import im.actor.server.model._
 import im.actor.server.persist._
 import im.actor.server.persist.auth.AuthTransactionRepo
 import im.actor.server.session._
-import im.actor.util.misc.EmailUtils.isTestEmail
 import im.actor.util.misc.IdUtils._
 import im.actor.util.misc.PhoneNumberUtils._
 import im.actor.util.misc.StringUtils.validName
@@ -24,7 +24,6 @@ import org.joda.time.DateTime
 import slick.dbio._
 
 import scala.concurrent.Future
-import scala.util.Try
 
 trait AuthHelpers extends Helpers {
   self: AuthServiceImpl ⇒
@@ -68,15 +67,15 @@ trait AuthHelpers extends Helpers {
   protected def newUsernameSignUp(transaction: AuthUsernameTransaction, name: String, sex: Option[ApiSex]): Result[(Int, String) Xor User] = {
     val username = transaction.username
     for {
-      optUser ← fromDBIO(UserRepo.findByNickname(username))
-      result ← optUser match {
-        case Some(existingUser) ⇒ point(Xor.left((existingUser.id, "")))
-        case None               ⇒ newUser(name, "", sex, username = Some(username))
+      optUserId ← fromFuture(globalNamesStorage.getUserId(username))
+      result ← optUserId match {
+        case Some(id) ⇒ point(Xor.left((id, "")))
+        case None     ⇒ newUser(name, "", sex, username = Some(username))
       }
     } yield result
   }
 
-  protected def handleUserCreate(user: User, transaction: AuthTransactionBase, clientData: ClientData): Result[Unit] = {
+  protected def handleUserCreate(user: User, transaction: AuthTransactionBase, client: ClientData): Result[Unit] = {
     for {
       _ ← fromFuture(userExt.create(user.id, user.accessSalt, user.nickname, user.name, user.countryCode, im.actor.api.rpc.users.ApiSex(user.sex.toInt), isBot = false))
       _ ← fromDBIO(AvatarDataRepo.create(AvatarData.empty(AvatarData.OfUser, user.id.toLong)))
@@ -93,9 +92,9 @@ trait AuthHelpers extends Helpers {
             _ ← fromFuture(userExt.addEmail(user.id, e.email))
           } yield ()
         case u: AuthUsernameTransaction ⇒
-          fromFuture(userExt.changeNickname(user.id, Some(u.username)))
+          fromFuture(userExt.changeNickname(user.id, client.authId, Some(u.username)))
         case u: AuthAnonymousTransaction ⇒
-          fromFuture(userExt.changeNickname(user.id, Some(u.username)))
+          fromFuture(userExt.changeNickname(user.id, client.authId, Some(u.username)))
       }
     } yield ()
   }
@@ -169,8 +168,8 @@ trait AuthHelpers extends Helpers {
           } yield (emailModel.userId, "")
         case u: AuthUsernameTransaction ⇒
           for {
-            userModel ← fromDBIOOption(AuthErrors.UsernameUnoccupied)(UserRepo.findByNickname(u.username))
-          } yield (userModel.id, "")
+            userId ← fromFutureOption(AuthErrors.UsernameUnoccupied)(globalNamesStorage.getUserId(u.username))
+          } yield (userId, "")
         case _: AuthAnonymousTransaction ⇒
           fromEither(Xor.left(AuthErrors.NotValidated))
       }
@@ -188,32 +187,31 @@ trait AuthHelpers extends Helpers {
       _ ← AuthSessionRepo.create(newSession)
     } yield ()
 
-  protected def authorize(userId: Int, authSid: Int, clientData: ClientData)(implicit sessionRegion: SessionRegion): Future[AuthorizeUserAck] = {
+  protected def authorize(userId: Int, authSid: Int, clientData: ClientData)(implicit sessionRegion: SessionRegion): Future[Unit] =
     for {
       _ ← userExt.auth(userId, clientData.authId)
-      ack ← sessionRegion.ref
+      _ ← sessionRegion.ref
         .ask(SessionEnvelope(clientData.authId, clientData.sessionId).withAuthorizeUser(AuthorizeUser(userId, authSid)))
         .mapTo[AuthorizeUserAck]
-    } yield ack
-  }
+    } yield ()
 
   //TODO: what country to use in case of email auth
   protected def authorizeT(
     userId:      Int,
     countryCode: String,
     transaction: AuthTransactionBase,
-    clientData:  ClientData
+    client:      ClientData
   ): Result[ApiUser] = {
     for {
-      _ ← fromFuture(if (countryCode.nonEmpty) userExt.changeCountryCode(userId, countryCode) else Future.successful(()))
-      _ ← fromFuture(userExt.setDeviceInfo(userId, DeviceInfo.parseFrom(transaction.deviceInfo)) recover { case _ ⇒ () })
-      _ ← fromDBIO(AuthIdRepo.setUserData(clientData.authId, userId))
-      userStruct ← fromFuture(userExt.getApiStruct(userId, userId, clientData.authId))
+      _ ← fromFuture(if (countryCode.nonEmpty) userExt.changeCountryCode(userId, countryCode) else FastFuture.successful(()))
+      _ ← fromFuture(userExt.setDeviceInfo(userId, client.authId, DeviceInfo.parseFrom(transaction.deviceInfo)) recover { case _ ⇒ () })
+      _ ← fromDBIO(AuthIdRepo.setUserData(client.authId, userId))
+      userStruct ← fromFuture(userExt.getApiStruct(userId, userId, client.authId))
       //refresh session data
       authSession = AuthSession(
         userId = userId,
         id = nextIntId(),
-        authId = clientData.authId,
+        authId = client.authId,
         appId = transaction.appId,
         appTitle = AuthSession.appTitleOf(transaction.appId),
         deviceHash = transaction.deviceHash,
@@ -225,7 +223,7 @@ trait AuthHelpers extends Helpers {
       )
       _ ← fromDBIO(refreshAuthSession(transaction.deviceHash, authSession))
       _ ← fromDBIO(AuthTransactionRepo.delete(transaction.transactionHash))
-      _ ← fromFuture(authorize(userId, authSession.id, clientData))
+      _ ← fromFuture(authorize(userId, authSession.id, client))
     } yield userStruct
   }
 

@@ -4,7 +4,7 @@
 
 import UIKit
 
-public class AAComposeController: AAContactsListContentController, AAContactsListContentControllerDelegate {
+open class AAComposeController: AAContactsListContentController, AAContactsListContentControllerDelegate {
 
     public override init() {
         super.init()
@@ -15,7 +15,7 @@ public class AAComposeController: AAContactsListContentController, AAContactsLis
         self.navigationItem.title = AALocalized("ComposeTitle")
         
         if AADevice.isiPad {
-            self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: UIBarButtonItemStyle.Plain, target: self, action: #selector(AAViewController.dismiss))
+            self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: UIBarButtonItemStyle.plain, target: self, action: #selector(self.dismissController))
         }
     }
 
@@ -23,7 +23,7 @@ public class AAComposeController: AAContactsListContentController, AAContactsLis
         fatalError("init(coder:) has not been implemented")
     }
     
-    public func willAddContacts(controller: AAContactsListContentController, section: AAManagedSection) {
+    open func willAddContacts(_ controller: AAContactsListContentController, section: AAManagedSection) {
         section.custom { (r:AACustomRow<AAContactActionCell>) -> () in
             
             r.height = 56
@@ -33,13 +33,27 @@ public class AAComposeController: AAContactsListContentController, AAContactsLis
             }
             
             r.selectAction = { () -> Bool in
-                self.navigateNext(AAGroupCreateViewController(), removeCurrent: true)
+                self.navigateNext(AAGroupCreateViewController(isChannel: false), removeCurrent: true)
+                return false
+            }
+        }
+        
+        section.custom { (r:AACustomRow<AAContactActionCell>) -> () in
+            
+            r.height = 56
+            
+            r.closure = { (cell) -> () in
+                cell.bind("ic_create_channel", actionTitle: AALocalized("CreateChannel"))
+            }
+            
+            r.selectAction = { () -> Bool in
+                self.navigateNext(AAGroupCreateViewController(isChannel: true), removeCurrent: true)
                 return false
             }
         }
     }
     
-    public func contactDidTap(controller: AAContactsListContentController, contact: ACContact) -> Bool {
+    open func contactDidTap(_ controller: AAContactsListContentController, contact: ACContact) -> Bool {
         if let customController = ActorSDK.sharedActor().delegate.actorControllerForConversation(ACPeer_userWithInt_(contact.uid)) {
             navigateDetail(customController)
         } else {

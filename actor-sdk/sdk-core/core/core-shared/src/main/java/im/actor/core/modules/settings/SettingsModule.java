@@ -43,6 +43,12 @@ public class SettingsModule extends AbsModule {
 
     private final String KEY_ANIMATION_AUTO_PLAY;
 
+    private final String KEY_DOC_AUTO_DOWNLOAD;
+    private final String KEY_IMAGE_AUTO_DOWNLOAD;
+    private final String KEY_VIDEO_AUTO_DOWNLOAD;
+    private final String KEY_ANIMATION_AUTO_DOWNLOAD;
+    private final String KEY_AUDIO_AUTO_DOWNLOAD;
+
     private final String KEY_NOTIFICATION_PEER_SOUND;
 
     private ActorRef settingsSync;
@@ -106,6 +112,12 @@ public class SettingsModule extends AbsModule {
         KEY_NOTIFICATION_IN_APP_VIBRATION = "category." + deviceType + ".in_app.vibration.enabled";
 
         KEY_ANIMATION_AUTO_PLAY = "category." + deviceType + ".auto_play.enabled";
+
+        KEY_ANIMATION_AUTO_DOWNLOAD = "category." + deviceType + ".auto_download_animation.enabled";
+        KEY_VIDEO_AUTO_DOWNLOAD = "category." + deviceType + ".auto_download_video.enabled";
+        KEY_IMAGE_AUTO_DOWNLOAD = "category." + deviceType + ".auto_download_image.enabled";
+        KEY_AUDIO_AUTO_DOWNLOAD = "category." + deviceType + ".auto_download_audio.enabled";
+        KEY_DOC_AUTO_DOWNLOAD = "category." + deviceType + ".auto_download_doc.enabled";
 
         // Account-wide notification settings
         KEY_NOTIFICATION_SOUND = "account.notification.sound";
@@ -255,6 +267,47 @@ public class SettingsModule extends AbsModule {
         setInt(KEY_CHAT_TEXT_SIZE, textSize);
     }
 
+    // Auto download settings
+
+    public boolean isImageAutoDownloadEnabled() {
+        return getBooleanValue(KEY_IMAGE_AUTO_DOWNLOAD, true);
+    }
+
+    public void setImageAutoDownloadEnabled(boolean enabled) {
+        setBooleanValue(KEY_IMAGE_AUTO_DOWNLOAD, enabled);
+    }
+
+    public boolean isAnimationAutoDownloadEnabled() {
+        return getBooleanValue(KEY_ANIMATION_AUTO_DOWNLOAD, true);
+    }
+
+    public void setAnimationAutoDownloadEnabled(boolean enabled) {
+        setBooleanValue(KEY_ANIMATION_AUTO_DOWNLOAD, enabled);
+    }
+
+    public boolean isVideoAutoDownloadEnabled() {
+        return getBooleanValue(KEY_VIDEO_AUTO_DOWNLOAD, false);
+    }
+
+    public void setVideoAutoDownloadEnabled(boolean enabled) {
+        setBooleanValue(KEY_VIDEO_AUTO_DOWNLOAD, enabled);
+    }
+
+    public boolean isDocAutoDownloadEnabled() {
+        return getBooleanValue(KEY_DOC_AUTO_DOWNLOAD, true);
+    }
+
+    public void setDocAutoDownloadEnabled(boolean enabled) {
+        setBooleanValue(KEY_DOC_AUTO_DOWNLOAD, enabled);
+    }
+
+    public boolean isAudioAutoDownloadEnabled() {
+        return getBooleanValue(KEY_AUDIO_AUTO_DOWNLOAD, true);
+    }
+
+    public void setAudioAutoDownloadEnabled(boolean enabled) {
+        setBooleanValue(KEY_AUDIO_AUTO_DOWNLOAD, enabled);
+    }
 
     // Peer settings
 
@@ -392,6 +445,7 @@ public class SettingsModule extends AbsModule {
         }
         settingsSync.send(new SettingsSyncActor.ChangeSettings(key, val));
         onUpdatedSetting(key, val);
+        notifySettingsChanged();
     }
 
     private String readValue(String key) {
@@ -400,6 +454,9 @@ public class SettingsModule extends AbsModule {
 
     public void onUpdatedSetting(String key, String value) {
         preferences().putString(STORAGE_PREFIX + key, value);
+    }
+
+    public void notifySettingsChanged() {
         eventBus.post(new SettingsChanged());
     }
 

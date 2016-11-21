@@ -12,9 +12,9 @@ target 'ActorApp' do
 
     # Core Tools
     pod 'RegexKitLite'
-    pod 'CocoaAsyncSocket'
+    # pod 'CocoaAsyncSocket'
     pod 'zipzap'
-    pod 'SwiftyJSON'
+    pod 'ReachabilitySwift', '~> 3'
 
     # Main UI
     pod 'TTTAttributedLabel'
@@ -46,9 +46,9 @@ target 'ActorSDK' do
 
     # Core Tools
     pod 'RegexKitLite'
-    pod 'CocoaAsyncSocket'
+    # pod 'CocoaAsyncSocket'
     pod 'zipzap'
-    pod 'SwiftyJSON'
+    pod 'ReachabilitySwift', '~> 3'
 
     # Main UI
     pod 'TTTAttributedLabel'

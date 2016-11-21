@@ -11,6 +11,7 @@ trait UserAcl {
 
   protected val system: ActorSystem
 
+  // TODO: clarify names of params.
   protected def withNonBlockedPeer[A](
     contactUserId: Int,
     peer:          Peer
@@ -23,16 +24,17 @@ trait UserAcl {
   }
 
   protected def withNonBlockedUser[A](
-    contactUserId:      Int,
-    contactOwnerUserId: Int
+    userId:      Int,
+    ownerUserId: Int
   )(default: ⇒ Future[A], failed: ⇒ Future[A]): Future[A] = {
     import system.dispatcher
     for {
-      isBlocked ← checkIsBlocked(contactUserId, contactOwnerUserId)
+      isBlocked ← checkIsBlocked(userId, ownerUserId)
       result ← if (isBlocked) failed else default
     } yield result
   }
 
-  protected def checkIsBlocked(contactUserId: Int, contactOwnerUserId: Int): Future[Boolean] =
-    DbExtension(system).db.run(RelationRepo.isBlocked(contactOwnerUserId, contactUserId))
+  // check that `userId` is blocked by `ownerUserId`
+  protected def checkIsBlocked(userId: Int, ownerUserId: Int): Future[Boolean] =
+    DbExtension(system).db.run(RelationRepo.isBlocked(ownerUserId, userId))
 }

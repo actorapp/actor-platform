@@ -26,57 +26,50 @@ final class GroupUsersTable(tag: Tag) extends Table[GroupUser](tag, "group_users
 
 object GroupUserRepo {
 
-  val groupUsers = TableQuery[GroupUsersTable]
-  val groupUsersC = Compiled(groupUsers)
+  private val groupUsers = TableQuery[GroupUsersTable]
+  private val groupUsersC = Compiled(groupUsers)
 
-  def byPK(groupId: Rep[Int], userId: Rep[Int]) = groupUsers filter (g ⇒ g.groupId === groupId && g.userId === userId)
-  def byGroupId(groupId: Rep[Int]) = groupUsers filter (_.groupId === groupId)
-  def byUserId(userId: Rep[Int]) = groupUsers filter (_.userId === userId)
+  private def byPK(groupId: Rep[Int], userId: Rep[Int]) = groupUsers filter (g ⇒ g.groupId === groupId && g.userId === userId)
+  private def byGroupId(groupId: Rep[Int]) = groupUsers filter (_.groupId === groupId)
+  private def byUserId(userId: Rep[Int]) = groupUsers filter (_.userId === userId)
 
-  def joinedAtByPK(groupId: Rep[Int], userId: Rep[Int]) = byPK(groupId, userId) map (_.joinedAt)
-  def userIdByGroupId(groupId: Rep[Int]) = byGroupId(groupId) map (_.userId)
+  private def joinedAtByPK(groupId: Rep[Int], userId: Rep[Int]) = byPK(groupId, userId) map (_.joinedAt)
+  private def userIdByGroupId(groupId: Rep[Int]) = byGroupId(groupId) map (_.userId)
 
-  val byPKC = Compiled(byPK _)
-  val byGroupIdC = Compiled(byGroupId _)
-  val byUserIdC = Compiled(byUserId _)
+  private val byPKC = Compiled(byPK _)
+  private val byGroupIdC = Compiled(byGroupId _)
+  private val byUserIdC = Compiled(byUserId _)
 
-  val userIdByGroupIdC = Compiled(userIdByGroupId _)
-  val joinedAtByPKC = Compiled(joinedAtByPK _)
+  private val userIdByGroupIdC = Compiled(userIdByGroupId _)
+  private val joinedAtByPKC = Compiled(joinedAtByPK _)
 
-  def create(groupId: Int, userId: Int, inviterUserId: Int, invitedAt: Instant, joinedAt: Option[LocalDateTime], isAdmin: Boolean) =
+  @deprecated("Duplication of event-sourced groups logic", "2016-06-05")
+  def create(groupId: Int, userId: Int, inviterUserId: Int, invitedAt: Instant, joinedAt: Option[LocalDateTime], isAdmin: Boolean): DBIO[Int] = {
     groupUsersC += GroupUser(groupId, userId, inviterUserId, invitedAt, joinedAt, isAdmin)
+  }
 
-  def create(groupId: Int, userIds: Set[Int], inviterUserId: Int, invitedAt: Instant, joinedAt: Option[LocalDateTime]) =
-    groupUsersC ++= userIds.map(GroupUser(groupId, _, inviterUserId, invitedAt, joinedAt, isAdmin = false))
-
+  @deprecated("Used for migrations only", "2016-06-05")
   def find(groupId: Int) =
     byGroupIdC(groupId).result
 
-  def find(groupId: Int, userId: Int) =
-    byPKC((groupId, userId)).result.headOption
-
-  def exists(groupId: Int, userId: Int) =
-    byPKC.applied((groupId, userId)).exists.result
-
-  def isJoined(groupId: Int, userId: Int) =
-    byPKC.applied((groupId, userId)).map(_.joinedAt.isDefined).result.headOption
-
-  def findByUserId(userId: Int) =
-    byUserIdC(userId).result
-
+  //TODO: revisit later
   def findUserIds(groupId: Int) =
     userIdByGroupIdC(groupId).result
 
-  def findUserIds(groupIds: Set[Int]) =
-    groupUsers.filter(_.groupId inSetBind groupIds).map(_.userId).result
+  @deprecated("Compatibility with old group API, remove when possible", "2016-06-05")
+  def find(groupId: Int, userId: Int) =
+    byPKC((groupId, userId)).result.headOption
 
-  def setJoined(groupId: Int, userId: Int, date: LocalDateTime) =
-    joinedAtByPKC((groupId, userId)).update(Some(date))
-
+  @deprecated("Duplication of event-sourced groups logic", "2016-06-05")
   def delete(groupId: Int, userId: Int): FixedSqlAction[Int, NoStream, Write] =
     byPKC.applied((groupId, userId)).delete
 
+  @deprecated("Duplication of event-sourced groups logic", "2016-06-05")
   def makeAdmin(groupId: Int, userId: Int) =
     byPKC.applied((groupId, userId)).map(_.isAdmin).update(true)
+
+  @deprecated("Duplication of event-sourced groups logic", "2016-06-05")
+  def dismissAdmin(groupId: Int, userId: Int) =
+    byPKC.applied((groupId, userId)).map(_.isAdmin).update(false)
 
 }

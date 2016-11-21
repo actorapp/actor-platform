@@ -68,7 +68,6 @@ public class TourActivity extends ActionBarActivity {
         TextView buttonSignUp = (TextView) findViewById(R.id.signIn);
         buttonSignUp.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryInvColor());
         buttonSignUp.setTypeface(Fonts.medium());
-        ((TextView) findViewById(R.id.app_name)).setText(getResources().getString(R.string.tour_welcome_title).replace("{appName}", ActorSDK.sharedActor().getAppName()));
         ((TextView) findViewById(R.id.app_name)).setTextColor(ActorSDK.sharedActor().style.getTextPrimaryInvColor());
         ((TextView) findViewById(R.id.tour_welcome_subtitle)).setTextColor(ActorSDK.sharedActor().style.getTextPrimaryInvColor());
 

@@ -18,11 +18,11 @@ final class UserPhoneTable(tag: Tag) extends Table[UserPhone](tag, "user_phones"
 object UserPhoneRepo {
   val phones = TableQuery[UserPhoneTable]
 
-  val byPhoneNumber = Compiled { number: Rep[Long] ⇒
+  private val byPhoneNumber = Compiled { number: Rep[Long] ⇒
     phones.filter(_.number === number)
   }
 
-  val phoneExists = Compiled { number: Rep[Long] ⇒
+  private val phoneExists = Compiled { number: Rep[Long] ⇒
     phones.filter(_.number === number).exists
   }
 
@@ -37,15 +37,6 @@ object UserPhoneRepo {
   def findByUserId(userId: Int): FixedSqlStreamingAction[Seq[UserPhone], UserPhone, Read] =
     phones.filter(_.userId === userId).result
 
-  def findByUserIds(userIds: Set[Int]): FixedSqlStreamingAction[Seq[UserPhone], UserPhone, Read] =
-    phones.filter(_.userId inSet userIds).result
-
   def create(id: Int, userId: Int, accessSalt: String, number: Long, title: String): FixedSqlAction[Int, NoStream, Write] =
     phones += UserPhone(id, userId, accessSalt, number, title)
-
-  def create(userPhone: UserPhone): FixedSqlAction[Int, NoStream, Write] =
-    phones += userPhone
-
-  def updateTitle(userId: Int, id: Int, title: String) =
-    phones.filter(p ⇒ p.userId === userId && p.id === id).map(_.title).update(title)
 }

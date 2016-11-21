@@ -24,20 +24,22 @@ import static im.actor.sdk.util.ActorSDKMessenger.users;
 
 public class MentionsAdapter extends HolderAdapter<MentionFilterResult> {
 
-    int gid;
-    int oldRowsCount = 0;
-    private List<MentionFilterResult> membersToShow = new ArrayList<MentionFilterResult>();
+    private int gid;
+    private List<MentionFilterResult> membersToShow = new ArrayList<>();
     private String query;
-    private MentionsUpdatedCallback updatedCallback;
     private int highlightColor;
 
-    public MentionsAdapter(int gid, Context context, MentionsUpdatedCallback updatedCallback, boolean initEmpty) {
+    public MentionsAdapter(int gid, Context context) {
         super(context);
         highlightColor = context.getResources().getColor(R.color.primary);
 
         this.gid = gid;
-        this.updatedCallback = updatedCallback;
+    }
 
+    public void clearQuery() {
+        query = null;
+        membersToShow = new ArrayList<>();
+        notifyDataSetChanged();
     }
 
     public void setQuery(String q) {
@@ -46,9 +48,6 @@ public class MentionsAdapter extends HolderAdapter<MentionFilterResult> {
         }
         query = q;
         membersToShow = messenger().findMentions(gid, q);
-        int newRowsCount = membersToShow.size();
-        updatedCallback.onMentionsUpdated(oldRowsCount, newRowsCount);
-        oldRowsCount = newRowsCount;
         notifyDataSetChanged();
     }
 
@@ -72,13 +71,9 @@ public class MentionsAdapter extends HolderAdapter<MentionFilterResult> {
         return new GroupViewHolder();
     }
 
-    public interface MentionsUpdatedCallback {
-        void onMentionsUpdated(int oldRowsCount, int newRowsCount);
-    }
-
     private class GroupViewHolder extends ViewHolder<MentionFilterResult> {
 
-        MentionFilterResult data;
+        private MentionFilterResult data;
         private TextView userName;
         private TextView mentionHint;
         private AvatarView avatarView;
@@ -86,6 +81,8 @@ public class MentionsAdapter extends HolderAdapter<MentionFilterResult> {
         @Override
         public View init(final MentionFilterResult data, ViewGroup viewGroup, Context context) {
             View res = ((Activity) context).getLayoutInflater().inflate(R.layout.fragment_chat_mention_item, viewGroup, false);
+            res.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
+            res.findViewById(R.id.container).setBackgroundResource(R.drawable.selector);
             res.findViewById(R.id.divider).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
 
             userName = (TextView) res.findViewById(R.id.name);

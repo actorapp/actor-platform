@@ -1,21 +1,21 @@
 package im.actor.server.group
 
 import java.time.ZoneOffset
-import im.actor.server.migrations.{ PersistentMigrator, Migration }
-import slick.driver.PostgresDriver
+
+import im.actor.server.migrations.{ Migration, PersistentMigrator }
 
 import scala.concurrent.duration._
-import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
-
-import akka.actor.{ ActorLogging, ActorSystem, Props }
+import scala.concurrent.{ ExecutionContext, Future, Promise }
+import akka.actor.{ ActorSystem, Props }
 import akka.pattern.pipe
-import akka.persistence.{ PersistentActor, RecoveryCompleted }
+import akka.persistence.RecoveryCompleted
+import com.github.ghik.silencer.silent
+import im.actor.server.db.DbExtension
 import org.joda.time.DateTime
-import slick.driver.PostgresDriver.api._
-
 import im.actor.server.event.TSEvent
 import im.actor.server.file.{ Avatar, AvatarImage, FileLocation }
-import im.actor.server.{ persist ⇒ p, model }
+import im.actor.server.model
+import im.actor.server.persist.{ AvatarDataRepo, GroupBotRepo, GroupRepo, GroupUserRepo }
 
 private final case class Migrate(group: model.FullGroup, avatarData: Option[model.AvatarData], botUsers: Seq[model.GroupBot], groupUsers: Seq[model.GroupUser])
 
@@ -25,35 +25,37 @@ object GroupMigrator extends Migration {
 
   protected override def migrationTimeout: Duration = 1.hour
 
-  protected override def startMigration()(implicit system: ActorSystem, db: PostgresDriver.api.Database, ec: ExecutionContext): Future[Unit] = {
-    db.run(p.GroupRepo.findAllIds) flatMap (ids ⇒ Future.sequence(ids map migrateSingle)) map (_ ⇒ ())
+  protected override def startMigration()(implicit system: ActorSystem): Future[Unit] = {
+    import system.dispatcher
+    DbExtension(system).db.run(GroupRepo.findAllIds) flatMap (ids ⇒ Future.sequence(ids map migrateSingle)) map (_ ⇒ ())
   }
 
-  private def migrateSingle(groupId: Int)(implicit system: ActorSystem, db: Database): Future[Unit] = {
+  private def migrateSingle(groupId: Int)(implicit system: ActorSystem): Future[Unit] = {
     val promise = Promise[Unit]()
 
     system.actorOf(props(promise, groupId), name = s"migrate_group_${groupId}")
     promise.future
   }
 
-  private def props(promise: Promise[Unit], groupId: Int)(implicit db: Database) = Props(classOf[GroupMigrator], promise, groupId, db)
+  private def props(promise: Promise[Unit], groupId: Int) = Props(classOf[GroupMigrator], promise, groupId)
 }
 
-private final class GroupMigrator(promise: Promise[Unit], groupId: Int, db: Database) extends PersistentMigrator(promise) {
+private final class GroupMigrator(promise: Promise[Unit], groupId: Int) extends PersistentMigrator(promise) {
 
   import GroupEvents._
 
   private implicit val ec: ExecutionContext = context.dispatcher
+  private val db = DbExtension(context.system).db
 
-  override def persistenceId = GroupOffice.persistenceIdFor(groupId)
+  override def persistenceId = GroupProcessor.persistenceIdFor(groupId)
 
   private def migrate(): Unit = {
-    db.run(p.GroupRepo.findFull(groupId)) foreach {
+    db.run(GroupRepo.findFull(groupId): @silent) foreach {
       case Some(group) ⇒
         db.run(for {
-          avatarOpt ← p.AvatarDataRepo.findByGroupId(groupId)
-          bots ← p.GroupBotRepo.findByGroup(groupId) map (_.map(Seq(_)).getOrElse(Seq.empty))
-          users ← p.GroupUserRepo.find(groupId)
+          avatarOpt ← AvatarDataRepo.findByGroupId(groupId)
+          bots ← (GroupBotRepo.findByGroup(groupId): @silent) map (_.map(Seq(_)).getOrElse(Seq.empty))
+          users ← GroupUserRepo.find(groupId): @silent
         } yield Migrate(
           group = group,
           avatarData = avatarOpt,

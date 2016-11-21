@@ -15,6 +15,7 @@ import im.actor.core.api.rpc.RequestSubscribeToGroupOnline;
 import im.actor.core.api.rpc.RequestSubscribeToOnline;
 import im.actor.core.api.rpc.ResponseVoid;
 import im.actor.core.entity.Group;
+import im.actor.core.entity.GroupType;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.entity.User;
@@ -31,7 +32,7 @@ import im.actor.runtime.Log;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSystem;
-import im.actor.runtime.actors.Cancellable;
+import im.actor.runtime.actors.ActorCancellable;
 import im.actor.runtime.actors.Props;
 import im.actor.runtime.annotations.Verified;
 import im.actor.runtime.eventbus.BusSubscriber;
@@ -53,7 +54,7 @@ public class PresenceActor extends ModuleActor implements BusSubscriber {
 
     private HashMap<Integer, Long> lastUidState = new HashMap<>();
     private HashMap<Integer, Long> lastGidState = new HashMap<>();
-    private HashMap<Integer, Cancellable> uidCancellables = new HashMap<>();
+    private HashMap<Integer, ActorCancellable> uidCancellables = new HashMap<>();
     private HashSet<Integer> uids = new HashSet<>();
     private HashSet<Integer> gids = new HashSet<>();
 
@@ -179,6 +180,7 @@ public class PresenceActor extends ModuleActor implements BusSubscriber {
         // Log.d(TAG, "subscribe:" + peer);
 
         if (peer.getPeerType() == PeerType.PRIVATE) {
+
             // Already subscribed
             if (uids.contains(peer.getPeerId())) {
                 return;
@@ -193,6 +195,7 @@ public class PresenceActor extends ModuleActor implements BusSubscriber {
             uids.add(user.getUid());
 
         } else if (peer.getPeerType() == PeerType.GROUP) {
+
             // Already subscribed
             if (gids.contains(peer.getPeerId())) {
                 return;
@@ -200,6 +203,11 @@ public class PresenceActor extends ModuleActor implements BusSubscriber {
 
             Group group = getGroup(peer.getPeerId());
             if (group == null) {
+                return;
+            }
+
+            // Ignore subscription to channels
+            if (group.getGroupType() == GroupType.CHANNEL) {
                 return;
             }
 

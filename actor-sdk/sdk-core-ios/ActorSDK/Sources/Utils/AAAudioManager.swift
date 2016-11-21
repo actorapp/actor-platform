@@ -5,39 +5,41 @@
 import Foundation
 import AVFoundation
 
-public class AAAudioManager: NSObject, AVAudioPlayerDelegate {
+open class AAAudioManager: NSObject, AVAudioPlayerDelegate {
     
-    private static let sharedManager = AAAudioManager()
+    fileprivate static let sharedManager = AAAudioManager()
     
-    public static func sharedAudio() -> AAAudioManager {
+    open static func sharedAudio() -> AAAudioManager {
         return sharedManager
     }
     
-    private var isRinging = false
-    private var ringtonePlaying = false
-    private var ringtonePlayer: AVAudioPlayer! = nil
-    private var audioRouter = AAAudioRouter()
+    fileprivate var isRinging = false
+    fileprivate var ringtonePlaying = false
+    fileprivate var ringtonePlayer: AVAudioPlayer! = nil
+    fileprivate var audioRouter = AAAudioRouter()
     
-    private var ringtoneSound:SystemSoundID = 0
-    private var isVisible = false
+    fileprivate var ringtoneSound:SystemSoundID = 0
+    fileprivate var isVisible = false
     
-    private var isEnabled: Bool = false
-    private var openedConnections: Int = 0
+    fileprivate var isEnabled: Bool = false
+    fileprivate var isVideoPreferred = false
+    fileprivate var openedConnections: Int = 0
     
     public override init() {
-        super.init()
-        
+        super.init()   
     }
     
-    public func appVisible() {
+    open func appVisible() {
         isVisible = true
     }
     
-    public func appHidden() {
+    open func appHidden() {
         isVisible = false
     }
     
-    public func callStart(call: ACCallVM) {
+    open func callStart(_ call: ACCallVM) {
+        isVideoPreferred = call.isVideoPreferred
+        
         if !call.isOutgoing {
             isRinging = true
             if isVisible {
@@ -45,8 +47,8 @@ public class AAAudioManager: NSObject, AVAudioPlayerDelegate {
                 audioRouter.batchedUpdate {
                     audioRouter.category = AVAudioSessionCategoryPlayAndRecord
                     audioRouter.mode = AVAudioSessionModeDefault
-                    audioRouter.currentRoute = .Speaker
-                    audioRouter.isEnabled = isEnabled
+                    audioRouter.currentRoute = .speaker
+                    audioRouter.isEnabled = true
                 }
                 ringtoneStart()
             } else {
@@ -55,43 +57,57 @@ public class AAAudioManager: NSObject, AVAudioPlayerDelegate {
             vibrate()
         } else {
             isEnabled = true
-            audioRouter.category = AVAudioSessionCategoryPlayAndRecord
-            audioRouter.mode =  AVAudioSessionModeVoiceChat
-            audioRouter.currentRoute = .Receiver
-            audioRouter.isEnabled = isEnabled
+            audioRouter.batchedUpdate {
+                audioRouter.category = AVAudioSessionCategoryPlayAndRecord
+                audioRouter.mode =  AVAudioSessionModeVoiceChat
+                if isVideoPreferred {
+                    audioRouter.currentRoute = .speaker
+                } else {
+                    audioRouter.currentRoute = .receiver
+                }
+                audioRouter.isEnabled = true
+            }
         }
     }
     
-    public func callAnswered(call: ACCallVM) {
+    open func callAnswered(_ call: ACCallVM) {
         ringtoneEnd()
         isRinging = false
-        audioRouter.mode = AVAudioSessionModeVoiceChat
-        audioRouter.currentRoute = .Receiver
+        audioRouter.batchedUpdate {
+            audioRouter.mode = AVAudioSessionModeVoiceChat
+            if isVideoPreferred {
+                audioRouter.currentRoute = .speaker
+            } else {
+                audioRouter.currentRoute = .receiver
+            }
+        }
     }
     
-    public func callEnd(call: ACCallVM) {
+    open func callEnd(_ call: ACCallVM) {
         ringtoneEnd()
         isRinging = false
         isEnabled = false
-        audioRouter.category = AVAudioSessionCategorySoloAmbient
-        audioRouter.mode = AVAudioSessionModeDefault
-        audioRouter.currentRoute = .Receiver
-        audioRouter.isEnabled = isEnabled
+        audioRouter.batchedUpdate {
+            audioRouter.category = AVAudioSessionCategorySoloAmbient
+            audioRouter.mode = AVAudioSessionModeDefault
+            audioRouter.currentRoute = .receiver
+            audioRouter.isEnabled = false
+        }
     }
     
-    public func peerConnectionStarted() {
+    open func peerConnectionStarted() {
         openedConnections += 1
         print("📡 AudioManager: peerConnectionStarted \(self.openedConnections)")
         audioRouter.isRTCEnabled = openedConnections > 0
     }
     
-    public func peerConnectionEnded() {
+    open func peerConnectionEnded() {
         openedConnections -= 1
         print("📡 AudioManager: peerConnectionEnded \(self.openedConnections)")
         audioRouter.isRTCEnabled = openedConnections > 0
     }
     
-    private func ringtoneStart() {
+    fileprivate func ringtoneStart() {
         if ringtonePlaying {
             return
         }
@@ -99,7 +115,7 @@ public class AAAudioManager: NSObject, AVAudioPlayerDelegate {
         ringtonePlaying = true
         
         do {
-            self.ringtonePlayer = try AVAudioPlayer(contentsOfURL: NSURL(fileURLWithPath: NSBundle.framework.pathForResource("ringtone", ofType: "m4a")!))
+            self.ringtonePlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: Bundle.framework.path(forResource: "ringtone", ofType: "m4a")!))
             self.ringtonePlayer.delegate = self
             self.ringtonePlayer.numberOfLoops = -1
             self.ringtonePlayer.volume = 1.0
@@ -110,11 +126,11 @@ public class AAAudioManager: NSObject, AVAudioPlayerDelegate {
         }
     }
     
-    private func vibrate() {
+    fileprivate func vibrate() {
         
         if #available(iOS 9.0, *) {
             AudioServicesPlayAlertSoundWithCompletion(1352) {
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(NSEC_PER_SEC)), dispatch_get_main_queue()) { () -> Void in
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(NSEC_PER_SEC)) / Double(NSEC_PER_SEC)) { () -> Void in
                     if self.isRinging {
                         self.vibrate()
                     }
@@ -122,7 +138,7 @@ public class AAAudioManager: NSObject, AVAudioPlayerDelegate {
             }
         } else {
             AudioServicesPlayAlertSound(1352)
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(NSEC_PER_SEC)), dispatch_get_main_queue()) { () -> Void in
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(NSEC_PER_SEC)) / Double(NSEC_PER_SEC)) { () -> Void in
                 if self.isRinging {
                     self.vibrate()
                 }
@@ -130,35 +146,35 @@ public class AAAudioManager: NSObject, AVAudioPlayerDelegate {
         }
     }
     
-    private func notificationRingtone(call: ACCallVM) {
+    fileprivate func notificationRingtone(_ call: ACCallVM) {
         
         dispatchOnUi() {
             let notification = UILocalNotification()
             if call.peer.isGroup {
                 let groupName = Actor.getGroupWithGid(call.peer.peerId).getNameModel().get()
-                notification.alertBody = AALocalized("CallGroupText").replace("{name}", dest: groupName)
+                notification.alertBody = AALocalized("CallGroupText").replace("{name}", dest: groupName!)
                 if #available(iOS 8.2, *) {
                     notification.alertTitle = AALocalized("CallGroupTitle")
                 }
             } else if call.peer.isPrivate {
                 let userName = Actor.getUserWithUid(call.peer.peerId).getNameModel().get()
-                notification.alertBody = AALocalized("CallPrivateText").replace("{name}", dest: userName)
+                notification.alertBody = AALocalized("CallPrivateText").replace("{name}", dest: userName!)
                 if #available(iOS 8.2, *) {
                     notification.alertTitle = AALocalized("CallPrivateTitle")
                 }
             }
             notification.soundName = "ringtone.m4a"
-            UIApplication.sharedApplication().presentLocalNotificationNow(notification)
+            UIApplication.shared.presentLocalNotificationNow(notification)
         }
         
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(10 * NSEC_PER_SEC)), dispatch_get_main_queue()) { () -> Void in
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(10 * NSEC_PER_SEC)) / Double(NSEC_PER_SEC)) { () -> Void in
             if self.isRinging {
                 self.notificationRingtone(call)
             }
         }
     }
     
-    private func ringtoneEnd() {
+    fileprivate func ringtoneEnd() {
         if !ringtonePlaying {
             return
         }

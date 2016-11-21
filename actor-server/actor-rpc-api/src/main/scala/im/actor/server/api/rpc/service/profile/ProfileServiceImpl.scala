@@ -7,17 +7,15 @@ import im.actor.api.rpc.files.ApiFileLocation
 import im.actor.api.rpc.misc.{ ResponseBool, ResponseSeq }
 import im.actor.api.rpc.profile.{ ProfileService, ResponseEditAvatar }
 import im.actor.server.db.DbExtension
-import im.actor.server.file.{ FileStorageExtension, FileErrors, FileStorageAdapter, ImageUtils }
-import im.actor.server.persist.UserRepo
-import im.actor.server.sequence.{ SequenceErrors, SeqState }
+import im.actor.server.file.{ FileErrors, FileStorageAdapter, FileStorageExtension, ImageUtils }
+import im.actor.server.names.GlobalNamesStorageKeyValueStorage
+import im.actor.server.sequence.{ SeqState, SequenceErrors }
 import im.actor.server.social.{ SocialExtension, SocialManagerRegion }
 import im.actor.server.user._
-import im.actor.util.ThreadLocalSecureRandom
 import im.actor.util.misc.StringUtils
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.duration._
-import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
 
 object ProfileRpcErrors {
@@ -44,15 +42,16 @@ final class ProfileServiceImpl()(implicit system: ActorSystem) extends ProfileSe
   private val userExt = UserExtension(system)
   private implicit val socialRegion: SocialManagerRegion = SocialExtension(system).region
   private implicit val fsAdapter: FileStorageAdapter = FileStorageExtension(system).fsAdapter
+  private val globalNamesStorage = new GlobalNamesStorageKeyValueStorage
 
   // TODO: flatten
   override def doHandleEditAvatar(fileLocation: ApiFileLocation, clientData: ClientData): Future[HandlerResult[ResponseEditAvatar]] =
     authorized(clientData) { implicit client ⇒
       val action = withFileLocation(fileLocation, AvatarSizeLimit) {
-        scaleAvatar(fileLocation.fileId, ThreadLocalSecureRandom.current()) flatMap {
+        scaleAvatar(fileLocation.fileId) flatMap {
           case Right(avatar) ⇒
             for {
-              UserCommands.UpdateAvatarAck(avatar, SeqState(seq, state)) ← DBIO.from(userExt.updateAvatar(client.userId, Some(avatar)))
+              UserCommands.UpdateAvatarAck(avatar, SeqState(seq, state)) ← DBIO.from(userExt.updateAvatar(client.userId, client.authId, Some(avatar)))
             } yield Ok(ResponseEditAvatar(
               avatar.get,
               seq,
@@ -68,7 +67,7 @@ final class ProfileServiceImpl()(implicit system: ActorSystem) extends ProfileSe
   override def doHandleRemoveAvatar(clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
     authorized(clientData) { implicit client ⇒
       val action = for {
-        UserCommands.UpdateAvatarAck(_, SeqState(seq, state)) ← DBIO.from(userExt.updateAvatar(client.userId, None))
+        UserCommands.UpdateAvatarAck(_, SeqState(seq, state)) ← DBIO.from(userExt.updateAvatar(client.userId, client.authId, None))
       } yield Ok(ResponseSeq(seq, state.toByteArray))
       db.run(action)
     }
@@ -76,47 +75,47 @@ final class ProfileServiceImpl()(implicit system: ActorSystem) extends ProfileSe
   override def doHandleEditName(name: String, clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
     authorized(clientData) { implicit client ⇒
       for {
-        SeqState(seq, state) ← userExt.changeName(client.userId, name)
+        SeqState(seq, state) ← userExt.changeName(client.userId, client.authId, name)
       } yield Ok(ResponseSeq(seq, state.toByteArray))
     }
 
   override def doHandleEditNickName(nickname: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
     authorized(clientData) { implicit client ⇒
       for {
-        SeqState(seq, state) ← userExt.changeNickname(client.userId, nickname)
+        SeqState(seq, state) ← userExt.changeNickname(client.userId, client.authId, nickname)
       } yield Ok(ResponseSeq(seq, state.toByteArray))
     }
 
   override def doHandleCheckNickName(nickname: String, clientData: ClientData): Future[HandlerResult[ResponseBool]] =
     authorized(clientData) { implicit client ⇒
       (for {
-        _ ← fromBoolean(ProfileRpcErrors.NicknameInvalid)(StringUtils.validUsername(nickname))
-        exists ← fromFuture(db.run(UserRepo.nicknameExists(nickname.trim)))
+        _ ← fromBoolean(ProfileRpcErrors.NicknameInvalid)(StringUtils.validGlobalName(nickname))
+        exists ← fromFuture(globalNamesStorage.exists(nickname.trim))
       } yield ResponseBool(!exists)).value
     }
 
-  //todo: move validation inside of UserOffice
+  //todo: move validation inside of UserProcessor
   override def doHandleEditAbout(about: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     authorized(clientData) { implicit client ⇒
       (for {
         trimmed ← point(about.map(_.trim))
         _ ← fromBoolean(ProfileRpcErrors.AboutTooLong)(trimmed.map(s ⇒ s.nonEmpty & s.length < 255).getOrElse(true))
-        s ← fromFuture(userExt.changeAbout(client.userId, trimmed))
+        s ← fromFuture(userExt.changeAbout(client.userId, client.authId, trimmed))
       } yield ResponseSeq(s.seq, s.state.toByteArray)).value
     }
   }
 
   override def doHandleEditMyTimeZone(tz: String, clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
-    authorized(clientData) { implicit client ⇒
+    authorized(clientData) { client ⇒
       (for {
-        s ← fromFuture(produceError)(userExt.changeTimeZone(client.userId, tz))
+        s ← fromFuture(produceError)(userExt.changeTimeZone(client.userId, client.authId, tz))
       } yield ResponseSeq(s.seq, s.state.toByteArray)).value
     }
 
   override def doHandleEditMyPreferredLanguages(preferredLanguages: IndexedSeq[String], clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
-    authorized(clientData) { implicit client ⇒
+    authorized(clientData) { client ⇒
       (for {
-        s ← fromFuture(produceError)(userExt.changePreferredLanguages(client.userId, preferredLanguages))
+        s ← fromFuture(produceError)(userExt.changePreferredLanguages(client.userId, client.authId, preferredLanguages))
       } yield ResponseSeq(s.seq, s.state.toByteArray)).value
     }
 

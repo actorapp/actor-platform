@@ -12,20 +12,26 @@ import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.util.Patterns;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.regex.Pattern;
 
 import im.actor.core.entity.AuthRes;
 import im.actor.core.entity.Sex;
+import im.actor.runtime.mtproto.ConnectionEndpointArray;
 import im.actor.runtime.promise.Promise;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
-import im.actor.sdk.controllers.activity.BaseFragmentActivity;
-import im.actor.sdk.controllers.fragment.BaseFragment;
+import im.actor.sdk.controllers.BaseFragment;
+import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.BaseUrlSpan;
 import im.actor.sdk.view.CustomClicableSpan;
 
@@ -36,17 +42,18 @@ public abstract class BaseAuthFragment extends BaseFragment {
     private static final int PERMISSIONS_REQUEST_ACCOUNT = 1;
     public static final boolean USE_SUGGESTED_EMAIL = false;
     private EditText edittextToFill;
+
     public BaseAuthFragment() {
-
+        setRootFragment(true);
     }
 
-    protected void setTitle(int resId) {
-        ((BaseFragmentActivity) getActivity()).getSupportActionBar().setTitle(resId);
-    }
-
-    protected void setTitle(String title) {
-        ((BaseFragmentActivity) getActivity()).getSupportActionBar().setTitle(title);
-    }
+//    protected void setTitle(int resId) {
+//        ((BaseFragmentActivity) getActivity()).getSupportActionBar().setTitle(resId);
+//    }
+//
+//    protected void setTitle(String title) {
+//        ((BaseFragmentActivity) getActivity()).getSupportActionBar().setTitle(title);
+//    }
 
     protected void startSignIn() {
         ((AuthActivity) getActivity()).startSignIn();
@@ -65,19 +72,10 @@ public abstract class BaseAuthFragment extends BaseFragment {
         messenger().getPreferences().putString("sign_in_auth_id", email);
         ((AuthActivity) getActivity()).startEmailAuth(messenger().doStartEmailAuth(email), email);
     }
-    protected void startNickNameAuth(String nickName) {
-        messenger().getPreferences().putString("sign_in_auth_id", nickName);
-        ((AuthActivity) getActivity()).startNickNameAuth(messenger().doStartUsernameAuth(nickName), nickName);
-    }
 
     protected void validateCode(String code) {
         AuthActivity activity = (AuthActivity) getActivity();
         activity.validateCode(messenger().doValidateCode(code, activity.getTransactionHash()), code);
-    }
-
-    protected void validatePassword(String password) {
-        AuthActivity activity = (AuthActivity) getActivity();
-        activity.validatePassword(messenger().doValidatePassword(password, activity.getTransactionHash()), password,1);
     }
 
     protected void signUp(String name, Sex sex) {
@@ -88,9 +86,6 @@ public abstract class BaseAuthFragment extends BaseFragment {
 
     protected void startAuth(String name) {
         ((AuthActivity) getActivity()).startAuth(name);
-    }
-    protected void switchToNickName() {
-        ((AuthActivity) getActivity()).switchToNickNameAuth();
     }
 
     protected void switchToEmail() {
@@ -245,7 +240,6 @@ public abstract class BaseAuthFragment extends BaseFragment {
         builder.setSpan(span, index, index + ppIndex.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
@@ -254,6 +248,40 @@ public abstract class BaseAuthFragment extends BaseFragment {
             return true;
         } else if (i == R.id.sign_up) {
             startSignUp();
+            return true;
+        } else if (i == R.id.change_endpoint) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle(R.string.auth_change_endpoint);
+
+            final EditText input = new EditText(getActivity());
+            input.setText("tcp://");
+            input.setSelection(input.getText().length());
+
+            int padding = Screen.dp(25);
+            FrameLayout inputContainer = new FrameLayout(getActivity());
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.setMargins(padding, padding, padding, 0);
+            inputContainer.addView(input, params);
+            builder.setView(inputContainer);
+
+            builder.setPositiveButton(R.string.dialog_ok, (dialog, which) -> {
+                try {
+                    messenger().changeEndpoint(input.getText().toString());
+                } catch (ConnectionEndpointArray.UnknownSchemeException e) {
+                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+            builder.setNegativeButton(R.string.auth_reset_default_endpoint, (dialog, which) -> {
+                try {
+                    messenger().changeEndpoint(null);
+                } catch (ConnectionEndpointArray.UnknownSchemeException e) {
+                    e.printStackTrace();
+                }
+            });
+
+            builder.show();
+            input.requestFocus();
+
             return true;
         } else {
             return super.onOptionsItemSelected(item);

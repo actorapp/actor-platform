@@ -4,5 +4,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
 object Main extends App {
-  Await.result(ActorServer.newBuilder.start().system.whenTerminated, Duration.Inf)
+  val system = ActorServer.newBuilder.start().system
+  sys.addShutdownHook(system.terminate())
+  Await.result(system.whenTerminated, Duration.Inf)
 }

@@ -12,14 +12,14 @@ class AARegex {
     init(_ pattern: String) {
         self.pattern = pattern
         do {
-            self.internalExpression = try NSRegularExpression(pattern: pattern, options: .CaseInsensitive)
+            self.internalExpression = try NSRegularExpression(pattern: pattern, options: .caseInsensitive)
         } catch {
             fatalError("Incorrect regex: \(pattern)")
         }
     }
     
-    func test(input: String) -> Bool {
-        let matches = self.internalExpression.matchesInString(input, options: NSMatchingOptions(), range:NSMakeRange(0, input.length))
+    func test(_ input: String) -> Bool {
+        let matches = self.internalExpression.matches(in: input, options: NSRegularExpression.MatchingOptions(), range:NSMakeRange(0, input.length))
         return matches.count > 0
     }
 }

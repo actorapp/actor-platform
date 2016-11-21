@@ -110,7 +110,7 @@ final class ContactsServiceSpec
 
       implicit val clientData = api.ClientData(authId, sessionId, Some(AuthData(user.id, authSid, 42)))
 
-      def add(firstRun: Boolean = true, expectedUpdSeq: Int = 1) = {
+      def add(firstRun: Boolean = true, expectedUpdSeq: Int = 2) = {
         whenReady(service.handleAddContact(user2.id, user2AccessHash)) { resp ⇒
           resp should matchPattern {
             case Ok(ResponseSeq(seq, state)) if seq == expectedUpdSeq ⇒
@@ -158,7 +158,7 @@ final class ContactsServiceSpec
       def remove() = {
         whenReady(service.handleRemoveContact(user2.id, user2AccessHash)) { resp ⇒
           resp should matchPattern {
-            case Ok(ResponseSeq(3, state)) ⇒
+            case Ok(ResponseSeq(4, state)) ⇒
           }
         }
 
@@ -169,7 +169,7 @@ final class ContactsServiceSpec
         }
       }
 
-      def addAfterRemove() = add(firstRun = false, expectedUpdSeq = 4)
+      def addAfterRemove() = add(firstRun = false, expectedUpdSeq = 5)
     }
 
     object imprt {

@@ -1,18 +1,21 @@
 package im.actor.sdk;
 
-import android.app.Activity;
 import android.net.Uri;
-import android.view.ViewGroup;
-import android.widget.TableLayout;
+import android.support.v4.app.Fragment;
 
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+
+import im.actor.core.RawUpdatesHandler;
 import im.actor.core.entity.Peer;
-import im.actor.runtime.android.view.BindedViewHolder;
-import im.actor.sdk.controllers.activity.ActorMainActivity;
-import im.actor.sdk.controllers.root.MainPhoneController;
-import im.actor.sdk.controllers.conversation.messages.MessageHolder;
-import im.actor.sdk.controllers.conversation.MessagesAdapter;
-import im.actor.sdk.controllers.settings.BaseActorProfileActivity;
-import im.actor.sdk.controllers.settings.BaseGroupInfoActivity;
+import im.actor.sdk.controllers.conversation.ChatFragment;
+import im.actor.sdk.controllers.conversation.attach.AbsAttachFragment;
+import im.actor.sdk.controllers.conversation.inputbar.InputBarFragment;
+import im.actor.sdk.controllers.conversation.mentions.AutocompleteFragment;
+import im.actor.sdk.controllers.conversation.messages.BubbleLayouter;
+import im.actor.sdk.controllers.conversation.quote.QuoteFragment;
+import im.actor.sdk.controllers.dialogs.DialogsDefaultFragment;
 import im.actor.sdk.intents.ActorIntent;
 import im.actor.sdk.intents.ActorIntentFragmentActivity;
 
@@ -43,26 +46,104 @@ public interface ActorSDKDelegate {
     ActorIntent getStartIntent();
 
     /**
+     * Optional Root Fragment
+     *
+     * @return Customized Fragment for root screen
+     */
+    @Nullable
+    Fragment fragmentForRoot();
+
+    /**
+     * If not null returned, overrides users profile fragment
+     *
+     * @param uid user id
+     * @return Fragment
+     */
+    @Nullable
+    Fragment fragmentForProfile(int uid);
+
+    /**
+     * If not null returned, overrides call fragment
+     *
+     * @param callId call id
+     * @return Fragment
+     */
+    @Nullable
+    Fragment fragmentForCall(long callId);
+
+    /**
+     * If not null returned, overrides group info fragment
+     *
+     * @return Actor Intent
+     */
+    Fragment fragmentForGroupInfo(int gid);
+
+
+    //
+    // Chat
+    //
+
+    /**
+     * If Not null returned, overrides attachment menu
+     *
+     * @param peer peer
+     * @return Subclass from AbsAttachFragment
+     */
+    @Nullable
+    AbsAttachFragment fragmentForAttachMenu(Peer peer);
+
+    /**
+     * If Not null returned, overrides chat fragment
+     *
+     * @param peer peer
+     * @return Custom chat fragment
+     */
+    @Nullable
+    ChatFragment fragmentForChat(Peer peer);
+
+    /**
+     * If Not null returned, overrides chat input fragment
+     *
+     * @return Custom chat input fragment
+     */
+    @Nullable
+    InputBarFragment fragmentForChatInput();
+
+    /**
+     * If Not null returned, overrides chat autocomplete fragment
+     *
+     * @return Custom chat autocomplete fragment
+     * @param peer peer
+     */
+    AutocompleteFragment fragmentForAutocomplete(Peer peer);
+
+    /**
+     * If Not null returned, overrides chat quote fragment
+     *
+     * @return Custom chat quote fragment
+     */
+    QuoteFragment fragmentForQuote();
+
+    /**
+     * If Not null returned, overrides default toolbar (no-ui) fragment
+     *
+     * @param peer peer
+     * @return Custom Toolbar fragment
+     */
+    @Nullable
+    Fragment fragmentForToolbar(Peer peer);
+
+    //
+    // Settings
+    //
+
+    /**
      * If not null returned, overrides settings activity intent
      *
      * @return Actor Intent
      */
     ActorIntentFragmentActivity getSettingsIntent();
 
-    /**
-     * If not null returned, overrides users profile activity intent
-     *
-     * @param uid user id
-     * @return Actor Intent
-     */
-    BaseActorProfileActivity getProfileIntent(int uid);
-
-    /**
-     * If not null returned, overrides group info activity intent
-     *
-     * @return Actor Intent
-     */
-    BaseGroupInfoActivity getGroupInfoIntent(int gid);
 
     /**
      * If not null returned, overrides settings activity intent
@@ -87,50 +168,10 @@ public interface ActorSDKDelegate {
      */
     ActorIntent getChatIntent(Peer peer, boolean compose);
 
-    /**
-     * Override for handling incoming call
-     *
-     * @param callId call id
-     * @param uid    caller user id
-     */
-    void onIncomingCall(long callId, int uid);
 
-    /**
-     * Override for hacking default messages view holders
-     *
-     * @param base base view holder class
-     * @param args args passed to view holder
-     * @param <T>  base view holder class
-     * @param <J>  return class
-     * @return hacked view holder
-     */
-    <T extends BindedViewHolder, J extends T> J getViewHolder(Class<T> base, Object... args);
-
-    /**
-     * Override for hacking MainPhoneController - activity with chats/contacts
-     *
-     * @param mainActivity main activity
-     * @return hacked MainPhoneController
-     */
-    MainPhoneController getMainPhoneController(ActorMainActivity mainActivity);
-
-    /**
-     * Override for hacking custom messages view holders
-     *
-     * @param dataTypeHash    json dataType hash
-     * @param messagesAdapter adapter to pass to holder
-     * @param viewGroup       ViewGroup to pass to holder
-     * @return custom view holder
-     */
-    MessageHolder getCustomMessageViewHolder(int dataTypeHash, MessagesAdapter messagesAdapter, ViewGroup viewGroup);
-
-    /**
-     * Return True if custom share menu is clicked
-     *
-     * @param activity called from activity
-     * @return true if custom share menu shown
-     */
-    boolean onAttachMenuClicked(Activity activity);
+    //
+    // Custom Notifications
+    //
 
     /**
      * Override for setting specific notification sound for peer
@@ -164,18 +205,19 @@ public interface ActorSDKDelegate {
      */
     int getNotificationColor();
 
+    /**
+     * If not null returned, overrides raw updates handler actor
+     *
+     * @return RawUpdatesHandler actor
+     */
+    RawUpdatesHandler getRawUpdatesHandler();
 
     /**
-     * Is Actor pushes used for this app - added for testing
+     * Override/add new messages view holders
      *
-     * @return is Actor push id used
+     * @param layouters default layouters
      */
-    boolean useActorPush();
+    void configureChatViewHolders(ArrayList<BubbleLayouter> layouters);
 
-    /**
-     * Method for hacking share menu in dialog
-     *
-     * @param shareMenu share menu
-     */
-    void onShareMenuCreated(TableLayout shareMenu);
+    DialogsDefaultFragment fragmentForDialogs();
 }

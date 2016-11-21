@@ -6,16 +6,14 @@
     android:layout_height="48dp"
     android:background="@drawable/selector"
     android:gravity="center_vertical"
-    android:minHeight="48dp"
+    android:minHeight="56dp"
     android:orientation="horizontal"
     android:paddingRight="8dp">
 
     <im.actor.sdk.view.TintImageView
         android:id="@+id/icon"
-        android:layout_width="24dp"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="32dp" />
+        android:layout_width="72dp"
+        android:layout_height="match_parent" />
     <TextView
         android:id="@+id/name"
         android:layout_width="0dp"

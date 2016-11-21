@@ -1,13 +1,14 @@
 package im.actor.server.api.rpc.service.weak
 
 import akka.actor.ActorSystem
+import akka.http.scaladsl.util.FastFuture
 import im.actor.api.rpc._
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeer, ApiPeerType }
 import im.actor.api.rpc.weak._
 import im.actor.concurrent.FutureExt
 import im.actor.server.db.DbExtension
-import im.actor.server.group.GroupExtension
+import im.actor.server.group.{ CanSendMessageInfo, GroupExtension }
 import im.actor.server.presences.PresenceExtension
 import im.actor.server.sequence.WeakUpdatesExtension
 import slick.driver.PostgresDriver.api._
@@ -26,6 +27,11 @@ class WeakServiceImpl(implicit actorSystem: ActorSystem) extends WeakService {
   override def doHandleTyping(peer: ApiOutPeer, typingType: ApiTypingType.ApiTypingType, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     authorized(clientData) { client ⇒
       peer.`type` match {
+        case ApiPeerType.EncryptedPrivate ⇒
+          val update = UpdateTyping(ApiPeer(ApiPeerType.EncryptedPrivate, client.userId), client.userId, typingType)
+          val reduceKey = weakUpdatesExt.reduceKey(update.header, update.peer)
+
+          weakUpdatesExt.broadcastUserWeakUpdate(peer.id, update, reduceKey = Some(reduceKey))
         case ApiPeerType.Private ⇒
           val update = UpdateTyping(ApiPeer(ApiPeerType.Private, client.userId), client.userId, typingType)
           val reduceKey = weakUpdatesExt.reduceKey(update.header, update.peer)
@@ -36,12 +42,15 @@ class WeakServiceImpl(implicit actorSystem: ActorSystem) extends WeakService {
           val reduceKey = weakUpdatesExt.reduceKey(update.header, update.peer, client.userId)
 
           for {
-            (memberIds, _, _) ← groupExt.getMemberIds(peer.id)
-            _ ← FutureExt.ftraverse(memberIds filterNot (_ == client.userId))(weakUpdatesExt.broadcastUserWeakUpdate(_, update, Some(reduceKey)))
+            CanSendMessageInfo(_, isChannel, memberIds, _) ← groupExt.canSendMessage(peer.id, client.userId)
+            _ ← if (isChannel)
+              FastFuture.successful(())
+            else
+              FutureExt.ftraverse((memberIds - client.userId).toSeq)(weakUpdatesExt.broadcastUserWeakUpdate(_, update, Some(reduceKey)))
           } yield ()
       }
 
-      Future.successful(Ok(ResponseVoid))
+      FastFuture.successful(Ok(ResponseVoid))
     }
   }
 
@@ -60,7 +69,7 @@ class WeakServiceImpl(implicit actorSystem: ActorSystem) extends WeakService {
         presenceExt.presenceSetOffline(client.userId, client.authId, timeout)
       }
 
-      Future.successful(Ok(ResponseVoid))
+      FastFuture.successful(Ok(ResponseVoid))
     }
 
   override def doHandlePauseNotifications(timeout: Int, clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
@@ -73,21 +82,30 @@ class WeakServiceImpl(implicit actorSystem: ActorSystem) extends WeakService {
   override def doHandleStopTyping(peer: ApiOutPeer, typingType: ApiTypingType.ApiTypingType, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     authorized(clientData) { client ⇒
       peer.`type` match {
+        case ApiPeerType.EncryptedPrivate ⇒
+          val update = UpdateTypingStop(ApiPeer(ApiPeerType.EncryptedPrivate, client.userId), client.userId, typingType)
+          val reduceKey = weakUpdatesExt.reduceKey(update.header, update.peer)
+
+          weakUpdatesExt.broadcastUserWeakUpdate(peer.id, update, reduceKey = Some(reduceKey))
         case ApiPeerType.Private ⇒
           val update = UpdateTypingStop(ApiPeer(ApiPeerType.Private, client.userId), client.userId, typingType)
           val reduceKey = weakUpdatesExt.reduceKey(update.header, update.peer)
-          weakUpdatesExt.broadcastUserWeakUpdate(peer.id, update, Some(reduceKey))
+
+          weakUpdatesExt.broadcastUserWeakUpdate(peer.id, update, reduceKey = Some(reduceKey))
         case ApiPeerType.Group ⇒
           val update = UpdateTypingStop(ApiPeer(ApiPeerType.Group, peer.id), client.userId, typingType)
           val reduceKey = weakUpdatesExt.reduceKey(update.header, update.peer)
 
           for {
-            (memberIds, _, _) ← groupExt.getMemberIds(peer.id)
-            _ ← FutureExt.ftraverse(memberIds filterNot (_ == client.userId))(weakUpdatesExt.broadcastUserWeakUpdate(_, update, Some(reduceKey)))
+            CanSendMessageInfo(_, isChannel, memberIds, _) ← groupExt.canSendMessage(peer.id, client.userId)
+            _ ← if (isChannel)
+              FastFuture.successful(())
+            else
+              FutureExt.ftraverse((memberIds - client.userId).toSeq)(weakUpdatesExt.broadcastUserWeakUpdate(_, update, Some(reduceKey)))
           } yield ()
       }
 
-      Future.successful(Ok(ResponseVoid))
+      FastFuture.successful(Ok(ResponseVoid))
     }
   }
 

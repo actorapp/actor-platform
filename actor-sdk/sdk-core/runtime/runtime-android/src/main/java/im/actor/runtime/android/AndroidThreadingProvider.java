@@ -10,9 +10,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 
+import im.actor.runtime.util.ExponentialBackoff;
 import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.ThreadPriority;
 import im.actor.runtime.android.threading.AndroidDispatcher;
+import im.actor.runtime.android.threading.AndroidImmediateDispatcher;
 import im.actor.runtime.android.time.SntpClient;
 import im.actor.runtime.generic.GenericThreadingProvider;
 import im.actor.runtime.Log;
@@ -56,8 +58,14 @@ public class AndroidThreadingProvider extends GenericThreadingProvider {
             @Override
             public void run() {
                 SntpClient client = new SntpClient();
+                ExponentialBackoff exponentialBackoff = new ExponentialBackoff();
                 while (!client.requestTime(serverHost, 10000)) {
-
+                    exponentialBackoff.onFailure();
+                    try {
+                        Thread.sleep(exponentialBackoff.exponentialWait());
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
                 syncDelta = client.getClockOffset();
                 preference.edit().putLong("delta", syncDelta).commit();
@@ -74,5 +82,10 @@ public class AndroidThreadingProvider extends GenericThreadingProvider {
     @Override
     public Dispatcher createDispatcher(String name) {
         return new AndroidDispatcher(name);
+    }
+
+    @Override
+    public ImmediateDispatcher createImmediateDispatcher(String name, ThreadPriority priority) {
+        return new AndroidImmediateDispatcher(name, priority);
     }
 }

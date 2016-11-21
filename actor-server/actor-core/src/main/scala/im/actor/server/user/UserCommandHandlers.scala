@@ -1,6 +1,6 @@
 package im.actor.server.user
 
-import java.time.{ LocalDateTime, ZoneOffset }
+import java.time.{ Instant, LocalDateTime, ZoneOffset }
 import java.util.TimeZone
 
 import akka.actor.{ ActorSystem, Status }
@@ -19,6 +19,7 @@ import im.actor.server.bots.BotCommand
 import im.actor.server.file.{ Avatar, ImageUtils }
 import im.actor.server.model.{ AvatarData, Sex, User }
 import im.actor.server.model.contact.{ UserContact, UserEmailContact, UserPhoneContact }
+import im.actor.server.names.{ GlobalNameOwner, OwnerType }
 import im.actor.server.office.EntityNotFound
 import im.actor.server.persist.contact._
 import im.actor.server.persist._
@@ -132,6 +133,7 @@ private[user] trait UserCommandHandlers {
     persistStashingReply(UserEvents.AuthAdded(now(), authId), user) { _ ⇒
       db.run(AuthSessionRepo.findByAuthId(authId)) foreach {
         case Some(authSession) ⇒
+          seqUpdExt.registerAuthId(user.id, authId)
           userExt.hooks.afterAuth.runAll(user.id, authSession.appId, authSession.deviceTitle)
         case None ⇒ log.error("AuthSession for {} was not found", authId)
       }
@@ -150,7 +152,7 @@ private[user] trait UserCommandHandlers {
       db.run(UserRepo.setCountryCode(userId, countryCode) map (_ ⇒ ChangeCountryCodeAck()))
     }
 
-  protected def changeName(user: UserState, name: String): Unit = {
+  protected def changeName(user: UserState, authId: Long, name: String): Unit = {
     val replyTo = sender()
 
     if (StringUtils.validName(name).fold(l ⇒ false, r ⇒ true)) {
@@ -158,9 +160,9 @@ private[user] trait UserCommandHandlers {
         val update = UpdateUserNameChanged(userId, name)
         for {
           relatedUserIds ← getRelations(userId)
-          (seqstate, _) ← seqUpdatesExt.broadcastOwnSingleUpdate(userId, relatedUserIds, update)
+          seqState ← seqUpdExt.broadcastClientUpdate(userId, authId, relatedUserIds, update)
           _ ← db.run(UserRepo.setName(userId, name))
-        } yield seqstate
+        } yield seqState
       }
     } else {
       replyTo ! Status.Failure(UserErrors.InvalidName)
@@ -208,23 +210,23 @@ private[user] trait UserCommandHandlers {
 
   protected def addSocialContact(user: UserState, contact: SocialContact): Unit =
     persistReply(UserEvents.SocialContactAdded(now(), contact), user) { _ ⇒
-      Future.successful(AddSocialContactAck())
+      FastFuture.successful(AddSocialContactAck())
     }
 
-  protected def changeNickname(user: UserState, nicknameOpt: Option[String]): Unit = {
+  protected def changeNickname(user: UserState, authId: Long, nicknameOpt: Option[String]): Unit = {
     val replyTo = sender()
 
     onSuccess(checkNicknameExists(nicknameOpt)) { exists ⇒
       if (!exists) {
-        if (nicknameOpt map StringUtils.validUsername getOrElse true) {
+        if (nicknameOpt forall StringUtils.validGlobalName) {
           persistReply(UserEvents.NicknameChanged(now(), nicknameOpt), user, replyTo) { _ ⇒
             val update = UpdateUserNickChanged(userId, nicknameOpt)
 
             for {
-              _ ← db.run(UserRepo.setNickname(userId, nicknameOpt))
+              _ ← globalNamesStorage.updateOrRemove(user.nickname, nicknameOpt, GlobalNameOwner(OwnerType.User, userId))
               relatedUserIds ← getRelations(userId)
-              (seqstate, _) ← seqUpdatesExt.broadcastOwnSingleUpdate(userId, relatedUserIds, update)
-            } yield seqstate
+              seqState ← seqUpdExt.broadcastClientUpdate(userId, authId, relatedUserIds, update)
+            } yield seqState
           }
         } else {
           replyTo ! Status.Failure(UserErrors.InvalidNickname)
@@ -235,18 +237,18 @@ private[user] trait UserCommandHandlers {
     }
   }
 
-  protected def changeAbout(user: UserState, about: Option[String]): Unit = {
+  protected def changeAbout(user: UserState, authId: Long, about: Option[String]): Unit = {
     persistReply(UserEvents.AboutChanged(now(), about), user) { _ ⇒
       val update = UpdateUserAboutChanged(userId, about)
       for {
         _ ← db.run(UserRepo.setAbout(userId, about))
         relatedUserIds ← getRelations(userId)
-        (seqstate, _) ← seqUpdatesExt.broadcastOwnSingleUpdate(userId, relatedUserIds, update)
-      } yield seqstate
+        seqState ← seqUpdExt.broadcastClientUpdate(userId, authId, relatedUserIds, update)
+      } yield seqState
     }
   }
 
-  protected def changeTimeZone(user: UserState, timeZone: String): Unit = {
+  protected def changeTimeZone(user: UserState, authId: Long, timeZone: String): Unit = {
     def validTimeZone(tz: String): Boolean = TimeZone.getAvailableIDs.contains(tz)
 
     if (validTimeZone(timeZone)) {
@@ -255,8 +257,8 @@ private[user] trait UserCommandHandlers {
           val update = UpdateUserTimeZoneChanged(user.id, Some(timeZone))
           for {
             relatedUserIds ← getRelations(user.id)
-            (seqstate, _) ← seqUpdatesExt.broadcastOwnSingleUpdate(user.id, relatedUserIds, update)
-          } yield seqstate
+            seqState ← seqUpdExt.broadcastClientUpdate(user.id, authId, relatedUserIds, update)
+          } yield seqState
         }
       } else sender() ! Status.Failure(SequenceErrors.UpdateAlreadyApplied(UserFields.TimeZone))
     } else {
@@ -267,7 +269,7 @@ private[user] trait UserCommandHandlers {
     }
   }
 
-  protected def changePreferredLanguages(user: UserState, preferredLanguages: Seq[String]): Unit = {
+  protected def changePreferredLanguages(user: UserState, authId: Long, preferredLanguages: Seq[String]): Unit = {
     def validLocale(l: String): Boolean = l matches "^[a-z]{2}(?:-[A-Z]{2})?$"
 
     preferredLanguages.find(l ⇒ !validLocale(l)) match {
@@ -285,8 +287,8 @@ private[user] trait UserCommandHandlers {
               val update = UpdateUserPreferredLanguagesChanged(user.id, preferredLanguages.toVector)
               for {
                 relatedUserIds ← getRelations(user.id)
-                (seqstate, _) ← seqUpdatesExt.broadcastOwnSingleUpdate(user.id, relatedUserIds, update)
-              } yield seqstate
+                stateState ← seqUpdExt.broadcastClientUpdate(user.id, authId, relatedUserIds, update)
+              } yield stateState
             }
         }
     }
@@ -304,7 +306,7 @@ private[user] trait UserCommandHandlers {
           val update = UpdateUserBotCommandsChanged(user.id, user.botCommands :+ command)
           for {
             relatedUserIds ← getRelations(user.id)
-            _ ← seqUpdatesExt.broadcastOwnSingleUpdate(user.id, relatedUserIds, update)
+            _ ← seqUpdExt.broadcastPeopleUpdate(relatedUserIds + user.id, update)
           } yield AddBotCommandAck()
         }
       } else {
@@ -319,7 +321,7 @@ private[user] trait UserCommandHandlers {
         val update = UpdateUserBotCommandsChanged(user.id, user.botCommands.filterNot(_.slashCommand == slashCommand))
         for {
           relatedUserIds ← getRelations(user.id)
-          _ ← seqUpdatesExt.broadcastOwnSingleUpdate(user.id, relatedUserIds, update)
+          _ ← seqUpdExt.broadcastPeopleUpdate(relatedUserIds + user.id, update)
         } yield RemoveBotCommandAck()
       }
     } else {
@@ -333,7 +335,7 @@ private[user] trait UserCommandHandlers {
       val update = UpdateUserExtChanged(userId, Some(extToApi(newState.ext)))
       (for {
         relatedUserIds ← getRelations(user.id)
-        _ ← seqUpdatesExt.broadcastSingleUpdate(relatedUserIds + user.id, update)
+        _ ← seqUpdExt.broadcastPeopleUpdate(relatedUserIds + user.id, update)
       } yield AddExtAck()) pipeTo sender()
     }
   }
@@ -345,12 +347,12 @@ private[user] trait UserCommandHandlers {
       val update = UpdateUserExtChanged(userId, Some(extToApi(newState.ext)))
       (for {
         relatedUserIds ← getRelations(user.id)
-        _ ← seqUpdatesExt.broadcastSingleUpdate(relatedUserIds + user.id, update)
+        _ ← seqUpdExt.broadcastPeopleUpdate(relatedUserIds + user.id, update)
       } yield RemoveExtAck()) pipeTo sender()
     }
   }
 
-  protected def updateAvatar(user: UserState, avatarOpt: Option[Avatar]): Unit = {
+  protected def updateAvatar(user: UserState, authId: Long, avatarOpt: Option[Avatar]): Unit = {
     persistReply(UserEvents.AvatarUpdated(now(), avatarOpt), user) { evt ⇒
       val avatarData = avatarOpt map (getAvatarData(AvatarData.OfUser, user.id, _)) getOrElse AvatarData.empty(AvatarData.OfUser, user.id.toLong)
 
@@ -361,13 +363,14 @@ private[user] trait UserCommandHandlers {
       for {
         _ ← db.run(AvatarDataRepo.createOrUpdate(avatarData))
         relatedUserIds ← relationsF
-        (seqstate, _) ← seqUpdatesExt.broadcastOwnSingleUpdate(user.id, relatedUserIds, update)
-      } yield UpdateAvatarAck(avatarOpt, seqstate)
+        seqState ← seqUpdExt.broadcastClientUpdate(user.id, authId, relatedUserIds, update)
+      } yield UpdateAvatarAck(avatarOpt, seqState)
     }
   }
 
   protected def addContacts(
     user:          UserState,
+    authId:        Long,
     contactsToAdd: Seq[UserCommands.ContactToAdd]
   ): Unit = {
     val (idsLocalNames, plains, phones, emails) =
@@ -399,16 +402,16 @@ private[user] trait UserCommandHandlers {
       _ ← FutureExt.ftraverse(phones)(c ⇒ db.run(UserPhoneContactRepo.insertOrUpdate(c)))
       _ ← FutureExt.ftraverse(emails)(c ⇒ db.run(UserEmailContactRepo.insertOrUpdate(c)))
       _ ← FutureExt.ftraverse(idsLocalNames.toSeq) {
-        case (contactUserId, localName) ⇒
-          contacts.editLocalName(contactUserId, localName, supressUpdate = true)
+        case (contactUserId, localName) ⇒ contacts.editLocalNameSilently(authId, contactUserId, localName)
       }
       update = UpdateContactsAdded(idsLocalNames.keys.toVector)
-      seqstate ← seqUpdatesExt.deliverSingleUpdate(user.id, update, PushRules(isFat = true))
-    } yield seqstate) pipeTo sender()
+      seqState ← seqUpdExt.deliverClientUpdate(user.id, authId, update, PushRules(isFat = true))
+    } yield seqState) pipeTo sender()
   }
 
   protected def removeContact(
     user:          UserState,
+    authId:        Long,
     contactUserId: Int
   ): Unit = {
     val updLocalName = UpdateUserLocalNameChanged(contactUserId, None)
@@ -418,41 +421,49 @@ private[user] trait UserCommandHandlers {
       case Some(_) ⇒
         for {
           _ ← db.run(UserContactRepo.delete(user.id, contactUserId))
-          _ ← seqUpdatesExt.deliverSingleUpdate(user.id, updLocalName)
-          seqstate ← seqUpdatesExt.deliverSingleUpdate(user.id, updContact)
-        } yield seqstate
+          _ ← seqUpdExt.deliverUserUpdate(user.id, updLocalName)
+          seqState ← seqUpdExt.deliverClientUpdate(user.id, authId, updContact)
+        } yield seqState
       case None ⇒ Future.failed(UserErrors.ContactNotFound)
     }) pipeTo sender()
   }
 
   private def checkNicknameExists(nicknameOpt: Option[String]): Future[Boolean] = {
     nicknameOpt match {
-      case Some(nickname) ⇒ db.run(UserRepo.nicknameExists(nickname))
-      case None           ⇒ Future.successful(false)
+      case Some(nickname) ⇒ globalNamesStorage.exists(nickname)
+      case None           ⇒ FastFuture.successful(false)
     }
   }
 
   // TODO: DRY it, finally!
   private def markContactRegistered(user: UserState, phoneNumber: Long, isSilent: Boolean): Future[Unit] = {
-    val date = new DateTime
+    val dateMillis = Instant.now.toEpochMilli
     for {
       contacts ← db.run(UnregisteredPhoneContactRepo.find(phoneNumber))
       _ = log.debug(s"Unregistered $phoneNumber is in contacts of users: $contacts")
       _ ← Future.sequence(contacts map { contact ⇒
         val randomId = ThreadLocalSecureRandom.current().nextLong()
-        val updateContactRegistered = UpdateContactRegistered(user.id, isSilent, date.getMillis, randomId)
+        val updateContactRegistered = UpdateContactRegistered(user.id, isSilent, dateMillis, randomId)
         val updateContactsAdded = UpdateContactsAdded(Vector(user.id))
         val localName = contact.name
         val serviceMessage = ServiceMessages.contactRegistered(user.id, localName.getOrElse(user.name))
         for {
           _ ← userExt.addContact(contact.ownerUserId, user.id, localName, Some(phoneNumber), None)
-          _ ← userExt.broadcastUserUpdate(contact.ownerUserId, updateContactRegistered, Some(s"${localName.getOrElse(user.name)} registered"), isFat = true, reduceKey = None, deliveryId = None)
-          _ ← userExt.broadcastUserUpdate(contact.ownerUserId, updateContactsAdded, None, isFat = false, reduceKey = None, deliveryId = None)
+          _ ← seqUpdExt.deliverUserUpdate(
+            contact.ownerUserId,
+            updateContactRegistered,
+            pushRules = seqUpdExt.pushRules(isFat = true, Some(serviceMessage.text))
+          )
+          _ ← seqUpdExt.deliverUserUpdate(
+            contact.ownerUserId,
+            updateContactsAdded,
+            pushRules = seqUpdExt.pushRules(isFat = false, None)
+          )
           _ ← dialogExt.writeMessageSelf(
             contact.ownerUserId,
             ApiPeer(ApiPeerType.Private, user.id),
             user.id,
-            date,
+            dateMillis,
             randomId,
             serviceMessage
           )
@@ -465,26 +476,34 @@ private[user] trait UserCommandHandlers {
   }
 
   private def markContactRegistered(user: UserState, email: String, isSilent: Boolean): Future[Unit] = {
-    val date = new DateTime
+    val dateMillis = Instant.now.toEpochMilli
     for {
       _ ← userExt.hooks.beforeEmailContactRegistered.runAll(user.id, email)
       contacts ← db.run(UnregisteredEmailContactRepo.find(email))
       _ = log.debug(s"Unregistered $email is in contacts of users: $contacts")
       _ ← Future.sequence(contacts.map { contact ⇒
         val randomId = ThreadLocalSecureRandom.current().nextLong()
-        val updateContactRegistered = UpdateContactRegistered(user.id, isSilent, date.getMillis, randomId)
+        val updateContactRegistered = UpdateContactRegistered(user.id, isSilent, dateMillis, randomId)
         val updateContactsAdded = UpdateContactsAdded(Vector(user.id))
         val localName = contact.name
         val serviceMessage = ServiceMessages.contactRegistered(user.id, localName.getOrElse(user.name))
         for {
           _ ← userExt.addContact(contact.ownerUserId, user.id, localName, None, Some(email))
-          _ ← userExt.broadcastUserUpdate(contact.ownerUserId, updateContactRegistered, Some(serviceMessage.text), isFat = true, reduceKey = None, deliveryId = None)
-          _ ← userExt.broadcastUserUpdate(contact.ownerUserId, updateContactsAdded, None, isFat = false, reduceKey = None, deliveryId = None)
+          _ ← seqUpdExt.deliverUserUpdate(
+            contact.ownerUserId,
+            updateContactRegistered,
+            pushRules = seqUpdExt.pushRules(isFat = true, Some(serviceMessage.text))
+          )
+          _ ← seqUpdExt.deliverUserUpdate(
+            contact.ownerUserId,
+            updateContactsAdded,
+            pushRules = seqUpdExt.pushRules(isFat = false, None)
+          )
           _ ← dialogExt.writeMessageSelf(
             contact.ownerUserId,
             ApiPeer(ApiPeerType.Private, user.id),
             user.id,
-            date,
+            dateMillis,
             randomId,
             serviceMessage
           )

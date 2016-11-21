@@ -4,8 +4,6 @@
 
 package im.actor.core.modules.auth;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -38,17 +36,20 @@ import im.actor.core.entity.Sex;
 import im.actor.core.entity.User;
 import im.actor.core.modules.Modules;
 import im.actor.core.modules.AbsModule;
+import im.actor.core.network.Endpoints;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
+import im.actor.core.network.TrustedKey;
 import im.actor.core.network.parser.Request;
 import im.actor.core.network.parser.Response;
 import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.runtime.*;
 import im.actor.runtime.Runtime;
+import im.actor.runtime.mtproto.ConnectionEndpoint;
+import im.actor.runtime.mtproto.ConnectionEndpointArray;
 import im.actor.runtime.promise.Promise;
 import im.actor.runtime.promise.PromiseFunc;
-import im.actor.runtime.promise.PromiseResolver;
 
 public class Authentication {
 
@@ -61,15 +62,11 @@ public class Authentication {
 
     private static final String KEY_PHONE = "auth_phone";
     private static final String KEY_EMAIL = "auth_email";
-    private static final String KEY_NICKNAME = "auth_nickname";
-    private static final String KEY_ZHNAME = "auth_zhname";
-
     private static final String KEY_SMS_HASH = "auth_sms_hash";
     private static final String KEY_SMS_CODE = "auth_sms_code";
     private static final String KEY_TRANSACTION_HASH = "auth_transaction_hash";
     //private static final String KEY_CODE = "auth_code";
     private static final String KEY_OAUTH_REDIRECT_URL = "oauth_redirect_url";
-
 
     private Modules modules;
     private AuthState state;
@@ -203,37 +200,6 @@ public class Authentication {
         }));
     }
 
-    public Promise<AuthStartRes> doStartUsernameAuth(final String username) {
-        return new Promise<>(new PromiseFunc<AuthStartRes>() {
-            @Override
-            public void exec(@NotNull final PromiseResolver<AuthStartRes> resolver) {
-                request(new RequestStartUsernameAuth(username,
-                        apiConfiguration.getAppId(),
-                        apiConfiguration.getAppKey(),
-                        deviceHash,
-                        apiConfiguration.getDeviceTitle(),
-                        modules.getConfiguration().getTimeZone(),
-                        langs), new RpcCallback<ResponseStartUsernameAuth>() {
-                    @Override
-                    public void onResult(ResponseStartUsernameAuth response) {
-//                        resolver.result(new AuthStartRes(
-//                                response.getTransactionHash(),
-//                                AuthMode.fromApi(response.getActivationType()),
-//                                response.isRegistered()));
-                        resolver.result(new AuthStartRes(
-                                response.getTransactionHash(),
-                                AuthMode.fromApi(ApiPhoneActivationType.CODE),
-                                response.isRegistered()));
-                    }
-
-                    @Override
-                    public void onError(RpcException e) {
-                        resolver.error(e);
-                    }
-                });
-            }
-        });
-    }
 
     //
     // Code And Password Validation
@@ -249,24 +215,6 @@ public class Authentication {
             @Override
             public void onError(RpcException e) {
                 if ("PHONE_NUMBER_UNOCCUPIED".equals(e.getTag()) || "EMAIL_UNOCCUPIED".equals(e.getTag())) {
-                    resolver.result(new AuthCodeRes(transactionHash));
-                } else {
-                    resolver.error(e);
-                }
-            }
-        }));
-    }
-
-    public Promise<AuthCodeRes> doValidatePassword(final String transactionHash, final String password) {
-        return new Promise<>((PromiseFunc<AuthCodeRes>) resolver -> request(new RequestValidatePassword(transactionHash, password), new RpcCallback<ResponseAuth>() {
-            @Override
-            public void onResult(ResponseAuth response) {
-                resolver.result(new AuthCodeRes(new AuthRes(response.toByteArray())));
-            }
-
-            @Override
-            public void onError(RpcException e) {
-                if ("USERNAME_UNOCCUPIED".equals(e.getTag())||"PHONE_NUMBER_UNOCCUPIED".equals(e.getTag()) || "EMAIL_UNOCCUPIED".equals(e.getTag())) {
                     resolver.result(new AuthCodeRes(transactionHash));
                 } else {
                     resolver.error(e);
@@ -307,30 +255,6 @@ public class Authentication {
                 resolver.error(e);
             }
         }));
-    }
-
-    public Promise<AuthRes> doSignup(final String name, final Sex sex, final String transactionHash, final String password) {
-        return new Promise<>(new PromiseFunc<AuthRes>() {
-            @Override
-            public void exec(@NotNull final PromiseResolver<AuthRes> resolver) {
-                request(new RequestSignUp(transactionHash, name, sex.toApi(), password), new RpcCallback<ResponseAuth>() {
-
-                    @Override
-                    public void onResult(ResponseAuth response) {
-                        resolver.result(new AuthRes(response.toByteArray()));
-                    }
-
-                    @Override
-                    public void onError(RpcException e) {
-                        if ("NICKNAME_BUSY".equals(e.getTag())) {
-                            resolver.result(new AuthRes("".getBytes()));
-                        } else {
-                            resolver.error(e);
-                        }
-                    }
-                });
-            }
-        });
     }
 
 
@@ -404,32 +328,6 @@ public class Authentication {
     }
 
     @Deprecated
-    public String getNickName() {
-        return modules.getPreferences().getString(KEY_NICKNAME);
-    }
-
-    @Deprecated
-    public String getZHName() {
-        return modules.getPreferences().getString(KEY_ZHNAME);
-    }
-
-    @Deprecated
-    public String getAuthWebServiceIp() {
-        String ip  = modules.getPreferences().getString("webServiceIp");
-        if(ip == null || ip.length() ==0){
-            ip = "http://220.189.207.21:8405";
-        }
-        return ip;
-    }
-
-    @Deprecated
-    public void setAuthWebServiceIp(String ip) {
-        modules.getPreferences().putString("webServiceIp",ip);
-    }
-
-
-
-    @Deprecated
     public Command<AuthState> requestStartEmailAuth(final String email) {
         return callback -> {
             ArrayList<String> langs1 = new ArrayList<>();
@@ -492,7 +390,6 @@ public class Authentication {
                 @Override
                 public void onResult(ResponseStartUsernameAuth response) {
                     modules.getPreferences().putString(KEY_TRANSACTION_HASH, response.getTransactionHash());
-                    modules.getPreferences().putString(KEY_NICKNAME, userName);
 
                     state = AuthState.PASSWORD_VALIDATION;
 
@@ -605,49 +502,27 @@ public class Authentication {
 
     @Deprecated
     public Command<AuthState> signUp(final String name, final ApiSex sex, final String avatarPath) {
-        return signUp(name, sex, avatarPath, null);
-    }
-
-    @Deprecated
-    public Command<AuthState> signUp(final String name, final ApiSex sex, final String avatarPath, final String password) {
-        return new Command<AuthState>() {
+        return callback -> request(new RequestSignUp(modules.getPreferences().getString(KEY_TRANSACTION_HASH), name, sex,
+                null), new RpcCallback<ResponseAuth>() {
             @Override
-            public void start(final CommandCallback<AuthState> callback) {
-                request(new RequestSignUp(modules.getPreferences().getString(KEY_TRANSACTION_HASH), name, sex,
-                        password), new RpcCallback<ResponseAuth>() {
-                    @Override
-                    public void onResult(ResponseAuth response) {
-                        onLoggedIn(callback, response);
-                        if (avatarPath != null) {
-                            modules.getProfileModule().changeAvatar(avatarPath);
-                        }
-                    }
+            public void onResult(ResponseAuth response) {
+                onLoggedIn(callback, response);
+                if (avatarPath != null) {
+                    modules.getProfileModule().changeAvatar(avatarPath);
+                }
+            }
 
-                    @Override
-                    public void onError(final RpcException e) {
-                        if ("EMAIL_CODE_EXPIRED".equals(e.getTag())) {
-                            resetAuth();
-                        }else if ("NICKNAME_BUSY".equals(e.getTag())) {
-                            state = AuthState.BATCHSIGNUP;
-                            Runtime.postToMainThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    callback.onResult(state);
-                                }
-                            });
-                            return;
-                        }
-                        Runtime.postToMainThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Log.e(TAG, e);
-                                callback.onError(e);
-                            }
-                        });
-                    }
+            @Override
+            public void onError(final RpcException e) {
+                if ("EMAIL_CODE_EXPIRED".equals(e.getTag())) {
+                    resetAuth();
+                }
+                Runtime.postToMainThread(() -> {
+                    Log.e(TAG, e);
+                    callback.onError(e);
                 });
             }
-        };
+        });
     }
 
     @Deprecated
@@ -699,7 +574,7 @@ public class Authentication {
 
                         @Override
                         public void onError(final RpcException e) {
-                            if ("USERNAME_UNOCCUPIED".equals(e.getTag())||"PHONE_NUMBER_UNOCCUPIED".equals(e.getTag()) || "EMAIL_UNOCCUPIED".equals(e.getTag())) {
+                            if ("PHONE_NUMBER_UNOCCUPIED".equals(e.getTag()) || "EMAIL_UNOCCUPIED".equals(e.getTag())) {
                                 state = AuthState.SIGN_UP;
                                 Runtime.postToMainThread(() -> callback.onResult(AuthState.SIGN_UP));
                                 return;

@@ -27,6 +27,14 @@ import im.actor.sdk.controllers.settings.EditNameActivity;
 
 public class Intents {
 
+    public static final String EXTRA_FORWARD_TEXT = "forward_text";
+
+    public static final String EXTRA_FORWARD_TEXT_RAW = "forward_text_raw";
+
+    public static final String EXTRA_FORWARD_CONTENT = "forward_content";
+
+    public static final String EXTRA_SHARE_USER = "share_user";
+
     public static final String EXTRA_UID = "uid";
 
     public static final String EXTRA_GROUP_ID = "group_id";
@@ -195,14 +203,13 @@ public class Intents {
         actorPicturesFolder = new File(actorPicturesFolder, "Actor");
         actorPicturesFolder.mkdirs();
         try {
-            File pictureFile = new File(actorPicturesFolder, System.currentTimeMillis()+".jpg");
+            File pictureFile = new File(actorPicturesFolder, System.currentTimeMillis() + ".jpg");
             pictureFile.createNewFile();
 
 
             FileOutputStream ostream = new FileOutputStream(pictureFile);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
             ostream.close();
-
 
 
             Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);

@@ -26,11 +26,15 @@
 
 "ContactsActionAdd" = "添加好友";
 
+"ContactsBack" = "联系人";
+
 /*
  * Dialogs
  */
 
 "DialogsHint" = "向左滑动查看更多选项";
+
+"DialogsBack" = "消息";
 
 /*
  * Settings
@@ -42,6 +46,13 @@
 "SettingsSetPhoto" = "设置头像";
 
 "SettingsChangeName" = "修改姓名";
+
+
+"SettingsEditHeader" = "你的姓名";
+
+"SettingsEditHint" = "请输入你的真实姓名以便别人更好的认识你。";
+
+"SettingsEditFieldHint" = "请输入你的姓名";
 
 
 "SettingsUsernameNotSet" = "设置用户名";
@@ -60,10 +71,11 @@
 "SettingsChangeAboutHint" = "简单介绍一下你自己";
 
 
-"SettingsSecurity" = "安全";
+"SettingsSecurity" = "隐私和安全";
 
 "SettingsWallpapers" = "聊天背景";
 
+"SettingsMedia" = "媒体文件";
 
 "SettingsNotifications" = "通知和声音";
 
@@ -75,214 +87,11 @@
 
 "SettingsVersion" = "版本 {version}";
 
-
-"SettingsAllSessions" = "所有会话";
-
-"SettingsLastSeen" = "最后一次露面";
-
-"SettingsLastSeenHint" = "更改谁可以看到您最后一次露面时间。";
-
-
-"SettingsLastSeenEverybody" = "每个人都可见";
-
-"SettingsLastSeenContacts"  = "联系人可见";
-
-"SettingsLastSeenNone"    = "没人";
-
-
 "SettingsMobilePhone"    = "手机";
 
-/*
- * Calls
- */
+"SettingsGroupChats" = "群组";
 
-"CallsStartAudio" = "语音通话";
-
-"CallsStartGroupAudio" = "群组语音通话";
-
-"CallsAnswer" = "接听";
-
-"CallsDecline" = "拒绝";
-
-"CallsMute" = "静音";
-
-"CallsSpeaker" = "免提";
-
-"CallsVideo" = "视频";
-
-"CallStateRinging" = "拨号中...";
-
-"CallStateConnecting" = "连接中...";
-
-"CallStateIncoming" = "来电...";
-
-"CallPrivateTitle" = "一对一通话";
-
-"CallPrivateText" = "{name}来电";
-
-"CallGroupTitle" = "群组通话";
-
-"CallGroupText" = "{name}发起群组通话";
-
-/*
- * Profile
- */
-
-"ProfileEditHeader" = "修改姓名";
-
-"ProfileSendMessage" = "发送消息";
-
-"ProfileNotifications" = "通知";
-
-"ProfileNotificationsWarring" = "你要屏蔽关于这个人的推送提醒吗？屏蔽后可能会影响你和他（她）的关系哦。";
-
-"ProfileNotificationsWarringAction" = "屏蔽";
-
-"ProfileAddToContacts" = "添加到通讯录";
-
-"ProfileRemoveFromContacts" = "从通讯录中删除";
-
-"ProfileRename" = "修改联系名";
-
-"ProfileRenameMessage" = "你可以修改通讯录中的联系人名称，此修改只体现在你的通讯录中。";
-
-"ProfileRenameAction" = "";
-
-"ProfileAbout" = "自我介绍";
-
-"ProfilePhone" = "手机";
-
-"ProfileUsername" = "用户名";
-
-"ProfileTitle" = "详细资料";
-
-"CallNumber" = "拨打电话";
-
-"CopyNumber" = "复制号码";
-
-"NumberCopied" = "电话号码已经复制到剪贴板中";
-
-"SettingsEditHeader" = "姓名";
-
-"SettingsEditHint" = "请输入您的真实姓名，以便于好友识别。";
-
-"SettingsEditFieldHint" = "请输入姓名";
-
-/*
- * Publics
- */
-
-"JoinAlertMessage" = "你要加入这个群组吗？";
-
-/*
- * Group
- */
-
-"GroupEditHeader" = "群组名称";
-
-"GroupEditHint" = "输入群组名称";
-
-"GroupSetPhoto" = "设置群组头像";
-
-"GroupSetTitle" = "设置群组名称";
-
-"GroupEditConfirm" = "确定要修改群组名称吗？";
-
-"GroupEditConfirmAction" = "修改";
-
-"GroupNotifications" = "通知";
-
-"GroupSettings" = "设置";
-
-"GroupIntegrations" = "集成";
-
-"GroupMembers" = "{0}个成员";
-
-"GroupMemberAdmin" = "管理员";
-
-"GroupMemberInfo" = "成员信息";
-
-"GroupMemberMakeAdmin" = "设为群组管理员";
-
-"GroupMemberMakeMessage" = "确定将 {name} 设为群组管理员吗?";
-
-"GroupMemberMakeAction" = "确定";
-
-"GroupMemberKick" = "移出群组";
-
-"GroupMemberKickMessage" = "确定要把 {name} 移出群组吗？";
-
-"GroupMemberKickAction" = "移出";
-
-"GroupMemberWrite" = "编辑消息";
-
-"GroupMemberCall" = "打电话";
-
-"GroupMemberCallNoPhones" = "无可拨打电话";
-
-"GroupAddParticipant" = "添加参与者...";
-
-"GroupAddParticipantTitle" = "通讯录";
-
-"GroupAddParticipantUrl" = "通过URL链接邀请加入群组";
-
-"GroupLeave" = "退出群组";
-
-"GroupLeaveConfirm" = "你确定要退出群组吗？";
-
-"GroupLeaveConfirmAction" = "退出";
-
-"GroupInviteLinkPageTitle" = "邀请链接";
-
-"GroupInviteLinkTitle" = "链接";
-
-"GroupInviteLinkHint" = "发送邀请链接即可邀请你的朋友加入此群组。";
-
-"GroupInviteLinkRevokeMessage" = "确定要重置这个链接，重置后其他人将无法使用这个链接加入群组。";
-
-"GroupInviteLinkRevokeAction" = "重置";
-
-"GroupIntegrationPageTitle" = "集成API";
-
-"GroupIntegrationLinkTitle" = "链接";
-
-"GroupIntegrationLinkHint" = "任何外部系统都可以利用这个链接向群组发送消息。";
-
-"GroupIntegrationDoc" = "打开文档";
-
-"GroupIntegrationLinkRevokeMessage" = "确定要重置这个链接，重置后其他系统将无法使用这个链接发送消息。";
-
-"GroupIntegrationLinkRevokeAction" = "重置";
-
-"GroupJoinMessage" = "确定要加入群组吗?";
-
-"GroupJoinAction" = "加入";
-
-"GroupMembers" = "群组成员";
-
-/*
- * Compose
- */
-
-"ComposeTitle" = "新消息";
-
-"CreateGroup" = "创建群组";
-
-"CreateGroupTitle" = "创建群组";
-
-"CreateGroupHint" = "请填写群组名称和图标";
-
-"CreateGroupNamePlaceholder" = "输入群组名称";
-
-"CreateGroupMembersTitle" = "邀请成员";
-
-"CreateGroupMembersPlaceholders" = "输入名称";
-
-/*
- * Location
- */
-
-"LocationTitle" = "位置";
+"SettingsPrivateChats" = "私密聊天";
 
 /*
  * Notifications
@@ -321,10 +130,42 @@
 "NotificationsOnlyMentionsHint" = "只有当消息中提到你时才通知";
 
 /*
+ * Media
+ */
+
+"MediaTitle" = "媒体设置";
+
+"MediaPhotoDownloadHeader"= "自动下载照片";
+
+"MediaAudioDownloadHeader"= "自动下载语音";
+
+"MediaOtherHeader"= "其他";
+
+"MediaAutoplayGif"= "自动播放GIFs图片";
+
+/*
  * Privacy
  */
 
-"SecurityTitle" = "安全";
+"PrivacyTitle" = "安全";
+
+
+"PrivacyHeader" = "隐私";
+
+"PrivacyLastSeen" = "最后一次露面";
+
+"PrivacyLastSeenHint" = "更改谁可以看到您最后一次露面时间。";
+
+"PrivacyLastSeenEverybody" = "每个人都可见";
+
+"PrivacyLastSeenContacts"  = "联系人可见";
+
+"PrivacyLastSeenNone"    = "没人";
+
+
+"PrivacySecurityHeader" = "安全";
+
+"PrivacyAllSessions" = "在线的设备";
 
 "PrivacyTerminate" = "下线所有其它登录";
 
@@ -341,6 +182,264 @@
 "WallpapersTitle" = "聊天背景";
 
 "WallpapersPhoto" = "手机相册";
+
+/*
+ * Calls
+ */
+
+"CallsStartAudio" = "语音通话";
+
+"CallsStartGroupAudio" = "群组语音通话";
+
+"CallsAnswer" = "接听";
+
+"CallsDecline" = "拒绝";
+
+"CallsMute" = "静音";
+
+"CallsSpeaker" = "免提";
+
+"CallsVideo" = "视频";
+
+"CallStateRinging" = "拨号中...";
+
+"CallStateConnecting" = "连接中...";
+
+"CallStateIncoming" = "来电...";
+
+"CallPrivateTitle" = "一对一通话";
+
+"CallPrivateText" = "{name}来电";
+
+"CallGroupTitle" = "群组通话";
+
+"CallGroupText" = "{name}发起群组通话";
+
+
+/*
+ * Profile
+ */
+
+"ProfileEditHeader" = "修改姓名";
+
+"ProfileSendMessage" = "发送消息";
+
+"ProfileNotifications" = "通知";
+
+"ProfileNotificationsWarring" = "你要屏蔽关于这个人的推送提醒吗？屏蔽后可能会影响你和他（她）的关系哦。";
+
+"ProfileNotificationsWarringAction" = "屏蔽";
+
+"ProfileAddToContacts" = "添加到通讯录";
+
+"ProfileRemoveFromContacts" = "从通讯录中删除";
+
+"ProfileBlockContact" = "黑名单";
+
+"ProfileUnblockContact" = "开启用户";
+
+"ProfileRename" = "修改联系名";
+
+"ProfileRenameMessage" = "你可以修改通讯录中的联系人名称，此修改只体现在你的通讯录中。";
+
+"ProfileRenameAction" = "修改名称";
+
+"ProfileAbout" = "自我介绍";
+
+"ProfilePhone" = "手机";
+
+"ProfileUsername" = "用户名";
+
+"ProfileTitle" = "详细资料";
+
+"CallNumber" = "拨打电话";
+
+"CopyNumber" = "复制号码";
+
+"NumberCopied" = "电话号码已经复制到剪贴板中";
+
+/*
+ * Publics
+ */
+
+"JoinAlertMessage" = "你要加入这个群组吗？";
+
+/*
+ * Group
+ */
+
+"GroupEditHeader" = "群组名称";
+
+"GroupEditHint" = "输入群组名称";
+
+"GroupSetPhoto" = "设置群组头像";
+
+"GroupSetTitle" = "设置群组名称";
+
+"GroupSetSound" = "设置群组音效";
+
+"GroupEditConfirm" = "确定要修改群组名称吗？";
+
+"GroupEditConfirmAction" = "修改";
+
+"GroupNotifications" = "通知";
+
+"GroupSettings" = "设置";
+
+"GroupIntegrations" = "集成";
+
+"GroupViewMembers" = "成员";
+
+"GroupDescription" = "简介";
+
+
+
+"GroupAdministration" = "管理员";
+
+"GroupTypeTitle" = "群组类型";
+
+"GroupTypeTitleChannel" = "频道类型";
+
+"GroupPermissionsHint" = "设置群组类型";
+
+"GroupPermissionsHintChannel" = "设置频道类型";
+
+"GroupTypeHintPublic" = "公开群组可以被搜索并且任何人可以主动加入";
+
+"GroupTypeHintPrivate" = "私密群组只有创建者可以邀请其他人加入";
+
+"GroupTypeHintPublicChannel" = "公开频道可以被搜索并且任何人可以主动加入";
+
+"GroupTypeHintPrivateChannel" = "私密频道只有创建者可以邀请其他人加入";
+
+"GroupTypeLinkHint" = "群员可以共享此链接给其他人加入群组";
+
+"GroupTypeLinkHintChannel" = "群员可以共享此链接给其他人加入频道";
+
+"GroupTypePublic" = "公开的";
+
+"GroupTypePrivate" = "私密的";
+
+"ChannelTypePublic" = "公开的";
+
+"ChannelTypePrivate" = "私密的";
+
+"GroupTypePublicFull" = "公开群组";
+
+"GroupTypePrivateFull" = "私密群组";
+
+"ChannelTypePublicFull" = "公开频道";
+
+"ChannelTypePrivateFull" = "私密频道";
+
+"GroupDeleteHint" = "你将丢失所有此群组的聊天记录";
+
+"GroupDeleteHintChannel" = "你将丢失所有此频道的消息记录";
+
+
+
+"GroupShareTitle" = "公开历史记录";
+
+"GroupShareEnabled" = "公开";
+
+"GroupShareHint" = "所有成员将可以查看此群组的所有历史聊天记录";
+
+"GroupShareMessage" = "你想公开所有历史聊天记录给所有成员吗？此操作不可逆。";
+
+"GroupShareAction" = "公开";
+
+
+
+"GroupEditTitle" = "编辑群组";
+
+"GroupEditTitleChannel" = "编辑频道";
+
+"GroupEditName" = "群组名称";
+
+"GroupEditNameChannel" = "频道名称";
+
+"GroupEditDescription" = "简介";
+
+
+"GroupMemberAdmin" = "管理员";
+
+"GroupMemberInfo" = "配置";
+
+"GroupMemberMakeAdmin" = "设为群组管理员";
+
+"GroupMemberMakeMessage" = "确定将 {name} 设为群组管理员吗?";
+
+"GroupMemberMakeAction" = "确定";
+
+"GroupMemberKick" = "移出群组";
+
+"GroupMemberKickMessage" = "确定要把 {name} 移出群组吗？";
+
+"GroupMemberKickAction" = "移出";
+
+"GroupMemberWrite" = "编辑消息";
+
+"GroupMemberCall" = "打电话";
+
+"GroupMemberCallNoPhones" = "无可拨打电话";
+
+"GroupAddParticipant" = "添加参与者...";
+
+"GroupAddParticipantTitle" = "通讯录";
+
+"GroupAddParticipantUrl" = "通过URL链接邀请加入群组";
+
+
+"GroupInviteLinkPageTitle" = "邀请链接";
+
+"GroupInviteLinkTitle" = "链接";
+
+"GroupInviteLinkHint" = "发送邀请链接即可邀请你的朋友加入此群组。";
+
+"GroupInviteLinkRevokeMessage" = "确定要重置这个链接，重置后其他人将无法使用这个链接加入群组。";
+
+"GroupInviteLinkRevokeAction" = "重置";
+
+
+
+"GroupJoinMessage" = "确定要加入群组吗?";
+
+"GroupJoinAction" = "加入";
+
+/*
+ * Compose
+ */
+
+"ComposeTitle" = "新消息";
+
+
+"CreateGroup" = "创建群组";
+
+"CreateChannel" = "创建频道";
+
+
+"CreateGroupTitle" = "创建群组";
+
+"CreateGroupHint" = "请填写群组名称和图标";
+
+"CreateGroupNamePlaceholder" = "输入群组名称";
+
+"CreateChannelTitle" = "创建频道";
+
+"CreateChannelHint" = "请输入频道名称并设置频道图标";
+
+"CreateChannelNamePlaceholder" = "频道名称";
+
+
+"CreateGroupMembersTitle" = "邀请成员";
+
+"CreateGroupMembersPlaceholders" = "输入名称";
+
+/*
+ * Location
+ */
+
+"LocationTitle" = "位置";
 
 /*
  * Chat
@@ -363,6 +462,10 @@
 "ChatSlideUpToCancel" = "上滑取消";
 
 "Chat.MicrophoneAccessDisabled"  = "我们需要访问麦克风来发送语音信息. 请打开 设置 — 隐私 — 麦克风，然后打开开关";
+
+"ChatDeleted" = "此聊天已被发起者删除";
+
+"ChatJoin" = "加入";
 
 /*
  * Chat attachment menu
@@ -458,11 +561,11 @@
 
 "AuthPhoneTitle" = "请输入你的手机号码";
 
+"AuthPhoneUseEmail" = "使用邮件";
+
 "AuthPhoneHint" = "为了保障你的个人信息安全，需要验证你的手机号码。";
 
 "AuthPhonePlaceholder" = "手机号码";
-
-"AuthPhoneUseEmail" = "使用邮件";
 
 "AuthEmailTitle" = "请输入你的电子邮件";
 
@@ -495,14 +598,6 @@
 "AuthOTPNoCode" = "收不到验证码?";
 
 "AuthOTPCallHint" = "{app_name}将在{time}秒后拨打手机告知验证码";
-
-"AuthLoginUsername" = "账号(与您OfficeFly的账号一致)";
-
-"AuthOTPUsernameTitle" = "输入密码";
-
-"AuthOTPUsernameHint" = "密码与您的OfficeFly密码一致\n请输入";
-
-"AuthOTPUsernamePlaceholder" = "密码";
 
 
 /*
@@ -549,6 +644,8 @@
  *  Alerts
  */
 
+"AlertUnblock" = "取消黑名单";
+ 
 "AlertCancel" = "取消";
 
 "AlertNext" = "下一步";
@@ -570,7 +667,6 @@
 "AlertInvite" = "邀请";
 
 "UnsupportedContent" = "这个版本不支持此消息。请等待应用升级，之后就可以看到消息了。";
-
 
 /*
  * Actions
@@ -594,6 +690,47 @@
 
 "ActionOpenCode" = "查看代码";
 
+"ActionMute" = "禁言";
+
+"ActionUnmute" = "取消禁言";
+
+
+"ActionDelete" = "删除";
+
+"ActionDeleteMessage" = "确定删除聊天吗？";
+
+
+"ActionDeleteChannel" = "删除频道";
+
+"ActionDeleteChannelMessage" = "删除此频道将清空成员和消息记录，确定要这么做吗？";
+
+"ActionDeleteGroup" = "删除群组";
+
+"ActionDeleteGroupMessage" = "删除此群组将清空成员和消息记录，确定要这么做吗？";
+
+
+"ActionLeaveChannel" = "离开频道";
+
+"ActionLeaveChannelMessage" = "确定离开频道吗？";
+
+"ActionLeaveChannelAction" = "离开";
+
+
+
+"ActionDeleteAndExit" = "删除并退出";
+
+"ActionDeleteAndExitMessage" = "确定退出群组并删除消息吗？";
+
+"ActionDeleteAndExitAction" = "退出";
+
+
+
+"ActionClearHistory" = "清除历史";
+
+"ActionClearHistoryMessage" = "确定清除所有历史吗？";
+
+"ActionClearHistoryAction" = "清除";
+
 /*
  *  Network
  */
@@ -615,4 +752,3 @@
 "ErrorUnableToJoin" = "无法加入群组";
 
 "ErrorUnableToCall" = "无法拨打这个号码";
-

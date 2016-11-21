@@ -1,5 +1,7 @@
 package im.actor.core.modules.api;
 
+import java.io.IOException;
+
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.Modules;
 import im.actor.core.events.AppVisibleChanged;
@@ -9,10 +11,14 @@ import im.actor.core.network.ActorApi;
 import im.actor.core.network.ActorApiCallback;
 import im.actor.core.network.AuthKeyStorage;
 import im.actor.core.network.Endpoints;
+import im.actor.core.network.TrustedKey;
 import im.actor.core.network.parser.Request;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.eventbus.BusSubscriber;
 import im.actor.runtime.eventbus.Event;
+import im.actor.runtime.mtproto.ConnectionEndpoint;
+import im.actor.runtime.mtproto.ConnectionEndpointArray;
+import im.actor.runtime.promise.Promise;
 
 import static im.actor.runtime.actors.ActorSystem.system;
 
@@ -27,8 +33,21 @@ public class ApiModule extends AbsModule implements BusSubscriber {
 
         this.authKeyStorage = new PreferenceApiStorage(context().getPreferences());
 
-        this.actorApi = new ActorApi(new Endpoints(context().getConfiguration().getEndpoints(),
-                context().getConfiguration().getTrustedKeys()),
+        Endpoints endpoints = null;
+        byte[] customEndpointsBytes = context().getPreferences().getBytes("custom_endpoints");
+        if (customEndpointsBytes != null) {
+            try {
+                endpoints = Endpoints.fromBytes(customEndpointsBytes);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (endpoints == null) {
+            endpoints = new Endpoints(context().getConfiguration().getEndpoints(), context().getConfiguration().getTrustedKeys());
+        }
+
+        this.actorApi = new ActorApi(endpoints,
                 authKeyStorage,
                 new ActorApiCallbackImpl(),
                 context().getConfiguration().isEnableNetworkLogging(),
@@ -80,6 +99,33 @@ public class ApiModule extends AbsModule implements BusSubscriber {
      */
     public void performPersistCursorRequest(String name, long key, Request request) {
         persistentRequests.send(new PersistentRequestsActor.PerformCursorRequest(name, key, request));
+    }
+
+    /**
+     * Changing endpoint
+     */
+    public void changeEndpoint(String endpoint) throws ConnectionEndpointArray.UnknownSchemeException {
+        changeEndpoints(new Endpoints(new ConnectionEndpointArray().addEndpoint(endpoint).toArray(new ConnectionEndpoint[1]), new TrustedKey[0]));
+    }
+
+    /**
+     * Changing endpoints
+     */
+    public synchronized void changeEndpoints(Endpoints endpoints) {
+        context().getPreferences().putBytes("custom_endpoints", endpoints.toByteArray());
+        actorApi.changeEndpoints(endpoints);
+    }
+
+    /**
+     * Reset default endpoints
+     */
+    public synchronized void resetToDefaultEndpoints() {
+        context().getPreferences().putBytes("custom_endpoints", null);
+        actorApi.resetToDefaultEndpoints();
+    }
+
+    public Promise<Boolean> checkIsCurrentAuthId(long authId) {
+        return actorApi.checkIsCurrentAuthId(authId);
     }
 
     @Override

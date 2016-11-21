@@ -14,6 +14,8 @@ import im.actor.server.eventbus.{ EventBus, EventBusExtension }
 import im.actor.server.group.GroupExtension
 import im.actor.server.model.{ Peer, PeerType }
 import im.actor.server.push.actor.{ ActorPush, ActorPushMessage }
+import im.actor.server.push.apple.{ APNSSend, ApplePushExtension }
+import im.actor.server.push.google.{ FirebasePushExtension, GCMPushExtension, GooglePushMessage }
 import im.actor.server.sequence._
 import im.actor.server.user.UserExtension
 import im.actor.server.values.ValuesExtension
@@ -170,7 +172,8 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging with
   private val groupExt = GroupExtension(system)
   private val valuesExt = ValuesExtension(system)
   private val apnsExt = ApplePushExtension(system)
-  private val gcmExt = GooglePushExtension(system)
+  private val gcmExt = GCMPushExtension(system)
+  private val firebaseExt = FirebasePushExtension(system)
   private val actorPush = ActorPush(system)
   private val webrtcExt = WebrtcExtension(system)
 
@@ -276,19 +279,16 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging with
       log.debug("Senfing smsg {} {}", smsg, memberUserIds)
 
       (for {
-        _ ← if (peer.`type`.isPrivate) FutureExt.ftraverse(memberUserIds.toSeq)(userId ⇒ dialogExt.sendMessage(
-          peer = ApiPeer(ApiPeerType.Private, (memberUserIds - userId).head),
-          senderUserId = callerUserId,
-          senderAuthId = None,
-          senderAuthSid = 0,
-          randomId = randomId,
-          message = smsg
-        ))
-        else dialogExt.sendMessage(
+        _ ← if (peer.`type`.isPrivate) FutureExt.ftraverse(memberUserIds.toSeq)(userId ⇒
+          dialogExt.sendMessageInternal(
+            peer = ApiPeer(ApiPeerType.Private, (memberUserIds - userId).head),
+            senderUserId = callerUserId,
+            randomId = randomId,
+            message = smsg
+          ))
+        else dialogExt.sendMessageInternal(
           peer = peer.asStruct,
           senderUserId = callerUserId,
-          senderAuthId = None,
-          senderAuthSid = 0,
           randomId = randomId,
           message = smsg
         )
@@ -547,22 +547,26 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging with
   private def scheduleIncomingCallUpdates(callees: Seq[UserId]): Future[Unit] = {
     val pushCredsFu = for {
       authIdsMap ← userExt.getAuthIdsMap(callees.toSet)
-      acredsMap ← FutureExt.ftraverse(authIdsMap.toSeq) {
+      appleCredsMap ← FutureExt.ftraverse(authIdsMap.toSeq) {
         case (userId, authIds) ⇒
           apnsExt.fetchVoipCreds(authIds.toSet) map (userId → _)
       }
-      gcredsMap ← FutureExt.ftraverse(authIdsMap.toSeq) {
+      gcmCredsMap ← FutureExt.ftraverse(authIdsMap.toSeq) {
         case (userId, authIds) ⇒
           gcmExt.fetchCreds(authIds.toSet) map (userId → _)
+      }
+      firebaseCredsMap ← FutureExt.ftraverse(authIdsMap.toSeq) {
+        case (userId, authIds) ⇒
+          firebaseExt.fetchCreds(authIds.toSet) map (userId → _)
       }
       actorCredsMap ← FutureExt.ftraverse(authIdsMap.toSeq) {
         case (userId, authIds) ⇒
           actorPush.fetchCreds(userId) map (userId → _)
       }
-    } yield (acredsMap, gcredsMap, actorCredsMap)
+    } yield (appleCredsMap, gcmCredsMap, firebaseCredsMap, actorCredsMap)
 
     pushCredsFu map {
-      case (appleCreds, googleCreds, actorCreds) ⇒
+      case (appleCreds, gcmCreds, firebaseCreds, actorCreds) ⇒
         for {
           (userId, credsList) ← appleCreds
           creds ← credsList
@@ -575,16 +579,25 @@ private final class WebrtcCallActor extends StashingActor with ActorLogging with
           _ = clientFu foreach { implicit c ⇒ sendNotification(payload, creds, userId) }
         } yield ()
 
+        def googlePushMessage(regId: String) = GooglePushMessage(
+          regId,
+          None,
+          Some(Map("callId" → id.toString, "attemptIndex" → "1")),
+          time_to_live = Some(0)
+        )
+
         for {
-          (member, creds) ← googleCreds
+          (member, creds) ← gcmCreds
           cred ← creds
-          message = new GooglePushMessage(
-            cred.regId,
-            None,
-            Some(Map("callId" → id.toString, "attemptIndex" → "1")),
-            time_to_live = Some(0)
-          )
+          message = googlePushMessage(cred.regId)
           _ = gcmExt.send(cred.projectId, message)
+        } yield ()
+
+        for {
+          (member, creds) ← firebaseCreds
+          cred ← creds
+          message = googlePushMessage(cred.regId)
+          _ = firebaseExt.send(cred.projectId, message)
         } yield ()
 
         for {

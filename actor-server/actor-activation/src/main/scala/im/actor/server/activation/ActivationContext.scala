@@ -1,6 +1,7 @@
 package im.actor.server.activation
 
 import akka.actor.ActorSystem
+import akka.http.scaladsl.util.FastFuture
 import cats.data.Xor
 import im.actor.server.activation.common._
 import im.actor.server.db.DbExtension
@@ -61,7 +62,7 @@ final class ActivationContext(implicit system: ActorSystem) extends CodeGen {
     for {
       internalResp ← tryValidate(optInternalProvider, tx.transactionHash, code, logFailure = false)
       result ← if (internalResp == Validated) {
-        Future.successful(internalResp)
+        FastFuture.successful(internalResp)
       } else {
         for {
           resp ← tx match {
@@ -90,15 +91,15 @@ final class ActivationContext(implicit system: ActorSystem) extends CodeGen {
   private def trySend(optProvider: Option[ActivationProvider], txHash: String, code: Code, logFailure: Boolean = true): Future[CodeFailure Xor Unit] =
     optProvider map (_.send(txHash, code)) getOrElse {
       if (logFailure) { system.log.error(s"No provider found to handle code of type {}", code.getClass) }
-      Future.successful(Xor.left(SendFailure(s"No provider found to handle code of type ${code.getClass}")))
+      FastFuture.successful(Xor.left(SendFailure(s"No provider found to handle code of type ${code.getClass}")))
     }
 
   private def tryValidate(optProvider: Option[ActivationProvider], txHash: String, code: String, logFailure: Boolean = true): Future[ValidationResponse] =
     optProvider map (_.validate(txHash, code)) getOrElse {
       if (logFailure) { system.log.error(s"No provider found to validate code") }
-      Future.successful(InternalError)
+      FastFuture.successful(InternalError)
     }
 
   private def tryCleanup(optProvider: Option[ActivationProvider], txHash: String): Future[Unit] =
-    optProvider map (_.cleanup(txHash)) getOrElse Future.successful(())
+    optProvider map (_.cleanup(txHash)) getOrElse FastFuture.successful(())
 }

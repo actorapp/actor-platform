@@ -13,7 +13,7 @@ trait FavouritesHandlers extends PeersImplicits {
   override def doHandleFavouriteDialog(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseDialogsOrder]] =
     authorized(clientData) { client ⇒
       for {
-        SeqState(seq, state) ← dialogExt.favourite(client.userId, peer.asModel)
+        SeqState(seq, state) ← dialogExt.favourite(client.userId, client.authId, peer.asModel)
         groups ← dialogExt.fetchApiGroupedDialogs(client.userId)
       } yield Ok(ResponseDialogsOrder(seq, state.toByteArray, groups))
     }
@@ -21,7 +21,7 @@ trait FavouritesHandlers extends PeersImplicits {
   override def doHandleUnfavouriteDialog(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseDialogsOrder]] =
     authorized(clientData) { client ⇒
       for {
-        SeqState(seq, state) ← dialogExt.unfavourite(client.userId, peer.asModel)
+        SeqState(seq, state) ← dialogExt.unfavourite(client.userId, client.authId, peer.asModel)
         groups ← dialogExt.fetchApiGroupedDialogs(client.userId)
       } yield Ok(ResponseDialogsOrder(seq, state.toByteArray, groups))
     }

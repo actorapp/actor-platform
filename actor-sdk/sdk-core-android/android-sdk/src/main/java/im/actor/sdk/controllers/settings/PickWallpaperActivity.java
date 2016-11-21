@@ -16,7 +16,7 @@ public class PickWallpaperActivity extends BaseFragmentActivity {
         getSupportActionBar().setTitle(R.string.wallpaper);
 
         if (savedInstanceState == null) {
-            showFragment(PickWallpaperFragment.chooseWallpaper(id), false, false);
+            showFragment(PickWallpaperFragment.chooseWallpaper(id), false);
         }
     }
 }

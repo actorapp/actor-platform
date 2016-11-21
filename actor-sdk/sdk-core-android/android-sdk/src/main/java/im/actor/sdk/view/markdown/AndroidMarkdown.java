@@ -24,9 +24,11 @@ import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.Toast;
 
+import im.actor.core.entity.Peer;
 import im.actor.runtime.actors.ActorContext;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
+import im.actor.sdk.controllers.activity.BaseActivity;
 import im.actor.sdk.controllers.conversation.ChatActivity;
 import im.actor.sdk.controllers.fragment.preview.CodePreviewActivity;
 import im.actor.runtime.android.AndroidContext;
@@ -119,11 +121,8 @@ public class AndroidMarkdown {
                     @Override
                     public void onClick(View view) {
                         Context ctx = view.getContext();
-                        if (url.getUrl().startsWith("send:")) {
-                            ctx = extractContext(ctx);
-                            if (ctx instanceof ChatActivity) {
-                                ActorSDK.sharedActor().getMessenger().sendMessage(((ChatActivity) ctx).getPeer(), url.getUrl().replace("send:", ""));
-                            }
+                        if (url.getUrl().startsWith("send:") && view.getTag(R.id.peer) != null && view.getTag(R.id.peer) instanceof Peer) {
+                            ActorSDK.sharedActor().getMessenger().sendMessage((Peer) view.getTag(R.id.peer), url.getUrl().replaceFirst("send:", ""));
                         } else {
                             Intent intent = buildChromeIntent().intent;
                             intent.setData(Uri.parse(url.getUrl()));
@@ -147,16 +146,6 @@ public class AndroidMarkdown {
                 throw new RuntimeException("Unknown text type: " + text);
             }
         }
-    }
-
-    private static Context extractContext(Context ctx) {
-        if (ctx instanceof AppCompatActivity) {
-            return ctx;
-        } else if (ctx instanceof ContextWrapper) {
-            return extractContext(((ContextWrapper) ctx).getBaseContext());
-        }
-
-        return ctx;
     }
 
     public static CustomTabsIntent buildChromeIntent() {

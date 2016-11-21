@@ -3,7 +3,7 @@ package im.actor.api
 import akka.http.scaladsl.util.FastFuture
 import cats.data.Xor
 import im.actor.server.CommonErrors
-import im.actor.server.group.GroupErrors.GroupNotFound
+import im.actor.server.group.GroupErrors.{ GroupAlreadyDeleted, GroupNotFound }
 import im.actor.server.office.EntityNotFoundError
 import im.actor.server.user.UserErrors.UserNotFound
 
@@ -16,6 +16,7 @@ package object rpc extends PeersImplicits with HistoryImplicits with DialogConve
 
   object CommonRpcErrors {
     val GroupNotFound = RpcError(404, "GROUP_NOT_FOUND", "", false, None)
+    val GroupDeleted = RpcError(404, "GROUP_DELETED", "", false, None)
     val InvalidAccessHash = RpcError(403, "INVALID_ACCESS_HASH", "", false, None)
     val UnsupportedRequest = RpcError(400, "REQUEST_NOT_SUPPORTED", "Operation not supported.", false, None)
     val UserNotAuthorized = RpcError(403, "USER_NOT_AUTHORIZED", "", false, None)
@@ -23,14 +24,15 @@ package object rpc extends PeersImplicits with HistoryImplicits with DialogConve
     val UserPhoneNotFound = RpcError(404, "USER_PHONE_NOT_FOUND", "", false, None)
     val EntityNotFound = RpcError(404, "ENTITY_NOT_FOUND", "", false, None)
     val NotSupportedInOss = RpcError(400, "NOT_SUPPORTED_IN_OSS", "Feature is not supported in the Open-Source version.", canTryAgain = false, None)
-    val IntenalError = RpcError(500, "INTERNAL_ERROR", "", false, None)
+    val InternalError = RpcError(500, "INTERNAL_ERROR", "", false, None)
 
     def forbidden(userMessage: String = "You are not allowed to do this.") = RpcError(403, "FORBIDDEN", userMessage, false, None)
   }
 
   def recoverCommon: PartialFunction[Throwable, RpcError] = {
-    case UserNotFound(_)                 ⇒ CommonRpcErrors.UserNotFound
-    case GroupNotFound(_)                ⇒ CommonRpcErrors.GroupNotFound
+    case _: UserNotFound                 ⇒ CommonRpcErrors.UserNotFound
+    case _: GroupNotFound                ⇒ CommonRpcErrors.GroupNotFound
+    case _: GroupAlreadyDeleted          ⇒ CommonRpcErrors.GroupDeleted
     case EntityNotFoundError             ⇒ CommonRpcErrors.EntityNotFound
     case CommonErrors.Forbidden(message) ⇒ CommonRpcErrors.forbidden(message)
   }

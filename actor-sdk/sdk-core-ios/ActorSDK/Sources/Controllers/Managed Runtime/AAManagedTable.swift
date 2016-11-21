@@ -4,66 +4,66 @@
 
 import Foundation
 
-public class AAManagedTable {
+open class AAManagedTable {
     
     //------------------------------------------------------------------------//
     
     // Controller of table
     
-    public let controller: UIViewController
+    open let controller: UIViewController
     
     // Table view
     
-    public let style: AAContentTableStyle
-    public let tableView: UITableView
-    public var tableViewDelegate: UITableViewDelegate { get { return baseDelegate } }
-    public var tableViewDataSource: UITableViewDataSource { get { return baseDelegate } }
+    open let style: AAContentTableStyle
+    open let tableView: UITableView
+    open var tableViewDelegate: UITableViewDelegate { get { return baseDelegate } }
+    open var tableViewDataSource: UITableViewDataSource { get { return baseDelegate } }
     
     // Scrolling closure
     
-    public var tableScrollClosure: ((tableView: UITableView) -> ())?
+    open var tableScrollClosure: ((_ tableView: UITableView) -> ())?
     
     // Is fade in/out animated
     
-    public var fadeShowing = false
+    open var fadeShowing = false
     
     // Sections of table
     
-    public var sections: [AAManagedSection] = [AAManagedSection]()
+    open var sections: [AAManagedSection] = [AAManagedSection]()
     
     // Fixed Height
     
-    public var fixedHeight: CGFloat?
+    open var fixedHeight: CGFloat?
     
     // Can Edit All rows
     
-    public var canEditAll: Bool?
+    open var canEditAll: Bool?
     
     // Can Delete All rows
     
-    public var canDeleteAll: Bool?
+    open var canDeleteAll: Bool?
     
     // Is Table in editing mode
     
-    public var isEditing: Bool {
+    open var isEditing: Bool {
         get {
-            return tableView.editing
+            return tableView.isEditing
         }
     }
     
     // Is updating sections
     
-    private var isUpdating = false
+    fileprivate var isUpdating = false
     
     // Reference to table view delegate/data source
     
-    private var baseDelegate: AMBaseTableDelegate!
+    fileprivate var baseDelegate: AMBaseTableDelegate!
     
     // Search
-    private var isSearchInited: Bool = false
-    private var isSearchAutoHide: Bool = false
-    private var searchDisplayController: UISearchDisplayController!
-    private var searchManagedController: AnyObject!
+    fileprivate var isSearchInited: Bool = false
+    fileprivate var isSearchAutoHide: Bool = false
+    fileprivate var searchDisplayController: UISearchDisplayController!
+    fileprivate var searchManagedController: AnyObject!
     
     //------------------------------------------------------------------------//
     
@@ -72,7 +72,7 @@ public class AAManagedTable {
         self.controller = controller
         self.tableView = tableView
         
-        if style == .SettingsGrouped {
+        if style == .settingsGrouped {
             self.baseDelegate = AMGrouppedTableDelegate(data: self)
         } else {
             self.baseDelegate = AMPlainTableDelegate(data: self)
@@ -86,14 +86,14 @@ public class AAManagedTable {
     
     // Entry point to adding
     
-    public func beginUpdates() {
+    open func beginUpdates() {
         if isUpdating {
             fatalError("Already updating table")
         }
         isUpdating = true
     }
     
-    public func addSection(autoSeparator: Bool = false) -> AAManagedSection {
+    open func addSection(_ autoSeparator: Bool = false) -> AAManagedSection {
         if !isUpdating {
             fatalError("Table is not in updating mode")
         }
@@ -104,7 +104,7 @@ public class AAManagedTable {
         return res
     }
     
-    public func search<C where C: AABindedSearchCell, C: UITableViewCell>(cell: C.Type, @noescape closure: (s: AAManagedSearchConfig<C>) -> ()) {
+    open func search<C>(_ cell: C.Type, closure: (_ s: AAManagedSearchConfig<C>) -> ()) where C: AABindedSearchCell, C: UITableViewCell {
         
         if !isUpdating {
             fatalError("Table is not in updating mode")
@@ -120,7 +120,7 @@ public class AAManagedTable {
         
         let config = AAManagedSearchConfig<C>()
         
-        closure(s: config)
+        closure(config)
         
         // Creating search source
         
@@ -130,7 +130,7 @@ public class AAManagedTable {
         self.isSearchAutoHide = config.isSearchAutoHide
     }
     
-    public func endUpdates() {
+    open func endUpdates() {
         if !isUpdating {
             fatalError("Table is not in editable mode")
         }
@@ -139,23 +139,23 @@ public class AAManagedTable {
     
     // Reloading table
     
-    public func reload() {
+    open func reload() {
         self.tableView.reloadData()
     }
     
-    public func reload(section: Int) {
-        self.tableView.reloadSections(NSIndexSet(index: section), withRowAnimation: .Automatic)
+    open func reload(_ section: Int) {
+        self.tableView.reloadSections(IndexSet(integer: section), with: .automatic)
     }
     
     // Binding methods
     
-    public func bind(binder: AABinder) {
+    open func bind(_ binder: AABinder) {
         for s in sections {
             s.bind(self, binder: binder)
         }
     }
     
-    public func unbind(binder: AABinder) {
+    open func unbind(_ binder: AABinder) {
         for s in sections {
             s.unbind(self, binder: binder)
         }
@@ -163,21 +163,21 @@ public class AAManagedTable {
     
     // Show/hide table
     
-    public func showTable() {
+    open func showTable() {
         if isUpdating || !fadeShowing {
             self.tableView.alpha = 1
         } else {
-            UIView.animateWithDuration(0.3, animations: { () -> Void in
+            UIView.animate(withDuration: 0.3, animations: { () -> Void in
                 self.tableView.alpha = 1
             })
         }
     }
     
-    public func hideTable() {
+    open func hideTable() {
         if isUpdating || !fadeShowing {
             self.tableView.alpha = 0
         } else {
-            UIView.animateWithDuration(0.3, animations: { () -> Void in
+            UIView.animate(withDuration: 0.3, animations: { () -> Void in
                 self.tableView.alpha = 0
             })
         }
@@ -185,7 +185,7 @@ public class AAManagedTable {
     
     // Controller callbacks
     
-    public func controllerViewWillDisappear(animated: Bool) {
+    open func controllerViewWillDisappear(_ animated: Bool) {
         
         // Auto close search on leaving controller
         if isSearchAutoHide {
@@ -195,14 +195,14 @@ public class AAManagedTable {
         }
     }
     
-    public func controllerViewDidDisappear(animated: Bool) {
+    open func controllerViewDidDisappear(_ animated: Bool) {
         
         // Auto close search on leaving controller
 //        searchDisplayController?.setActive(false, animated: animated)
     }
 
     
-    public func controllerViewWillAppear(animated: Bool) {
+    open func controllerViewWillAppear(_ animated: Bool) {
         
         // Search bar dissapear fixing
 
@@ -224,14 +224,14 @@ public class AAManagedTable {
         
         // Status bar styles
         
-        if (searchDisplayController != nil && searchDisplayController!.active) {
+        if (searchDisplayController != nil && searchDisplayController!.isActive) {
             
             // If search is active: apply search status bar style
-            UIApplication.sharedApplication().setStatusBarStyle(ActorSDK.sharedActor().style.searchStatusBarStyle, animated: true)
+            UIApplication.shared.setStatusBarStyle(ActorSDK.sharedActor().style.searchStatusBarStyle, animated: true)
         } else {
             
             // If search is not active: apply main status bar style
-            UIApplication.sharedApplication().setStatusBarStyle(ActorSDK.sharedActor().style.vcStatusBarStyle, animated: true)
+            UIApplication.shared.setStatusBarStyle(ActorSDK.sharedActor().style.vcStatusBarStyle, animated: true)
         }
     }
 }
@@ -240,8 +240,8 @@ public class AAManagedTable {
 
 public extension AAManagedTable {
     
-    public func section(closure: (s: AAManagedSection) -> ()){
-        closure(s: addSection(true))
+    public func section(_ closure: (_ s: AAManagedSection) -> ()){
+        closure(addSection(true))
     }
 }
 
@@ -249,15 +249,15 @@ public extension AAManagedTable {
 
 private class AMPlainTableDelegate: AMBaseTableDelegate {
     
-    @objc func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    @objc func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return CGFloat(data.sections[section].headerHeight)
     }
     
-    @objc func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+    @objc func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return CGFloat(data.sections[section].footerHeight)
     }
     
-    @objc func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    @objc func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if (data.sections[section].headerText == nil) {
             return UIView()
         } else {
@@ -265,7 +265,7 @@ private class AMPlainTableDelegate: AMBaseTableDelegate {
         }
     }
     
-    @objc func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+    @objc func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         if (data.sections[section].footerText == nil) {
             return UIView()
         } else {
@@ -277,12 +277,12 @@ private class AMPlainTableDelegate: AMBaseTableDelegate {
 
 private class AMGrouppedTableDelegate: AMBaseTableDelegate {
     
-    @objc func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+    @objc func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         let header: UITableViewHeaderFooterView = view as! UITableViewHeaderFooterView
         header.textLabel!.textColor = ActorSDK.sharedActor().style.cellHeaderColor
     }
     
-    @objc func tableView(tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
+    @objc func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
         let header: UITableViewHeaderFooterView = view as! UITableViewHeaderFooterView
         header.textLabel!.textColor = ActorSDK.sharedActor().style.cellFooterColor
     }
@@ -290,25 +290,25 @@ private class AMGrouppedTableDelegate: AMBaseTableDelegate {
 
 private class AMBaseTableDelegate: NSObject, UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate {
     
-    unowned private let data: AAManagedTable
+    unowned fileprivate let data: AAManagedTable
     
     init(data: AAManagedTable) {
         self.data = data
     }
     
-    @objc func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    @objc func numberOfSections(in tableView: UITableView) -> Int {
         return data.sections.count
     }
     
-    @objc func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    @objc func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return data.sections[section].numberOfItems(data)
     }
     
-    @objc func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        return data.sections[indexPath.section].cellForItem(data, indexPath: indexPath)
+    @objc func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        return data.sections[(indexPath as NSIndexPath).section].cellForItem(data, indexPath: indexPath)
     }
     
-    @objc func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    @objc func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         let text = data.sections[section].headerText
         if text != nil {
             return AALocalized(text!)
@@ -317,7 +317,7 @@ private class AMBaseTableDelegate: NSObject, UITableViewDelegate, UITableViewDat
         }
     }
     
-    @objc func tableView(tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+    @objc func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         let text = data.sections[section].footerText
         if text != nil {
             return AALocalized(text!)
@@ -327,125 +327,128 @@ private class AMBaseTableDelegate: NSObject, UITableViewDelegate, UITableViewDat
         
     }
     
-    @objc func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    @objc func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if data.fixedHeight != nil {
             return data.fixedHeight!
         }
-        return data.sections[indexPath.section].cellHeightForItem(data, indexPath: indexPath)
+        return data.sections[(indexPath as NSIndexPath).section].cellHeightForItem(data, indexPath: indexPath)
     }
     
-    @objc func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+    @objc func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         if data.canEditAll != nil {
             return data.canEditAll!
         }
-        return (data.sections[indexPath.section].numberOfItems(data) > 0 ? data.sections[indexPath.section].canDelete(data, indexPath: indexPath) : false)
+        return (data.sections[(indexPath as NSIndexPath).section].numberOfItems(data) > 0 ? data.sections[(indexPath as NSIndexPath).section].canDelete(data, indexPath: indexPath) : false)
     }
     
-    @objc func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+    @objc func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
         return false
     }
     
-    @objc func tableView(tableView: UITableView, editingStyleForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCellEditingStyle {
+    @objc func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
         
         if data.canDeleteAll != nil {
             if data.canDeleteAll! {
-                return .Delete
+                return .delete
             } else {
-                return .None
+                return .none
             }
         }
         
-        return data.sections[indexPath.section].canDelete(data, indexPath: indexPath) ? .Delete : .None
+        return data.sections[(indexPath as NSIndexPath).section].canDelete(data, indexPath: indexPath) ? .delete : .none
     }
    
-    @objc func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        return data.sections[indexPath.section].delete(data, indexPath: indexPath)
+    @objc func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        return data.sections[(indexPath as NSIndexPath).section].delete(data, indexPath: indexPath)
     }
    
-    @objc func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let section = data.sections[indexPath.section]
+    @objc func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let section = data.sections[(indexPath as NSIndexPath).section]
         if section.canSelect(data, indexPath: indexPath) {
             if section.select(data, indexPath: indexPath) {
-                tableView.deselectRowAtIndexPath(indexPath, animated: true)
+                tableView.deselectRow(at: indexPath, animated: true)
             }
         } else {
-            tableView.deselectRowAtIndexPath(indexPath, animated: true)
+            tableView.deselectRow(at: indexPath, animated: true)
         }
     }
     
-    @objc func tableView(tableView: UITableView, canPerformAction action: Selector, forRowAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject?) -> Bool {
+    @objc func tableView(_ tableView: UITableView, canPerformAction action: Selector, forRowAt indexPath: IndexPath, withSender sender: Any?) -> Bool {
         
-        if action == "copy:" {
-            let section = data.sections[indexPath.section]
+        if action == #selector(UIResponderStandardEditActions.copy(_:)) {
+            let section = data.sections[(indexPath as NSIndexPath).section]
             return section.canCopy(data, indexPath: indexPath)
         }
         
         return false
     }
-    @objc func tableView(tableView: UITableView, shouldShowMenuForRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        let section = data.sections[indexPath.section]
+    @objc func tableView(_ tableView: UITableView, shouldShowMenuForRowAt indexPath: IndexPath) -> Bool {
+        let section = data.sections[(indexPath as NSIndexPath).section]
         return section.canCopy(data, indexPath: indexPath)
     }
     
-    @objc func tableView(tableView: UITableView, performAction action: Selector, forRowAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject?) {
-        if action == "copy:" {
-            let section = data.sections[indexPath.section]
+    @objc func tableView(_ tableView: UITableView, performAction action: Selector, forRowAt indexPath: IndexPath, withSender sender: Any?) {
+        if action == #selector(UIResponderStandardEditActions.copy(_:)) {
+            let section = data.sections[(indexPath as NSIndexPath).section]
             if section.canCopy(data, indexPath: indexPath) {
                 section.copy(data, indexPath: indexPath)
             }
         }
     }
     
-    @objc func scrollViewDidScroll(scrollView: UIScrollView) {
+    @objc func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if (data.tableView == scrollView) {
-            data.tableScrollClosure?(tableView: data.tableView)
+            data.tableScrollClosure?(data.tableView)
         }
     }
 }
 
-public class AAManagedSearchConfig<BindCell where BindCell: AABindedSearchCell, BindCell: UITableViewCell> {
+open class AAManagedSearchConfig<BindCell> where BindCell: AABindedSearchCell, BindCell: UITableViewCell {
     
-    public var searchList: ARBindedDisplayList!
-    public var selectAction: ((BindCell.BindData) -> ())?
-    public var isSearchAutoHide: Bool = true
-    public var didBind: ((c: BindCell, d: BindCell.BindData) -> ())?
+    open var searchList: ARBindedDisplayList?
+    open var searchModel: ARSearchValueModel?
+    open var selectAction: ((BindCell.BindData) -> ())?
+    open var isSearchAutoHide: Bool = true
+    open var didBind: ((_ c: BindCell, _ d: BindCell.BindData) -> ())?
 }
 
-private class AAManagedSearchController<BindCell where BindCell: AABindedSearchCell, BindCell: UITableViewCell>: NSObject, UISearchBarDelegate, UISearchDisplayDelegate, UITableViewDataSource, UITableViewDelegate, ARDisplayList_Listener {
+private class AAManagedSearchController<BindCell>: NSObject, UISearchBarDelegate, UISearchDisplayDelegate, UITableViewDataSource, UITableViewDelegate, ARDisplayList_Listener, ARValueChangedListener where BindCell: AABindedSearchCell, BindCell: UITableViewCell {
     
     let config: AAManagedSearchConfig<BindCell>
-    let displayList: ARBindedDisplayList
+    let searchList: ARBindedDisplayList?
+    let searchModel: ARSearchValueModel?
     let searchDisplay: UISearchDisplayController
     
     init(config: AAManagedSearchConfig<BindCell>, controller: UIViewController, tableView: UITableView) {
         
         self.config = config
         
-        self.displayList = config.searchList
+        self.searchList = config.searchList
+        self.searchModel = config.searchModel
         
         let style = ActorSDK.sharedActor().style
         let searchBar = UISearchBar()
         
         // Styling Search bar
-        searchBar.searchBarStyle = UISearchBarStyle.Default
-        searchBar.translucent = false
+        searchBar.searchBarStyle = UISearchBarStyle.default
+        searchBar.isTranslucent = false
         searchBar.placeholder = "" // SearchBar placeholder animation fix
         
         // SearchBar background color
         searchBar.barTintColor = style.searchBackgroundColor.forTransparentBar()
-        searchBar.setBackgroundImage(Imaging.imageWithColor(style.searchBackgroundColor, size: CGSize(width: 1, height: 1)), forBarPosition: .Any, barMetrics: .Default)
+        searchBar.setBackgroundImage(Imaging.imageWithColor(style.searchBackgroundColor, size: CGSize(width: 1, height: 1)), for: .any, barMetrics: .default)
         searchBar.backgroundColor = style.searchBackgroundColor
         
         // SearchBar cancel color
         searchBar.tintColor = style.searchCancelColor
         
         // Apply keyboard color
-        searchBar.keyboardAppearance = style.isDarkApp ? UIKeyboardAppearance.Dark : UIKeyboardAppearance.Light
+        searchBar.keyboardAppearance = style.isDarkApp ? UIKeyboardAppearance.dark : UIKeyboardAppearance.light
 
         // SearchBar field color
         let fieldBg = Imaging.imageWithColor(style.searchFieldBgColor, size: CGSize(width: 14,height: 28))
             .roundCorners(14, h: 28, roundSize: 4)
-        searchBar.setSearchFieldBackgroundImage(fieldBg.stretchableImageWithLeftCapWidth(7, topCapHeight: 0), forState: UIControlState.Normal)
+        searchBar.setSearchFieldBackgroundImage(fieldBg.stretchableImage(withLeftCapWidth: 7, topCapHeight: 0), for: UIControlState())
         
         // SearchBar field text color
         for subView in searchBar.subviews {
@@ -470,77 +473,106 @@ private class AAManagedSearchController<BindCell where BindCell: AABindedSearchC
         
         // Styling search list
         
-        self.searchDisplay.searchResultsTableView.separatorStyle = UITableViewCellSeparatorStyle.None
+        self.searchDisplay.searchResultsTableView.separatorStyle = UITableViewCellSeparatorStyle.none
         self.searchDisplay.searchResultsTableView.backgroundColor = ActorSDK.sharedActor().style.vcBgColor
         
         // Adding search to table header
         
-        let header = AATableViewHeader(frame: CGRectMake(0, 0, 320, 44))
+        let header = AATableViewHeader(frame: CGRect(x: 0, y: 0, width: 320, height: 44))
         header.addSubview(self.searchDisplay.searchBar)
         tableView.tableHeaderView = header
         
         // Start receiving events
         
-        self.displayList.addListener(self)
+        if let ds = searchList {
+            ds.add(self)
+        } else if let sm = searchModel {
+            sm.getResults().subscribe(with: self)
+        } else {
+            fatalError("No search model or search list is set!")
+        }
     }
     
     // Model
     
     
-    func objectAtIndexPath(indexPath: NSIndexPath) -> BindCell.BindData {
-        return displayList.itemWithIndex(jint(indexPath.row)) as! BindCell.BindData
+    func objectAtIndexPath(_ indexPath: IndexPath) -> BindCell.BindData {
+        if let ds = searchList {
+            return ds.item(with: jint((indexPath as NSIndexPath).row)) as! BindCell.BindData
+        } else if let sm = searchModel {
+            let list = sm.getResults().get() as! JavaUtilList
+            return list.getWith(jint((indexPath as NSIndexPath).row)) as! BindCell.BindData
+        } else {
+            fatalError("No search model or search list is set!")
+        }
     }
     
     @objc func onCollectionChanged() {
         searchDisplay.searchResultsTableView.reloadData()
     }
     
-    // Table view data
-    
-    @objc func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return Int(displayList.size());
+    @objc func onChanged(_ val: Any!, withModel valueModel: ARValue!) {
+        searchDisplay.searchResultsTableView.reloadData()
     }
     
-    @objc func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    // Table view data
+    
+    @objc func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if let ds = searchList {
+            return Int(ds.size())
+        } else if let sm = searchModel {
+            let list = sm.getResults().get() as! JavaUtilList
+            return Int(list.size())
+        } else {
+            fatalError("No search model or search list is set!")
+        }
+    }
+    
+    @objc func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let item = objectAtIndexPath(indexPath)
         return BindCell.self.bindedCellHeight(item)
     }
     
-    @objc func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    @objc func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = objectAtIndexPath(indexPath)
         let cell = tableView.dequeueCell(BindCell.self, indexPath: indexPath) as! BindCell
         cell.bind(item, search: nil)
         return cell
     }
     
-    @objc func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    @objc func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let item = objectAtIndexPath(indexPath)
         config.selectAction!(item)
-        // MainAppTheme.navigation.applyStatusBar()
     }
     
     // Search updating
     
-    @objc func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
-        let normalized = searchText.trim().lowercaseString
-        if (normalized.length > 0) {
-            displayList.initSearchWithQuery(normalized, withRefresh: false)
+    @objc func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if let ds = searchList {
+            let normalized = searchText.trim().lowercased()
+            if (normalized.length > 0) {
+                ds.initSearch(withQuery: normalized, withRefresh: false)
+            } else {
+                ds.initEmpty()
+            }
+        } else if let sm = searchModel {
+            sm.queryChanged(with: searchText)
         } else {
-            displayList.initEmpty()
+            fatalError("No search model or search list is set!")
         }
     }
     
     // Search styling
     
-    @objc func searchDisplayControllerWillBeginSearch(controller: UISearchDisplayController) {
-        UIApplication.sharedApplication().setStatusBarStyle(ActorSDK.sharedActor().style.searchStatusBarStyle, animated: true)
+    @objc func searchDisplayControllerWillBeginSearch(_ controller: UISearchDisplayController) {
+        UIApplication.shared.setStatusBarStyle(ActorSDK.sharedActor().style.searchStatusBarStyle, animated: true)
     }
     
-    @objc func searchDisplayControllerWillEndSearch(controller: UISearchDisplayController) {
-        UIApplication.sharedApplication().setStatusBarStyle(ActorSDK.sharedActor().style.vcStatusBarStyle, animated: true)
+    @objc func searchDisplayControllerWillEndSearch(_ controller: UISearchDisplayController) {
+        UIApplication.shared.setStatusBarStyle(ActorSDK.sharedActor().style.vcStatusBarStyle, animated: true)
     }
     
-    @objc func searchDisplayController(controller: UISearchDisplayController, didShowSearchResultsTableView tableView: UITableView) {
+    @objc func searchDisplayController(_ controller: UISearchDisplayController, didShowSearchResultsTableView tableView: UITableView) {
         for v in tableView.subviews {
             if (v is UIImageView) {
                 (v as! UIImageView).alpha = 0;

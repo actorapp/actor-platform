@@ -11,7 +11,7 @@ import im.actor.runtime.HTTP;
 import im.actor.runtime.Log;
 import im.actor.runtime.Storage;
 import im.actor.runtime.actors.ActorRef;
-import im.actor.runtime.actors.Cancellable;
+import im.actor.runtime.actors.ActorCancellable;
 import im.actor.runtime.files.FileSystemReference;
 import im.actor.runtime.files.OutputFile;
 import im.actor.runtime.http.HTTPError;
@@ -35,7 +35,7 @@ public class DownloadTask extends ModuleActor {
 
     private long lastNotifyDate;
     private float currentProgress;
-    private Cancellable notifyCancellable;
+    private ActorCancellable notifyCancellable;
 
     private String fileUrl;
     private int blockSize = 128 * 1024;

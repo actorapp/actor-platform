@@ -2,6 +2,7 @@ package im.actor.server.bot
 
 import akka.actor._
 import akka.cluster.singleton.{ ClusterSingletonManager, ClusterSingletonManagerSettings }
+import akka.http.scaladsl.util.FastFuture
 import akka.pattern.pipe
 import akka.stream.scaladsl.{ Sink, Source }
 import akka.stream.{ ActorMaterializer, OverflowStrategy }
@@ -62,7 +63,7 @@ abstract class InternalBot(userId: Int, nickname: String, name: String, isAdmin:
     val existence = botExt.exists(userId) flatMap { exists ⇒
       if (exists) {
         log.warning("Bot already exists")
-        Future.successful(())
+        FastFuture.successful(())
       } else {
         log.warning("Creating user {}", userId)
         botExt.create(userId, nickname, name, isAdmin) map (_ ⇒ ()) andThen {

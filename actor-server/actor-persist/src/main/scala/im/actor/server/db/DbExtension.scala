@@ -5,6 +5,8 @@ import akka.event.Logging
 import com.github.kxbmap.configs.syntax._
 import com.typesafe.config.{ Config, ConfigFactory }
 import im.actor.server.JNDI
+import im.actor.storage.Connector
+import im.actor.storage.slick.SlickConnector
 import org.flywaydb.core.Flyway
 import slick.driver.PostgresDriver.api.Database
 import slick.jdbc.hikaricp.HikariCPJdbcDataSource
@@ -12,12 +14,7 @@ import slick.jdbc.{ DataSourceJdbcDataSource, JdbcDataSource }
 
 import scala.util.{ Failure, Success, Try }
 
-trait DbExtension extends Extension {
-  val ds: JdbcDataSource
-  val db: Database
-}
-
-final class DbExtensionImpl(val db: Database) extends Extension with FlywayInit {
+final class DbExtensionImpl(val db: Database, val connector: Connector) extends Extension with FlywayInit {
   private lazy val flyway: Flyway = {
     val ds = db.source match {
       case s: HikariCPJdbcDataSource   ⇒ s.ds
@@ -45,12 +42,13 @@ object DbExtension extends ExtensionId[DbExtensionImpl] with ExtensionIdProvider
     val log = Logging(system, getClass)
 
     val db = initDb(system.settings.config)
+    val connector = new SlickConnector(db)(system.dispatcher)
 
     system.registerOnTermination {
       db.close()
     }
 
-    val ext = new DbExtensionImpl(db)
+    val ext = new DbExtensionImpl(db, connector)
 
     Try(ext.migrate()) match {
       case Success(_) ⇒

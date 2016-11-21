@@ -542,7 +542,7 @@ object BotMessages {
 
   @key("CreateGroup")
   final case class CreateGroup(
-    title: String
+    @beanGetter title: String
   ) extends RequestBody {
     override type Response = ResponseCreateGroup
     override val service: String = Services.Groups
@@ -550,7 +550,74 @@ object BotMessages {
     override def readResponse(obj: Js.Obj): Response = readJs[Response](obj)
   }
 
+  @key("CreateGroupWithOwner")
+  final case class CreateGroupWithOwner(
+    @beanGetter title: String,
+    @beanGetter user:  UserPeer,
+    members:           Seq[UserPeer]
+  ) extends RequestBody {
+    override type Response = ResponseCreateGroup
+    override val service: String = Services.Groups
+
+    def this(title: String, user: UserPeer, members: java.util.List[UserPeer]) =
+      this(title, user, members.toIndexedSeq)
+
+    def getMembers = seqAsJavaList(members)
+
+    override def readResponse(obj: Js.Obj): Response = readJs[Response](obj)
+  }
+
   final case class ResponseCreateGroup(@beanGetter peer: GroupOutPeer) extends ResponseBody
+
+  @key("UpdateGroupShortName")
+  final case class UpdateGroupShortName(
+    @beanGetter groupId: Int,
+    shortName:           Option[String]
+  ) extends RequestBody {
+    def this(groupId: Int, shortName: String) = this(groupId, Option(shortName))
+
+    def getShortName = shortName.asJava
+
+    override type Response = Void
+    override val service: String = Services.Groups
+
+    override def readResponse(obj: Js.Obj): Response = readJs[Response](obj)
+  }
+
+  @key("AddGroupExtString")
+  final case class AddGroupExtString(
+    @beanGetter groupId: Int,
+    @beanGetter key:     String,
+    @beanGetter value:   String
+  ) extends RequestBody {
+    override type Response = Void
+    override val service: String = Services.Groups
+
+    override def readResponse(obj: Js.Obj): Response = readJs[Response](obj)
+  }
+
+  @key("AddGroupExtBool")
+  final case class AddGroupExtBool(
+    @beanGetter groupId: Int,
+    @beanGetter key:     String,
+    @beanGetter value:   Boolean
+  ) extends RequestBody {
+    override type Response = Void
+    override val service: String = Services.Groups
+
+    override def readResponse(obj: Js.Obj): Response = readJs[Response](obj)
+  }
+
+  @key("RemoveGroupExt")
+  final case class RemoveGroupExt(
+    @beanGetter groupId: Int,
+    @beanGetter key:     String
+  ) extends RequestBody {
+    override type Response = Void
+    override val service: String = Services.Groups
+
+    override def readResponse(obj: Js.Obj): Response = readJs[Response](obj)
+  }
 
   @key("InviteUser")
   final case class InviteUser(@beanGetter groupPeer: GroupOutPeer, @beanGetter userPeer: UserOutPeer) extends RequestBody {
@@ -849,8 +916,8 @@ object BotMessages {
 
   @key("AnimationVid")
   final case class DocumentExAnimationVid(
-    @beanGetter width:  Int,
-    @beanGetter height: Int,
+    @beanGetter width:    Int,
+    @beanGetter height:   Int,
     @beanGetter duration: Int
   ) extends DocumentEx
 

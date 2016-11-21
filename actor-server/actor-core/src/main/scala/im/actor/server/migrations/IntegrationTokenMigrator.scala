@@ -1,16 +1,17 @@
 package im.actor.server.migrations
 
 import akka.actor.ActorSystem
+import akka.http.scaladsl.util.FastFuture
 import akka.util.Timeout
+import im.actor.server.db.DbExtension
 import im.actor.server.group.GroupErrors.NoBotFound
-import im.actor.server.group.{ GroupExtension, GroupOffice, GroupViewRegion }
+import im.actor.server.group.GroupExtension
 import im.actor.server.{ KeyValueMappings, persist }
 import shardakka.keyvalue.SimpleKeyValue
 import shardakka.{ IntCodec, ShardakkaExtension }
-import slick.driver.PostgresDriver
 
 import scala.concurrent.duration._
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.Future
 
 object IntegrationTokenMigrator extends Migration {
 
@@ -20,13 +21,13 @@ object IntegrationTokenMigrator extends Migration {
 
   protected override def startMigration()(
     implicit
-    system: ActorSystem,
-    db:     PostgresDriver.api.Database,
-    ec:     ExecutionContext
+    system: ActorSystem
   ): Future[Unit] = {
+    import system.dispatcher
+
     implicit val kv = ShardakkaExtension(system).simpleKeyValue[Int](KeyValueMappings.IntegrationTokens, IntCodec)
     implicit val viewRegion = GroupExtension(system).viewRegion
-    db.run(persist.GroupRepo.findAllIds) flatMap { ids ⇒
+    DbExtension(system).db.run(persist.GroupRepo.findAllIds) flatMap { ids ⇒
       system.log.debug("Going to migrate integration tokens for groups: {}", ids)
       Future.sequence(ids map (groupId ⇒ migrateSingle(groupId) recover {
         case NoBotFound ⇒
@@ -45,7 +46,7 @@ object IntegrationTokenMigrator extends Migration {
       optToken ← GroupExtension(system).getIntegrationToken(groupId)
       _ ← optToken map { token ⇒ kv.upsert(token, groupId) } getOrElse {
         system.log.warning("Could not find integration token in group {}", groupId)
-        Future.successful(())
+        FastFuture.successful(())
       }
     } yield {
       system.log.info("Integration token migrated for group {}", groupId)

@@ -4,10 +4,10 @@
 
 import Foundation
 
-let frameworkBundle = NSBundle(identifier: "im.actor.ActorSDK")!
+let frameworkBundle = Bundle(identifier: "im.actor.ActorSDK")!
 
-public extension NSBundle {
-    static var framework: NSBundle {
+public extension Bundle {
+    static var framework: Bundle {
         get {
             return frameworkBundle
         }
@@ -15,11 +15,11 @@ public extension NSBundle {
 }
 
 public extension UIImage {
-    class func bundled(named: String) -> UIImage? {
+    class func bundled(_ named: String) -> UIImage? {
         
         if let appImage = UIImage(named: named) {
             return appImage
         }
-        return UIImage(named: named, inBundle: NSBundle.framework, compatibleWithTraitCollection: UITraitCollection(displayScale: UIScreen.mainScreen().scale))
+        return UIImage(named: named, in: Bundle.framework, compatibleWith: UITraitCollection(displayScale: UIScreen.main.scale))
     }
 }

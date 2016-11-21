@@ -21,8 +21,11 @@ import im.actor.core.entity.content.AbsContent;
 import im.actor.core.modules.api.ApiSupportConfiguration;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.ModuleActor;
+import im.actor.runtime.Log;
+import im.actor.runtime.actors.ask.AskMessage;
 import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.function.Consumer;
+import im.actor.runtime.promise.Promise;
 
 public class ConversationHistoryActor extends ModuleActor {
 
@@ -39,7 +42,7 @@ public class ConversationHistoryActor extends ModuleActor {
     private long historyMaxDate;
     private boolean historyLoaded;
 
-    private boolean isLoading = false;
+    private boolean isFreezed = false;
 
     public ConversationHistoryActor(Peer peer, ModuleContext context) {
         super(context);
@@ -60,22 +63,45 @@ public class ConversationHistoryActor extends ModuleActor {
     }
 
     private void onLoadMore() {
-        if (isLoading || historyLoaded) {
+        if (isFreezed || historyLoaded) {
             return;
         }
-        isLoading = true;
+        isFreezed = true;
         api(new RequestLoadHistory(buidOutPeer(peer), historyMaxDate, null, LIMIT, ApiSupportConfiguration.OPTIMIZATIONS))
                 .chain(r -> updates().applyRelatedData(r.getUsers(), r.getGroups()))
                 .chain(r -> updates().loadRequiredPeers(r.getUserPeers(), r.getGroupPeers()))
-                .then(applyHistory(peer))
-                .then(responseLoadHistory -> isLoading = false);
+                .flatMap(r -> {
+                    Log.d("HistoryActor", "Apply " + historyMaxDate);
+                    return applyHistory(peer, r.getHistory());
+                })
+                .map(r -> {
+                    Log.d("HistoryActor", "Applied");
+                    isFreezed = false;
+                    unstashAll();
+                    return null;
+                });
     }
 
-    private Consumer<ResponseLoadHistory> applyHistory(final Peer peer) {
-        return responseLoadHistory -> applyHistory(peer, responseLoadHistory.getHistory());
+    private Promise<Void> onReset() {
+
+        Log.d("HistoryActor", "Reset");
+
+        historyMaxDate = Long.MAX_VALUE;
+        preferences().putLong(KEY_LOADED_DATE, Long.MAX_VALUE);
+        historyLoaded = false;
+        preferences().putBool(KEY_LOADED, false);
+        preferences().putBool(KEY_LOADED_INIT, false);
+
+        isFreezed = true;
+        return context().getMessagesModule().getRouter().onChatReset(peer)
+                .then(r -> {
+                    isFreezed = false;
+                    unstashAll();
+                    onLoadMore();
+                });
     }
 
-    private void applyHistory(Peer peer, List<ApiMessageContainer> history) {
+    private Promise<Void> applyHistory(Peer peer, List<ApiMessageContainer> history) {
 
         ArrayList<Message> messages = new ArrayList<>();
         long maxLoadedDate = Long.MAX_VALUE;
@@ -106,9 +132,9 @@ public class ConversationHistoryActor extends ModuleActor {
 
         // Sending updates to conversation actor
         final long finalMaxLoadedDate = maxLoadedDate;
-        context().getMessagesModule().getRouter()
+        return context().getMessagesModule().getRouter()
                 .onChatHistoryLoaded(peer, messages, maxReceiveDate, maxReadDate, isEnded)
-                .then(r -> {
+                .map(r -> {
                     // Saving Internal State
                     if (isEnded) {
                         historyLoaded = true;
@@ -119,7 +145,23 @@ public class ConversationHistoryActor extends ModuleActor {
                     preferences().putLong(KEY_LOADED_DATE, finalMaxLoadedDate);
                     preferences().putBool(KEY_LOADED, historyLoaded);
                     preferences().putBool(KEY_LOADED_INIT, true);
+                    return r;
                 });
+    }
+
+
+    @Override
+    public Promise onAsk(Object message) throws Exception {
+        if (message instanceof Reset) {
+            if (isFreezed) {
+                stash();
+                return null;
+            }
+            onReset();
+            return Promise.success(null);
+        } else {
+            return super.onAsk(message);
+        }
     }
 
     @Override
@@ -132,6 +174,10 @@ public class ConversationHistoryActor extends ModuleActor {
     }
 
     public static class LoadMore {
+
+    }
+
+    public static class Reset implements AskMessage<Void> {
 
     }
 }

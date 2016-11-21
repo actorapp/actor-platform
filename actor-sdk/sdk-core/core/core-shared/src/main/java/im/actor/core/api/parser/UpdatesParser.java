@@ -47,6 +47,7 @@ public class UpdatesParser extends BaseParser<Update> {
             case 47: return UpdateChatClear.fromBytes(payload);
             case 48: return UpdateChatDelete.fromBytes(payload);
             case 94: return UpdateChatArchive.fromBytes(payload);
+            case 2690: return UpdateChatDropCache.fromBytes(payload);
             case 1: return UpdateChatGroupsChanged.fromBytes(payload);
             case 222: return UpdateReactionsUpdate.fromBytes(payload);
             case 2609: return UpdateGroupTitleChanged.fromBytes(payload);
@@ -55,11 +56,12 @@ public class UpdatesParser extends BaseParser<Update> {
             case 2617: return UpdateGroupAboutChanged.fromBytes(payload);
             case 2613: return UpdateGroupExtChanged.fromBytes(payload);
             case 2618: return UpdateGroupFullExtChanged.fromBytes(payload);
+            case 2628: return UpdateGroupShortNameChanged.fromBytes(payload);
             case 2619: return UpdateGroupOwnerChanged.fromBytes(payload);
             case 2620: return UpdateGroupHistoryShared.fromBytes(payload);
-            case 2624: return UpdateGroupCanSendMessagesChanged.fromBytes(payload);
-            case 2625: return UpdateGroupCanViewMembersChanged.fromBytes(payload);
-            case 2626: return UpdateGroupCanInviteMembersChanged.fromBytes(payload);
+            case 2658: return UpdateGroupDeleted.fromBytes(payload);
+            case 2663: return UpdateGroupPermissionsChanged.fromBytes(payload);
+            case 2664: return UpdateGroupFullPermissionsChanged.fromBytes(payload);
             case 2612: return UpdateGroupMemberChanged.fromBytes(payload);
             case 2615: return UpdateGroupMembersBecameAsync.fromBytes(payload);
             case 2614: return UpdateGroupMembersUpdated.fromBytes(payload);

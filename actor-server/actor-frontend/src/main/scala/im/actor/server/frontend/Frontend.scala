@@ -53,28 +53,31 @@ object Frontend {
 
   import EndpointTypes._
 
-  def start(serverConfig: Config)(
-    implicit
-    sessionRegion: SessionRegion,
-    db:            Database,
-    system:        ActorSystem,
-    mat:           Materializer
-  ): Unit = {
+  def start(serverConfig: Config)(implicit
+    system: ActorSystem,
+                                  sessionRegion: SessionRegion): Unit = {
+    val serverKeys = ServerKey.loadKeysFromConfig(serverConfig).get
+    require(
+      serverKeys.nonEmpty,
+      """
+        |===========================================================================
+        |NO SERVER KEYS FOUND. CONFIGURE SERVER KEYS AND RESTART SERVER!
+        |CONFIGURATION INSTRUCTION:
+        |https://developer.actor.im/v1.0/docs/securing-server#generating-server-keys
+        |===========================================================================
+      """.stripMargin
+    )
     serverConfig.getConfigList("endpoints") map Endpoint.fromConfig foreach {
-      case Right(e) ⇒ startEndpoint(e, serverConfig)
+      case Right(e) ⇒ startEndpoint(e, serverKeys)
       case Left(e)  ⇒ throw e
     }
   }
 
-  def startEndpoint(endpoint: Endpoint, serverConfig: Config)(
+  private def startEndpoint(endpoint: Endpoint, serverKeys: Seq[ServerKey])(
     implicit
-    sessionRegion: SessionRegion,
-    db:            Database,
     system:        ActorSystem,
-    mat:           Materializer
+    sessionRegion: SessionRegion
   ): Unit = {
-    val serverKeys = ServerKey.loadKeysFromConfig(serverConfig).get
-
     endpoint match {
       case Endpoint(Tcp, host, port, keystore) ⇒
         TcpFrontend.start(host, port, serverKeys)

@@ -2,23 +2,28 @@ package im.actor.sdk.view.emoji.keyboard;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
-import android.net.Uri;
 import android.os.Build;
-import android.provider.Settings;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import java.lang.reflect.Field;
 
 import im.actor.sdk.R;
 import im.actor.runtime.Log;
+import im.actor.sdk.controllers.conversation.KeyboardLayout;
+import im.actor.sdk.util.KeyboardHelper;
+import im.actor.sdk.util.Screen;
 
 public class BaseKeyboard implements
         ViewTreeObserver.OnGlobalLayoutListener {
@@ -28,25 +33,31 @@ public class BaseKeyboard implements
     protected Activity activity;
     private View decorView;
     private boolean softKeyboardListeningEnabled = true;
+    private boolean showRequested = false;
     private boolean emojiKeyboardIsOpening;
     private InputMethodManager inputMethodManager;
     private View emojiKeyboardView;
     protected EditText messageBody;
+    protected KeyboardLayout root;
+    protected RelativeLayout container;
     public static final int OVERLAY_PERMISSION_REQ_CODE = 735;
 
     Boolean pendingOpen = false;
 
-    private KeyboardStatusListener keyboardStatusListener;
+    protected KeyboardStatusListener keyboardStatusListener;
 
     final WindowManager windowManager;
-    int keyboardHeight = 0;
+    int keyboardHeight;
     private boolean showingPending;
 
-    private boolean showing;
-    private boolean dismissed;
+    private boolean showing = false;
+    //    private boolean dismissed;
     private boolean softwareKeyboardShowing;
+    private KeyboardHelper keyboardHelper;
+    private boolean keyboardMeasured = false;
+    private int keyboardTriggerHeight = Screen.dp(150);
 
-    public BaseKeyboard(Activity activity) {
+    public BaseKeyboard(Activity activity, EditText messageBody) {
         this.activity = activity;
         this.windowManager = activity.getWindowManager();
         this.inputMethodManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -55,6 +66,20 @@ public class BaseKeyboard implements
         //setSoftInputMode(LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         //default size
         keyboardHeight = (int) activity.getResources().getDimension(R.dimen.keyboard_height);
+        keyboardHelper = new KeyboardHelper(activity);
+        this.messageBody = messageBody;
+
+        messageBody.setOnClickListener(view -> {
+            if (showing) {
+                dismiss();
+            }
+        });
+        messageBody.setOnFocusChangeListener((view, b) -> {
+            if (b && showing) {
+                dismiss();
+            }
+        });
+
     }
 
 
@@ -67,88 +92,45 @@ public class BaseKeyboard implements
     }
 
 
-    public void show(EditText messageBody) {
-        this.messageBody = messageBody;
-
-        showing = true;
-        dismissed = false;
-        if (softwareKeyboardShowing) {
-            showInternal();
-        } else {
-            messageBody.setFocusableInTouchMode(true);
-            messageBody.requestFocus();
-            inputMethodManager.showSoftInput(messageBody, InputMethodManager.SHOW_IMPLICIT);
-        }
-
-    }
-
-    private void showInternal() {
-        //Check
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (!Settings.canDrawOverlays(activity)) {
-                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                        Uri.parse("package:" + activity.getPackageName()));
-                activity.startActivityForResult(intent, OVERLAY_PERMISSION_REQ_CODE);
-            } else {
-                showChecked();
-            }
-        } else {
-            showChecked();
-        }
-
-    }
-
-    public void showChecked() {
-        if (showing == (emojiKeyboardView != null)) {
+    public void show() {
+        if (isShowing()) {
             return;
         }
+
+        softKeyboardListeningEnabled = true;
+        this.root = (KeyboardLayout) messageBody.getRootView().findViewById(R.id.container).getParent();
+        this.container = (RelativeLayout) messageBody.getRootView().findViewById(R.id.container);
+
+        root.showInternal(keyboardHeight);
+        showRequested = true;
+        if (softwareKeyboardShowing) {
+            keyboardHelper.setImeVisibility(messageBody, false);
+        } else {
+//            messageBody.setFocusableInTouchMode(true);
+//            messageBody.requestFocus();
+//            inputMethodManager.showSoftInput(messageBody, InputMethodManager.SHOW_IMPLICIT);
+            container.setPadding(0, 0, 0, keyboardHeight);
+            showInternal();
+        }
+
+    }
+
+    protected void showInternal() {
+        if (isShowing()) {
+            return;
+        }
+
+        showRequested = false;
+        showing = true;
+
         emojiKeyboardView = createView();
-        WindowManager.LayoutParams params = new WindowManager.LayoutParams(
-                WindowManager.LayoutParams.MATCH_PARENT,
-                (keyboardHeight),
-                WindowManager.LayoutParams.TYPE_PHONE,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-                PixelFormat.TRANSLUCENT);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, keyboardHeight);
+        params.gravity = Gravity.BOTTOM;
+        root.addView(emojiKeyboardView, params);
 
-        params.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
-        windowManager.addView(emojiKeyboardView, params);
-//        emojiKeyboardView.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                AlphaAnimation animation = new AlphaAnimation(0, 1);
-//                animation.setDuration(400);
-//                animation.setInterpolator(new MaterialInterpolator());
-//                animation.setStartOffset(0);
-//                animation.setAnimationListener(new Animation.AnimationListener() {
-//                    @Override
-//                    public void onAnimationStart(Animation animation) {
-//                        Log.d(TAG, "onAnimationStart");
-//                    }
-//
-//                    @Override
-//                    public void onAnimationEnd(Animation animation) {
-//                        Log.d(TAG, "onAnimationEnd");
-//                    }
-//
-//                    @Override
-//                    public void onAnimationRepeat(Animation animation) {
-//                        Log.d(TAG, "onAnimationReset");
-//                    }
-//                });
-//            }
-//        });
-
-//        emojiKeyboardView.setTranslationY(140);
-//        emojiKeyboardView
-//                .animate()
-//                .y(0)
-//                .setDuration(200)
-//                .setStartDelay(0)
-//                .setInterpolator(new DecelerateInterpolator(1.4f))
-//                .start();
-
-        if (keyboardStatusListener != null)
+        if (keyboardStatusListener != null) {
             keyboardStatusListener.onShow();
+        }
         onShow();
     }
 
@@ -168,13 +150,26 @@ public class BaseKeyboard implements
     }
 
     public void dismiss() {
-        dismissed = true;
-        showing = false;
-        dismissInternally();
+        dismissInternally(false);
     }
 
-    private void dismissInternally() {
-        if (dismissed && emojiKeyboardView != null) {
+    public void dismiss(boolean dismissAll) {
+        dismissInternally(dismissAll);
+    }
+
+    private void dismissInternally(boolean dismissAll) {
+        showing = false;
+        if (messageBody != null) {
+            if (dismissAll) {
+                keyboardHelper.setImeVisibility(messageBody, false);
+            } else if (!softwareKeyboardShowing) {
+                keyboardHelper.setImeVisibility(messageBody, true);
+            }
+        }
+        if (root != null) {
+            root.dismissInternal();
+        }
+        if (emojiKeyboardView != null && root != null && keyboardHelper != null) {
             final View emojiKeyboardViewCopy = emojiKeyboardView;
 //            emojiKeyboardView
 //                    .animate()
@@ -192,36 +187,35 @@ public class BaseKeyboard implements
 //                    })
 //                    .start();
             emojiKeyboardViewCopy.setVisibility(View.GONE);
-            windowManager.removeView(emojiKeyboardViewCopy);
-            showing = false;
+            root.removeView(emojiKeyboardViewCopy);
             emojiKeyboardView = null;
-            if (keyboardStatusListener != null)
+            if (keyboardStatusListener != null) {
                 keyboardStatusListener.onDismiss();
+            }
+            if (dismissAll) {
+                container.setPadding(0, 0, 0, 0);
+            }
             onDismiss();
         }
     }
 
 
-    public void toggle(EditText messageBody) {
+    public void toggle() {
         if (isShowing()) {
             dismiss();
         } else {
-            show(messageBody);
+            show();
         }
     }
 
     public boolean isShowing() {
-        return emojiKeyboardView != null;
+        return showing && emojiKeyboardView != null;
     }
 
 
     public void destroy() {
-        showing = false;
-        dismissed = true;
-        if (emojiKeyboardView != null) {
-            windowManager.removeView(emojiKeyboardView);
-            emojiKeyboardView = null;
-        }
+        dismiss(true);
+
         if (keyboardStatusListener != null) {
             keyboardStatusListener.onDismiss();
         }
@@ -229,56 +223,87 @@ public class BaseKeyboard implements
 
     @Override
     public void onGlobalLayout() {
+
         Log.d(TAG, "onGlobalLayout");
         if (!softKeyboardListeningEnabled) {
             return;
         }
         Rect r = new Rect();
-        decorView.getWindowVisibleDisplayFrame(r);
+        messageBody.getWindowVisibleDisplayFrame(r);
 
-        int screenHeight = decorView.getRootView()
+        int screenHeight = messageBody.getRootView()
                 .getHeight();
-        int heightDifference = screenHeight
-                - (r.bottom - r.top);
+
+
+//        int widthDiff = decorView.getRootView().getWidth() - (r.right - r.left);
+//        if (Math.abs(widthDiff) > 0) {
+//            return;
+//        }
         int resourceId = activity.getResources()
                 .getIdentifier("status_bar_height",
                         "dimen", "android");
-        if (resourceId > 0) {
-            heightDifference -= activity.getResources()
-                    .getDimensionPixelSize(resourceId);
-        }
-        int orientation = activity.getResources().getConfiguration().orientation;
+        int statusBarHeight = 0;
 
-        int id = activity.getResources().getIdentifier("config_showNavigationBar", "bool", "android");
-        if (id > 0) {
-            if (activity.getResources().getBoolean(id)) {
-                int navbarResId = activity.getResources()
-                        .getIdentifier(
-                                orientation == Configuration.ORIENTATION_PORTRAIT ? "navigation_bar_height" : "navigation_bar_height_landscape",
-                                "dimen", "android");
-                if (navbarResId > 0) {
-                    heightDifference -= activity.getResources()
-                            .getDimensionPixelSize(navbarResId);
+        if (resourceId > 0) {
+            statusBarHeight = activity.getResources()
+                    .getDimensionPixelSize(resourceId);
+            screenHeight -= statusBarHeight;
+        }
+
+
+        screenHeight -= getViewInset(root, statusBarHeight);
+
+        int heightDifference = screenHeight - (r.bottom - r.top);
+
+        boolean changed = softwareKeyboardShowing;
+
+        if (heightDifference > keyboardTriggerHeight) {
+
+            softwareKeyboardShowing = true;
+
+            Log.d(TAG, "onGlobalLayout: " + heightDifference);
+
+            keyboardHeight = heightDifference;
+
+            dismiss();
+
+        } else {
+
+            softwareKeyboardShowing = false;
+
+            if (showRequested) {
+                root.showInternal(keyboardHeight);
+                showInternal();
+            } else if (changed) {
+                if (root != null) {
+                    root.dismissInternal();
                 }
             }
-        }
-
-        if (heightDifference > 100) {
-            Log.d(TAG, "onGlobalLayout: " + heightDifference);
-            softwareKeyboardShowing = true;
-            keyboardHeight = heightDifference;
-            Log.d(TAG, "onGlobalLayout: " + "showing");
-
-            showInternal();
-        } else {
             Log.d(TAG, "onGlobalLayout: " + heightDifference);
             Log.d(TAG, "onGlobalLayout: " + "dismiss?");
             // dismiss not wirk
-            softwareKeyboardShowing = false;
+//            softwareKeyboardShowing = false;
             // keyboard showing or not?
-            dismissed = true;
-            dismissInternally();
+//            dismissed = true;
+//            dismissInternally();
         }
+
+        changed = changed != softwareKeyboardShowing;
+        Log.d(TAG, "keyboard state change:  " + changed);
+
+        // FIXME verify root view applied new padding after keyboard state change
+        // workaround for [some of android versions] bug, when keyboard closing not causing relayout, or causing it with delay
+        if (changed && root != null) {
+
+            root.postDelayed(() -> {
+                if (!root.isSync()) {
+                    root.requestLayout();
+                }
+            }, 30);
+        }
+
+
+
     }
 
     public Activity getActivity() {
@@ -300,5 +325,45 @@ public class BaseKeyboard implements
         view.setBackgroundColor(0xffdadddf);
 
         return view;
+    }
+
+    public void onConfigurationChange() {
+//        dismiss(true);
+//        softwareKeyboardShowing = false;
+    }
+
+    public boolean onBackPressed() {
+        if (showing) {
+            dismiss(true);
+            return true;
+        }
+        return false;
+    }
+
+    public static int getViewInset(View view, int statusBarHeight) {
+        if (view == null || view.getRootView() == null) {
+            return 0;
+        }
+
+        view = view.getRootView();
+
+        if (Build.VERSION.SDK_INT < 21 || view.getHeight() == Screen.getHeight() || view.getHeight() == Screen.getHeight() - statusBarHeight) {
+            return 0;
+        }
+
+        try {
+            Field mAttachInfoField = View.class.getDeclaredField("mAttachInfo");
+            mAttachInfoField.setAccessible(true);
+            Object mAttachInfo = mAttachInfoField.get(view);
+            if (mAttachInfo != null) {
+                Field mStableInsetsField = mAttachInfo.getClass().getDeclaredField("mStableInsets");
+                mStableInsetsField.setAccessible(true);
+                Rect insets = (Rect) mStableInsetsField.get(mAttachInfo);
+                return insets.bottom;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 }

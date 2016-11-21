@@ -6,7 +6,7 @@ import Foundation
 
 import ActorSDK
 
-@objc public class AppDelegate : ActorApplicationDelegate {
+open class AppDelegate : ActorApplicationDelegate {
     
     override init() {
         super.init()
@@ -14,41 +14,42 @@ import ActorSDK
         ActorSDK.sharedActor().inviteUrlHost = "quit.email"
         ActorSDK.sharedActor().inviteUrlScheme = "actor"
         
-        ActorSDK.sharedActor().style.searchStatusBarStyle = .Default
+        ActorSDK.sharedActor().style.searchStatusBarStyle = .default
         
         // Enabling experimental features
         ActorSDK.sharedActor().enableExperimentalFeatures = true
         
-        // Setting Development Push Id
-        ActorSDK.sharedActor().apiPushId = 1
+        ActorSDK.sharedActor().enableCalls = true
         
-        //ActorSDK.sharedActor().authStrategy = .PhoneEmail
+        ActorSDK.sharedActor().enableVideoCalls = true
+        
+        // Setting Development Push Id
+        ActorSDK.sharedActor().apiPushId = 868547
+        
+        ActorSDK.sharedActor().authStrategy = .phoneEmail
+        
+        ActorSDK.sharedActor().style.dialogAvatarSize = 58
+        
+        ActorSDK.sharedActor().autoJoinGroups = ["actor_news"]
         
         // Creating Actor
         ActorSDK.sharedActor().createActor()
         
     }
     
-    public override func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
+    open override func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]?) -> Bool {
         super.application(application, didFinishLaunchingWithOptions: launchOptions)
         
         ActorSDK.sharedActor().presentMessengerInNewWindow()
         
-        return true;
-    }
-   public override func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
-        super.application(application, didFinishLaunchingWithOptions: launchOptions)
-        
-        ActorSDK.sharedActor().presentMessengerInNewWindow()
-        
-        return true;
+        return true
     }
     
-    public override func actorRootControllers() -> [UIViewController]? {
+    open override func actorRootControllers() -> [UIViewController]? {
         return [AAContactsViewController(), AARecentViewController(), AASettingsViewController()]
     }
     
-    public override func actorRootInitialControllerIndex() -> Int? {
+    open override func actorRootInitialControllerIndex() -> Int? {
         return 0
     }
 }

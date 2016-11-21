@@ -15,6 +15,7 @@ import im.actor.server.cqrs.TaggedEvent
 import im.actor.server.db.DbExtension
 import im.actor.server.dialog._
 import im.actor.server.model.{ Peer, PeerType }
+import im.actor.server.names.GlobalNamesStorageKeyValueStorage
 import im.actor.server.office.{ PeerProcessor, StopOffice }
 import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.social.{ SocialExtension, SocialManagerRegion }
@@ -159,8 +160,9 @@ private[user] final class UserProcessor
   protected val db: Database = DbExtension(system).db
   protected val userExt = UserExtension(system)
   protected lazy val dialogExt = DialogExtension(system)
-  protected implicit val seqUpdatesExt: SeqUpdatesExtension = SeqUpdatesExtension(system)
+  protected val seqUpdExt: SeqUpdatesExtension = SeqUpdatesExtension(system)
   protected implicit val socialRegion: SocialManagerRegion = SocialExtension(system).region
+  protected val globalNamesStorage = new GlobalNamesStorageKeyValueStorage
 
   protected implicit val timeout: Timeout = Timeout(10.seconds)
 
@@ -226,41 +228,40 @@ private[user] final class UserProcessor
   }
 
   override protected def handleCommand(state: UserState): Receive = {
-    case NewAuth(_, authId)                 ⇒ addAuth(state, authId)
-    case RemoveAuth(_, authId)              ⇒ removeAuth(state, authId)
-    case ChangeCountryCode(_, countryCode)  ⇒ changeCountryCode(state, countryCode)
-    case ChangeName(_, name)                ⇒ changeName(state, name)
-    case Delete(_)                          ⇒ delete(state)
-    case AddPhone(_, phone)                 ⇒ addPhone(state, phone)
-    case AddEmail(_, email)                 ⇒ addEmail(state, email)
-    case AddSocialContact(_, contact)       ⇒ addSocialContact(state, contact)
-    case ChangeNickname(_, nickname)        ⇒ changeNickname(state, nickname)
-    case ChangeAbout(_, about)              ⇒ changeAbout(state, about)
-    case UpdateAvatar(_, avatarOpt)         ⇒ updateAvatar(state, avatarOpt)
-    case AddContacts(_, contactsToAdd)      ⇒ addContacts(state, contactsToAdd)
-    case RemoveContact(_, contactUserId)    ⇒ removeContact(state, contactUserId)
-    case UpdateIsAdmin(_, isAdmin)          ⇒ updateIsAdmin(state, isAdmin)
-    case ChangeTimeZone(_, timeZone)        ⇒ changeTimeZone(state, timeZone)
-    case ChangePreferredLanguages(_, langs) ⇒ changePreferredLanguages(state, langs)
-    case AddBotCommand(_, command)          ⇒ addBotCommand(state, command)
-    case RemoveBotCommand(_, slashCommand)  ⇒ removeBotCommand(state, slashCommand)
-    case AddExt(_, ext)                     ⇒ addExt(state, ext)
-    case RemoveExt(_, key)                  ⇒ removeExt(state, key)
-    case cmd: EditLocalName                 ⇒ contacts.ref forward cmd
-    case query: GetLocalName                ⇒ contacts.ref forward query
-    case StopOffice                         ⇒ context stop self
-    case ReceiveTimeout                     ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
-    case e @ DialogRootEnvelope(query, command) ⇒
-      val msg = e.getAllFields.values.head
+    case NewAuth(_, authId)                         ⇒ addAuth(state, authId)
+    case RemoveAuth(_, authId)                      ⇒ removeAuth(state, authId)
+    case ChangeCountryCode(_, countryCode)          ⇒ changeCountryCode(state, countryCode)
+    case ChangeName(_, authId, name)                ⇒ changeName(state, authId, name)
+    case Delete(_)                                  ⇒ delete(state)
+    case AddPhone(_, phone)                         ⇒ addPhone(state, phone)
+    case AddEmail(_, email)                         ⇒ addEmail(state, email)
+    case AddSocialContact(_, contact)               ⇒ addSocialContact(state, contact)
+    case ChangeNickname(_, authId, nickname)        ⇒ changeNickname(state, authId, nickname)
+    case ChangeAbout(_, authId, about)              ⇒ changeAbout(state, authId, about)
+    case UpdateAvatar(_, authId, avatarOpt)         ⇒ updateAvatar(state, authId, avatarOpt)
+    case AddContacts(_, authId, contactsToAdd)      ⇒ addContacts(state, authId, contactsToAdd)
+    case RemoveContact(_, authId, contactUserId)    ⇒ removeContact(state, authId, contactUserId)
+    case UpdateIsAdmin(_, isAdmin)                  ⇒ updateIsAdmin(state, isAdmin)
+
+    case ChangeTimeZone(_, authId, timeZone)        ⇒ changeTimeZone(state, authId, timeZone)
+    case ChangePreferredLanguages(_, authId, langs) ⇒ changePreferredLanguages(state, authId, langs)
+
+    case AddBotCommand(_, command)                  ⇒ addBotCommand(state, command)
+    case RemoveBotCommand(_, slashCommand)          ⇒ removeBotCommand(state, slashCommand)
+    case AddExt(_, ext)                             ⇒ addExt(state, ext)
+    case RemoveExt(_, key)                          ⇒ removeExt(state, key)
+    case cmd: EditLocalName                         ⇒ contacts.ref forward cmd
+    case query: GetLocalName                        ⇒ contacts.ref forward query
+    case StopOffice                                 ⇒ context stop self
+    case ReceiveTimeout                             ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
+    case env: DialogRootEnvelope ⇒
+      val msg = env.getAllFields.values.head
 
       (dialogRoot(state.internalExtensions) ? msg) pipeTo sender()
     case de: DialogEnvelope ⇒
       val msg = de.getAllFields.values.head
 
       msg match {
-        case dc: DialogCommand if dc.isInstanceOf[DialogCommands.SendMessage] || dc.isInstanceOf[DialogCommands.WriteMessageSelf] ⇒
-          dialogRoot(state.internalExtensions) ! msg
-          handleDialogCommand(state)(dc)
         case dc: DialogCommand ⇒ handleDialogCommand(state)(dc)
         case dq: DialogQuery   ⇒ handleDialogQuery(state)(dq)
       }

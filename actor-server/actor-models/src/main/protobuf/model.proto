@@ -7,6 +7,7 @@ import "google/protobuf/wrappers.proto";
 
 option (scalapb.options) = {
     import: "im.actor.server.model.ModelTypeMappers._"
+    primitive_wrappers: true
 };
 
 message SerializedUpdate {
@@ -14,16 +15,18 @@ message SerializedUpdate {
     bytes body = 2;
     repeated int32 user_ids = 3;
     repeated int32 group_ids = 4;
+    string tag = 5;
 }
 
 message UpdateMapping {
     SerializedUpdate default = 1;
-    map<int32, SerializedUpdate> custom = 2;
+    map<int32, SerializedUpdate> custom_obsolete = 2;
+    map<int64, SerializedUpdate> custom = 3;
 }
 
 message SeqUpdate {
     int32 user_id = 1;
-    int32 seq = 2;
+    int32 common_seq = 2;
     int64 timestamp = 3;
     google.protobuf.StringValue reduce_key = 5;
     UpdateMapping mapping = 4;

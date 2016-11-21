@@ -7,11 +7,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.SoundPool;
-import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
@@ -32,7 +30,7 @@ import im.actor.core.entity.PeerType;
 import im.actor.core.viewmodel.FileVMCallback;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
-import im.actor.sdk.controllers.activity.ActorMainActivity;
+import im.actor.sdk.controllers.root.RootActivity;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.avatar.AvatarPlaceholderDrawable;
 import im.actor.runtime.files.FileSystemReference;
@@ -93,7 +91,7 @@ public class AndroidNotifications implements NotificationProvider {
 //                .setBackground(((BitmapDrawable) AppContext.getContext().getResources().getDrawable(R.drawable.wear_bg)).getBitmap())
 //                .setHintHideIcon(true));
 
-        final Notification topNotification = topNotifications.get(0);
+        final Notification topNotification = topNotifications.get(topNotifications.size() - 1);
 
 //        if (!silentUpdate) {
 //            builder.setTicker(getNotificationTextFull(topNotification, messenger));
@@ -230,7 +228,7 @@ public class AndroidNotifications implements NotificationProvider {
             builder.setContentText(messagesCount + context.getString(R.string.notification_multiple_canversations_after_msg_count) + conversationsCount + context.getString(R.string.notifications_multiple_canversations_after_coversations_count));
             visiblePeer = null;
 
-            intent = new Intent(context, ActorMainActivity.class);
+            intent = new Intent(context, RootActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             builder.setContentIntent(PendingIntent.getActivity(context, 0,
                     intent,

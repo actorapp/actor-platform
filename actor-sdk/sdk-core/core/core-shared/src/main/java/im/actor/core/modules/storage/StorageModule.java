@@ -12,8 +12,8 @@ public class StorageModule extends AbsModule {
 
     private static String TAG = "StorageModule";
 
-    private static final int STORAGE_SCHEME_VERSION = 13;
-    private static final String STORAGE_SCHEME_VERSION_KEY = "storage_sheme_version";
+    private static final int STORAGE_SCHEME_VERSION = 14;
+    private static final String STORAGE_SCHEME_VERSION_KEY = "storage_scheme_version";
 
     private KeyValueStorage storage;
 
@@ -45,6 +45,7 @@ public class StorageModule extends AbsModule {
         AuthKeyStorage storage = context().getActorApi().getKeyStorage();
         long authKey = storage.getAuthKey();
         byte[] masterKey = storage.getAuthMasterKey();
+        byte[] endpoints = preferences().getBytes("custom_endpoints");
         AuthenticationBackupData authenticationBackupData = null;
         if (!isFirst) {
             authenticationBackupData = context().getAuthModule().performBackup();
@@ -72,6 +73,10 @@ public class StorageModule extends AbsModule {
         }
         if (authenticationBackupData != null) {
             context().getAuthModule().restoreBackup(authenticationBackupData);
+        }
+
+        if (endpoints != null) {
+            preferences().putBytes("custom_endpoints", endpoints);
         }
     }
 }

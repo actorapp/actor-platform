@@ -4,15 +4,15 @@ import sbt._
 
 object Dependencies {
   object V {
-    val actorCommons = "0.0.15"
-    val actorBotkit = "1.0.109"
-    val akka = "2.4.7"
-    val akkaHttpJson = "1.5.0"
-    val cats = "0.3.0"
-    val circe = "0.2.1"
+    val actorCommons = "0.0.20"
+    val actorBotkit = "1.0.113"
+    val akka = "2.4.10"
+    val akkaHttpJson = "1.10.0"
+    val cats = "0.7.2"
+    val circe = "0.5.1"
     val kamon = "0.5.2"
     val slick = "3.1.1"
-    val slickPg = "0.10.2"
+    val slickPg = "0.14.3"
     val scalatest = "2.2.4"
     val shardakka = "0.1.24"
     val scalapbSer = "0.1.14"
@@ -22,6 +22,7 @@ object Dependencies {
     val actorConcurrent         = "im.actor"                      %% "actor-concurrent"              % V.actorCommons
     val actorUtil               = "im.actor"                      %% "actor-util"                    % V.actorCommons
     val actorCatsSlick          = "im.actor"                      %% "actor-cats-slick"              % V.actorCommons
+    val actorStorageSlick       = "im.actor"                      %% "actor-storage-slick"           % V.actorCommons
     val actorBotkit             = "im.actor"                      %  "actor-botkit"                  % V.actorBotkit
     val shardakka               = "im.actor"                      %% "shardakka"                     % V.shardakka
     val scalapbSer              = "im.actor"                      %% "akka-scalapb-serialization"    % V.scalapbSer
@@ -47,23 +48,23 @@ object Dependencies {
 
     val caffeine                = "com.github.ben-manes.caffeine" %  "caffeine"                      % "2.2.7"
 
-    val cats                    = "org.spire-math"                %% "cats"                          % V.cats
+    val cats                    = "org.typelevel"                 %% "cats"                          % V.cats
 
     val circeCore               = "io.circe"                      %% "circe-core"                    % V.circe
     val circeGeneric            = "io.circe"                      %% "circe-generic"                 % V.circe
-    val circeParse              = "io.circe"                      %% "circe-parse"                   % V.circe
+    val circeParse              = "io.circe"                      %% "circe-parser"                  % V.circe
 
     val configs                 = "com.github.kxbmap"             %% "configs"                       % "0.3.0"
 
     val dispatch                = "net.databinder.dispatch"       %% "dispatch-core"                 % "0.11.3"
     val javaCompat              = "org.scala-lang.modules"        %% "scala-java8-compat"            % "0.7.0"
 
-    val playJson                = "com.typesafe.play"             %% "play-json"                     % "2.4.2"
+    val playJson                = "com.typesafe.play"             %% "play-json"                     % "2.5.6"
     val upickle                 = "com.lihaoyi"                   %% "upickle"                       % "0.3.6"
 
     val postgresJdbc            = "org.postgresql"                %  "postgresql"                    % "9.4.1208" exclude("org.slf4j", "slf4j-simple")
-    val slick                   = "com.typesafe.slick"            %% "slick"                         % V.slick
-    val slickHikaricp           = "com.typesafe.slick"            %% "slick-hikaricp"                % V.slick exclude("com.zaxxer", "HikariCP-java6")
+    val slick                   = "com.typesafe.slick"            %% "slick"                         % "3.1.1.2" //V.slick FIXME: remove after slick/slick#1274 released
+    val slickHikaricp           = "com.typesafe.slick"            %% "slick-hikaricp"                % "3.1.1.2" exclude("com.zaxxer", "HikariCP-java6") //V.slick FIXME: remove after slick/slick#1274 released
     val slickJoda               = "com.github.tototoshi"          %% "slick-joda-mapper"             % "2.0.0"
     val slickPg                 = "com.github.tminglei"           %% "slick-pg"                      % V.slickPg
     val slickPgDate2            = "com.github.tminglei"           %% "slick-pg_date2"                % V.slickPg
@@ -71,8 +72,8 @@ object Dependencies {
     val flywayCore              = "org.flywaydb"                  %  "flyway-core"                   % "3.1"
     val hikariCP                = "com.zaxxer"                    %  "HikariCP"                      % "2.4.6"
 
-    val amazonaws               = "com.amazonaws"                 %  "aws-java-sdk-s3"               % "1.9.31"
-    val awsWrap                 = "com.github.dwhjames"           %% "aws-wrap"                      % "0.7.2"
+    val amazonaws               = "com.amazonaws"                 %  "aws-java-sdk-s3"               % "1.11.32"
+    val awsWrap                 = "com.github.dwhjames"           %% "aws-wrap"                      % "0.8.0"
 
     val bcprov                  = "org.bouncycastle"              %  "bcprov-jdk15on"                % "1.50"
 
@@ -108,6 +109,7 @@ object Dependencies {
     val guava                   = "com.google.guava"              % "guava"                          % "19.0"
     val alpn                    = "org.eclipse.jetty.alpn"        % "alpn-api"                       % "1.1.2.v20150522" % "runtime"
     val tcnative                = "io.netty"                      % "netty-tcnative"                 % "1.1.33.Fork15" classifier "linux-x86_64"
+    val silencer                = "com.github.ghik"               % "silencer-lib"                   % "0.4"
   }
 
   object Testing {
@@ -133,7 +135,8 @@ object Dependencies {
     scalaLogging,
     tyrex,
     kamonCore,
-    kamonDatadog
+    kamonDatadog,
+    silencer
   )
 
   val root = shared ++ Seq(
@@ -183,7 +186,7 @@ object Dependencies {
 
   val sessionMessages = Seq(akkaActor)
 
-  val persist = shared ++ Seq(akkaActor, akkaStream, actorCatsSlick, apacheCommonsCodec, guava, postgresJdbc, slick, slickHikaricp, slickJoda, slickPg, slickPgDate2, slickTestkit, flywayCore, hikariCP, jodaTime, jodaConvert)
+  val persist = shared ++ Seq(akkaActor, akkaStream, actorCatsSlick, actorStorageSlick, apacheCommonsCodec, guava, postgresJdbc, slick, slickHikaricp, slickJoda, slickPg, slickPgDate2, slickTestkit, flywayCore, hikariCP, jodaTime, jodaConvert)
 
   val presences = shared :+ akkaClusterSharding
 
@@ -204,8 +207,6 @@ object Dependencies {
   val sdk = Seq.empty
 
   val runtime = shared ++ Seq(akkaActor, actorConcurrent, akkaHttp, akkaSlf4j, akkaStream, akkaPersistenceJdbc, apacheCommonsCodec, caffeine, cats, jodaConvert, jodaTime, icu4j, libPhoneNumber, scalapbSer, akkaTestkit % "test", scalatest % "test")
-
-  val voximplant = shared ++ Seq(akkaActor, dispatch, playJson)
 
   val tests = shared ++ Seq(akkaClusterSharding, amazonaws, jfairy, scalacheck, scalatest, slickTestkit, akkaTestkit, akkaMultiNodeTestkit)
 }

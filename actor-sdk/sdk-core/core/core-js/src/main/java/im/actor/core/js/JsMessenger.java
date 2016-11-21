@@ -92,9 +92,11 @@ public class JsMessenger extends Messenger {
         jsIdleModule = new JsIdleModule(this, modules);
 
         if (isElectron()) {
+            Log.d(TAG, "Init Electron IPC");
             JsElectronApp.subscribe("window", new JsElectronListener() {
                 @Override
                 public void onEvent(String content) {
+                    Log.d(TAG, "On Window " + content);
                     if ("focus".equals(content)) {
                         jsIdleModule.onVisible();
                     } else if ("blur".equals(content)) {
@@ -155,6 +157,31 @@ public class JsMessenger extends Messenger {
 
     public void sendPhoto(final Peer peer, final JsFile file) {
         sendPhoto(peer, file.getName(), file);
+    }
+
+    public void sendAnimation(final Peer peer, final JsFile file) {
+        Log.d(TAG, "Resizing animation");
+        JsImageResize.resize(file, new JsResizeListener() {
+            @Override
+            public void onResized(String thumb, int thumbW, int thumbH, int fullW, int fullH) {
+
+                Log.d(TAG, "Animation resized");
+
+                int index = thumb.indexOf("base64,");
+                if (index < 0) {
+                    Log.d(TAG, "Unable to find base64");
+                    return;
+                }
+                String rawData = thumb.substring(index + "base64,".length());
+
+                byte[] thumbData = Base64Utils.fromBase64(rawData);
+
+                String descriptor = fileSystemProvider.registerUploadFile(file);
+                sendAnimation(peer, file.getName(), fullW, fullH,
+                        new FastThumb(thumbW, thumbH, thumbData),
+                        descriptor);
+            }
+        });
     }
 
     public void sendClipboardPhoto(final Peer peer, final JsBlob file) {
