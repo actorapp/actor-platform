@@ -1,0 +1,259 @@
+# HTTP Server settings
+# It serves static app (optionally) and provides integration API
+# http {
+#   interface: "0.0.0.0"
+#   port: 9090
+#   base-uri: "https://api.actor.im"
+# }
+
+# URIs of endpoints, accessible by client applications
+# public-endpoints: [
+#  "wss://front1-ws-mtproto-api-rev2.actor.im",
+#  "tls://front1-mtproto-api-rev2.actor.im",
+#  "tcp://front3-mtproto-api-rev3.actor.im:443"
+# ]
+# Endpoints for Mobile/Web API
+# It is strictly recommended to use 443 port
+# for all connections. There are a lot of problems
+# on any other ports.
+#
+# Array of elements in format:
+# {
+#   type: "tcp" or "websocket"
+#   host: Listening host
+#   post: Listening port
+#   keystore: [Optional] Keystore
+# }
+# endpoints: [
+#  {
+#    type: tcp
+#    interface: "0.0.0.0"
+#    port: 9070
+#  },
+#  {
+#    type: websocket
+#    interface: "0.0.0.0"
+#    port: 9080
+#  }
+#]
+
+# Name of your application.
+project-name: <your application name>
+
+# Secret is used to work with various secrets like password, auth hashes, etc
+# It have to be set once and never be changed in future
+secret: <put a long random string here>
+
+# Server modules
+modules {
+
+  # Configuration for messaging module
+  # messaging {
+  #   Configure url for group invites here
+  #   groups {
+  #     invite {
+  #       base-uri: https://quit.email
+  #     }
+  #   }
+  # }
+
+  # Message enricher
+  # Comment this module if you don't want to use message
+  # enriching feature
+  # enricher {
+    # Uncomment to customize max image preview size
+    # max-preview-size = 2 M
+  # }
+}
+
+# Services that are used by the server.
+# Default distribution support services:
+# * [REQUIRED] postgresql: PostgreSQL database
+# * email: Email integration
+# * aws: Amazon Web Services integration
+# * google: Accessing Google services
+# * apple: Accessing Apple services
+# * telesign: Telesign Activation gateway
+# * actor-activation: Actor Activation gateway
+
+services {
+
+  # PostgreSQL storage for data
+  # The only required service to start server
+  # For more information see https://github.com/actorapp/actor-bootstrap/blob/master/docs/server/configure-database.md
+  postgresql {
+    # Host of PostgreSQL instance
+    host: localhost
+    # Port of PostgreSQL instance
+    port: 5432
+    # Database name
+    db: actor
+    # User name in PostgreSQL
+    user: actor
+    # Password in PostgreSQL
+    password: <put_psql_password_here>
+  }
+
+  # AWS configuration
+  # It is strictly recommended to configure s3 storage for
+  # enabling file sharing in apps
+  # aws {
+    # S3 Storage, used for file sharing
+    # For more information see https://github.com/actorapp/actor-bootstrap/blob/master/docs/server/configure-s3.md
+    # s3 {
+      # Bucket name
+      # default-bucket: <put_your_bucket_name_here>
+      # S3 Api Key
+      # access-key: <put_your_aws_key_here>
+      # S3 Api Secret
+      # secret-key: <put_your_aws_secret_here>
+      # S3 Endpoint
+      # endpoint: <put_your_custom_endpoint_here>
+      # S3 bucket region
+      # region: <put_your_region_here>
+      # Enable S3 URLs with path-style access
+      # path-style-access: true / false
+    # }
+  # }
+
+  # Service used for sending activation codes
+  activation {
+    # Define code providers. look im.actor.server.activation for full provider list
+    # providers {
+    #   internal: im.actor.server.activation.internal.InternalCodeProvider
+    #   sms: im.actor.server.activation.gate.ActorGateSmsProvider
+    #   smtp: im.actor.server.activation.smtp.SMTPProvider
+    #   call: im.actor.server.activation.telesign.TelesignProvider
+    # }
+    # Allow client to repeat code sending after this interval
+    # repeat-limit: 1m
+    # Time and attempt to expire sms/email activation code
+    # code-expiration: 1 day
+    # code-attempts: 3
+
+    # Email template for email code activation
+    # email {
+    #   template: templates/activation-email-template.html
+    # }
+    # Setting for internal activation(aka via actor bot)
+    # internal {
+    #   sender-user-id: 10
+    #   online-time-window: 10m
+    #   message-template: "Your Actor activation code: $$CODE$$"
+    # }
+  }
+
+  # Actor SMS gate
+  # Write to @gatekeeper in Actor Cloud to get your token
+  actor-activation {
+    # uri: "https://gate.actor.im"
+    auth-token: <put token here>
+  }
+
+  # Telesign SMS gate
+  # To get tokens ask at telesign web site: https://www.telesign.com
+  # telesign {
+  #  customer-id: <put_your_customer_id_here>
+  #  api-key: <put_your_api_key_here>
+  # }
+
+  # Email configuration
+  email {
+
+    # Sender information for outgoing emails
+    # sender {
+      # Sender Email address
+      # address: <put_sender_address_here>
+      # Sender Name
+      # name: <put_sender_full_name_here>
+      # Mail theme prefix
+      # prefix: <put_mail_theme_prefix_here>
+    # }
+
+    # SMTP server configuration
+    # smtp {
+
+      # SMTP server host
+      # host: <put_smtp_server_host_here>
+      # SMTP server port
+      # port: <put_smtp_server_port_here>
+      # SMTP server username
+      # username: <put_smtp_server_username_here>
+      # SMTP server password
+      # password: <put_smtp_server_password_here>
+
+      # Is TLS required
+      # tls: true
+    # }
+  }
+
+  # Accessing Google Services
+  # Used for OAuth2 in gmail mailboxes
+  # and sending push notifications in Android & Chrome
+  #
+  # How to get OAuth2:
+  # * Open https://console.developers.google.com/
+  # * Go To Api&Auth, then to Credentials
+  # * Press "Client Id" and create id for Web Application
+  # * In created Client Id there are values "Client Id" and "Client Secret"
+  #   for web OAuth configuration
+  # * Same steps for Android & iOS applications
+  #
+  # How to get Push keys
+  # * Open https://console.developers.google.com/
+  # * Go To Api&Auth, then to Credentials
+  # * Press "Create new key" for Android Application
+  # * Allow any IP
+  # * Get API key from created "Key for Android Application"
+  # * Project Id can be found on Overview page
+  google {
+
+    # Uncomment if you want to perform OAuth authentication
+    # for GMail accounts
+    # oauth {
+    #  auth-uri: "https://accounts.google.com/o/oauth2/auth"
+    #  token-uri: "https://accounts.google.com/o/oauth2/token"
+    #  profile-uri: "https://www.googleapis.com/oauth2/v2/userinfo"
+    #  client-id: <put_your_client_id_here>
+    #  client-secret: <put_your_client_secret_here>
+    #  scope: "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.google.com/m8/feeds/"
+    #}
+
+    # Android push notifications via GCM and Firebase
+    # gcm {
+    #  # Keys for push notifications in format
+    #   keys = [
+    #    {
+    #      project-id: <put_your_project_id_here>
+    #      key: <put_your_key_here>
+    #    }
+    #  ]
+    # }
+    # firebase {
+    #  # Keys for push notifications in format
+    #   keys = [
+    #    {
+    #      project-id: <put_your_project_id_here>
+    #      key: <put_your_key_here>
+    #    }
+    #  ]
+    # }
+  }
+
+  # Accessing Apple servers for push notifications
+  apple {
+
+    # Safari & iOS notifications
+    # push {
+    #  Mobile push certificates
+    #  certs = [
+    #    {
+    #      key: <put_your_certificate_id_here>
+    #      path: <put_your_certificate_path_here>
+    #      password: <put_your_certificate_password_here>
+    #      sandbox: yes / no
+    #    }
+    #   ]
+    # }
+  }
+}

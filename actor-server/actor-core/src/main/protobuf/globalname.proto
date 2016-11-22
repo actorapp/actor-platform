@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package im.actor.server.names;
+
+option (scalapb.options) = {
+    flat_package: true
+};
+
+
+import "scalapb/scalapb.proto";
+
+enum OwnerType {
+    User = 0;
+    Group = 1;
+}
+
+message GlobalNameOwner {
+    OwnerType owner_type = 1;
+    int32 owner_id = 2;
+}

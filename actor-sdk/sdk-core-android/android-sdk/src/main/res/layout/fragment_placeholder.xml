@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/syncInProgress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true">
+
+        <View
+            android:id="@+id/sync_background"
+            android:layout_width="match_parent"
+            android:layout_height="150dp" />
+
+        <ImageView
+            android:id="@+id/emptyDialogsImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:layout_marginTop="8dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/contacts_empty_large" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="216dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/sync_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/main_sync_title"
+                android:textSize="21sp" />
+
+            <TextView
+                android:id="@+id/wait_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:lineSpacingMultiplier="1.4"
+                android:paddingLeft="32dp"
+                android:paddingRight="32dp"
+                android:text="@string/main_sync_message"
+                android:textSize="16sp" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <ScrollView
+        android:id="@+id/emptyContacts"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <FrameLayout
+            android:id="@+id/emptyContactsFrame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true">
+
+            <View
+                android:id="@+id/empty_contacts_bg"
+                android:layout_width="match_parent"
+                android:layout_height="150dp" />
+
+            <ImageView
+                android:id="@+id/emptyContactsImage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                android:layout_marginTop="8dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/contacts_empty_large" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="216dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/empty_contacts_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/main_empty_title"
+                    android:textSize="21sp" />
+
+                <TextView
+                    android:id="@+id/no_contacts"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:lineSpacingMultiplier="1.4"
+                    android:paddingLeft="32dp"
+                    android:paddingRight="32dp"
+                    android:text="@string/main_empty_invite_hint"
+                    android:textSize="16sp" />
+
+                <FrameLayout
+                    android:id="@+id/inviteButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/shadow_square_3">
+
+                    <TextView
+                        android:id="@+id/inviteButtonText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="48dp"
+                        android:background="@drawable/btn_primary"
+                        android:gravity="center"
+                        android:minWidth="88dp"
+                        android:paddingLeft="24dp"
+                        android:paddingRight="24dp"
+                        android:text="@string/main_empty_invite_action"
+                        android:textSize="15sp" />
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/add_contact_manually_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:lineSpacingMultiplier="1.4"
+                    android:paddingLeft="32dp"
+                    android:paddingRight="32dp"
+                    android:text="@string/main_empty_add_hint"
+                    android:textSize="16sp" />
+
+                <FrameLayout
+                    android:id="@+id/addContactButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/shadow_square_1">
+
+                    <TextView
+                        android:id="@+id/addContactButtonText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="48dp"
+                        android:background="@drawable/btn_secondary"
+                        android:gravity="center"
+                        android:minWidth="88dp"
+                        android:paddingLeft="24dp"
+                        android:paddingRight="24dp"
+                        android:text="@string/main_empty_add_action"
+                        android:textSize="15sp" />
+                </FrameLayout>
+
+            </LinearLayout>
+        </FrameLayout>
+    </ScrollView>
+
+</FrameLayout>

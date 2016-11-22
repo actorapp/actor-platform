@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:minHeight="56dp">
+
+    <im.actor.sdk.controllers.conversation.inputbar.BarEditText
+        android:id="@+id/et_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:background="@android:color/transparent"
+        android:cursorVisible="true"
+        android:gravity="left|center_vertical"
+        android:hint="@string/chat_message_hint"
+        android:imeOptions="flagNoExtractUi"
+        android:inputType="text|textCapSentences|textAutoCorrect|textMultiLine"
+        android:maxLines="4"
+        android:paddingBottom="10dp"
+        android:paddingLeft="56dp"
+        android:paddingRight="56dp"
+        android:paddingTop="10dp"
+        android:textCursorDrawable="@null"
+        android:textSize="16sp" />
+
+    <FrameLayout
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_gravity="right|bottom"
+        android:layout_marginRight="56dp">
+
+        <ImageButton
+            android:id="@+id/ib_attach"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/selector_flat"
+            android:padding="7dp"
+            android:src="@drawable/button_attach" />
+
+        <View
+            android:id="@+id/attachAnchor"
+            android:layout_width="56dp"
+            android:layout_height="0dp"
+            android:layout_gravity="top"
+            android:layout_marginTop="46dp" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_gravity="left|bottom">
+
+        <ImageView
+            android:id="@+id/ib_emoji"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:background="@drawable/clickable_background"
+            android:padding="7dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_emoji" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_gravity="right|bottom">
+
+        <im.actor.sdk.view.TintImageView
+            android:id="@+id/ib_send"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:background="@drawable/selector_flat"
+            android:scaleType="centerInside"
+            android:visibility="invisible" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_gravity="right|bottom">
+
+        <ImageView
+            android:id="@+id/record_btn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:padding="7dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/conv_record" />
+    </FrameLayout>
+
+    <!--<FrameLayout-->
+    <!--android:id="@+id/botEmptyTextBlock"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:visibility="invisible">-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/empty_bot_text"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:clickable="true"-->
+    <!--android:gravity="center"-->
+    <!--android:text="@string/chat_empty_bot"-->
+    <!--android:textAllCaps="true"-->
+    <!--android:textSize="18sp" />-->
+    <!--</FrameLayout>-->
+
+    <!--<FrameLayout-->
+    <!--android:id="@+id/kickedFromChat"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:visibility="gone">-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/kicked_text"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:clickable="true"-->
+    <!--android:gravity="center"-->
+    <!--android:text="@string/chat_not_member"-->
+    <!--android:textAllCaps="true"-->
+    <!--android:textSize="18sp" />-->
+    <!--</FrameLayout>-->
+
+    <LinearLayout
+        android:id="@+id/audioContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:clickable="true"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/record_point"
+            android:layout_width="40dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center_vertical"
+            android:paddingLeft="8dp"
+            android:scaleType="center"
+            android:src="@drawable/conv_voice_rec" />
+
+        <TextView
+            android:id="@+id/audioTimer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|left"
+            android:background="@android:color/transparent"
+            android:text="00:01"
+            android:textColor="@android:color/black"
+            android:textSize="19sp" />
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:paddingRight="16dp">
+
+            <TextView
+                android:id="@+id/audioSlide"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:drawableLeft="@drawable/conv_voice_slide_arrow"
+                android:drawablePadding="4dp"
+                android:gravity="center_vertical"
+                android:text="@string/chat_voice_record_cancel"
+                android:textColor="#aaaaaa"
+                android:textSize="16dp" />
+        </FrameLayout>
+    </LinearLayout>
+</FrameLayout>

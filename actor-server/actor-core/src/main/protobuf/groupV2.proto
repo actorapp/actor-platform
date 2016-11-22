@@ -1,0 +1,371 @@
+syntax = "proto3";
+
+package im.actor.server.group;
+
+option (scalapb.options) = {
+    flat_package: true
+    import: "im.actor.server.api.TypeMappers._"
+    import: "scala.collection.JavaConversions._"
+    primitive_wrappers: true
+    single_file: true
+    preamble: "sealed trait GroupCommand"
+    preamble: "sealed trait GroupQuery"
+};
+
+import "scalapb/scalapb.proto";
+import "google/protobuf/wrappers.proto";
+import "file.proto";
+import "sequence.proto";
+import "dialog.proto";
+
+// TODO: Can't share with UserExt: proto 2/3
+message GroupExt {
+    string key = 1;
+    oneof value {
+        string string_value = 2;
+        bool bool_value = 3;
+    }
+}
+
+message GroupMember {
+    int32 user_id = 1;
+    int32 inviter_user_id = 2;
+    int64 invited_at = 3;
+    bool is_admin = 4;
+}
+
+message GroupEnvelope {
+    int32 group_id = 1;
+    oneof command {
+        GroupCommands.Create create = 2;
+        GroupCommands.Join join = 3;
+        GroupCommands.Invite invite = 4;
+        GroupCommands.Leave leave = 5;
+        GroupCommands.Kick kick = 6;
+        GroupCommands.UpdateAvatar update_avatar = 7;
+        GroupCommands.UpdateTitle  update_title  = 8;
+        GroupCommands.UpdateTopic  update_topic  = 9;
+        GroupCommands.UpdateAbout  update_about  = 10;
+        GroupCommands.UpdateShortName update_short_name  = 27;
+        GroupCommands.MakeHistoryShared make_history_shared = 32;
+        GroupCommands.RevokeIntegrationToken revoke_token = 12;
+        GroupCommands.MakeUserAdmin make_user_admin = 13;
+        GroupCommands.DismissUserAdmin dismiss_user_admin = 28;
+        GroupCommands.TransferOwnership transfer_ownership = 14;
+        GroupCommands.UpdateAdminSettings update_admin_settings = 30;
+        GroupCommands.DeleteGroup delete_group = 33;
+        GroupCommands.AddExt add_ext = 34;
+        GroupCommands.RemoveExt remove_ext = 35;
+    }
+    oneof query {
+        GroupQueries.GetAccessHash get_access_hash = 15;
+        GroupQueries.GetTitle get_title = 16;
+        GroupQueries.GetIntegrationToken get_integration_token = 17;
+        GroupQueries.GetMembers get_members = 18; // internalGetMembers
+        GroupQueries.LoadMembers load_members = 19;
+        GroupQueries.IsChannel is_channel = 31;
+        GroupQueries.IsHistoryShared is_history_shared = 21;
+        GroupQueries.GetApiStruct get_api_struct = 22;
+        GroupQueries.GetApiFullStruct get_api_full_struct = 23;
+        GroupQueries.CheckAccessHash check_access_hash = 24;
+        GroupQueries.CanSendMessage can_send_message = 26;
+        GroupQueries.LoadAdminSettings load_admin_settings = 29;
+    }
+    DialogEnvelope dialog_envelope = 25;
+}
+
+message GroupCommands {
+    message Create {
+        option (scalapb.message).extends = "GroupCommand";
+
+        int32 typ = 1;
+        int32 creator_user_id = 2;
+        int64 creator_auth_id = 3;
+        string title = 4;
+        int64 random_id = 5;
+        repeated int32 user_ids = 6;
+    }
+
+    message CreateAck {
+        int64 access_hash = 1;
+        SeqStateDate seq_state_date = 2;
+    }
+
+    message Join {
+        option (scalapb.message).extends = "GroupCommand";
+
+        int32 joining_user_id = 1;
+        int64 joining_user_auth_id = 2;
+        google.protobuf.Int32Value inviting_user_id = 3;
+    }
+
+    message Invite {
+        option (scalapb.message).extends = "GroupCommand";
+
+        int32 invitee_user_id = 1;
+        int32 inviter_user_id = 2;
+        int64 inviter_auth_id = 3;
+        int64 random_id = 4;
+    }
+
+    message Kick {
+        option (scalapb.message).extends = "GroupCommand";
+
+        int32 kicked_user_id = 1;
+        int32 kicker_user_id = 2;
+        int64 kicker_auth_id = 3;
+        int64 random_id = 4;
+    }
+
+    message Leave {
+        option (scalapb.message).extends = "GroupCommand";
+
+        int32 user_id = 1;
+        int64 auth_id = 2;
+        int64 random_id = 3;
+    }
+
+    message UpdateAvatar {
+        option (scalapb.message).extends = "GroupCommand";
+
+        int32 client_user_id = 1;
+        int64 client_auth_id = 2;
+        Avatar avatar = 3;
+        int64 random_id = 4;
+    }
+
+    message UpdateAvatarAck {
+        google.protobuf.BytesValue avatar = 1 [(scalapb.field).type = "im.actor.api.rpc.files.ApiAvatar"];
+        SeqStateDate seq_state_date = 2;
+    }
+
+    message UpdateTitle {
+        option (scalapb.message).extends = "GroupCommand";
+
+        int32 client_user_id = 1;
+        int64 client_auth_id = 2;
+        string title = 3;
+        int64 random_id = 4;
+    }
+
+    message UpdateTopic {
+        option (scalapb.message).extends = "GroupCommand";
+
+        int32 client_user_id = 1;
+        int64 client_auth_id = 2;
+        google.protobuf.StringValue topic = 3;
+        int64 random_id = 4;
+    }
+
+    message UpdateAbout {
+        option (scalapb.message).extends = "GroupCommand";
+
+        int32 client_user_id = 1;
+        int64 client_auth_id = 2;
+        google.protobuf.StringValue about = 3;
+        int64 random_id = 4;
+    }
+
+    message UpdateShortName {
+        option (scalapb.message).extends = "GroupCommand";
+
+        int32 client_user_id = 1;
+        int64 client_auth_id = 2;
+        google.protobuf.StringValue short_name = 3;
+    }
+
+    message MakeUserAdmin {
+        option (scalapb.message).extends = "GroupCommand";
+
+        int32 client_user_id = 1;
+        int64 client_auth_id = 2;
+        int32 candidate_user_id = 3;
+    }
+
+    message DismissUserAdmin {
+        option (scalapb.message).extends = "GroupCommand";
+
+        int32 client_user_id = 1;
+        int64 client_auth_id = 2;
+        int32 target_user_id = 3;
+    }
+
+    message RevokeIntegrationToken {
+        option (scalapb.message).extends = "GroupCommand";
+
+        int32 client_user_id = 2;
+    }
+
+    message RevokeIntegrationTokenAck {
+        string token = 1;
+    }
+
+    message TransferOwnership {
+        option (scalapb.message).extends = "GroupCommand";
+
+        int32 client_user_id = 2;
+        int64 client_auth_id = 3;
+        int32 new_owner_id = 4;
+    }
+
+    message UpdateAdminSettings {
+        option (scalapb.message).extends = "GroupCommand";
+
+        int32 client_user_id = 1;
+        int32 settings_bit_mask = 2;
+    }
+
+    message UpdateAdminSettingsAck {}
+
+    message MakeHistoryShared {
+        option (scalapb.message).extends = "GroupCommand";
+
+        int32 client_user_id = 1;
+        int64 client_auth_id = 2;
+    }
+
+    message DeleteGroup {
+        option (scalapb.message).extends = "GroupCommand";
+
+        int32 client_user_id = 1;
+        int64 client_auth_id = 2;
+    }
+
+    message AddExt {
+        option (scalapb.message).extends = "GroupCommand";
+
+        GroupExt ext = 1;
+    }
+
+    message AddExtAck {}
+
+    message RemoveExt {
+        option (scalapb.message).extends = "GroupCommand";
+
+        string key = 1;
+    }
+
+    message RemoveExtAck {}
+
+}
+
+message GroupQueries {
+    message GetIntegrationToken {
+        option (scalapb.message).extends = "GroupQuery";
+
+        google.protobuf.Int32Value client_user_id = 1;
+    }
+
+    message GetIntegrationTokenResponse {
+        google.protobuf.StringValue token = 1;
+    }
+
+    message GetApiStruct {
+        option (scalapb.message).extends = "GroupQuery";
+
+        int32 client_user_id = 1;
+        bool load_group_members = 2;
+    }
+
+    message GetApiStructResponse {
+        bytes struct = 1 [(scalapb.field).type = "im.actor.api.rpc.groups.ApiGroup"];
+    }
+
+    message GetApiFullStruct {
+        option (scalapb.message).extends = "GroupQuery";
+
+        int32 client_user_id = 1;
+    }
+
+    message GetApiFullStructResponse {
+        bytes struct = 1 [(scalapb.field).type = "im.actor.api.rpc.groups.ApiGroupFull"];
+    }
+
+    message CheckAccessHash {
+        option (scalapb.message).extends = "GroupQuery";
+
+        int64 access_hash = 1;
+    }
+
+    message CheckAccessHashResponse {
+        bool is_correct = 1;
+    }
+
+    message GetMembers {
+        option (scalapb.message).extends = "GroupQuery";
+    }
+
+    message GetMembersResponse {
+        repeated int32 member_ids = 1;
+        repeated int32 invited_user_ids = 2;
+        google.protobuf.Int32Value bot_id = 3;
+    }
+
+    message IsChannel {
+        option (scalapb.message).extends = "GroupQuery";
+    }
+
+    message IsChannelResponse {
+        bool is_channel = 1;
+    }
+
+    message IsHistoryShared {
+        option (scalapb.message).extends = "GroupQuery";
+    }
+
+    message IsHistorySharedResponse {
+        bool is_history_shared = 1;
+    }
+
+    message GetAccessHash {
+        option (scalapb.message).extends = "GroupQuery";
+    }
+
+    message GetAccessHashResponse {
+        int64 access_hash = 1;
+    }
+
+    message GetTitle {
+        option (scalapb.message).extends = "GroupQuery";
+    }
+
+    message GetTitleResponse {
+        string title = 1;
+    }
+
+    message LoadMembers {
+        option (scalapb.message).extends = "GroupQuery";
+
+        int32 client_user_id = 1;
+        int32 limit = 2;
+        google.protobuf.BytesValue offset = 3;
+    }
+
+    message LoadMembersResponse {
+        repeated GroupMember members = 1;
+        google.protobuf.BytesValue offset = 2;// should it be Option[Array[Byte]]
+    }
+
+    message CanSendMessage {
+        option (scalapb.message).extends = "GroupQuery";
+
+        int32 client_user_id = 1;
+    }
+
+    message CanSendMessageResponse {
+        bool can_send = 1;
+        bool is_channel = 2;
+        repeated int32 member_ids = 3;
+        google.protobuf.Int32Value bot_id = 4;
+    }
+
+    message LoadAdminSettings {
+        option (scalapb.message).extends = "GroupQuery";
+
+        int32 client_user_id = 1;
+    }
+
+    message LoadAdminSettingsResponse {
+        bytes settings = 1 [(scalapb.field).type = "im.actor.api.rpc.groups.ApiAdminSettings"];
+    }
+}

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<im.actor.sdk.controllers.conversation.KeyboardLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/messagesFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/sendContainer" />
+
+        <FrameLayout
+            android:id="@+id/emptyPlaceholder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/sendContainer" />
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="2dp"
+            android:layout_above="@+id/sendContainer"
+            android:scaleType="fitXY"
+            android:src="@drawable/conv_field_shadow" />
+
+        <FrameLayout
+            android:id="@+id/autocompleteContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/sendContainer" />
+
+        <FrameLayout
+            android:id="@+id/quoteFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/sendContainer"
+            android:visibility="gone" />
+
+        <FrameLayout
+            android:id="@+id/sendContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
+
+            <FrameLayout
+                android:id="@+id/sendFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <FrameLayout
+                android:id="@+id/inputOverlay"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:clickable="true"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/overlayText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/selector"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:textAllCaps="true"
+                    android:textSize="18sp" />
+            </FrameLayout>
+        </FrameLayout>
+    </RelativeLayout>
+</im.actor.sdk.controllers.conversation.KeyboardLayout>

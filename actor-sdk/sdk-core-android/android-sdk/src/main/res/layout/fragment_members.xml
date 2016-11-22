@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <im.actor.sdk.view.adapters.RecyclerListView
+        android:id="@+id/items"
+        android:footerDividersEnabled="false"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <fr.castorflex.android.circularprogressbar.CircularProgressBar
+        android:id="@+id/loadingProgress"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:indeterminate="true" />
+
+</FrameLayout>
