@@ -18533,12 +18533,12 @@
         </node>
         <node concept="2m7Kf5" id="1kmWHIzQges" role="2m0hLx">
           <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="titulo" />
+          <property role="TrG5h" value="title" />
           <node concept="2m5ndX" id="1kmWHIzQgey" role="2m7DVh" />
         </node>
         <node concept="2m7Kf5" id="1kmWHIzQge_" role="2m0hLx">
           <property role="2m7DUN" value="3" />
-          <property role="TrG5h" value="uf" />
+          <property role="TrG5h" value="description" />
           <node concept="2m5nlT" id="1kmWHIzQgeH" role="2m7DVh">
             <node concept="2m5ndX" id="1kmWHIzQgeN" role="3GH5xg" />
           </node>
@@ -18558,21 +18558,48 @@
           </node>
         </node>
         <node concept="2m7Kf5" id="1kmWHIzQh$e" role="2m0hLx">
-          <property role="TrG5h" value="ownerId" />
           <property role="2m7DUN" value="6" />
+          <property role="TrG5h" value="userId" />
           <node concept="wb0Ql" id="1kmWHIzQh$t" role="2m7DVh">
             <ref role="wb18D" node="5qm50Y0e3uz" resolve="userId" />
           </node>
         </node>
-        <node concept="2m7Kf5" id="1kmWHIzQh$w" role="2m0hLx">
-          <property role="2m7DUN" value="7" />
-          <property role="TrG5h" value="answers" />
-          <node concept="2m5nlk" id="1kmWHIzQh$L" role="2m7DVh">
-            <node concept="2m5ndX" id="1kmWHIzQh$R" role="3GJlyp" />
-          </node>
-        </node>
         <node concept="NXeRC" id="1kmWHIzQh_J" role="NXodf">
           <property role="NXePf" value="Main Survey Struct" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="412EqxS$UAO" role="2m5mJr">
+        <property role="TrG5h" value="SurveyAnswer" />
+        <node concept="2m7Kf5" id="412EqxS$UBh" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="id" />
+          <node concept="2m5ndQ" id="412EqxS$UBl" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="412EqxS$UBo" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="title" />
+          <node concept="2m5ndX" id="412EqxS$UBu" role="2m7DVh" />
+        </node>
+        <node concept="NXeRC" id="412EqxS$UBx" role="NXodf">
+          <property role="NXePf" value="Main Survey Answer" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="412EqxS$XiJ" role="2m5mJr">
+        <property role="TrG5h" value="UserSurveyAnswer" />
+        <node concept="2m7Kf5" id="412EqxS$Xjd" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="userId" />
+          <node concept="wb0Ql" id="412EqxS$Xjh" role="2m7DVh">
+            <ref role="wb18D" node="5qm50Y0e3uz" resolve="userId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="412EqxS$Xjk" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="answerId" />
+          <node concept="2m5ndQ" id="412EqxS$Xjq" role="2m7DVh" />
+        </node>
+        <node concept="NXeRC" id="412EqxS$Xjt" role="NXodf">
+          <property role="NXePf" value="Main UserSurveyAnser" />
         </node>
       </node>
       <node concept="2m6fVq" id="1kmWHIzQhA5" role="2m5mJr">
@@ -18582,6 +18609,15 @@
           <property role="TrG5h" value="survey" />
           <node concept="2m5mGg" id="1kmWHIzQhAz" role="2m7DVh">
             <ref role="2m5mJy" node="1kmWHIzQgei" resolve="Survey" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="412EqxS$Xjv" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="answers" />
+          <node concept="2m5nlk" id="412EqxS$Xj_" role="2m7DVh">
+            <node concept="2m5mGg" id="412EqxS$XjF" role="3GJlyp">
+              <ref role="2m5mJy" node="412EqxS$UAO" resolve="SurveyAnswer" />
+            </node>
           </node>
         </node>
         <node concept="Nu42z" id="1kmWHIzQhA6" role="NuuwV">
