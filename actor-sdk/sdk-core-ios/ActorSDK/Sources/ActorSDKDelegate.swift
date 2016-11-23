@@ -28,6 +28,9 @@ public protocol ActorSDKDelegate {
     /// Contacts controller
     func actorControllerForContacts() -> UIViewController?
     
+    //Compose controller
+    func actiorControllerForCompose() -> UIViewController?
+    
     /// Dialogs controller
     func actorControllerForDialogs() -> UIViewController?
     
@@ -39,7 +42,6 @@ public protocol ActorSDKDelegate {
     
     /// Root Intial controller
     func actorRootInitialControllerIndex() -> Int?
-    
     
     /// Configuration of bubble cells
     func actorConfigureBubbleLayouters(_ builtIn: [AABubbleLayouter]) -> [AABubbleLayouter]
@@ -96,6 +98,10 @@ open class ActorSDKDelegateDefault: NSObject, ActorSDKDelegate {
     
     open func actorControllerForDialogs() -> UIViewController? {
         return nil
+    }
+    
+    open func actiorControllerForCompose() -> UIViewController? {
+       return nil
     }
     
     open func actorControllerForSettings() -> UIViewController? {
