@@ -374,6 +374,11 @@ object BotMessages {
     @beanGetter userId: Int
   ) extends ResponseBody
 
+  @key("BotToken")
+  final case class BotToken(
+    @beanGetter token: String
+  ) extends ResponseBody
+
   @key("RegisterHook")
   final case class RegisterHook(@beanGetter name: String) extends RequestBody {
     override type Response = Container[String]

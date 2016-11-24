@@ -24,6 +24,18 @@ private[bot] final class BotsBotService(system: ActorSystem) extends BotServiceB
       }
   )
 
+  //    private def getToken(userId:Int, nickname: String) = RequestHandler[CreateBot, CreateBot#Response](
+  //      (botUserId: BotUserId, botAuthId: BotAuthId, botAuthSid: BotAuthSid) ⇒
+  //        ifIsAdmin(botUserId) {
+  //          (for {
+  //            token ← botExt.findToken(userId, nickname)
+  //          } yield Right(BotToken(token))) recover {
+  //            case UserErrors.NicknameTaken ⇒
+  //              Left(BotError(400, "USERNAME_TAKEN", Js.Obj(), None))
+  //          }
+  //        }
+  //    )
+
   override def handlers: PartialFunction[RequestBody, WeakRequestHandler] = {
     case CreateBot(nickname, name) ⇒ createBot(nickname, name).toWeak
   }
