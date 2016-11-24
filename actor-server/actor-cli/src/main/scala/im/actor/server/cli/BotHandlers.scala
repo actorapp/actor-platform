@@ -9,4 +9,9 @@ private[cli] trait BotHandlers {
     for (resp ← request(BotService, rq))
       yield println(s"Bot user created, token: ${resp.token}")
   }
+
+  def getBotToken(rq: GetBotToken): Future[Unit] = {
+    for (resp ← request(BotService, rq))
+      yield println(s"Bot token: ${resp.token}")
+  }
 }
