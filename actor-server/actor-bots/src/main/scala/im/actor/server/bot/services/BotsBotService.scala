@@ -37,7 +37,7 @@ private[bot] final class BotsBotService(system: ActorSystem) extends BotServiceB
   )
 
   override def handlers: PartialFunction[RequestBody, WeakRequestHandler] = {
-    case CreateBot(nickname, name) ⇒ createBot(nickname, name).toWeak
+    case CreateBot(nickname, name)        ⇒ createBot(nickname, name).toWeak
     case GetBotToken(botUserId, nickName) ⇒ getToken(botUserId, nickName).toWeak
   }
 }

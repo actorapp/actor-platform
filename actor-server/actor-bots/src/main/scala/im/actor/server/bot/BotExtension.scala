@@ -25,6 +25,9 @@ import slick.dbio.DBIO
 
 import scala.concurrent.Future
 import scala.concurrent.forkjoin.ThreadLocalRandom
+import scala.util.{ Failure, Success, Try }
+
+import scala.concurrent.duration._
 
 object BotExtension extends ExtensionId[BotExtension] with ExtensionIdProvider {
   private[bot] val tokensKV = "BotsTokens"
@@ -144,6 +147,24 @@ private[bot] final class BotExtension(_system: ActorSystem) extends Extension {
    * @return optional token
    */
   def findToken(userId: UserId, name: String): Future[Option[String]] = hooksKV(userId).get(name)
+
+  /**
+   * Gets boot token by id
+   *
+   * @param userId
+   * @return bot token
+   */
+  def findBotToken(userId: UserId): Future[String] = {
+
+    for {
+      keys ← tokensKV.getKeys()
+      keysTokens = keys.map(k ⇒ (tokensKV.get(k).value.map {
+        case value ⇒ {
+          value.getOrElse(-1)
+        }
+      }, k)).toMap
+    } yield (keysTokens.get(Some(userId)).getOrElse(""))
+  }
 
   /**
    * Finds bot webhook
