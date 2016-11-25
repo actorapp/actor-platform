@@ -196,7 +196,7 @@ object ActorCli extends App {
         }
     }
 
-    def cmd(f: Future[Unit], timeout: Duration = 10.seconds): Unit = {
+    def cmd(f: Future[Unit], timeout: Duration = 60.seconds): Unit = {
       try {
         Await.result(f, timeout)
       } catch {
@@ -230,7 +230,7 @@ final class CliHandlers(host: Option[String]) extends BotHandlers with UsersHand
 
   protected implicit lazy val ec: ExecutionContext = system.dispatcher
 
-  protected implicit val timeout: Timeout = Timeout(10.seconds)
+  protected implicit val timeout: Timeout = Timeout(60.seconds)
 
   def shutdown(): Unit = {
     system.terminate()
