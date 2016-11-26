@@ -22,7 +22,7 @@ private final class BotsCliService extends Actor with ActorLogging {
         (token, _) ← botExt.create(username, name, isAdmin)
       } yield CreateBotResponse(token)) pipeTo sender()
 
-    case GetBotToken(botUserId, nickName) ⇒
+    case GetBotToken(botUserId) ⇒
       (for {
         token ← botExt.findBotToken(botUserId)
       } yield BotToken(token)) pipeTo sender()

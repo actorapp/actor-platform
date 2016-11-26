@@ -24,12 +24,12 @@ private[bot] final class BotsBotService(system: ActorSystem) extends BotServiceB
       }
   )
 
-  private def getToken(botUserId: BotUserId, nickname: String) = RequestHandler[GetBotToken, GetBotToken#Response](
+  private def getToken(botUserId: BotUserId) = RequestHandler[GetBotToken, GetBotToken#Response](
     (botUserId: BotUserId, botAuthId: BotAuthId, botAuthSid: BotAuthSid) ⇒
       ifIsAdmin(botUserId) {
         (for {
-          token ← botExt.findToken(botUserId, nickname)
-        } yield Right(BotToken(token.getOrElse("")))) recover {
+          token ← botExt.findBotToken(botUserId)
+        } yield Right(BotToken(token))) recover {
           case _ ⇒
             Left(BotError(400, "ERROR_GET_TOKEN", Js.Obj(), None))
         }
@@ -37,7 +37,7 @@ private[bot] final class BotsBotService(system: ActorSystem) extends BotServiceB
   )
 
   override def handlers: PartialFunction[RequestBody, WeakRequestHandler] = {
-    case CreateBot(nickname, name)        ⇒ createBot(nickname, name).toWeak
-    case GetBotToken(botUserId, nickName) ⇒ getToken(botUserId, nickName).toWeak
+    case CreateBot(nickname, name) ⇒ createBot(nickname, name).toWeak
+    case GetBotToken(botUserId)    ⇒ getToken(botUserId).toWeak
   }
 }

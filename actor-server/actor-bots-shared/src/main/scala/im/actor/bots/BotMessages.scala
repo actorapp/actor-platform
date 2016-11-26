@@ -381,8 +381,7 @@ object BotMessages {
 
   @key("GetBotToken")
   final case class GetBotToken(
-    @beanGetter botUserId: Int,
-    @beanGetter nickName:  String
+    @beanGetter botUserId: Int
   ) extends RequestBody {
     override type Response = BotToken
     override val service = Services.Bots

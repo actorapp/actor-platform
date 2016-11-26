@@ -40,8 +40,7 @@ private[cli] case class CreateBot(
 }
 
 private[cli] case class GetBotToken(
-  botUserId: Int    = 0,
-  nickName:  String = ""
+  botUserId: Int = 0
 ) extends Request {
   override type Response = BotToken
 }
@@ -110,9 +109,6 @@ object ActorCli extends App {
       },
       opt[Int]("botUserId") abbr "u" required () action { (x, c) ⇒
         c.copy(getBotToken = c.getBotToken.copy(botUserId = x))
-      },
-      opt[String]("nickName") abbr "n" required () action { (x, c) ⇒
-        c.copy(getBotToken = c.getBotToken.copy(nickName = x))
       }
     )
 

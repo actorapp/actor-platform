@@ -23,10 +23,9 @@ import shardakka.keyvalue.SimpleKeyValue
 import shardakka.{ Codec, IntCodec, ShardakkaExtension }
 import slick.dbio.DBIO
 
-import scala.concurrent.Future
+import scala.concurrent.{ Await, Future }
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.util.{ Failure, Success, Try }
-
 import scala.concurrent.duration._
 
 object BotExtension extends ExtensionId[BotExtension] with ExtensionIdProvider {
@@ -158,12 +157,8 @@ private[bot] final class BotExtension(_system: ActorSystem) extends Extension {
 
     for {
       keys ← tokensKV.getKeys()
-      keysTokens = keys.map(k ⇒ (tokensKV.get(k).value.map {
-        case value ⇒ {
-          value.getOrElse(-1)
-        }
-      }, k)).toMap
-    } yield (keysTokens.get(Some(userId)).getOrElse(""))
+      keysTokens = keys.map(k ⇒ (Await.result(tokensKV.get(k), Duration.Inf).get, k)).toMap
+    } yield (keysTokens.get(userId).getOrElse(""))
   }
 
   /**
