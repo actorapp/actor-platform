@@ -16,7 +16,18 @@
 
 package org.jetbrains.annotations;
 
-import java.lang.annotation.*;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+import java.lang.annotation.Target;
+import java.lang.annotation.RetentionPolicy;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.ElementType.LOCAL_VARIABLE;
+
+
 
 /**
  * An element annotated with NotNull claims <code>null</code> value is <em>forbidden</em>
@@ -28,7 +39,7 @@ import java.lang.annotation.*;
  */
 @Documented
 @Retention(RetentionPolicy.CLASS)
-@Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER, ElementType.LOCAL_VARIABLE})
+@Target({METHOD, FIELD, PARAMETER, LOCAL_VARIABLE})
 public @interface NotNull {
   String value() default "";
 }
