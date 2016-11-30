@@ -16,7 +16,14 @@
 
 package org.jetbrains.annotations;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+import java.lang.annotation.RetentionPolicy;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.ElementType.LOCAL_VARIABLE;
 
 /**
  * An element annotated with Nullable claims <code>null</code> value is perfectly <em>valid</em>
@@ -27,7 +34,7 @@ import java.lang.annotation.*;
  */
 @Documented
 @Retention(RetentionPolicy.CLASS)
-@Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER, ElementType.LOCAL_VARIABLE})
+@Target({METHOD, FIELD, PARAMETER, LOCAL_VARIABLE})
 public @interface Nullable {
   String value() default "";
 }
