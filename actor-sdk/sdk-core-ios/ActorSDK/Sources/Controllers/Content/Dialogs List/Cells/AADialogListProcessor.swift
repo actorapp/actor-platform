@@ -6,7 +6,7 @@ import Foundation
 
 class AADialogListProcessor: NSObject, ARListProcessor {
     
-    func process(withItems items: JavaUtilList, withPrevious previous: Any?) -> Any? {
+    func process(withItems items: JavaUtilListProtocol, withPrevious previous: Any?) -> Any? {
         
         var uids = Set<jint>()
         

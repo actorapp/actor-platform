@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		06230F091BC7FF3500A4807B /* ReferenceProxy in Frameworks */ = {isa = PBXBuildFile; fileRef = 06230F081BC7FF3000A4807B /* ActorSDK.framework */; };
-		06230F0A1BC7FF3500A4807B /* ReferenceProxy in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 06230F081BC7FF3000A4807B /* ActorSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		06230F091BC7FF3500A4807B /* ActorSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06230F081BC7FF3000A4807B /* ActorSDK.framework */; };
+		06230F0A1BC7FF3500A4807B /* ActorSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 06230F081BC7FF3000A4807B /* ActorSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		068B397B1C85386A002BFF73 /* ringtone.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 068B397A1C85386A002BFF73 /* ringtone.m4a */; };
 		068C6E4F1BBC4BF900182516 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 068C6E4E1BBC4BF900182516 /* Launch Screen.storyboard */; };
 		06CE898E1BD841D0005A5530 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06CE898D1BD841D0005A5530 /* SystemConfiguration.framework */; };
@@ -44,7 +44,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				06230F0A1BC7FF3500A4807B /* ReferenceProxy in Embed Frameworks */,
+				06230F0A1BC7FF3500A4807B /* ActorSDK.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -72,6 +72,7 @@
 		9B2EEB8CEF2E94D58EA09D9D /* Pods-ActorApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.debug.xcconfig"; sourceTree = "<group>"; };
 		A275ED497CA570AD01FB66A7 /* Pods_ActorApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ActorApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE8D1D9859D2C4D4C7EC7AD74BB65F0E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = "Supporting Files/Info.plist"; sourceTree = "<group>"; };
+		F10BD8AC1DEFAF62007748D6 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		F76A77E9428111C798E69B43EA06A281 /* ActorApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = ActorApp.entitlements; path = "Supporting Files/ActorApp.entitlements"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -82,7 +83,7 @@
 			files = (
 				06CE898E1BD841D0005A5530 /* SystemConfiguration.framework in Frameworks */,
 				06E7B24F1C109C4B0090660C /* MapKit.framework in Frameworks */,
-				06230F091BC7FF3500A4807B /* ReferenceProxy in Frameworks */,
+				06230F091BC7FF3500A4807B /* ActorSDK.framework in Frameworks */,
 				A88F4C381ED2B98E99A68937 /* Pods_ActorApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -122,6 +123,7 @@
 		86C48777C0FD262E78F8BEC9253C9914 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F10BD8AC1DEFAF62007748D6 /* libc++.tbd */,
 				06E7B24E1C109C4B0090660C /* MapKit.framework */,
 				06CE898D1BD841D0005A5530 /* SystemConfiguration.framework */,
 				06230F031BC7FF2F00A4807B /* ActorSDK.xcodeproj */,
@@ -333,7 +335,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run \'pod install\' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		851EE1A34619AE6677649A27 /* Embed Pods Frameworks */ = {
