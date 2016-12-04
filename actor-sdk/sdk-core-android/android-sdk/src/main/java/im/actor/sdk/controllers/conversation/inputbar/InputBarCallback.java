@@ -19,4 +19,6 @@ public interface InputBarCallback {
     void onStickerSent(Sticker sticker);
 
     void onAttachPressed();
+
+    void onSlashPressed();
 }

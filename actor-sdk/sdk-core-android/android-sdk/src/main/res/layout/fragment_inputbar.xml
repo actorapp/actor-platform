@@ -27,6 +27,28 @@
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:layout_gravity="right|bottom"
+        android:layout_marginRight="111dp">
+
+        <ImageButton
+            android:id="@+id/ib_slash"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/selector_flat"
+            android:padding="7dp"
+            android:src="@drawable/button_slash" />
+
+        <View
+            android:id="@+id/slashAnchor"
+            android:layout_width="56dp"
+            android:layout_height="0dp"
+            android:layout_gravity="top"
+            android:layout_marginTop="46dp" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_gravity="right|bottom"
         android:layout_marginRight="56dp">
 
         <ImageButton
