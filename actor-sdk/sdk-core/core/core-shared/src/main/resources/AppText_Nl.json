@@ -1,0 +1,206 @@
+{
+	"app": {
+		"name": "{app_name}"
+	},
+
+	"language": {
+
+		"code": "Nl",
+
+		"format": {
+			"time": {
+				"yesterday":{
+					"short": "Gisteren",
+					"full": "Gisteren"
+				},
+				"now": "Nu",
+				"minutes": {
+					"short": "{minutes} min",
+					"full": "{minutes} minuten"
+				},
+				"hours": {
+					"short": "{hours} uur",
+					"full": "{hours} uren"
+				}
+			}
+		},
+
+		"file_size": {
+			"bytes": "{bytes} B",
+			"kbytes": "{kbytes} KB",
+			"mbytes": "{mbytes} MB",
+			"gbytes": "{gbytes} GB"
+		},
+
+		"referencing": {
+			"you": "Je",
+			"thee": "U"
+		},
+
+		"sequence": {
+			"or": ", ",
+			"and": " en "
+		}
+	},
+
+	"groups": {
+		"members": {
+			"one": "{count} lid",
+			"other": "{count} leden"
+		}
+	},
+
+	"presence": {
+		"online": "online",
+		"offline": "offline",
+		"now": "zojuist gezien",
+		"today": "laatst gezien vandaag om {time}",
+		"yesterday": "laatst gezien gisteren om {time}",
+		"at_day": "voor het laatst gezien op {date}",
+		"at_day_time": "laatst gezien op {date} om {time}",
+		"members": "{count} online"
+	},
+
+	"typing": {
+		"simple": "typt...",
+		"user": "{user} is aan het typen...",
+		"group": {
+			"sequenced": "{users} zijn aan het typen...",
+			"many": "{count} personen zijn aan het typen..."
+		}
+	},
+
+	"content": {
+
+		"unknown": "Niet ondersteunde inhoud",
+		"document": "Document",
+		"photo": "Foto",
+		"video": "Video",
+		"audio": "Geluid",
+		"contact": "Contact",
+		"location": "Locatie",
+		"sticker": "Sticker",
+
+		"service": {
+			"registered": {
+				"full": "{name} is lid geworden van {app_name}",
+				"compact": "{name} is nu lid"
+			},
+			"groups": {
+				"created": "{name} heeft een nieuwe groep gemaakt",
+				"invited": "{name} heeft {name_added} uitgenodigd",
+				"joined": "{name} is lid van de groep geworden",
+				"kicked": "{name} heeft {name_kicked} uit de group verwijderd",
+				"left": "{name} heeft de groep verlaten",
+				"title_changed": {
+					"full":  "{name} heeft de groepsnaam gewijzigd naar \"{title}\"",
+					"compact": "{name} heeft de groepsnaam gewijzigd"
+				},
+				"topic_changed": {
+					"full":  "{name} heeft het groepsonderwerp gewijzigd naar \"{topic}\"",
+					"compact": "{name} heeft het onderwerp gewijzigd"
+				},
+				"about_changed": {
+					"full":  "{name} heeft de omschrijving van de groep gewijzigd naar \"{about}\"",
+					"compact": "{name} heeft de omschrijving gewijzigd"
+				},
+				"avatar_changed": "{name} heeft de groepsafbeelding gewijzigd",
+				"avatar_removed": "{name} heeft de groepsafbeelding verwijderd"
+			},
+			"channels": {
+				"created": "Kanaal aangemaakt",
+				"invited": "{name} heeft {name_added} uitgenodigd",
+				"joined": "{name} is aan het kanaal toegevoegd",
+				"kicked": "{name} heeft {name_kicked} uit het kanaal verwijderd",
+				"left": "{name} heeft het kanaal verlaten",
+				"title_changed": {
+					"full":  "{name} heeft de naam van het kanaal gewijzigd naar \"{title}\"",
+					"compact": "{name} heeft de naam van het kanaal gewijzigd"
+				},
+				"topic_changed": {
+					"full":  "{name} heeft het onderwerp van het kanaal gewijzigd naar \"{topic}\"",
+					"compact": "{name} heeft het onderwerp gewijzigd"
+				},
+				"about_changed": {
+					"full":  "{name} heeft de beschrijving van het kanaal gewijzigd naar \"{about}\"",
+					"compact": "{name} heeft de beschrijving gewijzigd"
+				},
+				"avatar_changed": "{name} heeft de afbeelding bij het kanaal gewijzigd",
+				"avatar_removed": "{name} heeft de afbeelding bij het kanaal verwijderd"
+			},
+			"calls": {
+				"missed": "Gemiste oproep",
+				"ended": "Gesprek beeindigd"
+			}
+		}
+	},
+
+	"errors": {
+		"unknown": "Onbekende fout. Probeer het nog eens.",
+		"internal": "Interne server fout. Probeer het later nog eens.",
+		"phone": {
+			"empty": "Voer het telefoonnummer in.",
+			"incorrect": "Ingevoerd telefoonnummer is onjuist. Probeer het nog eens."
+		},
+		"code": {
+			"empty": "De code is ongeldig. Probeer het nog eens.",
+			"incorrect": "Ingevoerde code is niet juist. Probeer het nog eens.",
+			"expired": "De code is verlopen. Start de authenticatie opnieuw."
+		},
+		"groups": {
+			"already_joined": "Al lid van de groep.",
+			"unable_to_join": "Niet in staat lid te worden van de groep."
+		}
+	},
+
+	"months": {
+		"january": {
+			"compact": "jan",
+			"full":"januari"
+		},
+		"february": {
+			"compact": "feb",
+			"full":"februari"
+		},
+		"march": {
+			"compact": "mrt",
+			"full":"maart"
+		},
+		"april": {
+			"compact": "apr",
+			"full":"april"
+		},
+		"may": {
+			"compact": "mei",
+			"full":"mei"
+		},
+		"june": {
+			"compact": "jun",
+			"full":"juni"
+		},
+		"july": {
+			"compact": "jul",
+			"full":"juli"
+		},
+		"august": {
+			"compact": "aug",
+			"full":"augustus"
+		},
+		"september": {
+			"compact": "sep",
+			"full":"september"
+		},
+		"october": {
+			"compact": "okt",
+			"full":"oktober"
+		},
+		"november": {
+			"compact": "nov",
+			"full":"november"
+		},
+		"december": {
+			"compact": "dec",
+			"full":"december"
+		}
+	}
+}
