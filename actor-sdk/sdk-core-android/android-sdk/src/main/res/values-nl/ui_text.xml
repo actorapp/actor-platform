@@ -1,0 +1,649 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  UI Text File for Homecrew
+  ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
+<resources>
+    <string name="app_name">Homecrew</string>
+    <string name="app_locale">Nl</string>
+
+    <string name="dialog_ok">Bevestig</string>
+    <string name="dialog_cancel">Annuleer</string>
+    <string name="dialog_yes">Ja</string>
+    <string name="dialog_no">Nee</string>
+    <string name="dialog_try_again">Probeer opnieuw</string>
+
+    <string name="pick_photo_camera">Neem foto</string>
+    <string name="pick_photo_gallery">Kies een foto uit de gallerij</string>
+    <string name="pick_photo_remove">Verwijder foto</string>
+    <string name="pick_downloading">Ophalen</string>
+
+    <string name="progress_common">Laden…</string>
+
+    <string name="toast_no_sdcard">Geen SD-kaart gevonden</string>
+    <string name="toast_phone_copied">Telefoonnummer gekopieerd naar klembord</string>
+    <string name="toast_email_copied">E-mailadres gekopieerd naar klembord</string>
+    <string name="toast_messages_copied">Berichten gekopieerd naar klembord</string>
+    <string name="toast_nickname_copied">Gebruikersnaam gekopieerd naar klembord</string>
+    <string name="toast_unable_kick">Kan gebruiker niet uit de groep verwijderen</string>
+    <string name="toast_unable_add">Kan gebruiker niet aan de groep toevoegen</string>
+    <string name="toast_already_member">Gebruiker is al lid van de groep</string>
+    <string name="toast_empty_name">"Naam" veld mag niet leeg zijn</string>
+    <string name="toast_unable_change">Naam wijzigen niet geslaagd</string>
+    <string name="toast_empty_nick">"Gebruikersnaam" sectie mag niet leeg zijn</string>
+    <string name="toast_unable_change_nick">Gebruikersnaam wijzigen niet geslaagd</string>
+    <string name="toast_empty_about">"Over mij" veld mag niet leeg zijn</string>
+    <string name="toast_unable_open">Geen applicatie beschikbaar om dit te openen</string>
+    <string name="toast_unable_leave">Kan de groep niet verlaten</string>
+    <string name="toast_unable_create_group">Kan de groep niet aanmaken</string>
+    <string name="toast_unable_delete_chat">Kan het gesprek niet verwijderen</string>
+    <string name="toast_unable_clear_chat">Kan het gesprek niet wissen</string>
+
+    <string name="menu_share">Delen</string>
+    <string name="menu_save">Opslaan naar telefoon</string>
+    <string name="menu_saved">Opgeslagen</string>
+    <string name="menu_next">Volgende</string>
+
+    <!-- Invites -->
+    <string name="invite_message">Hoi! Zullen we {appName} gebruiken? Handig voor een veilige en verbonden buurt! {inviteUrl}</string>
+    <string name="invite_options_sms">Via SMS uitnodigen</string>
+    <string name="invite_options_email">Via e-mail uitnodigen</string>
+
+    <!-- Tour -->
+    <string name="tour_sign_up">REGISTREREN</string>
+    <string name="tour_sign_in">AANMELDEN</string>
+    <string name="tour_sign_using_tel">met telefoonnummer</string>
+    <string name="tour_sign_using_email">met e-mail</string>
+    <string name="tour_sign_using_oauth">met Google</string>
+    <string name="tour_back_to_top">Naar boven</string>
+
+    <string name="tour_welcome_title">Homecrew</string>
+    <!-- FIXME or is this not being used? See strings.xml file for other tour_nodes -->
+    <string name="tour_welcome_subtitle">Voorkom inbraak. Buren worden dienstverleners.</string>
+
+    <string name="tour_groups_title">Heel de buurt in een chat</string>
+    <string name="tour_groups_text">Onze buurtchat ondersteunt meer dan 300 gebruikers in een enkele groep. Communiceer met je buurtgenoten en meld elkaar bijzonderheden.</string>
+
+    <string name="tour_everywhere_title">Werkt overal</string>
+    <string name="tour_everywhere_text">Waar je ook bent in de buurt, thuis of buiten, berichten komen aan bij andere buurtgenoten.</string>
+
+    <string name="tour_secure_title">Beveiligd &amp; besloten</string>
+    <string name="tour_secure_text">Laat berichten achter voor contactpersonen of in de afgesloten buurtchat. Deel documenten, bestanden en foto\'s zonder zorgen dat ze in de verkeerde handen vallen. Alle gesprekken zijn met encryptie versleuteld.</string>
+
+    <!-- Phone Sign Fragment -->
+    <string name="auth_phone_title">Aanmelden</string>
+    <string name="auth_phone_hint">Selecteer de landcode en voer het telefoonnummer in.</string>
+    <string name="auth_phone_number_hint">Telefoonnummer</string>
+    <string name="auth_phone_get_code">BEVESTIG HET NUMMER</string>
+    <string name="auth_phone_why">WAAROM HEBBEN WE HET NUMMER NODIG?</string>
+    <string name="auth_phone_why_description">We gebruiken dit telefoonnummer voor authenticatie, dit is een veilige manier van aanmelden.\n\nWachtwoorden zijn veelal te makkelijk om te raden en e-mail kan eenvoudig in de verkeerde handen vallen.</string>
+    <string name="auth_phone_why_done">Hebbes!</string>
+    <string name="auth_phone_country_title">Selecteer een land</string>
+    <string name="auth_phone_error_invalid_country">Ongeldige landcode</string>
+    <!-- NOTE: appearantly not being used readily (anymore) or elsewhere. EN translation mentions co-workers etc. -->
+    <string name="auth_email_why_description">We gebruiken het e-mailadres om contactpersonen te zoeken en om eventueel automatisch aan groepen toewijzen.</string>
+    <string name="auth_email_why">WAAROM HEBBEN WIJ HET E-MAILADRES NODIG?</string>
+
+    <string name="auth_switch_to_email">Gebruik e-mail om te registreren</string>
+    <string name="auth_switch_to_phone">Gebruik telefoon om te registreren</string>
+
+    <!-- Choose auth type-->
+    <string name="choose_auth_type_title">Kies een soort authorisatie</string>
+    <string name="choose_auth_type_hint">Kies a.u.b. een authorisatiemethode.</string>
+    <string name="choose_auth_type_sign_up">Registeren</string>
+    <string name="choose_auth_type_sign_in">Aanmelden</string>
+    <string name="choose_auth_type_using_tel">met telefoonnummer</string>
+    <string name="choose_auth_type_using_email">met e-mailadres</string>
+
+
+    <!-- Email Sign Fragment -->
+    <string name="auth_email_title">Registreren</string>
+    <string name="auth_email_hint">Geef het e-mailadres op.</string>
+    <string name="auth_email_edit_text_hint">E-mail</string>
+    <string name="auth_email_get_code">BEVESTIG E-MAIL</string>
+
+
+    <string name="auth_tos_privacy">Bij gebruik van deze dienst wordt akkoord gegaan met de algemene voorwaarden en het privacybeleid.</string>
+    <string name="auth_tos">Bij gebruik van deze dienst wordt met de algemene voorwaarden akkoord gegaan.</string>
+    <string name="auth_privacy">Bij gebruik van deze dienst wordt met het privacybeleid akkoord gegaan.</string>
+    <string name="auth_find_by_diclamer">Andere gebruikers zijn in staat deze account te vinden op basis van telefoonnummer of gebruikersnaam.</string>
+
+    <string name="auth_change_endpoint">Wijzig server end-point</string>
+    <string name="auth_reset_default_endpoint">fabrieksinstellingen herstellen</string>
+
+    <string name="auth_tos_index">Algemene Voorwaarden</string>
+    <string name="auth_privacy_index">Privacybeleid</string>
+
+    <!-- Sign in Fragment-->
+    <string name="sign_in_title">Aanmelden</string>
+    <string name="sign_in_hint">Voer een telefoonnummer of e-mailadres in.</string>
+    <string name="sign_in_hint_phone_only">Geef een telefoonnummer op.</string>
+    <string name="sign_in_hint_email_only">Geef een e-mailadres.</string>
+    <string name="sign_in_edit_text_hint">telefoonnummer of e-mailadres</string>
+    <string name="sign_in_edit_text_hint_phone_only">telefoon</string>
+    <string name="sign_in_edit_text_hint_email_only">e-mail</string>
+    <string name="sign_in_get_code">AANMELDEN</string>
+
+    <!-- Validate code Fragment -->
+    <string name="auth_code_phone_hint">We hebben een SMS met de activatiecode naar het telefoonnummer {0} gestuurd</string>
+    <string name="auth_code_email_hint">We hebben een e-mail met de activatiecode naar {0} gestuurd</string>
+    <string name="auth_code_title">Voer de SMS code in</string>
+    <string name="auth_code_sms_hint">Code</string>
+    <string name="auth_code_done">KLAAR</string>
+    <string name="auth_code_wrong_number">VERKEERD TELEFOONNUMMER?</string>
+    <string name="auth_code_wrong_email">VERKEERDE E-MAIL?</string>
+    <string name="auth_code_phone_change">Wijzig dit nummer?</string>
+    <string name="auth_code_email_change">Wijzig dit e-mail?</string>
+    <string name="auth_code_change_yes">Wijzigen</string>
+
+    <!-- Sign Up Fragment -->
+    <string name="auth_profile_title">Hoi! Vertel ons je naam</string>
+    <string name="auth_profile_hint">Vertel ons je naam</string>
+    <string name="auth_profile_name_hint">Je naam</string>
+    <string name="auth_profile_done">VOLGENDE</string>
+
+    <!-- Auth errors -->
+    <string name="auth_error_wrong_auth_id">Geef een geldig telefoonnummer of e-mailadres op</string>
+    <string name="auth_error_empty_phone">Geef een telefoonnummer op</string>
+    <string name="auth_error_empty_email">Geef een e-mailadres op</string>
+    <string name="auth_error_code_expired">De code is verlopen. Voer validatieproces opnieuw uit.</string>
+    <string name="auth_error_code_invalid">De code is ongeldig. Probeer het nog eens.</string>
+    <string name="auth_error_failed_get_oauth2_token">Authorisatie serverfout. Probeer het nog eens.</string>
+
+    <!-- Main -->
+    <string name="main_search_hint">Typ iets om te zoeken</string>
+    <string name="main_search_global_header">Homecrew doorzoeken</string>
+    <string name="main_search_empty">Niets gevonden</string>
+    <string name="main_menu_help">Help</string>
+    <string name="main_menu_search">Zoeken</string>
+
+    <string name="main_bar_chats">GESPREKKEN</string>
+    <string name="main_bar_contacts">CONTACTEN</string>
+
+    <string name="main_fab_compose">Opstellen</string>
+    <string name="main_fab_new_group">Maak groep</string>
+    <string name="main_fab_new_channel">Maak kanaal</string>
+    <string name="main_fab_join_public_group">Lid worden van openbare groep</string>
+    <string name="main_fab_add_contact">Contactpersoon toevoegen</string>
+
+    <string name="main_sync_title">Bezig met synchroniseren </string>
+    <string name="main_sync_message">Een ogenblik geduld, we zijn de account aan het inrichten.</string>
+
+    <string name="main_empty_title">Nodig buurtgenoten uit</string>
+    <string name="main_empty_invite_hint">Geen van de bekende contactpersonen gebruiken {appName}. Gebruik de knop beneden om ze uit te nodigen.</string>
+    <string name="main_empty_invite_action">VERTEL EEN VRIEND</string>
+    <string name="main_empty_add_hint">of voeg handmatig een contact toe</string>
+    <string name="main_empty_add_action">CONTACT TOEVOEGEN</string>
+
+    <!-- Own profile/settings -->
+    <string name="settings_share_profile_title">Verstuur mijn contactpersoon…</string>
+    <string name="settings_share_text">Mijn telefoonnummer is {0}</string>
+    <string name="settings_menu_edit_profile">Bewerk profiel</string>
+    <string name="settings_menu_change_photo">Wijzig foto</string>
+    <string name="settings_header">Account</string>
+    <string name="about_header">Over Homecrew</string>
+    <string name="settings_help">Help</string>
+    <string name="settings_ask">Stel een vraag of geef feedback</string>
+    <string name="settings_twitter">Twitter</string>
+    <string name="settings_home_page">Home</string>
+    <string name="settings_notifications">Meldingen</string>
+    <string name="settings_chat">Gespreksinstellingen</string>
+    <string name="settings_security">Beveiliging en privacy</string>
+    <string name="settings_blocked_list">Lijst van geblokkeerde contacten</string>
+    <string name="nickname_empty">Stel gebruikersnaam in</string>
+    <string name="nickname_change">Wijzig gebruikersnaam</string>
+    <string name="nickname">Gebruikersnaam</string>
+    <string name="nickname_hint">In {appName} kan een gebruikersnaam gebruikt worden. Anderen zijn dan in staat deze account te vinden door hierop te zoeken en contact op te nemen zonder een telefoonnummer te gebruiken.\n\nHet is toegestaan de (hoofd)letters a–z, de getallen 0–9 en liggende streepjes te gebruiken. De minimum lengte is 5 tekens.</string>
+    <string name="nickname_edittext_hint">Gebruikersnaam invoeren</string>
+    <string name="about_user_me">Over mij</string>
+    <string name="about_user">Over gebruiker</string>
+    <string name="wallpaper">Achtergrondafbeelding</string>
+
+    <!-- Profile controls -->
+    <string name="phone_menu_call">Bel {0}</string>
+    <string name="email_menu_email">E-mail {0}</string>
+    <string name="phone_menu_sms">SMS {0}</string>
+    <string name="phone_menu_share">Deel {0}</string>
+    <string name="phone_menu_copy">Kopie</string>
+
+    <!-- Dialogs -->
+    <string name="dialogs_title">Gesprekken</string>
+    <string name="dialogs_hint">Lang ingedrukt houden voor meer opties</string>
+    <string name="dialogs_empty_title">Begin een gesprek</string>
+    <string name="dialogs_empty">Selecteer een contact uit de lijst of gebruik het pennetje om een conversatie te beginnen.</string>
+
+    <string name="dialogs_menu_contact_view">Bekijk contactpersoon</string>
+    <string name="dialogs_menu_contact_rename">Hernoem contactpersoon</string>
+    <string name="dialogs_menu_conversation_delete">Verwijder conversatie</string>
+
+    <string name="dialogs_menu_group_view">Bekijk groepsinformatie</string>
+    <string name="dialogs_menu_group_rename">Hernoem groep</string>
+    <string name="dialogs_menu_group_leave">Verlaat groep</string>
+    <string name="dialogs_menu_group_delete">Verwijder groep</string>
+
+    <string name="dialogs_menu_channel_view">Bekijk informatie over het kanaal</string>
+    <string name="dialogs_menu_channel_rename">Hernoem kanaal</string>
+    <string name="dialogs_menu_channel_leave">Verlaat kanaal</string>
+    <string name="dialogs_menu_channel_delete">Verwijder kanaal</string>
+
+    <!-- Contacts -->
+    <string name="contacts_title">Contacten</string>
+    <string name="contacts_empty_short">Geen bestaande contacten gevonden</string>
+    <string name="contacts_share">Vertel buurtgenoten en anderen over {appName}</string>
+    <string name="contacts_add">Voeg iemand toe…</string>
+
+    <string name="contacts_empty_title">Nodig buurtgenoten uit</string>
+    <string name="contacts_empty_invite_hint">Geen van de bestaande contacten gebruiken {appName}. Gebruik de knop hieronder om ze uit te nodigen.</string>
+    <string name="contacts_empty_invite_action">Vertel iemand over ons</string>
+    <string name="contacts_empty_add_hint">of voeg handmatig contacten toe met de plus knop hieronder.</string>
+
+    <string name="contacts_menu_remove">Verwijder {0} uit mijn contacten</string>
+    <string name="contacts_menu_remove_progress">Verwijderen…</string>
+    <string name="contacts_menu_edit">Bewerk naam</string>
+
+    <string name="contacts_invite_via_link">Uitnodigen via link</string>
+
+    <string name="invites_select_all">Alles selecteren</string>
+    <string name="invites_select_none">Alles deselecteren</string>
+
+    <string name="invites_share_link_one">Deel de link</string>
+    <string name="invites_share_link_multiple">Stuur de link via SMS/e-mail naar meerdere contacten</string>
+
+    <!-- Chat -->
+    <string name="chat_menu_group_info">Groepsinformatie</string>
+    <string name="chat_menu_view_contact">Bekijk contactinformatie</string>
+    <string name="chat_menu_call">Bellen</string>
+    <string name="chat_menu_files">Bestanden</string>
+    <string name="chat_menu_clear_chat">Gespreksgeschiedenis wissen</string>
+    <string name="chat_menu_leave_group">Groep verlaten</string>
+
+    <string name="chat_attach_place">Plaatsen</string>
+    <string name="chat_attach_contact">Contact</string>
+    <string name="chat_attach_file">Bestand</string>
+    <string name="chat_attach_take_video">Video opnemen</string>
+    <string name="chat_attach_take_photo">Foto maken</string>
+    <string name="chat_attach_gallery">Gallerij</string>
+
+    <string name="chat_message_hint">Het bericht…</string>
+
+    <string name="chat_new_messages">Nieuwe berichten</string>
+    <string name="chat_add_to_contacts">Aan contacten toevoegen</string>
+    <string name="chat_add_to_contacts_progress">Contact toevoegen…</string>
+
+    <string name="chat_doc_open">Openen</string>
+    <string name="chat_doc_send">Verzenden</string>
+    <string name="chat_doc_stop">Stoppen</string>
+    <string name="chat_doc_download">Downloaden</string>
+    <string name="chat_voice_record_cancel">VEEG OM TE ANNULEREN</string>
+
+    <string name="chat_not_member">Geen groepslidmaatschap gevonden</string>
+    <string name="group_deleted">Groep verwijderd</string>
+    <string name="channel_deleted">Kanaal verwijderd</string>
+
+    <string name="chat_join">Lid worden</string>
+    <string name="chat_mute">Microfoon uit</string>
+    <string name="chat_unmute">Microfoon aan</string>
+
+    <string name="chat_empty_bot">START</string>
+    <string name="chat_empty_bot_about">Nog geen beschrijving van deze bot</string>
+
+    <string name="chat_unsupported">Het bericht wordt nog niet ondersteund in deze versie. Even geduld tot de applicatie bijgewerkt is om het bericht te zien.</string>
+    <string name="online">\u25CF online</string>
+
+    <string name="messages_action_forward">Doorsturen</string>
+    <string name="messages_action_quote">Citeren</string>
+    <string name="messages_action_delete">Verwijderen</string>
+    <string name="messages_action_copy">Kopieer</string>
+    <string name="messages_action_like">Vind ik leuk</string>
+    <string name="edit_message">Bewerk laatste bericht</string>
+    <string name="edit_message_error_not_last">Alleen het meest recente bericht kan bewerkt worden</string>
+    <string name="edit_message_error_slowpoke">Het bericht is te oud</string>
+
+    <!-- Share menu-->
+    <string name="share_menu_gallery">Gallerij</string>
+    <string name="share_menu_video">Video</string>
+    <string name="share_menu_file">Bestand</string>
+    <string name="share_menu_camera">Camera</string>
+    <string name="share_menu_contact">Contact</string>
+    <string name="share_menu_location">Locatie</string>
+
+    <!-- Map -->
+    <string name="map_title">Locatie</string>
+    <string name="map_type_normal">Kaart</string>
+    <string name="map_type_satellite">Satelliet</string>
+    <string name="map_type_hybrid">Hybride</string>
+
+    <!-- Profile -->
+    <string name="profile_title">Profiel</string>
+    <string name="profile_shared_header">Gedeeld</string>
+    <string name="profile_shared_files">Documenten</string>
+    <string name="profile_shared_media">Media</string>
+    <string name="profile_settings_header">Instellingen</string>
+    <string name="profile_settings_notifications">Meldingen</string>
+    <string name="profile_settings_notifications_picker">Geluidsmeldingen</string>
+    <string name="profile_settings_block">Blokkeer gebruiker</string>
+    <string name="profile_settings_unblock">Blokkering opheffen</string>
+    <string name="profile_settings_block_confirm">Blokkeer {user}?</string>
+
+    <string name="profile_contacts_added">Verwijder uit contacten</string>
+    <string name="profile_contacts_available">Voeg toe aan contactpersonen</string>
+    <string name="profile_call">Oproep</string>
+    <string name="profile_video_call">Videogesprek</string>
+    <string name="profile_compose">Nieuw bericht</string>
+
+    <string name="settings_mobile_phone">Mobiele telefoon</string>
+
+    <string name="profile_adding">Aan lijst met contactpersonen toe aan het voegen…</string>
+    <string name="profile_removing">Verwijderen uit lijst met contactpersonen…</string>
+
+    <string name="profile_menu_rename">Hernoem</string>
+    <string name="profile_menu_call">Bel</string>
+    <string name="profile_menu_remove">Verwijder uit contactpersonen</string>
+    <string name="profile_menu_add">Voeg toe aan contactpersonen</string>
+    <string name="profile_menu_security">Beveiliging</string>
+    <string name="profile_cant_find_user">Kan gebruiker niet gevonden krijgen</string>
+
+    <!-- Group -->
+    <string name="group_title">Groepsinformatie</string>
+    <string name="channel_title">Informatie over het kanaal</string>
+    <string name="group_members_header">Leden</string>
+    <string name="group_members_count">{0} van {1}</string>
+
+    <string name="group_admin">beheerder</string>
+
+    <string name="group_created_by">Beheerd door {0}</string>
+    <string name="group_created_by_you">Door mij beheerd</string>
+
+    <string name="group_adding">Aan groep toevoegen…</string>
+    <string name="group_removing">Uit groep verwijderen…</string>
+
+    <string name="group_context_message">Bericht {0}</string>
+    <string name="group_context_call">Bellen {0}</string>
+    <string name="group_context_view">Bekijken {0}</string>
+    <string name="group_context_remove">Verwijder {0} uit de groep</string>
+
+    <string name="group_menu_edit">Bewerk</string>
+    <string name="group_menu_change_theme">Wijzig thema</string>
+    <string name="group_menu_change_photo">Wijzig profielfoto</string>
+    <string name="group_menu_integration_token">Token voor andere diensten</string>
+
+    <string name="group_shared_header">Gedeeld</string>
+    <string name="group_shared_files">Documenten</string>
+
+    <string name="group_add_member">Voeg een lid toe</string>
+    <string name="channel_add_member">Voeg een lid toe</string>
+    <string name="channel_add_members">Leden toevoegen</string>
+    <string name="group_leave">Groep verlaten</string>
+    <string name="group_leave_channel">Kanaal verlaten</string>
+    <string name="group_administration">Beheer</string>
+    <string name="group_make_admin">Beheerder maken</string>
+    <string name="group_revoke_admin">Beheerdersrechten intrekken</string>
+
+    <string name="group_admin_title">Beheer groep</string>
+    <string name="channel_admin_title">Beheer kanaal</string>
+
+    <string name="group_permissions">Systeemrechten</string>
+    <string name="group_permissions_hint">Beheer wat mogelijk is in deze groep</string>
+    <string name="channel_permissions_hint">Beheer wat mogelijk is in dit kanaal</string>
+
+    <string name="group_type">Soort groep</string>
+    <string name="channel_type">Soort kanaal</string>
+    <string name="group_type_pubic">Openbaar</string>
+    <string name="channel_type_pubic">Openbaar</string>
+    <string name="group_type_private">Besloten</string>
+    <string name="channel_type_private">Besloten</string>
+    <string name="group_delete">Verwijder groep</string>
+    <string name="group_delete_hint">Alle berichten uit deze groep zullen verloren gaan.</string>
+    <string name="channel_delete">Kanaal verwijderen</string>
+    <string name="channel_delete_hint">Alle berichten uit dit kanaal zullen verloren gaan.</string>
+
+    <string name="group_share_history">Deel gespreksgeschiedenis</string>
+    <string name="group_share_history_enabled">Gedeeld</string>
+    <string name="group_share_history_hint">Alle leden zullen alle berichten uit de geschiedenis kunnen zien</string>
+
+    <string name="group_can_edit_info_members">Alle leden kunnen groepsinformatie wijzigen</string>
+    <string name="group_can_edit_info_admins">Alleen beheerders kunnen groepsinformatie wijzigen</string>
+    <string name="group_can_invite_members">Alle leden kunnen uitnodingen versturen</string>
+    <string name="group_show_leave_join">Laat bericht zien wanneer iemand de groep binnen komt en verlaat</string>
+    <string name="group_show_admin_to_members">Label van beheerder is voor iedereen zichtbaar</string>
+
+    <string name="channel_can_edit_info_members">Alle leden kunnen informatie over het kanaal wijzigen</string>
+    <string name="channel_can_edit_info_admins">Alleen beheerders kunnen informatie over het kanaal wijzigen</string>
+    <string name="channel_can_invite_members">Alle leden kunnen uitnodigingen versturen</string>
+    <string name="channel_show_leave_join">Laat bericht zien wanneer iemand het kanaal binnen komt en verlaat</string>
+    <string name="channel_show_admin_to_members">Label van beheerder is voor iedereen zichtbaar</string>
+
+    <string name="group_public_group_title">Openbare groep</string>
+    <string name="group_public_group_text">Openbare groepen kunnen gezocht en gevonden worden, iedereen kan lid worden.</string>
+    <string name="group_private_group_title">Besloten groep</string>
+    <string name="group_private_group_text">Bij besloten groepen kan alleen via een uitnodiging het lidmaatschap verkregen worden.</string>
+
+    <string name="group_public_channel_title">Openbaar kanaal</string>
+    <string name="group_public_channel_text">Openbare groepen kunnen gezocht en gevonden worden, iedereen kan lid worden.</string>
+    <string name="group_private_channel_title">Besloten kanaal</string>
+    <string name="group_private_channel_text">Bij besloten kanalen kan alleen via een uitnodiging het lidmaatschap verkregen worden.</string>
+
+
+    <string name="group_not_member">Geen lid van deze groep</string>
+    <string name="about_group">Over deze groep</string>
+    <string name="about_group_empty">Groepsbeschrijving instellen</string>
+    <string name="theme_group">Groepsonderwerp</string>
+    <string name="theme_group_empty">Groepsonderwerp instellen</string>
+
+    <string name="members_adapter_bot_online_status">bot</string>
+
+    <string name="group_edit_change_short_name_error">Korte groepsnaam kon niet gewijzigd worden</string>
+
+
+    <!-- Avatar -->
+    <string name="avatar_title_your">Profielfoto</string>
+    <string name="avatar_title_person">Foto</string>
+    <string name="avatar_title_group">Groepsafbeelding</string>
+    <string name="avatar_no_photo">Geen afbeelding</string>
+    <string name="actor_menu_edit">Bewerken</string>
+    <string name="avatar_menu_set_as">Instellen als…</string>
+
+    <!-- Add Contact -->
+    <string name="add_contact_title">Contact toevoegen</string>
+    <string name="add_contact_phone_hint">Geef een e-mail, gebruikersnaam of telefoonnummer op</string>
+    <string name="add_contact_bar_cancel">ANNULEER</string>
+    <string name="add_contact_bar_continue">VERDER</string>
+
+    <!-- Compose -->
+    <string name="compose_title">Nieuw bericht</string>
+
+    <!-- Create Group -->
+    <string name="create_group_title">Wijzig groep</string>
+    <string name="create_group_name_hint">Naam van de groep</string>
+    <string name="create_group_hint">Geef een groepsonderwerp op en stel eventueel een afbeelding in</string>
+    <string name="create_group_search_hint">Zoek op naam</string>
+    <string name="create_group_done">Klaar</string>
+
+    <!-- Create Channel -->
+    <string name="create_channel_title">Maak kanaal</string>
+    <string name="create_channel_name_hint">Naam van het kanaal</string>
+    <string name="create_channel_hint">Geef een naam van het kanaal op en stel eventueel een afbeelding in</string>
+
+    <string name="group_name_hint">Naam</string>
+    <string name="group_description_hint">Beschrijving</string>
+
+    <!-- Group add -->
+    <string name="group_add_title">Lid toevoegen</string>
+
+    <!-- Invite link-->
+    <string name="invite_link_title">Uitnodiging</string>
+    <string name="invite_link_hint">Iemand die {appName} geinstalleerd heeft zal toegang tot de groep kunnen krijgen door de link te gebruiken</string>
+    <string name="invite_link_action_copy">Kopieer link</string>
+    <string name="invite_link_action_revoke">Intrekken</string>
+    <string name="invite_link_action_share">Delen</string>
+    <string name="invite_link_copied">Link gekopieerd naar klembord</string>
+    <string name="invite_link_chooser_title">Groepsuitnodiging via link</string>
+    <string name="invite_link_error_get_link">Niet in staat link te maken</string>
+    <string name="invite_link_error_revoke_link">Niet in staat link in te trekken</string>
+    <string name="invite_link_empty_view">Uitnodiging link laden</string>
+
+    <string name="invite_link_join_confirm">Lid worden van "%1$s"?</string>
+
+    <!-- Documents -->
+    <string name="documents_title">Documenten</string>
+    <string name="documents_empty">Nog geen documenten</string>
+    <string name="file_saved">Bestand opgeslagen:</string>
+
+    <!-- Edit name -->
+    <string name="edit_name_title_you">Geef een naam op</string>
+    <string name="edit_name_title_contact">Geef een naam van de contactpersoon</string>
+    <string name="edit_name_title_group">Geef een groepsnaam op</string>
+    <string name="edit_name_title_group_theme">Geef een groepsonderwerp op</string>
+    <string name="edit_name_title_nick">Geef een gebruikersnaam op</string>
+    <string name="edit_name_cancel">ANNULEER</string>
+    <string name="edit_name_save">OPSLAAN</string>
+    <string name="edit_name_process">Wijzig naam…</string>
+    <string name="edit_nick_process">Gebruikersnaam wijzigen…</string>
+    <string name="edit_about_process">Beschrijving wijzigen…</string>
+    <string name="edit_theme_process">Groepsonderwerp wijzigen…</string>
+    <string name="edit_about_edittext_hint">Vertel mensen iets kort.</string>
+
+
+    <!-- Help -->
+    <string name="help_title">Help</string>
+    <string name="help_about_title">Over</string>
+    <string name="help_about_subtitle">Over de app en onze diensten</string>
+    <string name="help_faq_title">FAQ</string>
+    <string name="help_faq_subtitle">Veelgestelde vragen</string>
+    <string name="help_feedback_title">Feedback</string>
+    <string name="help_feedback_subtitle">Geef ons terugkoppeling</string>
+    <string name="help_version_title">Applicatie versie</string>
+    <string name="help_version_copy">App versie naar klembord gekopieerd</string>
+    <string name="help_email_title">Stuur e-mail</string>
+    <string name="help_email_subject">Feedback</string>
+
+    <!-- Notifications -->
+    <string name="not_title">Meldingen</string>
+    <string name="not_conv_tones">Gespreksgeluiden</string>
+    <string name="not_conv_tones_subtitle">Speel geluiden af bij in- en uitgaande berichten.</string>
+
+    <string name="not_vibration">Trillen</string>
+    <string name="not_vibration_subtitle">Trillen bij meldingen inschakelen</string>
+    <string name="not_group">Groep</string>
+    <string name="not_group_subtitle">Inschakelen groepsmeldingen</string>
+    <string name="not_group_mentions">Alleen wanneer ik direct aangesproken word door iemand</string>
+    <string name="not_group_mentions_subtitle">Groepsmeldingen alleen bij direct aanspreken inschakelen</string>
+    <string name="not_show_text">Geef namen en berichten weer</string>
+    <string name="not_show_text_subtitle">Geef berichttekst en afzender weer in meldingenvenster</string>
+    <string name="not_sound">Geluid</string>
+    <string name="not_sound_subtitle">Inschakelen geluiden bij meldingen</string>
+    <string name="not_sound_picker">Geluid instellen</string>
+    <string name="not_sound_picker_subtitle">Geluidsmelding instellen</string>
+    <string name="notification_multiple_canversations_after_msg_count">" berichten in "</string>
+    <string name="notifications_multiple_canversations_after_coversations_count">" gesprekken"</string>
+    <string name="notifications_single_conversation_аfter_messages_count">" berichten"</string>
+
+    <!-- Pick user -->
+    <string name="pick_user_title">Kies iemand</string>
+
+    <!-- Chat Settings -->
+    <string name="settings_chat_title">Gespreksinstellingen</string>
+    <string name="settings_chat_send_enter">Versturen bij [Enter]</string>
+    <string name="settings_chat_send_enter_subtitle">Gebruik van de [Enter] toets zal een bericht verzenden in plaats van een nieuwe regel</string>
+
+    <string name="settings_animation_auto_play_title">Automatisch animatie afspelen</string>
+    <string name="settings_animation_auto_play_subtitle">Na downloaden van animaties deze gelijk automatisch afspelen</string>
+
+    <string name="settings_chat_markdown">Markdown</string>
+    <string name="settings_chat_markdown_subtitle">Of markdown inschakeld is</string>
+
+    <string name="settings_animation_download_title">Automatisch animaties ophalen</string>
+    <string name="settings_image_download_title">Automatisch afbeeldingen ophalen</string>
+    <string name="settings_video_download_title">Automatisch videos ophalen</string>
+    <string name="settings_audio_download_title">Automatisch geluidsopnames ophalen</string>
+    <string name="settings_doc_download_title">Automatisch documenten ophalen</string>
+
+    <!-- Security -->
+    <string name="security_title">Beveiliging en privacy</string>
+    <string name="security_terminate_title">Alle sessies beëindigen</string>
+    <string name="security_terminate_subtitle">Op alle apparaten afmelden</string>
+    <string name="security_terminate_message">Op alle andere apparaten afmelden? Alle tijdelijke applicatiegegevens op die apparaten zal verloren gaan.</string>
+    <string name="security_terminate_this_message">Dit apparaat afmelden? Alle lokale applicatiegegevens zullen verloren gaan op {device} </string>
+    <string name="security_authorized_header">Gevalideerde apparaten en diensten</string>
+    <string name="security_authorized_loading">Laden…</string>
+    <string name="security_toast_unable_remove_auth">Niet in staat authorisatie in te trekken</string>
+    <string name="security_this_title">(Dit) </string>
+    <string name="security_toast_unable_to_load">Niet in staat te laden. Probeer het opnieuw.</string>
+
+    <!-- Last Seen -->
+    <string name="security_last_seen_title">Voor het laatst gezien</string>
+    <string name="security_last_seen_subtitle">Wijzig wie kan zien wanneer ik voor het laatst online was.</string>
+    <string name="security_last_seen_everybody">Iedereen</string>
+    <string name="security_last_seen_contacts">Mijn contactpersonen</string>
+    <string name="security_last_seen_nobody">Niemand</string>
+
+    <!-- Blocked list -->
+    <string name="blocked_title">Lijst met geblokkeerde contacten</string>
+    <string name="blocked_empty_list">Er wordt niemand geblokkeerd</string>
+    <string name="blocked_loading">Lijst met blokkeringen laden…</string>
+    <string name="blocked_unblock">OPHEFFEN</string>
+
+
+    <!-- Alerts -->
+    <string name="alert_delete_messages_text">Definitief {0} berichten verwijderen?</string>
+    <string name="alert_delete_messages_yes">Verwijder</string>
+
+    <string name="alert_delete_all_messages_text">Definitief ALLE berichten uit dit gesprek wissen?</string>
+    <string name="alert_delete_all_messages_yes">Verwijder</string>
+
+    <string name="alert_remove_contact_text">Verwijder {0} contactpersonen? Zeker weten?</string>
+    <string name="alert_remove_contact_yes">Verwijder</string>
+
+    <string name="alert_group_add_text">Toevoegen van {0} aan de groep?</string>
+    <string name="alert_group_add_yes">Toevoegen</string>
+
+    <string name="alert_group_remove_text">Verwijderen van {0} uit de groep?</string>
+    <string name="alert_group_remove_yes">Verwijder</string>
+
+    <string name="alert_invite_text">"{0}" staat nog niet geregistreerd in {appName}. Uitnodiging voor {appName} versturen?</string>
+    <string name="alert_invite_yes">Uitnodigen</string>
+
+    <!-- Media -->
+    <string name="media">Media</string>
+    <string name="media_picture">Afbeelding</string>
+    <string name="media_pager" formatted="false">%d van %d</string>
+    <string name="emoji_no_recent">geen recente emoji gevonden</string>
+
+    <!-- Calls -->
+    <string name="call_ended">Oproep beëindigd</string>
+    <string name="call_incoming">Binnenkomende oproep</string>
+    <string name="call_outgoing">Gaat over…</string>
+    <string name="call_connecting">Verbinden…</string>
+    <string name="call_enable_speaker">geluidsspeaker</string>
+    <string name="call_enable_mute">microfoon uitzetten</string>
+    <string name="call_enable_video">video</string>
+    <string name="call_to_messages">berichten</string>
+    <string name="call_add_user">gebruiker toevoegen</string>
+    <string name="call_notification">terug naar oproep</string>
+
+    <!-- Dialogs -->
+    <string name="alert_leave_group_message">Groep "%1$s" verlaten? Zeker weten?</string>
+    <string name="alert_leave_channel_message">Kanaal "%1$s" verlaten? Zeker weten?</string>
+    <string name="alert_leave_group_yes">Verlaten</string>
+
+    <string name="alert_delete_group_title">Verwijder "%1$s" groep?</string>
+    <string name="alert_delete_channel_title">Verwijder "%1$s" kanaal?</string>
+    <string name="alert_delete_group_yes">Verwijder</string>
+
+    <string name="alert_delete_chat_message">Verwijder gesprek met "%1$s"?</string>
+    <string name="alert_delete_chat_yes">Verwijder</string>
+
+    <string name="alert_revoke_link_message">Intrekken link?</string>
+    <string name="alert_revoke_link_yes">Intrekken</string>
+
+    <string name="alert_revoke_integration_token_message">Intrekken token?</string>
+    <string name="alert_revoke_integration_token_yes">Intekken</string>
+
+    <string name="confirm_share">Deel met</string>
+
+    <!-- Errors -->
+    <string name="error_connection">Poging verbinding te maken mislukt. Verzeker dat er een werkende internetverbinding is en probeer het opnieuw.\n\nAls de problemen aanhouden, probeer dan of de telefoon opnieuw opstarten helpt.</string>
+    <string name="error_unknown">Niet mogelijk de actie uit te voeren.\n\nControleer het toestel en herstart de telefoon indien problemen aanhouden.</string>
+    <string name="error_view_url">Onbekend URL type</string>
+
+</resources>
