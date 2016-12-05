@@ -79,14 +79,14 @@ public class Application extends ActorSDKApplication {
         ActorSDK.sharedActor().setTosUrl("http://actor.im");
         ActorSDK.sharedActor().setPrivacyText("bla bla bla");
 
-        ActorSDK.sharedActor().setVideoCallsEnabled(true);
+        ActorSDK.sharedActor().setVideoCallsEnabled(false);
 
         ActorSDK.sharedActor().setAutoJoinGroups(new String[]{
-                "actor_news"
+                "canalxloto"
         });
 
 //        ActorSDK.sharedActor().setEndpoints(new String[]{"tcp://192.168.1.8:9070"});
-        ActorSDK.sharedActor().setEndpoints(new String[]{"tcp://64.137.170.2:9070"});
+        ActorSDK.sharedActor().setEndpoints(new String[]{"tcp://api-mtproto.im.xloto.com.br:9070"});
         ActorSDK.sharedActor().setAuthType(AuthActivity.AUTH_TYPE_PHONE);
 
 //        ActorSDK.sharedActor().setTwitter("");
