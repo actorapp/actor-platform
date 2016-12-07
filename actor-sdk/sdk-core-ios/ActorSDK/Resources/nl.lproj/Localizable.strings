@@ -1,0 +1,771 @@
+//
+//  Copyright (c) 2014-2016 Actor LLC. <https://actor.im>
+//
+
+/*
+ * Main Screen
+ */
+
+"TabMessages" = "Berichten";
+
+"TabPeople" = "Contacten";
+
+"TabSettings" = "Account";
+
+// Not sure if we will use this.
+"TabDiscover" = "Ontdek";
+
+/*
+ * Contacts
+ */
+
+"ContactsAddHeader" = "Nieuw contact";
+
+"ContactsAddHint" = "Geef het telefoonnummer op.";
+
+// NOTE: no need/way to use {appname} as these are deviations from Actor SDK/core and strings
+// are likely not interpolated by default. So use literal Homecrew when we want.
+"ContactsActionInvite" = "Vertel buurtgenoten en vrienden over Homecrew!";
+
+"ContactsActionAdd" = "Contact toevoegen";
+
+"ContactsBack" = "Contacten";
+
+/*
+ * Dialogs
+ */
+
+// Where is this?
+"DialogsHint" = "Swipe voor meer opties.";
+
+"DialogsBack" = "Chats";
+
+/*
+ * Settings
+ */
+
+"SettingsEdit" = "Bewerken";
+
+"SettingsSetPhoto" = "Profielfoto instellen";
+
+
+"SettingsChangeName" = "Naam wijzigen";
+
+"SettingsEditHeader" = "Te gebruiken naam";
+
+"SettingsEditHint" = "Gebruik een echte naam om eenvoudiger gevonden te worden.";
+
+"SettingsEditFieldHint" = "Geef naam op";
+
+
+"SettingsUsernameNotSet" = "Gebruikersnaam instellen";
+
+"SettingsUsernameTitle" = "Gebruikersnaam";
+
+"SettingsUsernameHintField" = "Kies een gebruikersnaam en geef deze hier op.";
+
+"SettingsUsernameHint" = "Het is mogelijk zelf een gebruikersnaam te kiezen voor {appname}. Anderen zijn dan makkelijker in staat op basis hiervan deze account te vinden, en kunnen zo contact opnemen zonder het telefoonnummer te weten.\n\nHet is toegestaan de (hoofd)letters a-z, getallen 0-9 en liggende streepjes (_) te gebruiken. Minimum lengte is 5 tekens.";
+
+// TODO: Is this placeholder or what?
+"SettingsAboutNotSet" = "Bio";
+
+"SettingsChangeAboutTitle" = "Over mijzelf";
+
+"SettingsChangeAboutHint" = "Vertel kort iets over jezelf.";
+
+
+"SettingsSecurity" = "Privacy en beveiliging";
+
+"SettingsWallpapers" = "Achtergrond";
+
+"SettingsMedia" = "Media";
+
+"SettingsNotifications" = "Meldingen en geluiden";
+
+"SettingsAskQuestion" = "Stel een vraag";
+
+"SettingsTwitter" = "Volg ons op Twitter";
+
+"SettingsAbout" = "Homecrew";
+
+"SettingsVersion" = "Versie {version}";
+
+"SettingsMobilePhone" = "Mobiele telefoon";
+
+"SettingsGroupChats" = "Groepen";
+
+"SettingsPrivateChats" = "Besloten chats";
+
+/*
+ * Notifications
+ */
+
+"NotificationsTitle" = "Meldingen en geluiden";
+
+"NotificationsEffectsTitle" = "Effecten";
+
+"NotificationsMobileTitle" = "Mobiele meldingen";
+
+// QNA: what is the difference between the two, if any?
+"NotificationsInAppTitle" = "In-app meldingen";
+
+"NotificationsNotificationHint" = "Meldingen van gebruikers of groepen zijn via de infopagina's uit te schakelen.";
+
+"NotificationsPrivacyTitle" = "Privacy";
+
+"NotificationsSoundEffects" = "Geluidseffecten";
+
+"NotificationsEnable" = "Inschakelen";
+
+"NotificationsSound" = "Geluid";
+
+"NotificationsVibration" = "Trillen";
+
+"NotificationsPreview" = "Berichtvoorbeeld";
+
+"NotificationsPreviewHint" = "De berichttekst niet in melding weergeven.";
+
+"NotificationSecretMessage" = "Nieuw bericht";
+
+"NotificationsGroups" = "Groepsmeldingen";
+
+"NotificationsOnlyMentions" = "Alleen persoonlijk aangesproken";
+
+"NotificationsOnlyMentionsHint" = "Het is alleen mogelijk meldingen te ontvangen voor berichten specifiek gericht aan deze gebruiker.";
+
+/*
+ * Media
+ */
+
+"MediaTitle" = "Media";
+
+"MediaPhotoDownloadHeader"= "Automatisch afbeeldingen downloaden";
+
+"MediaAudioDownloadHeader"= "Automatisch geluidsbestanden downloaden";
+
+"MediaOtherHeader"= "Overige";
+
+"MediaAutoplayGif"= "Automatisch GIF afspelen";
+
+/*
+ * Privacy
+ */
+
+"PrivacyTitle" = "Beveiliging";
+
+
+"PrivacyHeader" = "Privacy";
+
+// TODO: check space Laats gev.: (whatsapp) zonder clone te zijn (synoniem?)
+"PrivacyLastSeen" = "Laatst";
+
+// TODO: herformuleren zonder 'je' of 'toon'
+"PrivacyLastSeenHint" = "Wijzig aan wie het tijdstip van laatst online getoond mag worden";
+
+"PrivacyLastSeenEverybody" = "Iedereen";
+
+"PrivacyLastSeenContacts"  = "Mijn contacten";
+
+"PrivacyLastSeenNone"    = "Niemand";
+
+
+"PrivacySecurityHeader" = "Beveiliging";
+
+"PrivacyAllSessions" = "Actieve sessies";
+
+"PrivacyTerminate" = "Beëindig alle overige sessies";
+
+"PrivacyTerminateAlert" = "Alle sessies beëindigen";
+
+"PrivacyTerminateAlertSingle" = "Beëindig sessie";
+
+"PrivacyTerminateHint" = "Alle andere apparaten behalve deze afmelden.";
+
+/*
+ * Wallpapers
+ */
+
+"WallpapersTitle" = "Achtergronden";
+
+"WallpapersPhoto" = "Gallerij";
+
+/*
+ * Calls
+ */
+
+"CallsStartAudio" = "Telefoongesprek";
+
+"CallsStartGroupAudio" = "Conferentiegesprek";
+
+"CallsAnswer" = "opnemen";
+
+"CallsDecline" = "weigeren";
+
+"CallsMute" = "stil";
+
+"CallsSpeaker" = "speaker";
+
+"CallsVideo" = "video";
+
+"CallStateRinging" = "Gaat over...";
+
+"CallStateConnecting" = "Verbinden...";
+
+"CallStateIncoming" = "Binnenkomend gesprek...";
+
+"CallPrivateTitle" = "Gesprek";
+
+"CallPrivateText" = "Oproep van {name}";
+
+"CallGroupTitle" = "Conferentiegesprek";
+
+"CallGroupText" = "Conferentiegesprek {name}";
+
+
+/*
+ * Profile
+ */
+
+"ProfileEditHeader" = "Naam wijzigen";
+
+"ProfileSendMessage" = "Bericht versturen";
+
+"ProfileNotifications" = "Meldingen";
+
+// FIXME: Warring???
+"ProfileNotificationsWarring" = "Definitief meldingen van deze persoon uitschakelen? Dit kan een bron van miscommunicatie vormen.";
+
+// FIXME: Warring???
+"ProfileNotificationsWarringAction" = "Uitschakelen";
+
+"ProfileAddToContacts" = "Aan contacten toevoegen";
+
+"ProfileRemoveFromContacts" = "Uit contacten verwijderen";
+
+"ProfileBlockContact" = "Blokkeer gebruiker";
+
+"ProfileUnblockContact" = "Blokkering opheffen";
+
+"ProfileRename" = "Hernoem contact";
+
+"ProfileRenameMessage" = "Het is mogelijk om contacten zelf te hernoemen, deze wijzigingen zijn dan alleen hier zichtbaar.";
+
+"ProfileRenameAction" = "Hernoem";
+
+"ProfileAbout" = "over mij";
+
+"ProfilePhone" = "telefoonnummer";
+
+"ProfileUsername" = "gebruikersnaam";
+
+"ProfileTitle" = "Info";
+
+"CallNumber" = "Bellen";
+
+"CopyNumber" = "Kopieer";
+
+"NumberCopied" = "Telefoonnummer is naar het klembord gekopieerd.";
+
+/*
+ * Publics
+ */
+
+"JoinAlertMessage" = "Lid worden van deze groep?";
+
+/*
+ * Group
+ */
+
+"GroupEditHeader" = "Onderwerp";
+
+"GroupEditHint" = "Geef hier het onderwerp van de groep op.";
+
+"GroupSetPhoto" = "Groepsafbeelding instellen";
+
+"GroupSetTitle" = "Titel van de groep";
+
+"GroupSetSound" = "Berichtgeluid";
+
+"GroupEditConfirm" = "De titel van deze groep wijzigen?";
+
+"GroupEditConfirmAction" = "Wijzig onderwerp";
+
+"GroupNotifications" = "Meldingen";
+
+"GroupSettings" = "INSTELLINGEN";
+
+"GroupIntegrations" = "Koppelingen";
+
+"GroupViewMembers" = "Leden";
+
+"GroupDescription" = "Omschrijving";
+
+
+
+"GroupAdministration" = "Beheer";
+
+"GroupTypeTitle" = "Soort groep";
+
+"GroupTypeTitleChannel" = "Soort kanaal";
+
+"GroupPermissionsHint" = "Beheer groepsinstellingen en bepaal wat er mogelijk is binnen deze groep";
+
+"GroupPermissionsHintChannel" = "Beheer wat er mogelijk is op dit kanaal";
+
+"GroupTypeHintPublic" = "Openbare groepen kunnen opgezocht en gevonden worden, zonder uitnodiging mag iedereen lid worden.";
+
+"GroupTypeHintPrivate" = "Besloten groepen kunnen alleen op uitnodiging nieuwe leden ontvangen";
+
+"GroupTypeHintPublicChannel" = "Openbare kanalen kunnen gevonden worden en iedereen kan zichzelf toegang verschaffen";
+
+"GroupTypeHintPrivateChannel" = "Besloten kanalen kunnen alleen op uitnodiging leden ontvangen";
+
+// TODO: "GroupTypeLinkHint" = "People can share this link with others and find your group using search";
+// I would say people can easily JOIN using the URL, not search right?
+"GroupTypeLinkHint" = "Deze link kan met anderen gedeeld worden om deze groep eenvoudig te vinden.";
+
+"GroupTypeLinkHintChannel" = "Deze link kan met anderen gedeeld worden om het kanaal eenvoudig te vinden";
+
+"GroupTypePublic" = "Openbaar";
+
+"GroupTypePrivate" = "Afgeschermd";
+
+"ChannelTypePublic" = "Openbaar";
+
+"ChannelTypePrivate" = "Afgeschermd";
+
+"GroupTypePublicFull" = "Openbare groep";
+
+"GroupTypePrivateFull" = "Afgeschermde groep";
+
+"ChannelTypePublicFull" = "Openbaar kanaal";
+
+"ChannelTypePrivateFull" = "Afgeschermd kanaal";
+
+"GroupDeleteHint" = "Alle berichten uit deze groep zullen definitief verloren gaan.";
+
+"GroupDeleteHintChannel" = "Alle berichten uit dit kanaal zullen definitief verloren gaan.";
+
+
+
+"GroupShareTitle" = "Gedeelde geschiedenis";
+
+"GroupShareEnabled" = "Gedeeld";
+
+"GroupShareHint" = "Alle leden krijgen hiermee alle berichten te zien, dit is niet terug te draaien.";
+
+"GroupShareMessage" = "Definitief berichtengeschiedenis met alle leden delen? Deze handeling is onomkeerbaar.";
+
+"GroupShareAction" = "Delen";
+
+
+
+"GroupEditTitle" = "Bewerk groep";
+
+"GroupEditTitleChannel" = "Bewerk kanaal";
+
+"GroupEditName" = "Groepsnaam";
+
+"GroupEditNameChannel" = "Naam van het kanaal";
+
+"GroupEditDescription" = "Omschrijving";
+
+
+"GroupMemberAdmin" = "beheerder";
+
+"GroupMemberInfo" = "Profiel";
+
+"GroupMemberMakeAdmin" = "Groepsbeheerder maken";
+
+"GroupMemberMakeMessage" = "Gebruiker {name} als beheerder van deze groep toewijzen?";
+
+"GroupMemberMakeAction" = "Ja";
+
+"GroupMemberKick" = "Verwijder uit groep";
+
+"GroupMemberKickMessage" = "De gebruiker {name} uit deze groep verwijderen?";
+
+"GroupMemberKickAction" = "Verwijder (kick)";
+
+"GroupMemberWrite" = "Schrijf een bericht";
+
+"GroupMemberCall" = "Telefoongesprek";
+
+"GroupMemberCallNoPhones" = "Geen beschikbaar telefoonnummer van gebruiker";
+
+"GroupAddParticipant" = "Deelnemer toevoegen...";
+
+"GroupAddParticipantTitle" = "Contacten";
+
+"GroupAddParticipantUrl" = "Uitnodigen voor groep via snelkoppeling";
+
+
+"GroupInviteLinkPageTitle" = "Uitnodiging link";
+
+"GroupInviteLinkTitle" = "LINK";
+
+"GroupInviteLinkHint" = "Stuur deze link om anderen voor deze groep uit te nodigen.";
+
+"GroupInviteLinkRevokeMessage" = "Deze link intrekken? Eenmaal ingetrokken kan niemand deze meer gebruiken om lid te worden van de groep.";
+
+"GroupInviteLinkRevokeAction" = "Intrekken";
+
+
+
+"GroupJoinMessage" = "Lid van deze groep worden?";
+
+"GroupJoinAction" = "Lid worden";
+
+/*
+ * Compose
+ */
+
+"ComposeTitle" = "Nieuw bericht";
+
+
+"CreateGroup" = "Groep aanmaken";
+
+"CreateChannel" = "Kanaal aanmaken";
+
+
+"CreateGroupTitle" = "Nieuwe groep";
+
+"CreateGroupHint" = "Geef een groepsnaam en eventueel groepsafbeelding op";
+
+"CreateGroupNamePlaceholder" = "Naam van de groep";
+
+"CreateChannelTitle" = "Nieuw kanaal";
+
+"CreateChannelHint" = "Geef een naam voor het kanaal en eventueel een afbeelding op";
+
+"CreateChannelNamePlaceholder" = "Naam van het kanaal";
+
+
+"CreateGroupMembersTitle" = "Leden uitnodigen";
+
+"CreateGroupMembersPlaceholders" = "Namen invoeren";
+
+/*
+ * Location
+ */
+
+"LocationTitle" = "Locatie";
+
+/*
+ * Chat
+ */
+
+"ChatPlaceholder" = "Tekst invoeren...";
+
+"ChatSend" = "Zend";
+
+"ChatNoGroupAccess" = "Er is geen lidmaatschap van deze groep";
+
+"ChatNewMessages" = "Nieuwe berichten";
+
+"ChatVoiceMessage" = "Geluidsfragment";
+
+"ChatHoldToTalk" = "Vasthouden om te praten";
+
+"ChatReleaseToSend" = "Loslaten om te versturen";
+
+// FIXME: this in Android is "Swipe to left to cancel" (slide up doesn't do anything/work)
+"ChatSlideUpToCancel" = "Veeg naar links om te annuleren";
+
+// FIXME: new convention? (periods)
+"Chat.MicrophoneAccessDisabled" = "Om geluid op te nemen is toegang tot de microfoon nodig. Ga naar Account — Privacy — Microfoon en schakel deze in.";
+
+"ChatDeleted" = "Dit gesprek is door de eigenaar verwijderd.";
+
+"ChatJoin" = "Lid worden";
+
+/*
+ * Chat attachment menu
+ */
+
+"AttachmentsSendPhoto" = "Stuur {count} foto";
+
+"AttachmentsSendPhotos" = "Stuur {count} foto's";
+
+/*
+ * Find
+ */
+
+// NOTE: where does this show up?
+"FindTitle" = "Buurtgenoten op Homecrew vinden";
+
+"FindFieldHint" = "telefoonnummer, e-mail of gebruikersnaam";
+
+"FindHint" = "Zoek op telefoonnummer, e-mailadres of gebruikersnaam.";
+
+"FindNotFound" = "Helaas, we hebben niemand kunnen vinden.";
+
+/*
+ * Placeholders
+ */
+
+"Placeholder_Empty_Title" = "Buurtgenoten uitnodigen";
+
+"Placeholder_Empty_Message" = "Geen van de bestaande telefooncontacten zijn op {appname} gevonden. Gebruik de knop hieronder om ze uit te nodigen.";
+
+"Placeholder_Empty_Action" = "VERTEL BUURTGENOTEN";
+
+"Placeholder_Empty_Message2" = "of voer handmatig een contact toe";
+
+"Placeholder_Empty_Action2" = "TOEVOEGEN CONTACT";
+
+"Placeholder_Loading_Title" = "Bezig met synchroniseren";
+
+"Placeholder_Loading_Message" = "Enige momenten geduld, we zijn de omgeving aan het opzetten.";
+
+"Placeholder_Contacts_Title" = "Buurtgenoten uitnodigen";
+
+"Placeholder_Contacts_Message" = "Geen van de bestaande telefooncontacten gebruikt momenteel {appname}. Gebruik de knop hieronder om ze uit te nodigen.";
+
+"Placeholder_Contacts_Action" = "VERTEL HET DOOR";
+
+"Placeholder_Contacts_Message2" = "of voeg handmatig een contact toe met het plusteken hier rechtsboven";
+
+"Placeholder_Dialogs_Title" = "Begin met berichten versturen";
+
+"Placeholder_Dialogs_Message" = "Kies een contact uit de lijst of druk op de berichtknop in de rechterbovenhoek om nu een gesprek te starten.";
+
+"Placeholder_Group_Title" = "Geen lid";
+
+"Placeholder_Group_Message" = "Helaas, deze groep is besloten.";
+
+"Placeholder_Location_Title" = "Inschakelen locatiediensten";
+
+"Placeholder_Location_Message" = "Schakel diensten voor locaties in bij apparaatinstellingen om de huidige locatie te delen.";
+
+
+/*
+ * Welcome
+ */
+
+"WelcomeTitle" = "Welkom bij {app_name}!";
+
+// FIXME: change me to HC tagline
+"WelcomeTagline" = "Voorkom inbraak. Buren worden dienstverleners.";
+
+"WelcomeSignUp" = "Inschrijven";
+
+"WelcomeLogIn" = "Aanmelden";
+
+
+/*
+ * Auth
+ */
+
+"AuthCountryTitle" = "Landcode";
+
+"AuthUnsupported" = "Deze account wordt niet ondersteund in deze versie van {app_name}. Werk eerst de applicatie naar de meest recente versie bij.";
+
+"AuthLoginTitle" = "Aanmelden bij {app_name}";
+
+"AuthLoginPhone" = "Telefoonnummer";
+
+"AuthLoginEmail" = "E-mail";
+
+"AuthLoginPhoneEmail" = "Telefoonnummer of e-mailadres";
+
+"AuthNameTitle" = "Hoi! Stel jezelf even voor?";
+
+"AuthNamePlaceholder" = "Mijn naam";
+
+"AuthPhoneTitle" = "Wat is het telefoonnummer?";
+
+"AuthPhoneUseEmail" = "Gebruik e-mail";
+
+"AuthPhoneHint" = "We hebben een telefoonnummer nodig om de beveiliging van persoonlijke gegevens te kunnen waarborgen.";
+
+"AuthPhonePlaceholder" = "Telefoonnummer";
+
+"AuthEmailTitle" = "Wat is het e-mailadres?";
+
+"AuthEmailHint" = "We beloven geen onnodige berichten (spam) te versturen en zullen dit e-mail nooit aan derden overhandigen.";
+
+"AuthEmailPlaceholder" = "E-mail";
+
+"AuthEmailUsePhone" = "Telefoon gebruiken";
+
+"AuthDisclaimer" = "Door het gebruik van deze omgeving wordt akkoord gegaan met de op dat moment geldende Algemene Voorwaarden en het Privacybeleid.";
+
+"AuthDisclaimerTosOnly" = "Door aan te melden wordt met de Algemene Servicevoorwaarden akkoord gegaan.";
+
+"AuthDisclaimerPrivacyOnly" = "Door aan te melden wordt met het Privacybeleid akkoord gegaan.";
+
+"AuthDisclaimerToS" = "Algemene Servicevoorwaarden";
+
+"AuthDisclaimerPrivacy" = "Privacybeleid";
+
+"AuthOTPEmailTitle" = "E-mail bevestigen";
+
+"AuthOTPPhoneTitle" = "Telefoonnummer bevestigen";
+
+"AuthOTPEmailHint" = "We hebben een e-mailbericht gestuurd met de activatiecode.\nVoer deze code in het veld hieronder in.";
+
+"AuthOTPPhoneHint" = "We hebben een SMS bericht gestuurd met de activatiecode.\nVoer deze code in het veld hieronder in.";
+
+"AuthOTPPlaceholder" = "Activatiecode";
+
+"AuthOTPNoCode" = "Code niet ontvangen?";
+
+"AuthOTPCallHint" = "{app_name} zal in {time} contact opnemen";
+
+
+/*
+ * Common Elements
+ */
+
+"CurrentLocale" = "Nl";
+
+
+// NOTE: theming
+"InviteText" = "Hoi! Zullen we {appname} gebruiken voor een veilige en verbonden buurt? {link}";
+
+"PhotoRemove" = "Verwijder foto";
+
+"PhotoRemoveGroupMessage" = "Deze groepsafbeelding verwijderen? Sommige leden zullen teleurgesteld zijn.";
+
+"PhotoCamera" = "Maak een foto of neem een video op";
+
+"PhotoLibrary" = "Mediagallerij";
+
+"SendDocument" = "Document";
+
+"ShareLocation" = "Locatie";
+
+"ShareContact" = "Contact delen";
+
+/*
+ *  Navigation
+ */
+
+"NavigationEdit" = "Bewerk";
+
+"NavigationDone" = "Klaar";
+
+"NavigationCancel" = "Annuleer";
+
+"NavigationBack" = "";
+
+"NavigationNext" = "Volgende";
+
+"NavigationSave" = "Opslaan";
+
+"NavigationFind" = "Zoeken";
+
+/*
+ *  Alerts
+ */
+
+"AlertUnblock" = "Blokkering opheffen";
+
+"AlertCancel" = "Annuleer";
+
+"AlertNext" = "Volgende";
+
+"AlertSave" = "Opslaan";
+
+"AlertSet" = "Instellen";
+
+"AlertOk" = "OK";
+
+"AlertYes" = "Ja";
+
+"AlertNo" = "Nee";
+
+"AlertError" = "Fout";
+
+"AlertTryAgain" = "Probeer opnieuw";
+
+"AlertInvite" = "Uitnodigen";
+
+"UnsupportedContent" = "Dit bericht wordt in deze versie niet ondersteund. Wacht op het bijwerken van de applicatie om het bericht te kunnen zien.";
+
+/*
+ * Actions
+ */
+
+"ActionCopyLink" = "Kopieer link";
+
+"ActionRevokeLink" = "Intrekken";
+
+"ActionShareLink" = "Delen";
+
+"AlertLinkCopied" = "Gekopieerd naar het klembord.";
+
+"ActionOpenLink" = "Koppeling openen";
+
+"ActionCancel" = "Annuleer";
+
+"ActionAddPhoto1" = "toevoegen";
+
+"ActionAddPhoto2" = "foto";
+
+"ActionOpenCode" = "Code bekijken";
+
+"ActionMute" = "Stil";
+
+"ActionUnmute" = "Geluid aan";
+
+
+"ActionDelete" = "Verwijder";
+
+// FIXME: I am not getting delete confirmation message
+"ActionDeleteMessage" = "Deze berichtgeschiedenis definitief verwijderen?";
+
+
+"ActionDeleteChannel" = "Verwijder kanaal";
+
+"ActionDeleteChannelMessage" = "Let op! Door dit kanaal te verwijderen worden alle berichten verwijderd en alle lidmaatschappen beeindigd. Dit kan niet ongedaan gemaakt worden. Toch dit kanaal verwijderen?";
+
+"ActionDeleteGroup" = "Verwijder groep";
+
+"ActionDeleteGroupMessage" = "Let op! Door deze groep te verwijderen worden alle berichten verwijderd en alle lidmaatschappen beeindigd. Dit kan niet ongedaan gemaakt worden. Toch deze groep verwijderen?";
+
+
+"ActionLeaveChannel" = "Verlaat kanaal";
+
+"ActionLeaveChannelMessage" = "Het lidmaatschap wordt hiermee beëindigd. Toch dit kanaal verlaten?";
+
+"ActionLeaveChannelAction" = "Verlaten";
+
+
+
+"ActionDeleteAndExit" = "Verwijder en afsluiten";
+
+"ActionDeleteAndExitMessage" = "Definitief deze groep verlaten en alle berichten verwijderen?";
+
+"ActionDeleteAndExitAction" = "Verwijder";
+
+
+
+"ActionClearHistory" = "Geschiedenis wissen";
+
+"ActionClearHistoryMessage" = "De geschiedenis wordt gewist, is dit de bedoeling?";
+
+"ActionClearHistoryAction" = "Wissen";
+
+/*
+ *  Network
+ */
+
+"StatusConnecting" = "Verbinden...";
+
+"StatusSyncing" = "Synchroniseren...";
+
+/*
+ * Errors
+ */
+
+"ErrorPhoneIncorrect" = "Opgegeven telefoonnummer is ongeldig. Probeer het nog eens.";
+
+"ErrorCodeExpired" = "Code verlopen. Start aanmelding en autoriseer opnieuw.";
+
+"ErrorAlreadyJoined" = "Er is al een lidmaatschap van deze groep.";
+
+"ErrorUnableToJoin" = "Nu niet mogelijk lid te worden van de groep.";
+
+"ErrorUnableToCall" = "Niet mogelijk dit nummer nu te bellen.";

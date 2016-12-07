@@ -39,7 +39,7 @@ open class AAContactsListContentController: AAContentTableController {
         section { (s) -> () in
             
             s.autoSeparatorsInset = 80
-            
+
             if let d = self.delegate {
                 d.willAddContacts(self, section: s)
             }
