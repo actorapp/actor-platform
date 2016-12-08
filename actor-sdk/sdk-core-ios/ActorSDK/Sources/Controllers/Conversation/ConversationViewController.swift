@@ -36,7 +36,7 @@ open class ConversationViewController:
     //
     
     fileprivate let titleView: UILabel = UILabel()
-    fileprivate let subtitleView: UILabel = UILabel()
+    open let subtitleView: UILabel = UILabel()
     fileprivate let navigationView: UIView = UIView()
     fileprivate let avatarView = AABarAvatarView()
     fileprivate let backgroundView = UIImageView()
