@@ -9,10 +9,11 @@
 import Foundation
 import ActorSDK
 
-open class AppCocoaHttpRuntime: CocoaHttpRuntime {
+open class AppCocoaHttpRuntime: NSObject {
     
+        static let queue:OperationQueue = OperationQueue()
     
-        public func getMethod(_ url: String) -> ARPromise! {
+        public class func getMethod(_ url: String) -> ARPromise! {
     
             return ARPromise { (resolver) in
     
@@ -45,31 +46,5 @@ open class AppCocoaHttpRuntime: CocoaHttpRuntime {
                 })
             }
         }
-    
-    
-    public func getMethodWithUrl2(_ url: String!, withStartOffset startOffset: jint, withSize size: jint, withTotalSize totalSize: jint) -> ARPromise! {
-        
-        return ARPromise { (resolver) in
-            
-            let header = "bytes=\(startOffset)-\(min(startOffset + size, totalSize))"
-            let request = NSMutableURLRequest(url: URL(string: url)!)
-            request.httpShouldHandleCookies = false
-            request.cachePolicy = NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData
-            request.setValue(header, forHTTPHeaderField: "Range")
-            request.httpMethod = "GET"
-            
-            NSURLConnection.sendAsynchronousRequest(request as URLRequest, queue: self.queue, completionHandler:{ (response: URLResponse?, data: Data?, error: Error?) -> Void in
-                if let respHttp = response as? HTTPURLResponse {
-                    if (respHttp.statusCode >= 200 && respHttp.statusCode < 300) {
-                        resolver.result(ARHTTPResponse(code: jint(respHttp.statusCode), withContent: data!.toJavaBytes()))
-                    } else {
-                        resolver.error(ARHTTPError(int: jint(respHttp.statusCode)))
-                    }
-                } else {
-                    resolver.error(ARHTTPError(int: 0))
-                }
-            })
-        }
-    }
 
 }

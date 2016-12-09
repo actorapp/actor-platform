@@ -34,6 +34,8 @@ open class AppDelegate : ActorApplicationDelegate {
         
         ActorSDK.sharedActor().endpoints = ["tcp://api-mtproto.im.xloto.com.br:9070"]
         
+        //AppCocoaHttpRuntime.getMethod("")
+        
         // Creating Actor
         ActorSDK.sharedActor().createActor()
         

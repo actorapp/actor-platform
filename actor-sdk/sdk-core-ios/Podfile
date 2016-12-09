@@ -36,7 +36,7 @@ target 'ActorApp' do
     pod 'MBProgressHUD'
     
     # Calls
-    # pod 'libjingle_peerconnection'
+    pod 'libjingle_peerconnection'
 end
 
 target 'ActorSDK' do
