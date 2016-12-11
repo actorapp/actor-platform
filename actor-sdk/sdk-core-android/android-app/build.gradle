@@ -1,6 +1,6 @@
 buildscript {
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.2'
+        classpath 'com.android.tools.build:gradle:2.2.3'
         classpath 'me.tatarka:gradle-retrolambda:3.2.5'
         classpath "com.google.gms:google-services:3.0.0"
     }

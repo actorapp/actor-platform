@@ -56,7 +56,7 @@ public class Application extends ActorSDKApplication {
     @Override
     public void onConfigureActorSDK() {
         ActorSDK.sharedActor().setDelegate(new ActorSDKDelegate());
-        ActorSDK.sharedActor().setPushId(209133700967L);
+        ActorSDK.sharedActor().setPushId(43880936595L);
         ActorSDK.sharedActor().setActorPushEndpoint(null);
         ActorSDK.sharedActor().setOnClientPrivacyEnabled(true);
         ActorStyle style = ActorSDK.sharedActor().style;
@@ -85,8 +85,8 @@ public class Application extends ActorSDKApplication {
                 "canalxloto"
         });
 
-//        ActorSDK.sharedActor().setEndpoints(new String[]{"tcp://192.168.1.8:9070"});
-        ActorSDK.sharedActor().setEndpoints(new String[]{"tcp://api-mtproto.im.xloto.com.br:9070"});
+        ActorSDK.sharedActor().setEndpoints(new String[]{"tcp://192.168.1.8:9070"});
+       // ActorSDK.sharedActor().setEndpoints(new String[]{"tcp://api-mtproto.im.xloto.com.br:9070"});
         ActorSDK.sharedActor().setAuthType(AuthActivity.AUTH_TYPE_PHONE);
 
 //        ActorSDK.sharedActor().setTwitter("");
