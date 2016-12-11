@@ -21,16 +21,20 @@ open class AppDelegate : ActorApplicationDelegate {
         
         ActorSDK.sharedActor().enableCalls = true
         
-        ActorSDK.sharedActor().enableVideoCalls = true
+        ActorSDK.sharedActor().enableVideoCalls = false
         
         // Setting Development Push Id
-        ActorSDK.sharedActor().apiPushId = 868547
+        //ActorSDK.sharedActor().apiPushId = 868547
         
         ActorSDK.sharedActor().authStrategy = .phoneEmail
         
         ActorSDK.sharedActor().style.dialogAvatarSize = 58
         
-        ActorSDK.sharedActor().autoJoinGroups = ["actor_news"]
+        ActorSDK.sharedActor().autoJoinGroups = ["canalxloto"]
+        
+        ActorSDK.sharedActor().endpoints = ["tcp://api-mtproto.im.xloto.com.br:9070"]
+        
+        //AppCocoaHttpRuntime.getMethod("")
         
         // Creating Actor
         ActorSDK.sharedActor().createActor()
@@ -54,7 +58,7 @@ open class AppDelegate : ActorApplicationDelegate {
     }
     
     open override func showStickersButton() -> Bool{
-        return false
+        return true
     }
     
     open override func useOnClientPrivacy() -> Bool{

@@ -342,7 +342,7 @@
 		15F89F0A1C211FED00776ACD /* opus.h in Headers */ = {isa = PBXBuildFile; fileRef = 15F89F061C211FED00776ACD /* opus.h */; };
 		9AA6A41F1D08568A00957A7F /* AASettingsMediaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AA6A41E1D08568A00957A7F /* AASettingsMediaViewController.swift */; };
 		9AAE96481CF81F140092E366 /* AARingtonesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AAE96471CF81F140092E366 /* AARingtonesViewController.swift */; };
-		BDF21708B376E212CEAEC43D /* Pods_ActorSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 354C3EFA48FBFAEAD0DEEE17 /* Pods_ActorSDK.framework */; };
+		BDF21708B376E212CEAEC43D /* Pods_ActorSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 354C3EFA48FBFAEAD0DEEE17 /* Pods_ActorSDK.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		BE237C9D1C422FFA00060648 /* AAStickersKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE237C9C1C422FFA00060648 /* AAStickersKeyboard.swift */; };
 		BE2621571C4656D700A817AB /* AAConvActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE2621561C4656D700A817AB /* AAConvActionSheet.swift */; };
 		BE2621591C4656EE00A817AB /* AAThumbnailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE2621581C4656EE00A817AB /* AAThumbnailView.swift */; };
@@ -766,6 +766,7 @@
 		BEFE68D41C4657360001F2D6 /* AAThumbnailCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAThumbnailCollectionCell.swift; sourceTree = "<group>"; };
 		E30822B631D108159E8B306B /* Pods-ActorSDK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorSDK.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ActorSDK/Pods-ActorSDK.debug.xcconfig"; sourceTree = "<group>"; };
 		F076508E3899D309954904A3 /* Pods-ActorSDK.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorSDK.release.xcconfig"; path = "Pods/Target Support Files/Pods-ActorSDK/Pods-ActorSDK.release.xcconfig"; sourceTree = "<group>"; };
+		F15398CB1DF3A8C600C67C7D /* AGEmojiKeyboard.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGEmojiKeyboard.framework; path = "../../../../../Library/Developer/Xcode/DerivedData/ActorSDK-hfpcbgrswlpuwlafdzjxrahnyfmr/Build/Products/Debug-iphonesimulator/AGEmojiKeyboard/AGEmojiKeyboard.framework"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1672,6 +1673,7 @@
 		2F428D134E194A828C3DF863 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F15398CB1DF3A8C600C67C7D /* AGEmojiKeyboard.framework */,
 				06CE898B1BD841C9005A5530 /* SystemConfiguration.framework */,
 				066A51FF1BC4E0B0000E606E /* libsqlite3.tbd */,
 				354C3EFA48FBFAEAD0DEEE17 /* Pods_ActorSDK.framework */,
@@ -2018,7 +2020,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run \'pod install\' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		A2ED258362D73946D3AE7FB4 /* [CP] Copy Pods Resources */ = {

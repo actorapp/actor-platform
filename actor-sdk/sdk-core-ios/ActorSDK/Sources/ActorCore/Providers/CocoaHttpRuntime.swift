@@ -4,11 +4,11 @@
 
 import Foundation
 
-class CocoaHttpRuntime: NSObject, ARHttpRuntime {
+open class CocoaHttpRuntime: NSObject, ARHttpRuntime {
     
     let queue:OperationQueue = OperationQueue()
     
-    func getMethodWithUrl(_ url: String!, withStartOffset startOffset: jint, withSize size: jint, withTotalSize totalSize: jint) -> ARPromise! {
+    public func getMethodWithUrl(_ url: String!, withStartOffset startOffset: jint, withSize size: jint, withTotalSize totalSize: jint) -> ARPromise! {
         
         return ARPromise { (resolver) in
             
@@ -33,7 +33,7 @@ class CocoaHttpRuntime: NSObject, ARHttpRuntime {
         }
     }
     
-    func putMethod(withUrl url: String!, withContents contents: IOSByteArray!) -> ARPromise! {
+    public func putMethod(withUrl url: String!, withContents contents: IOSByteArray!) -> ARPromise! {
         return ARPromise { (resolver) in
             let request = NSMutableURLRequest(url: URL(string: url)!)
             request.httpShouldHandleCookies = false

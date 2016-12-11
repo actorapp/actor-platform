@@ -130,7 +130,7 @@ extension JavaUtilAbstractCollection : Sequence {
 }
 
 
-public extension JavaUtilList {
+public extension JavaUtilListProtocol {
     public func toSwiftArray<T>() -> [T] {
         var res = [T]()
         for i in 0..<self.size() {
