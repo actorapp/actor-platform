@@ -76,7 +76,7 @@ final class ApplePushProvider(userId: Int)(implicit system: ActorSystem) extends
 
   private def isLegacyCreds(creds: ApplePushCredentials) = creds.bundleId.isEmpty
 
-  private def withClient[A](creds: ApplePushCredentials)(f: ApnsClient[SimpleApnsPushNotification] ⇒ A): Unit = {
+  private def withClient[A](creds: ApplePushCredentials)(f: ApnsClient ⇒ A): Unit = {
     val credsKey = extractCredsId(creds)
     applePushExt.client(credsKey) match {
       case Some(futureClient) ⇒ futureClient foreach { f(_) }

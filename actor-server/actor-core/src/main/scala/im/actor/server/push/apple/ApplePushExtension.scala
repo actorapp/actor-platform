@@ -5,7 +5,7 @@ import java.util.concurrent.{ ExecutionException, TimeUnit, TimeoutException }
 
 import akka.actor.{ ActorSystem, ExtendedActorSystem, Extension, ExtensionId, ExtensionIdProvider }
 import akka.event.Logging
-import com.relayrides.pushy.apns.ApnsClient
+import com.relayrides.pushy.apns.{ ApnsClient, ApnsClientBuilder }
 import com.relayrides.pushy.apns.util.SimpleApnsPushNotification
 import im.actor.server.db.DbExtension
 import im.actor.server.model.push.ApplePushCredentials
@@ -29,7 +29,7 @@ final class ApplePushExtension(system: ActorSystem) extends Extension with AnyRe
 
   private val MaxCreateAttempts = 50
 
-  type Client = ApnsClient[SimpleApnsPushNotification]
+  type Client = ApnsClient
 
   import system.dispatcher
 
@@ -69,9 +69,13 @@ final class ApplePushExtension(system: ActorSystem) extends Extension with AnyRe
 
     val connectFuture: Future[Client] = Future {
       blocking {
-        val client = new ApnsClient[SimpleApnsPushNotification](new File(cert.path), cert.password)
+        //        val client = new ApnsClient[SimpleApnsPushNotification](new File(cert.path), cert.password)
+        //        client.connect(host).get(20, TimeUnit.SECONDS)
+        //        log.debug("Established client connection for cert: {}, is voip: {}", certKey, cert.isVoip)
+        //        client
+
+        val client = new ApnsClientBuilder().setClientCredentials(new File(cert.path), cert.password).build()
         client.connect(host).get(20, TimeUnit.SECONDS)
-        log.debug("Established client connection for cert: {}, is voip: {}", certKey, cert.isVoip)
         client
       }
     }
