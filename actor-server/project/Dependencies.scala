@@ -107,8 +107,10 @@ object Dependencies {
     val apacheCommonsValidator  = "commons-validator"             % "commons-validator"              % "1.4.1"
 
     val guava                   = "com.google.guava"              % "guava"                          % "19.0"
-    val alpn                    = "org.eclipse.jetty.alpn"        % "alpn-api"                       % "1.1.2.v20150522" % "runtime"
-    val tcnative                = "io.netty"                      % "netty-tcnative"                 % "1.1.33.Fork15" classifier "linux-x86_64"
+    val alpn                    = "org.eclipse.jetty.alpn"        % "alpn-api"                       % "1.1.3.v20160715" % "runtime"
+    //val tcnative                = "io.netty"                      % "netty-tcnative"                 % "1.1.33.Fork24" classifier "linux-x86_64"
+
+    val tcnative                = "io.netty"                      % "netty-tcnative-boringssl-static"                 % "1.1.33.Fork24"
     val silencer                = "com.github.ghik"               % "silencer-lib"                   % "0.4"
   }
 
