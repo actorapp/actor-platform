@@ -199,7 +199,7 @@ public class ActorSDK {
 
     private String inviteDataUrl = "https://api.actor.im/v1/groups/invites/";
 
-    private ActorSDK() {
+    protected ActorSDK() {
         endpoints = new String[]{
                 "tcp://front1-mtproto-api-rev3.actor.im:443",
                 "tcp://front2-mtproto-api-rev3.actor.im:443",

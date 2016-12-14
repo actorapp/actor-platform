@@ -548,11 +548,6 @@ public class AndroidMessenger extends im.actor.core.Messenger {
         return modules.getEvents();
     }
 
-
-    public ModuleContext getModules() {
-        return getModuleContext();
-    }
-
     public AppStateVM getAppStateVM() {
         return modules.getConductor().getAppStateVM();
     }
@@ -562,4 +557,10 @@ public class AndroidMessenger extends im.actor.core.Messenger {
 
     }
 
+    @Override
+    public void onLoggedIn() {
+        super.onLoggedIn();
+
+        get
+    }
 }

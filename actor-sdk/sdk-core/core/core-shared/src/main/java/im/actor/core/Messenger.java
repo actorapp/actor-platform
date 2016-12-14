@@ -2747,7 +2747,8 @@ public class Messenger {
      *
      * @return Module Contexts
      */
-    ModuleContext getModuleContext() {
+    @ObjectiveCName("getModulesContext")
+    public ModuleContext getModuleContext() {
         return modules;
     }
 }
