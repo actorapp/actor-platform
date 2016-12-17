@@ -7,22 +7,25 @@ import MBProgressHUD
 
 public extension ARPromise {
     
-    func startUserAction(_ ignore: [String] = []) -> ARPromise {
+    public func startUserAction(_ ignore: [String] = []) -> ARPromise {
         
-        let window = UIApplication.shared.windows[1]
-        let hud = MBProgressHUD(window: window)
+        let window = UIApplication.shared.windows[0]
+       // let hud = MBProgressHUD(window: window)
+        
+        let hud = MBProgressHUD(view: window)
         hud.mode = MBProgressHUDMode.indeterminate
         hud.removeFromSuperViewOnHide = true
         window.addSubview(hud)
         window.bringSubview(toFront: hud)
-        hud.show(true)
+        //hud.show(true)
+        hud.show(animated: true)
         
         then { (t: AnyObject!) -> () in
-            hud.hide(true)
+            hud.hide(animated:true)
         }
         
         failure { (e) -> () in
-            hud.hide(true)
+            hud.hide(animated:true)
             if let rpc = e as? ACRpcException {
                 if ignore.contains(rpc.tag) {
                     return
@@ -34,23 +37,23 @@ public extension ARPromise {
         return self
     }
     
-    func then<T>(_ closure: @escaping (T!) -> ()) -> ARPromise {
+    public func then<T>(_ closure: @escaping (T!) -> ()) -> ARPromise {
         then(PromiseConsumer(closure: closure))
         return self
     }
     
-    func after(_ closure: @escaping () -> ()) -> ARPromise {
+    public func after(_ closure: @escaping () -> ()) -> ARPromise {
         then(PromiseConsumerEmpty(closure: closure))
         return self
     }
     
-    func failure(withClosure closure: @escaping (JavaLangException!) -> ()) -> ARPromise {
+    public func failure(withClosure closure: @escaping (JavaLangException!) -> ()) -> ARPromise {
         failure(PromiseConsumer(closure: closure))
         return self
     }
 }
 
-class PromiseConsumer<T>: NSObject, ARConsumer {
+open class PromiseConsumer<T>: NSObject, ARConsumer {
     
     let closure: (T!) -> ()
     
@@ -58,12 +61,12 @@ class PromiseConsumer<T>: NSObject, ARConsumer {
         self.closure = closure
     }
 
-    func apply(withId t: Any!) {
+    open func apply(withId t: Any!) {
         closure(t as? T)
     }
 }
 
-class PromiseConsumerEmpty: NSObject, ARConsumer {
+open class PromiseConsumerEmpty: NSObject, ARConsumer {
     
     let closure: () -> ()
     
@@ -71,7 +74,7 @@ class PromiseConsumerEmpty: NSObject, ARConsumer {
         self.closure = closure
     }
     
-    func apply(withId t: Any!) {
+    open func apply(withId t: Any!) {
         closure()
     }
 }

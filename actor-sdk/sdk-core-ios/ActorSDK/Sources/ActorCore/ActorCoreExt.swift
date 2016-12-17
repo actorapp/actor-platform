@@ -422,7 +422,7 @@ open class AAPromiseFunc: NSObject, ARPromiseFunc {
     }
 }
 
-extension ARPromise {
+public extension ARPromise {
     convenience init(closure: @escaping (_ resolver: ARPromiseResolver) -> ()) {
         self.init(executor: AAPromiseFunc(closure: closure))
     }

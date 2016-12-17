@@ -119,7 +119,6 @@ final class AADialogCell: AATableViewCell, AABindedCell {
         //
         avatarView.bind(item.dialogTitle, id: Int(item.peer.peerId), avatar: item.dialogAvatar)
         
-        
         // Forcing Async Rendering.
         // This flag can became false when cell was resized
         if !titleView.displaysAsynchronously {
@@ -129,7 +128,7 @@ final class AADialogCell: AATableViewCell, AABindedCell {
         if !messageView.displaysAsynchronously {
             messageView.displaysAsynchronously = true
         }
-
+    
         
         // Reseting Text Layout on new peer binding
         if !isRebind {
@@ -170,6 +169,9 @@ final class AADialogCell: AATableViewCell, AABindedCell {
             }
         }
         
+        
+        
+ 
         // Cancelling Renderer and forcing layouting to start new rendering
         cellRenderer.cancelRender()
 
@@ -185,6 +187,17 @@ final class AADialogCell: AATableViewCell, AABindedCell {
 //            isEditing = false
 //        }
 //    }
+    
+  
+    
+    open func addImageDialogType(_ image: UIImage!){
+        let dialogTypeView = UIImageView(image:image)
+        let dialogTypeFrame = CGRect(x: 76, y: 17, width: 18, height: 18)
+        dialogTypeView.frame = dialogTypeFrame
+        self.titleView.left = self.titleView.left+20
+        self.contentView.addSubview(dialogTypeView)
+    }
+ 
     
     open override func layoutSubviews() {
         super.layoutSubviews()
@@ -209,11 +222,9 @@ final class AADialogCell: AATableViewCell, AABindedCell {
             self.titleView.frame = titleFrame
         }
         
-        
         //
         // Status Icon
         //
-
         if (!self.statusView.isHidden) {
             statusView.frame = CGRect(x: leftPadding, y: 44, width: 20, height: 18)
         }
@@ -222,10 +233,9 @@ final class AADialogCell: AATableViewCell, AABindedCell {
         //
         // Rest of Elements are layouted on the last phase
         //
-        
-        if bindedItem != nil {
+        if let binItem = bindedItem {
             let config = AADialogCellConfig(
-                item: bindedItem!,
+                item: binItem,
                 isStatusVisible: !statusView.isHidden,
                 titleWidth: titleFrame.width,
                 contentWidth: width)
@@ -242,6 +252,23 @@ final class AADialogCell: AATableViewCell, AABindedCell {
                 counterView.displaysAsynchronously = false
                 counterView.clearContentsBeforeAsynchronouslyDisplay = false
             }
+            
+            let isBot = binItem.isBot
+            let isChannel = binItem.isChannel
+            
+            if(binItem.peer.peerType == ACPeerType.group()){
+                if(isChannel){
+                    addImageDialogType(UIImage.bundled("ic_channel"))
+                }else {
+                    addImageDialogType(UIImage.bundled("ic_group"))
+                }
+            }else if(bindedItem?.peer.peerType == ACPeerType.private()){
+                if(isBot){
+                    addImageDialogType(UIImage.bundled("ic_robot"))
+                }
+            }
+            
+            
         }
     }
     
@@ -258,7 +285,6 @@ final class AADialogCell: AATableViewCell, AABindedCell {
         titleContainer.maximumNumberOfRows = 1
         titleContainer.truncationType = .end
         let titleLayout = YYTextLayout(container: titleContainer, text: title)!
-        
         
         //
         // Message Status

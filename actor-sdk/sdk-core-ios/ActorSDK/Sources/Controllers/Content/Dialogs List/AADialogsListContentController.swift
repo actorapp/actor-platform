@@ -56,6 +56,10 @@ open class AADialogsListContentController: AAContentTableController, UISearchBar
                 }
                 
                 r.selectAction = { (dialog: ACDialog) -> Bool in
+                    print(dialog.isBot)
+                    print(dialog.isChannel)
+                    print(dialog.peer.peerType)
+                    
                     if let d = self.delegate {
                         return d.recentsDidTap(self, dialog: dialog)
                     }

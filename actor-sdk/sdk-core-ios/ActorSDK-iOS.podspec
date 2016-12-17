@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name            = "ActorSDK-iOS"
-  s.version         = "3.0.457.12"
+  s.version         = "3.0.457.18"
   s.summary         = "Actor SDK for intergration Actor Messaging Lotericas to your apps"
   s.homepage        = "https://actor.im/"
   s.license         = { :type => 'MIT', :file => 'LICENSE' }
@@ -13,7 +13,7 @@ Pod::Spec.new do |s|
   # Core
   s.dependency 'RegexKitLite'
   s.dependency 'zipzap'
-  s.dependency 'J2ObjC-Framework'
+  #s.dependency 'J2ObjC-Framework', :podspec => 'https://raw.githubusercontent.com/dfsilva/J2ObjC-Framework/v1.2a/J2ObjC-Framework.podspec'
   s.dependency 'ReachabilitySwift'
 
   # UI
