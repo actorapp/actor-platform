@@ -285,7 +285,8 @@ public class DialogsActor extends ModuleActor {
                     .setDialogTitle(peerDesc.getTitle())
                     .setDialogAvatar(peerDesc.getAvatar())
                     .setSortKey(dialogHistory.getSortDate())
-
+                    .setIsChannel(peerDesc.isChannel())
+                    .setIsBot(peerDesc.isBot())
                     .setRid(dialogHistory.getRid())
                     .setTime(dialogHistory.getDate())
                     .setMessageType(description.getContentType())
