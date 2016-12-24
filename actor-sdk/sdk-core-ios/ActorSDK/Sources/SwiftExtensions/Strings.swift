@@ -7,7 +7,7 @@ import j2objc
 
 public extension String {
     
-    public var isEmpty: Bool { return self.characters.isEmpty }
+    //public var isEmpty: Bool { return self.characters.isEmpty }
     
     public var length: Int { return self.characters.count }
     
@@ -82,9 +82,9 @@ public extension String {
         return false
     }
     
-    public func contains(_ text: String) -> Bool {
+    /*public func contains(_ text: String) -> Bool {
         return self.range(of: text, options: NSString.CompareOptions.caseInsensitive, range: nil, locale: nil) != nil
-    }
+    }*/
     
     public func startsWith(_ text: String) -> Bool {
         let range = self.range(of: text)

@@ -42,12 +42,14 @@ final class AADialogCell: AATableViewCell, AABindedCell {
     
     open let avatarView = AAAvatarView()
     open let titleView = YYLabel()
+    open let dialogTypeView = UIImageView()
     open let messageView = YYLabel()
     
     open let dateView = YYLabel()
     open let statusView = UIImageView()
     open let counterView = YYLabel()
     open let counterViewBg = UIImageView()
+    
         
     // Binding Data
     
@@ -84,6 +86,7 @@ final class AADialogCell: AATableViewCell, AABindedCell {
         
         self.contentView.addSubview(avatarView)
         self.contentView.addSubview(titleView)
+        self.contentView.addSubview(dialogTypeView)
         self.contentView.addSubview(messageView)
         self.contentView.addSubview(dateView)
         self.contentView.addSubview(statusView)
@@ -191,11 +194,19 @@ final class AADialogCell: AATableViewCell, AABindedCell {
   
     
     open func addImageDialogType(_ image: UIImage!){
-        let dialogTypeView = UIImageView(image:image)
+        dialogTypeView.image = image
         let dialogTypeFrame = CGRect(x: 76, y: 17, width: 18, height: 18)
         dialogTypeView.frame = dialogTypeFrame
         self.titleView.left = self.titleView.left+20
-        self.contentView.addSubview(dialogTypeView)
+        
+    }
+    
+    open func removeImageDialogType(){
+        dialogTypeView.image = UIImage()
+        let dialogTypeFrame = CGRect(x: 76, y: 17, width: 18, height: 18)
+        dialogTypeView.frame = dialogTypeFrame
+        self.titleView.left = 76
+        
     }
  
     
@@ -253,6 +264,11 @@ final class AADialogCell: AATableViewCell, AABindedCell {
                 counterView.clearContentsBeforeAsynchronouslyDisplay = false
             }
             
+            
+            //
+            //Image Type
+            //
+            
             let isBot = binItem.isBot
             let isChannel = binItem.isChannel
             
@@ -262,12 +278,15 @@ final class AADialogCell: AATableViewCell, AABindedCell {
                 }else {
                     addImageDialogType(UIImage.bundled("ic_group"))
                 }
-            }else if(bindedItem?.peer.peerType == ACPeerType.private()){
+            }else if(binItem.peer.peerType == ACPeerType.private()){
                 if(isBot){
                     addImageDialogType(UIImage.bundled("ic_robot"))
+                }else{
+                    removeImageDialogType()
                 }
+            }else{
+                removeImageDialogType()
             }
-            
             
         }
     }
