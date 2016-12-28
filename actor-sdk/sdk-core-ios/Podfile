@@ -62,7 +62,7 @@ target 'ActorSDK' do
     pod 'YYWebImage'
     pod 'YYCategories'
     pod 'DZNWebViewController'
-    pod 'AGEmojiKeyboard'
+    #pod 'AGEmojiKeyboard'
 
     # Small UI
     pod 'VBFPopFlatButton'

@@ -213,7 +213,7 @@
 				TargetAttributes = {
 					EA6B7348F8364542DDD264F741AAAA19 = {
 						CreatedOnToolsVersion = 6.4;
-						DevelopmentTeam = HVJR44Y5B6;
+						DevelopmentTeam = HA23Y6A5LW;
 						LastSwiftMigration = 0800;
 						SystemCapabilities = {
 							com.apple.Maps.iOS = {
@@ -446,6 +446,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = HA23Y6A5LW;
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_BITCODE = NO;
 				FABRIC_BUILD_SECRET = "";
@@ -462,7 +463,7 @@
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = im.actor.sdk.dev;
+				PRODUCT_BUNDLE_IDENTIFIER = br.com.diegosilva.xlotomessenger;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SDK_PATH = "../actor-sdk";
@@ -525,6 +526,7 @@
 				CODE_SIGN_ENTITLEMENTS = "ActorApp/Supporting Files/ActorApp.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = HA23Y6A5LW;
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_BITCODE = NO;
 				FABRIC_BUILD_SECRET = "";
@@ -540,7 +542,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = im.actor.sdk.dev;
+				PRODUCT_BUNDLE_IDENTIFIER = br.com.diegosilva.xlotomessenger;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SDK_PATH = "../actor-sdk";

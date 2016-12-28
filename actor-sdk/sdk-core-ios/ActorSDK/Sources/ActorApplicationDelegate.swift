@@ -46,7 +46,8 @@ open class ActorApplicationDelegate: ActorSDKDelegateDefault, UIApplicationDeleg
     }
     
     open func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        let tokenString = "\(deviceToken)".replace(" ", dest: "").replace("<", dest: "").replace(">", dest: "")
+        let tokenString = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
+       // let tokenString = "\(deviceToken)".replace(" ", dest: "").replace("<", dest: "").replace(">", dest: "")
         ActorSDK.sharedActor().pushRegisterToken(tokenString)
     }
     

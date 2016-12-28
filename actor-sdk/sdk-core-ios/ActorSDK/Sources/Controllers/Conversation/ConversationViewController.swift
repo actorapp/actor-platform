@@ -8,7 +8,7 @@ import MobileCoreServices
 import AddressBook
 import AddressBookUI
 import AVFoundation
-import AGEmojiKeyboard
+//import AGEmojiKeyboard
 
 
 final public class ConversationViewController:
@@ -21,9 +21,11 @@ final public class ConversationViewController:
     ABPeoplePickerNavigationControllerDelegate,
     AAAudioRecorderDelegate,
     AAConvActionSheetDelegate,
-    //AAStickersKeyboardDelegate,
-    AGEmojiKeyboardViewDataSource,
-    AGEmojiKeyboardViewDelegate{
+    AAStickersKeyboardDelegate
+    //,
+    //AGEmojiKeyboardViewDataSource,
+   // AGEmojiKeyboardViewDelegate
+    {
     
     // Data binder
     fileprivate let binder = AABinder()
@@ -53,10 +55,10 @@ final public class ConversationViewController:
     // Stickers
     //
     
-    //fileprivate var stickersView: AAStickersKeyboard!
+    fileprivate var stickersView: AAStickersKeyboard!
     open var stickersButton : UIButton!
     fileprivate var stickersOpen = false
-    fileprivate var emojiKeyboar: AGEmojiKeyboardView!
+    //fileprivate var emojiKeyboar: AGEmojiKeyboardView!
     
     
     //
@@ -284,12 +286,9 @@ final public class ConversationViewController:
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: UIBarButtonItemStyle.plain, target: nil, action: nil)
         
         let frame = CGRect(x: 0, y: 0, width: self.view.frame.size.width, height: 216)
-       // self.stickersView = AAStickersKeyboard(frame: frame)
-        //self.stickersView.delegate = self
+        self.stickersView = AAStickersKeyboard(frame: frame)
+        self.stickersView.delegate = self
         
-        self.emojiKeyboar = AGEmojiKeyboardView(frame:frame, dataSource: self)
-        self.emojiKeyboar.delegate = self
-        self.emojiKeyboar.autoresizingMask = UIViewAutoresizing.flexibleHeight
         //emojiKeyboar.frame = frame
         
         NotificationCenter.default.addObserver(
@@ -476,8 +475,8 @@ final public class ConversationViewController:
         titleView.frame = CGRect(x: 0, y: 4, width: (navigationView.frame.width - 0), height: 20)
         subtitleView.frame = CGRect(x: 0, y: 22, width: (navigationView.frame.width - 0), height: 20)
         
-        //stickersView.frame = CGRect(x: 0, y: 0, width: self.view.frame.size.width, height: 216)
-        emojiKeyboar.frame = CGRect(x: 0, y: 0, width: self.view.frame.size.width, height: 216)
+        stickersView.frame = CGRect(x: 0, y: 0, width: self.view.frame.size.width, height: 216)
+        //emojiKeyboar.frame = CGRect(x: 0, y: 0, width: self.view.frame.size.width, height: 216)
     }
     
     override open func viewDidAppear(_ animated: Bool) {
@@ -1075,8 +1074,8 @@ final public class ConversationViewController:
         if self.stickersOpen == false {
              //self.stickersView.loadStickers()
             
-            //self.textInputbar.textView.inputView = self.stickersView
-            self.textInputbar.textView.inputView = self.emojiKeyboar
+            self.textInputbar.textView.inputView = self.stickersView
+            //self.textInputbar.textView.inputView = self.emojiKeyboar
             self.textInputbar.textView.inputView?.isOpaque = false
             self.textInputbar.textView.inputView?.backgroundColor = UIColor.clear
             self.textInputbar.textView.refreshFirstResponder()
@@ -1105,7 +1104,7 @@ final public class ConversationViewController:
         Actor.sendSticker(with: self.peer, with: sticker)
     }
     
-    
+    /*
     public func emojiKeyboardView(_ emojiKeyboardView: AGEmojiKeyboardView!, imageForSelectedCategory category: AGEmojiKeyboardViewCategoryImage) -> UIImage{
         switch category {
         case .recent:
@@ -1151,6 +1150,7 @@ final public class ConversationViewController:
     public func emojiKeyBoardViewDidPressBackSpace(_ emojiKeyBoardView: AGEmojiKeyboardView!){
         self.textView.deleteBackward()
     }
+ */
 }
 
 class AABarAvatarView : AAAvatarView {

@@ -359,10 +359,16 @@ import ReachabilitySwift
             requestPush()
         }
         
-        var controller: UIViewController! = delegate.actorControllerAfterLogIn()
-        if controller == nil {
-            controller = delegate.actorControllerForStart()
-        }
+        self.showMainController()
+    }
+    
+    open func didLoggedInWithoutPush() {
+        self.showMainController()
+    }
+    
+    func showMainController(){
+        var controller = delegate.actorControllerForStart()
+        
         if controller == nil {
             let tab = AARootTabViewController()
             

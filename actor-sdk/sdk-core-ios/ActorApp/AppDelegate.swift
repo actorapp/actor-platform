@@ -24,7 +24,8 @@ open class AppDelegate : ActorApplicationDelegate {
         ActorSDK.sharedActor().enableVideoCalls = false
         
         // Setting Development Push Id
-        //ActorSDK.sharedActor().apiPushId = 868547
+        ActorSDK.sharedActor().apiPushId = 868547
+        ActorSDK.sharedActor().autoPushMode = .fromStart
         
         ActorSDK.sharedActor().authStrategy = .phoneEmail
         
@@ -32,9 +33,9 @@ open class AppDelegate : ActorApplicationDelegate {
         
        // ActorSDK.sharedActor().autoJoinGroups = ["canalxloto"]
         
-        ActorSDK.sharedActor().endpoints = ["tcp://api-mtproto.im.xloto.com.br:9070"]
+        //ActorSDK.sharedActor().endpoints = ["tcp://api-mtproto.im.xloto.com.br:9070"]
         
-        //ActorSDK.sharedActor().endpoints = ["tcp://192.168.1.3:9070"]
+        ActorSDK.sharedActor().endpoints = ["tcp://192.168.1.8:9070"]
         
         //AppCocoaHttpRuntime.getMethod("")
         
@@ -56,7 +57,7 @@ open class AppDelegate : ActorApplicationDelegate {
     }
     
     open override func actorRootInitialControllerIndex() -> Int? {
-        return 0
+        return 1
     }
     
     open override func showStickersButton() -> Bool{
