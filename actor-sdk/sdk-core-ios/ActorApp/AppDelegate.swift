@@ -25,7 +25,7 @@ open class AppDelegate : ActorApplicationDelegate {
         
         // Setting Development Push Id
         ActorSDK.sharedActor().apiPushId = 868547
-        ActorSDK.sharedActor().autoPushMode = .fromStart
+        ActorSDK.sharedActor().autoPushMode = .afterLogin
         
         ActorSDK.sharedActor().authStrategy = .phoneEmail
         
@@ -61,7 +61,7 @@ open class AppDelegate : ActorApplicationDelegate {
     }
     
     open override func showStickersButton() -> Bool{
-        return true
+        return false
     }
     
     open override func useOnClientPrivacy() -> Bool{

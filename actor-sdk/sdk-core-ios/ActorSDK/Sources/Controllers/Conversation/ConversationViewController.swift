@@ -75,6 +75,8 @@ final public class ConversationViewController:
     fileprivate var textMode:Bool!
     fileprivate var micOn: Bool! = true
     
+    open var removeExcedentControllers = true
+    
 
     
     ////////////////////////////////////////////////////////////
@@ -482,10 +484,12 @@ final public class ConversationViewController:
     override open func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        if navigationController!.viewControllers.count > 2 {
-            let firstController = navigationController!.viewControllers[0]
-            let currentController = navigationController!.viewControllers[navigationController!.viewControllers.count - 1]
-            navigationController!.setViewControllers([firstController, currentController], animated: false)
+        if self.removeExcedentControllers {
+            if navigationController!.viewControllers.count > 2 {
+                let firstController = navigationController!.viewControllers[0]
+                let currentController = navigationController!.viewControllers[navigationController!.viewControllers.count - 1]
+                navigationController!.setViewControllers([firstController, currentController], animated: false)
+            }
         }
         
         if !AADevice.isiPad {
