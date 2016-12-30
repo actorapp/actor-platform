@@ -94,7 +94,7 @@ object Dependencies {
 
     val tyrex                   = "tyrex"                         %  "tyrex"                         % "1.0.1"
 
-    val pushy                   = "com.relayrides"                %  "pushy"                         % "0.8.1"
+    val pushy                   = "com.relayrides"                %  "pushy"                         % "0.8.2"
 
     val logbackClassic          = "ch.qos.logback"                % "logback-classic"                % "1.1.2"
     val scalaLogging            = "com.typesafe.scala-logging"    %% "scala-logging"                 % "3.1.0"
@@ -108,9 +108,9 @@ object Dependencies {
 
     val guava                   = "com.google.guava"              % "guava"                          % "19.0"
     val alpn                    = "org.eclipse.jetty.alpn"        % "alpn-api"                       % "1.1.3.v20160715" % "runtime"
-    val tcnative                = "io.netty"                      % "netty-tcnative"                 % "1.1.33.Fork24" classifier "linux-x86_64"
+    //val tcnative                = "io.netty"                      % "netty-tcnative"                 % "1.1.33.Fork24" classifier "linux-x86_64"
 
-    //val tcnative                = "io.netty"                      % "netty-tcnative-boringssl-static"                 % "1.1.33.Fork24"
+    val tcnative                = "io.netty"                      % "netty-tcnative-boringssl-static"  % "1.1.33.Fork24"
     val silencer                = "com.github.ghik"               % "silencer-lib"                   % "0.4"
   }
 
