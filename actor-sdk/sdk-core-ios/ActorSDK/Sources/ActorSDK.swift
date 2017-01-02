@@ -145,6 +145,9 @@ import ReachabilitySwift
     /// Should perform auto join only after first message or contact
     open var autoJoinOnReady = true
     
+    // Use call to active app
+    open var enableCallToValidateCode = false
+    
     //
     // User Onlines
     //
@@ -433,7 +436,8 @@ import ReachabilitySwift
     
     @objc open func pushRegistry(_ registry: PKPushRegistry, didUpdate credentials: PKPushCredentials, forType type: PKPushType) {
         if (type == PKPushType.voIP) {
-            let tokenString = "\(credentials.token)".replace(" ", dest: "").replace("<", dest: "").replace(">", dest: "")
+            let token = credentials.token.map { String(format: "%02.2hhx", $0) }.joined()
+            let tokenString = "\(token)".replace(" ", dest: "").replace("<", dest: "").replace(">", dest: "")
             pushRegisterKitToken(tokenString)
         }
     }

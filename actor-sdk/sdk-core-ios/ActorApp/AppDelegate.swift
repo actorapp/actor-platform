@@ -14,7 +14,34 @@ open class AppDelegate : ActorApplicationDelegate {
         ActorSDK.sharedActor().inviteUrlHost = "quit.email"
         ActorSDK.sharedActor().inviteUrlScheme = "actor"
         
-        ActorSDK.sharedActor().style.searchStatusBarStyle = .default
+        let style = ActorSDK.sharedActor().style
+        
+        // Default Status Bar style
+        style.vcStatusBarStyle = .lightContent
+        
+        // Navigation colors
+        style.navigationBgColor = UIColor(rgb: 0xA43436)
+        style.dialogStatusActive = UIColor(rgb: 0xff5882)
+        style.welcomeBgColor = UIColor(rgb: 0xA43436)
+        
+        ActorSDK.sharedActor().style.welcomeSignupTextColor = UIColor(rgb: 0xA43436)
+        ActorSDK.sharedActor().style.nextBarColor = UIColor(rgb: 0xA43436)
+        
+        style.navigationTintColor = UIColor.white
+        style.navigationTitleColor = UIColor.white
+        style.navigationSubtitleColor = UIColor.white.alpha(0.64)
+        style.navigationSubtitleActiveColor = UIColor.white
+        // style.navigationHairlineHidden = true
+        
+        // Full screen placeholder. Set here value that matches UINavigationBar color
+        style.placeholderBgColor = UIColor(rgb: 0x528dbe)
+        
+        // Override User's online/offline statuses in navigation color
+        style.userOfflineNavigationColor = UIColor.white.alpha(0.64)
+        style.userOnlineNavigationColor = UIColor.white
+        
+        // Override search status bar style
+        style.searchStatusBarStyle = .default
         
         // Enabling experimental features
         ActorSDK.sharedActor().enableExperimentalFeatures = true
@@ -33,9 +60,11 @@ open class AppDelegate : ActorApplicationDelegate {
         
        // ActorSDK.sharedActor().autoJoinGroups = ["canalxloto"]
         
-        //ActorSDK.sharedActor().endpoints = ["tcp://api-mtproto.im.xloto.com.br:9070"]
+        ActorSDK.sharedActor().endpoints = ["tcp://api-mtproto.im.xloto.com.br:9070"]
         
-        ActorSDK.sharedActor().endpoints = ["tcp://192.168.1.8:9070"]
+        //ActorSDK.sharedActor().endpoints = ["tcp://192.168.1.3:9070"]
+        
+//        ActorSDK.sharedActor().endpoints = ["tcp://api-mtproto.actor.diegosilva.com.br:9070"]
         
         //AppCocoaHttpRuntime.getMethod("")
         

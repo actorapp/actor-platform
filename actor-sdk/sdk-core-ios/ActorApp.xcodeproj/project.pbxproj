@@ -74,6 +74,7 @@
 		A275ED497CA570AD01FB66A7 /* Pods_ActorApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ActorApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE8D1D9859D2C4D4C7EC7AD74BB65F0E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = "Supporting Files/Info.plist"; sourceTree = "<group>"; };
 		F153992A1DF83A0900C67C7D /* AppCocoaHttpRuntime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppCocoaHttpRuntime.swift; sourceTree = "<group>"; };
+		F175DF8A1E168C8F005BCF1A /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		F76A77E9428111C798E69B43EA06A281 /* ActorApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = ActorApp.entitlements; path = "Supporting Files/ActorApp.entitlements"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -240,6 +241,7 @@
 				pt,
 				ru,
 				es,
+				"pt-BR",
 			);
 			mainGroup = D873D85572C6C400293E0DF69DBA58DD;
 			productRefGroup = C83A7EEB1948C38ECEFC1D330C57A7B1 /* Products */;
@@ -416,6 +418,7 @@
 				6238B42B2462DBE201B457C54CA819D7 /* ru */,
 				6EE6E889CD9BA13B5A0828221608DB9A /* zh-Hans */,
 				15F89F101C21317400776ACD /* es */,
+				F175DF8A1E168C8F005BCF1A /* pt-BR */,
 			);
 			name = InfoPlist.strings;
 			path = Resources/Localizable;

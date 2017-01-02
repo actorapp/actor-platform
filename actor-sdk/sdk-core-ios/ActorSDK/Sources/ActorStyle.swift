@@ -45,6 +45,9 @@ open class ActorStyle {
     /// View Controller background color for settings
     open var vcBackyardColor = UIColor(rgb: 0xf0eff5)
     
+    
+    open var nextBarColor = UIColor(red: 94, green: 142, blue: 192)
+    
     //
     // UINavigationBar
     //

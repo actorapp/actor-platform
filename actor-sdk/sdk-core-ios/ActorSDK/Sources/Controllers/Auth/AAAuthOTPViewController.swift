@@ -126,7 +126,9 @@ open class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewContr
         scrollView.addSubview(hintLabel)
         scrollView.addSubview(codeField)
         scrollView.addSubview(codeFieldLine)
-        scrollView.addSubview(haventReceivedCode)
+        if(ActorSDK.sharedActor().enableCallToValidateCode){
+            scrollView.addSubview(haventReceivedCode)
+        }
         
         view.addSubview(scrollView)
         super.viewDidLoad()
@@ -226,14 +228,18 @@ open class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewContr
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        if self.phone != nil {
+        if(ActorSDK.sharedActor().enableCallToValidateCode){
+            if self.phone != nil {
         
-            updateTimerText()
+                updateTimerText()
         
-            if !dialed {
-                counterTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(AAAuthOTPViewController.updateTimer), userInfo: nil, repeats: true)
+                if !dialed {
+                    counterTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(AAAuthOTPViewController.updateTimer), userInfo: nil, repeats: true)
+                }
             }
         }
+ 
+        self.codeField.becomeFirstResponder()
     }
     
     func updateTimer() {

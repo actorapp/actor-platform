@@ -767,6 +767,7 @@
 		E30822B631D108159E8B306B /* Pods-ActorSDK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorSDK.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ActorSDK/Pods-ActorSDK.debug.xcconfig"; sourceTree = "<group>"; };
 		F076508E3899D309954904A3 /* Pods-ActorSDK.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorSDK.release.xcconfig"; path = "Pods/Target Support Files/Pods-ActorSDK/Pods-ActorSDK.release.xcconfig"; sourceTree = "<group>"; };
 		F15398CB1DF3A8C600C67C7D /* AGEmojiKeyboard.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGEmojiKeyboard.framework; path = "../../../../../Library/Developer/Xcode/DerivedData/ActorSDK-hfpcbgrswlpuwlafdzjxrahnyfmr/Build/Products/Debug-iphonesimulator/AGEmojiKeyboard/AGEmojiKeyboard.framework"; sourceTree = "<group>"; };
+		F175DF891E168C69005BCF1A /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Localizable.strings"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1949,6 +1950,8 @@
 				"zh-Hans",
 				Base,
 				es,
+				"pt-BR",
+				pt,
 			);
 			mainGroup = 066A50C81BC4AE63000E606E;
 			productRefGroup = 066A50D31BC4AE63000E606E /* Products */;
@@ -2314,6 +2317,7 @@
 				065975451BC7D34200B8C7DF /* pt */,
 				065975471BC7D34400B8C7DF /* ru */,
 				065975481BC7D34600B8C7DF /* zh-Hans */,
+				F175DF891E168C69005BCF1A /* pt-BR */,
 			);
 			name = Localizable.strings;
 			path = .;

@@ -1,0 +1,19 @@
+{
+	CFBundleDisplayName = "Actor SDK";
+	CFBundleName = "Actor SDK";
+    
+    /*
+     * Permissions
+     */
+    
+    "NSPhotoLibraryUsageDescription" = "We need this so you can share photos and videos from your photo library";
+    
+    "NSCameraUsageDescription" = "We need this so you can take and share photos and videos";
+    
+    "NSLocationUsageDescription" = "We need this so you can share your current location";
+    
+    "NSMicrophoneUsageDescription" = "We need this so you can record and share voice messages";
+    
+    "NSContactsUsageDescription" = "We need this so you can connect with your friends across all your devices";
+
+}
