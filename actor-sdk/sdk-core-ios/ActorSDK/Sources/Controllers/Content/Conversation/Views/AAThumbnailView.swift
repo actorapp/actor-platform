@@ -87,14 +87,14 @@ open class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionViewDa
         let options = PHFetchOptions()
         options.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         
-//        switch mediaType {
-//        case .Image:
-//            options.predicate = NSPredicate(format: "mediaType = %d", PHAssetMediaType.Image.rawValue)
-//        case .Video:
-//            options.predicate = NSPredicate(format: "mediaType = %d", PHAssetMediaType.Video.rawValue)
-//        case .ImageAndVideo:
-//            options.predicate = NSPredicate(format: "mediaType = %d OR mediaType = %d", PHAssetMediaType.Image.rawValue, PHAssetMediaType.Video.rawValue)
-//        }
+        switch mediaType {
+        case .image:
+            options.predicate = NSPredicate(format: "mediaType = %d", PHAssetMediaType.image.rawValue)
+        case .video:
+            options.predicate = NSPredicate(format: "mediaType = %d", PHAssetMediaType.video.rawValue)
+        case .imageAndVideo:
+            options.predicate = NSPredicate(format: "mediaType = %d OR mediaType = %d", PHAssetMediaType.image.rawValue, PHAssetMediaType.video.rawValue)
+        }
         
           options.predicate = NSPredicate(format: "mediaType = %d", PHAssetMediaType.image.rawValue)
        
@@ -107,27 +107,27 @@ open class AAThumbnailView: UIView,UICollectionViewDelegate , UICollectionViewDa
         let requestOptions = PHImageRequestOptions()
         requestOptions.isSynchronous = true
         requestOptions.deliveryMode = .fastFormat
-        
-//        result.enumerateObjects { asset, _, stop in
-//            
-//            if self.assets.count > fetchLimit {
-//                stop.initialize(to: true)
-//            }
-//            
-//            if let asset = asset as? PHAsset {
-//                var isGIF = false
-//                self.imageManager.requestImageData(for: asset, options: requestOptions) { data, _, _, info in
-//                    if data != nil {
-//                        let gifMarker = info!["PHImageFileURLKey"] as! URL
-//                        print(gifMarker.pathExtension)
-//                        isGIF = (gifMarker.pathExtension == "GIF") ? true : false
-//                        print(isGIF)
-//                        self.prefetchImagesForAsset(asset)
-//                    }
-//                    self.assets.append((asset,isGIF))
-//                }
-//            }
-//        }
+     
+        result.enumerateObjects ({ asset, _, stop in
+            
+            if self.assets.count > fetchLimit {
+                stop.initialize(to: true)
+            }
+            
+            if let asset = asset as? PHAsset {
+                var isGIF = false
+                self.imageManager.requestImageData(for: asset, options: requestOptions) { data, _, _, info in
+                    if data != nil {
+                        let gifMarker = info!["PHImageFileURLKey"] as! URL
+                        print(gifMarker.pathExtension)
+                        isGIF = (gifMarker.pathExtension == "GIF") ? true : false
+                        print(isGIF)
+                        self.prefetchImagesForAsset(asset)
+                    }
+                    self.assets.append((asset,isGIF))
+                }
+            }
+        })
     }
     
     fileprivate func prefetchImagesForAsset(_ asset: PHAsset) {

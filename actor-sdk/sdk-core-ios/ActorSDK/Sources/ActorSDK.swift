@@ -240,6 +240,9 @@ import ReachabilitySwift
         for key in trustedKeys {
             builder.addTrustedKey(key)
         }
+        
+        builder.setOnClientPrivacyEnabled(jboolean(delegate.useOnClientPrivacy()))
+        
         builder.setApiConfiguration(ACApiConfiguration(appTitle: appTitle, withAppId: jint(apiId), withAppKey: apiKey, withDeviceTitle: deviceName, withDeviceId: deviceKey))
         
         // Providers
@@ -590,7 +593,7 @@ import ReachabilitySwift
     //
     
     /// Handling URL Opening in application
-    func openUrl(_ url: String) {
+    open func openUrl(_ url: String) {
         if let u = URL(string: url) {
             
             // Handle phone call

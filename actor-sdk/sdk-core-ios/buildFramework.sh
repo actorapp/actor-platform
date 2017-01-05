@@ -54,8 +54,19 @@ cp -a build/Build/Products/Release-iphonesimulator/ActorSDK.framework/Modules/Ac
 # Copying dSYM
 cp -a build/Build/Products/Release-iphoneos/ActorSDK.framework.dSYM/* build/Output/ActorSDK.framework.dSYM/
 
+# Making Bundle
+mkdir -p build/Podspec/
+
 # Compressing Framework
-cd build/Output/
+rm -fr build/Podspec
+mkdir -p build/Podspec/ActorSDK.framework
+mkdir -p build/Podspec/ActorSDK.framework.dSYM
+cp -r build/Output/ActorSDK.framework build/Podspec/
+cp -r build/Output/ActorSDK.framework.dSYM build/Podspec/
+cp -r Template/ build/Podspec/
+
+cd build/Podspec/
 rm -f ActorSDK.zip
-zip -r ActorSDK.zip ActorSDK.framework ActorSDK.framework.dSYM
+zip -r ActorSDK.zip *
+mv ActorSDK.zip ../
 

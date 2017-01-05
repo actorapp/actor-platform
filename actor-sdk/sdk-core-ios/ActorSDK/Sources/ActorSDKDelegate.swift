@@ -40,6 +40,7 @@ public protocol ActorSDKDelegate {
     /// Root Intial controller
     func actorRootInitialControllerIndex() -> Int?
     
+    
     /// Configuration of bubble cells
     func actorConfigureBubbleLayouters(_ builtIn: [AABubbleLayouter]) -> [AABubbleLayouter]
     
@@ -60,6 +61,10 @@ public protocol ActorSDKDelegate {
     
     /// Called after header is created in settings page
     func actorSettingsSupportDidCreated(_ controller: AASettingsViewController, section: AAManagedSection)
+    
+    func showStickersButton() -> Bool
+    
+    func useOnClientPrivacy() -> Bool
 }
 
 /// Default empty implementation of SDK Delegate
@@ -135,5 +140,13 @@ open class ActorSDKDelegateDefault: NSObject, ActorSDKDelegate {
     
     open func actorSettingsSupportDidCreated(_ controller: AASettingsViewController, section: AAManagedSection) {
         
+    }
+    
+    open func showStickersButton() -> Bool{
+        return true
+    }
+    
+    open func useOnClientPrivacy() -> Bool{
+        return false
     }
 }

@@ -18,7 +18,7 @@ open class AABackgroundCellRenderer<P, T> where T: AnyObject, P: AnyObject, P: E
         self.receiver = receiver
     }
 
-    func requestRender(_ config: P) -> Bool {
+    public func requestRender(_ config: P) -> Bool {
         // Ignore if not resized
         if requestedConfig == config {
             return false
@@ -72,7 +72,7 @@ open class AABackgroundCellRenderer<P, T> where T: AnyObject, P: AnyObject, P: E
         receiver(renderer(config))
     }
     
-    func cancelRender(_ wasPresented: Bool = false) {
+    public func cancelRender(_ wasPresented: Bool = false) {
         generation += 1
         let oldConfig = requestedConfig
         requestedConfig = nil

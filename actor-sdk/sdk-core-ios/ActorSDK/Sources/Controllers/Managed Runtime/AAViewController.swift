@@ -17,7 +17,7 @@ open class AAViewController: UIViewController, UINavigationControllerDelegate, U
     
     var pendingPickClosure: ((_ image: UIImage) -> ())?
     
-    var popover: UIPopoverController?
+    open var popover: UIPopoverController?
     
     // Content type for view tracking
     

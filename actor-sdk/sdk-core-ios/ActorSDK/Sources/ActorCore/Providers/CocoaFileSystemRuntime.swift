@@ -29,7 +29,7 @@ open class CocoaFiles {
         return CocoaFile(path: fileName)
     }
     
-    func commitTempFile(_ sourceFile: ARFileSystemReference!, withFileId fileId: jlong, withFileName fileName: String!) -> ARFileSystemReference! {
+    func commitTempFile(_ sourceFile: ARFileSystemReference!, withFileId fileId: jlong, withFileName fileName: String) -> ARFileSystemReference! {
 
         // Finding file available name
         
