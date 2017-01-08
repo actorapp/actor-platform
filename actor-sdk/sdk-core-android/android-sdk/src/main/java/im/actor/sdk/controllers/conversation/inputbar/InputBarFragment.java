@@ -44,6 +44,7 @@ import im.actor.sdk.view.TintImageView;
 import im.actor.sdk.view.emoji.SmileProcessor;
 import im.actor.sdk.view.emoji.keyboard.KeyboardStatusListener;
 import im.actor.sdk.view.emoji.keyboard.emoji.EmojiKeyboard;
+import im.actor.sdk.view.emoji.keyboard.emoji.EmojiView;
 import im.actor.sdk.view.markdown.AndroidMarkdown;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
@@ -92,6 +93,7 @@ public class InputBarFragment extends BaseFragment implements MessagesDefaultFra
 
     // Emoji keyboard
     protected EmojiKeyboard emojiKeyboard;
+    protected EmojiView emojiView;
     protected ImageView emojiButton;
     private Message lastMessage;
 
