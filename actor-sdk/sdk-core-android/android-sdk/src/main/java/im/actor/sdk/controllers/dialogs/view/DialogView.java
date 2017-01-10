@@ -45,6 +45,7 @@ import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.ListItemBackgroundView;
 import im.actor.sdk.view.TintDrawable;
 import im.actor.sdk.view.emoji.SmileProcessor;
+import im.actor.sdk.view.emoji.keyboard.emoji.Emoji;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 import static im.actor.sdk.view.emoji.SmileProcessor.emoji;
@@ -442,15 +443,18 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
     private CharSequence handleEmoji(CharSequence... args) {
         StringBuilder builder = new StringBuilder();
         for (CharSequence seq : args) {
-            if (SmileProcessor.containsEmoji(seq)) {
-                if (emoji().isLoaded()) {
-                    builder.append(emoji().processEmojiCompatMutable(seq, SmileProcessor.CONFIGURATION_BUBBLES));
-                } else {
-                    builder.append(seq);
-                }
-            } else {
-                builder.append(seq);
-            }
+//            if (SmileProcessor.containsEmoji(seq)) {
+//                if (emoji().isLoaded()) {
+//                    builder.append(emoji().processEmojiCompatMutable(seq, SmileProcessor.CONFIGURATION_BUBBLES));
+//                } else {
+//                    builder.append(seq);
+//                }
+//                builder.append(Emoji.replaceEmoji(seq, textPaint.getFontMetricsInt(), Screen.dp(20), true));
+//            } else {
+//                builder.append(seq);
+//            }
+
+            builder.append(Emoji.replaceEmoji(seq, textPaint.getFontMetricsInt(), Screen.dp(20), true));
         }
         return builder;
     }

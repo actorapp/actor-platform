@@ -2,10 +2,12 @@ package im.actor.sdk.controllers.conversation.messages.content.preprocessor;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.URLSpan;
 import android.text.util.Linkify;
@@ -35,8 +37,10 @@ import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.conversation.view.MentionSpan;
 import im.actor.sdk.controllers.conversation.view.ReactionSpan;
+import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.BaseUrlSpan;
 import im.actor.sdk.view.emoji.SmileProcessor;
+import im.actor.sdk.view.emoji.keyboard.emoji.Emoji;
 import im.actor.sdk.view.markdown.AndroidMarkdown;
 import im.actor.runtime.generic.mvvm.ListProcessor;
 
@@ -130,7 +134,7 @@ public class ChatListProcessor implements ListProcessor<Message> {
                     boolean hasSpannable = false;
 
                     // Wait Emoji to load
-                    emoji().waitForEmoji();
+                    //emoji().waitForEmoji();
 
                     // Process markdown
                     Spannable markdown = AndroidMarkdown.processText(text.getText());
@@ -181,10 +185,16 @@ public class ChatListProcessor implements ListProcessor<Message> {
                     }
 
                     // Process Emoji
-                    if (SmileProcessor.containsEmoji(spannableString)) {
-                        spannableString = emoji().processEmojiCompatMutable(spannableString, SmileProcessor.CONFIGURATION_BUBBLES);
-                        hasSpannable = true;
-                    }
+//                    if (SmileProcessor.containsEmoji(spannableString)) {
+//                        spannableString = emoji().processEmojiCompatMutable(spannableString, SmileProcessor.CONFIGURATION_BUBBLES);
+//                        hasSpannable = true;
+//                    }
+
+
+                    spannableString = new SpannableString(Emoji.replaceEmoji(spannableString,
+                            new TextPaint(Paint.ANTI_ALIAS_FLAG | Paint.SUBPIXEL_TEXT_FLAG).getFontMetricsInt(), Screen.dp(20), true));
+                    hasSpannable = true;
+
                     updatedTexts.put(msg.getRid(), updatedCounter);
                     preprocessedTexts.put(msg.getRid(), new PreprocessedTextData(reactions, text.getText(),
                             hasSpannable ? spannableString : null));

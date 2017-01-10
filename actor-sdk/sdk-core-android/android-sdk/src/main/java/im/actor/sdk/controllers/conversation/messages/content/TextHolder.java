@@ -1,6 +1,7 @@
 package im.actor.sdk.controllers.conversation.messages.content;
 
 import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,7 +17,9 @@ import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
 import im.actor.sdk.controllers.conversation.messages.content.preprocessor.PreprocessedData;
 import im.actor.sdk.controllers.conversation.messages.content.preprocessor.PreprocessedTextData;
 import im.actor.sdk.util.Fonts;
+import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.TintImageView;
+import im.actor.sdk.view.emoji.keyboard.emoji.Emoji;
 
 import static im.actor.sdk.util.ActorSDKMessenger.myUid;
 
@@ -64,9 +67,9 @@ public class TextHolder extends MessageHolder {
         Spannable reactions = preprocessedData.getReactionsSpannable();
         CharSequence text;
         if (textData.getSpannableString() != null) {
-            text = textData.getSpannableString();
+            text = Emoji.replaceEmoji(textData.getSpannableString(), this.text.getPaint().getFontMetricsInt(), Screen.dp(20), true);
         } else {
-            text = textData.getText();
+            text = Emoji.replaceEmoji(new SpannableStringBuilder(textData.getText()), this.text.getPaint().getFontMetricsInt(), Screen.dp(20), false);
         }
         bindRawText(text, readDate, receiveDate, reactions, message, false);
     }

@@ -61,8 +61,8 @@ public class EmojiView extends FrameLayout {
     public interface Listener {
         boolean onBackspace();
         void onEmojiSelected(String emoji);
-        void onStickersSettingsClick();
-        void onGifTab(boolean opened);
+        //void onStickersSettingsClick();
+        //void onGifTab(boolean opened);
         void onClearEmojiRecent();
     }
 
@@ -555,14 +555,12 @@ public class EmojiView extends FrameLayout {
 
     private boolean backspacePressed;
     private boolean backspaceOnce;
-    private boolean showGifs;
 
     private int minusDy;
 
-    public EmojiView(boolean needStickers, boolean needGif, final Context context) {
+    public EmojiView(final Context context) {
         super(context);
 
-        showGifs = needGif;
 
         dotDrawable = context.getResources().getDrawable(R.drawable.bluecircle);
 
@@ -668,7 +666,7 @@ public class EmojiView extends FrameLayout {
             }
         };
         backspaceButton.setImageResource(R.drawable.ic_smiles_backspace);
-        backspaceButton.setBackgroundResource(R.drawable.ic_backspace);
+        backspaceButton.setBackgroundResource(R.drawable.ic_emoji_backspace);
         backspaceButton.setScaleType(ImageView.ScaleType.CENTER);
         frameLayout.addView(backspaceButton, LayoutHelper.createFrame(52, 48));
 

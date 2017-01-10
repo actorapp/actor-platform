@@ -44,7 +44,7 @@ import im.actor.sdk.view.TintImageView;
 import im.actor.sdk.view.emoji.SmileProcessor;
 import im.actor.sdk.view.emoji.keyboard.KeyboardStatusListener;
 import im.actor.sdk.view.emoji.keyboard.emoji.EmojiKeyboard;
-import im.actor.sdk.view.emoji.keyboard.emoji.EmojiView;
+import im.actor.sdk.view.emoji.keyboard.emoji.EmojiKeyboard2;
 import im.actor.sdk.view.markdown.AndroidMarkdown;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
@@ -92,8 +92,7 @@ public class InputBarFragment extends BaseFragment implements MessagesDefaultFra
     protected KeyboardHelper keyboardUtils;
 
     // Emoji keyboard
-    protected EmojiKeyboard emojiKeyboard;
-    protected EmojiView emojiView;
+    protected EmojiKeyboard2 emojiKeyboard;
     protected ImageView emojiButton;
     private Message lastMessage;
 
@@ -273,8 +272,8 @@ public class InputBarFragment extends BaseFragment implements MessagesDefaultFra
     }
 
     @NonNull
-    protected EmojiKeyboard getEmojiKeyboard() {
-        return new EmojiKeyboard(getActivity(), messageEditText);
+    protected EmojiKeyboard2 getEmojiKeyboard() {
+        return new EmojiKeyboard2(getActivity(), messageEditText);
     }
 
     public void requestFocus() {
@@ -620,7 +619,7 @@ public class InputBarFragment extends BaseFragment implements MessagesDefaultFra
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        emojiKeyboard.release();
+        //emojiKeyboard.release();
         emojiKeyboard = null;
     }
 
