@@ -191,8 +191,7 @@ public class ChatListProcessor implements ListProcessor<Message> {
 //                    }
 
 
-                    spannableString = new SpannableString(Emoji.replaceEmoji(spannableString,
-                            new TextPaint(Paint.ANTI_ALIAS_FLAG | Paint.SUBPIXEL_TEXT_FLAG).getFontMetricsInt(), Screen.dp(20), true));
+                    spannableString = new SpannableString(Emoji.replaceEmoji(spannableString, new TextPaint(Paint.ANTI_ALIAS_FLAG | Paint.SUBPIXEL_TEXT_FLAG).getFontMetricsInt(), Screen.dp(20), false));
                     hasSpannable = true;
 
                     updatedTexts.put(msg.getRid(), updatedCounter);

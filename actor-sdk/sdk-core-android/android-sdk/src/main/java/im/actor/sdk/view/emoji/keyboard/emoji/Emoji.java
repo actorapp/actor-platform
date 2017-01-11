@@ -101,21 +101,6 @@ public class Emoji {
                 scale = 2.0f;
             }
 
-            /*String q = "";
-            for (int a = 0; a < EmojiData.data.length; a++) {
-                String arr[] = EmojiData.data[a];
-                for (int b = 0; b < arr.length; b++) {
-                    String emoji = arr[b];
-                    for (int c = 0; c < emoji.length(); c++) {
-                        if (emoji.charAt(c) == '\ufe0f') {
-                            q += String.format("0x%x, ", (int) emoji.charAt(0));
-                            break;
-                        }
-                    }
-                }
-            }
-            FileLog.e("tmessages", q);*/
-
             String imageName;
             File imageFile;
 
@@ -463,7 +448,7 @@ public class Emoji {
                 }
             }
         } catch (Exception e) {
-            //FileLog.e("tmessages", e);
+            Log.e(Emoji.class.getName(), e);
             return cs;
         }
         return s;

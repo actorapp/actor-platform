@@ -67,7 +67,7 @@ public class TextHolder extends MessageHolder {
         Spannable reactions = preprocessedData.getReactionsSpannable();
         CharSequence text;
         if (textData.getSpannableString() != null) {
-            text = Emoji.replaceEmoji(textData.getSpannableString(), this.text.getPaint().getFontMetricsInt(), Screen.dp(20), true);
+            text = Emoji.replaceEmoji(textData.getSpannableString(), this.text.getPaint().getFontMetricsInt(), Screen.dp(20), false);
         } else {
             text = Emoji.replaceEmoji(new SpannableStringBuilder(textData.getText()), this.text.getPaint().getFontMetricsInt(), Screen.dp(20), false);
         }

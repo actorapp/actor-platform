@@ -44,8 +44,7 @@ import im.actor.sdk.view.emoji.keyboard.emoji.smiles.RepeatListener;
 import im.actor.sdk.view.emoji.keyboard.emoji.smiles.SmilePagerAdapter;
 import im.actor.sdk.view.emoji.smiles.SmilesPack;
 
-public class EmojiKeyboard2 extends BaseKeyboard2 implements OnSmileClickListener,
-        OnBackspaceClickListener {
+public class EmojiKeyboard2 extends BaseKeyboard2  {
 
     private static final String TAG = "EmojiKeyboard";
     private OnStickerClickListener onStickerClickListener;
@@ -121,16 +120,6 @@ public class EmojiKeyboard2 extends BaseKeyboard2 implements OnSmileClickListene
                 .alpha(150)
                 .setDuration(300)
                 .start();
-    }
-
-    @Override
-    public void onBackspaceClick(View v) {
-
-    }
-
-    @Override
-    public void onEmojiClicked(String smile) {
-
     }
 
     public OnStickerClickListener getOnStickerClickListener() {
