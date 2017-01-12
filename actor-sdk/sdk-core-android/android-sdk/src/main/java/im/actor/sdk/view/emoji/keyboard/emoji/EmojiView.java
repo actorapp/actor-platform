@@ -61,8 +61,6 @@ public class EmojiView extends FrameLayout {
     public interface Listener {
         boolean onBackspace();
         void onEmojiSelected(String emoji);
-        //void onStickersSettingsClick();
-        //void onGifTab(boolean opened);
         void onClearEmojiRecent();
     }
 
@@ -497,7 +495,6 @@ public class EmojiView extends FrameLayout {
     private static HashMap<String, String> emojiColor = new HashMap<>();
     private ArrayList<String> recentEmoji = new ArrayList<>();
 
-
     private Drawable dotDrawable;
 
     private int[] icons = {
@@ -515,22 +512,9 @@ public class EmojiView extends FrameLayout {
     private ArrayList<View> views = new ArrayList<>();
     private ArrayList<GridView> emojiGrids = new ArrayList<>();
     private ImageView backspaceButton;
-//    private StickersGridAdapter stickersGridAdapter;
     private LinearLayout emojiTab;
-//    private ScrollSlidingTabStrip stickersTab;
-//    private RecyclerListView stickersGridView;
-//    private GridLayoutManager stickersLayoutManager;
     private TextView stickersEmptyView;
-//    private RecyclerListView gifsGridView;
-//    private ExtendedGridLayoutManager flowLayoutManager;
-//    private GifsAdapter gifsAdapter;
-//    private RecyclerListView trendingGridView;
-//    private GridLayoutManager trendingLayoutManager;
-//    private TrendingGridAdapter trendingGridAdapter;
-//    private RecyclerListView.OnItemClickListener stickersOnItemClickListener;
     private PagerSlidingTabStrip2 pagerSlidingTabStrip;
-    
-    private boolean trendingLoaded;
 
     private int currentPage;
 
@@ -540,11 +524,7 @@ public class EmojiView extends FrameLayout {
     private int popupHeight;
     private int emojiSize;
     private int location[] = new int[2];
-    private int stickersTabOffset;
-    private int recentTabBum = -2;
-    private int gifTabNum = -2;
-    private int trendingTabNum = -2;
-    private boolean switchToGifTab;
+
 
     private boolean isLayout;
     private int currentBackgroundType = -1;
@@ -1115,12 +1095,9 @@ public class EmojiView extends FrameLayout {
     }
 
     private class Holder extends RecyclerView.ViewHolder {
-
         public Holder(View itemView) {
             super(itemView);
         }
     }
-
-
 
 }
