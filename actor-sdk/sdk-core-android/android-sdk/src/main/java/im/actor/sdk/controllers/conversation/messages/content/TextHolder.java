@@ -1,7 +1,9 @@
 package im.actor.sdk.controllers.conversation.messages.content;
 
+import android.graphics.Paint;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.view.MotionEvent;
 import android.view.View;
@@ -28,6 +30,7 @@ public class TextHolder extends MessageHolder {
     protected ViewGroup mainContainer;
     protected FrameLayout messageBubble;
     protected TextView text;
+
     protected TextView time;
     protected TintImageView status;
 
@@ -67,9 +70,9 @@ public class TextHolder extends MessageHolder {
         Spannable reactions = preprocessedData.getReactionsSpannable();
         CharSequence text;
         if (textData.getSpannableString() != null) {
-            text = Emoji.replaceEmoji(textData.getSpannableString(), this.text.getPaint().getFontMetricsInt(), Screen.dp(20), false);
+            text = Emoji.replaceEmoji(textData.getSpannableString(), this.text.getPaint().getFontMetricsInt(), Screen.sp(40), false);
         } else {
-            text = Emoji.replaceEmoji(new SpannableStringBuilder(textData.getText()), this.text.getPaint().getFontMetricsInt(), Screen.dp(20), false);
+            text = Emoji.replaceEmoji(new SpannableStringBuilder(textData.getText()), this.text.getPaint().getFontMetricsInt(), Screen.sp(40), false);
         }
         bindRawText(text, readDate, receiveDate, reactions, message, false);
     }

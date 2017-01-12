@@ -8,7 +8,10 @@ package im.actor.sdk.view.emoji.keyboard.emoji;
 import java.io.File;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,6 +22,9 @@ import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Process;
 import android.text.Spannable;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -33,8 +39,12 @@ import im.actor.runtime.android.AndroidContext;
 import im.actor.sdk.util.AndroidUtils;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.util.Utilities;
+import im.actor.sdk.view.emoji.keyboard.emoji.smiles.SmilesListener;
 
 public class Emoji {
+
+    private static final String TAG = Emoji.class.getName();
+
     private static HashMap<CharSequence, DrawableInfo> rects = new HashMap<>();
     private static int drawImgSize;
     private static int bigImgSize;
@@ -43,6 +53,12 @@ public class Emoji {
     private static final int splitCount = 4;
     private static Bitmap emojiBmp[][] = new Bitmap[5][splitCount];
     private static boolean loadingEmoji[][] = new boolean[5][splitCount];
+
+    private static boolean isLoading = false;
+    private static boolean isLoaded = false;
+
+    private static CopyOnWriteArrayList<SmilesListener> listeners = new CopyOnWriteArrayList<SmilesListener>();
+    private static Handler handler = new Handler(Looper.getMainLooper());
 
     private static final int[][] cols = {
             {12, 12, 12, 12},
@@ -82,9 +98,85 @@ public class Emoji {
         }
         placeholderPaint = new Paint();
         placeholderPaint.setColor(0x00000000);
+
+        loadAllEmojis();
+    }
+
+    public static void loadAllEmojis(){
+
+        if (isLoaded) {
+            return;
+        }
+        if (isLoading) {
+            return;
+        }
+
+        isLoading = true;
+
+        new Thread() {
+            @Override
+            public void run() {
+                Process.setThreadPriority(Process.THREAD_PRIORITY_LOWEST);
+
+                long start = System.currentTimeMillis();
+                Log.d(TAG, "emoji loading start");
+
+                Iterator<Map.Entry<CharSequence, DrawableInfo>> entry = rects.entrySet().iterator();
+                while (entry.hasNext()) {
+                    DrawableInfo info = entry.next().getValue();
+                    if(!loadingEmoji[info.page][info.page2]
+                            && (emojiBmp[info.page][info.page2] == null)) {
+                        loadEmoji(info.page, info.page2);
+                    }
+                }
+                isLoaded = true;
+                isLoading = false;
+
+                notifyEmojiUpdated(true);
+                Log.d(TAG, "Emoji loaded in " + (System.currentTimeMillis() - start) + " ms");
+            }
+        }.start();
+    }
+
+    public static void waitForEmoji() {
+        if (isLoaded) {
+            return;
+        }
+
+        final Object lock = new Object();
+        synchronized (lock) {
+            listeners.add(new SmilesListener() {
+                @Override
+                public void onSmilesUpdated(boolean completed) {
+                    synchronized (lock) {
+                        lock.notify();
+                    }
+
+                }
+            });
+            try {
+                lock.wait();
+            } catch (InterruptedException e) {
+                Log.e(Emoji.class.getName(), e);
+                return;
+            }
+        }
+    }
+
+    private static void notifyEmojiUpdated(final boolean completed) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                Log.d(TAG, "notify");
+                for (SmilesListener listener : listeners) {
+                    listener.onSmilesUpdated(completed);
+                }
+            }
+        });
     }
 
     private static void loadEmoji(final int page, final int page2) {
+        loadingEmoji[page][page2] = true;
         try {
             float scale;
             int imageResize = 1;
@@ -125,7 +217,7 @@ public class Emoji {
                     }
                 }
             } catch (Exception e) {
-                //FileLog.e("tmessages", e);
+                Log.e(Emoji.class.getName(), e);
             }
             Bitmap bitmap = null;
             try {
@@ -136,20 +228,15 @@ public class Emoji {
                 bitmap = BitmapFactory.decodeStream(is, null, opts);
                 is.close();
             } catch (Throwable e) {
-                //FileLog.e("tmessages", e);
+                Log.e(Emoji.class.getName(), e);
             }
 
             final Bitmap finalBitmap = bitmap;
-            AndroidUtils.runOnUIThread(new Runnable() {
-                @Override
-                public void run() {
-                    emojiBmp[page][page2] = finalBitmap;
+            emojiBmp[page][page2] = finalBitmap;
+            loadingEmoji[page][page2] = false;
 
-                    //NotificationCenter.getInstance().postNotificationName(NotificationCenter.emojiDidLoaded);
-                }
-            });
         } catch (Throwable x) {
-            //FileLog.e("tmessages", "Error loading emoji", x);
+            Log.e(Emoji.class.getName(), x);
         }
     }
 
@@ -243,25 +330,24 @@ public class Emoji {
 
         @Override
         public void draw(Canvas canvas) {
-            /*if (MessagesController.getInstance().useSystemEmoji) {
-                //textPaint.setTextSize(getBounds().width());
-                canvas.drawText(EmojiData.data[info.page][info.emojiIndex], getBounds().left, getBounds().bottom, textPaint);
-                return;
-            }*/
             if (emojiBmp[info.page][info.page2] == null) {
                 if (loadingEmoji[info.page][info.page2]) {
                     return;
                 }
-                loadingEmoji[info.page][info.page2] = true;
-                Utilities.globalQueue.postRunnable(new Runnable() {
-                    @Override
-                    public void run() {
-                        loadEmoji(info.page, info.page2);
-                        loadingEmoji[info.page][info.page2] = false;
-                    }
-                });
-                canvas.drawRect(getBounds(), placeholderPaint);
-                return;
+//                loadingEmoji[info.page][info.page2] = true;
+//                Utilities.globalQueue.postRunnable(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                       // loadEmoji(info.page, info.page2);
+//                        loadingEmoji[info.page][info.page2] = false;
+//                    }
+//                });
+
+                //canvas.drawRect(getBounds(), placeholderPaint);
+                //return;
+
+                loadEmoji(info.page, info.page2);
+//                loadingEmoji[info.page][info.page2] = false;
             }
 
             Rect b;
@@ -271,9 +357,7 @@ public class Emoji {
                 b = getBounds();
             }
 
-            //if (!canvas.quickReject(b.left, b.top, b.right, b.bottom, Canvas.EdgeType.AA)) {
             canvas.drawBitmap(emojiBmp[info.page][info.page2], info.rect, b, paint);
-            //}
         }
 
         @Override

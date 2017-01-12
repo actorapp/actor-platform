@@ -134,7 +134,7 @@ public class ChatListProcessor implements ListProcessor<Message> {
                     boolean hasSpannable = false;
 
                     // Wait Emoji to load
-                    //emoji().waitForEmoji();
+                   // Emoji.waitForEmoji();
 
                     // Process markdown
                     Spannable markdown = AndroidMarkdown.processText(text.getText());
@@ -191,8 +191,8 @@ public class ChatListProcessor implements ListProcessor<Message> {
 //                    }
 
 
-                    spannableString = new SpannableString(Emoji.replaceEmoji(spannableString, new TextPaint(Paint.ANTI_ALIAS_FLAG | Paint.SUBPIXEL_TEXT_FLAG).getFontMetricsInt(), Screen.dp(20), false));
-                    hasSpannable = true;
+//                    spannableString = new SpannableString(Emoji.replaceEmoji(spannableString+"ffff", new TextPaint(Paint.ANTI_ALIAS_FLAG | Paint.SUBPIXEL_TEXT_FLAG).getFontMetricsInt(), Screen.dp(20), false));
+//                    hasSpannable = true;
 
                     updatedTexts.put(msg.getRid(), updatedCounter);
                     preprocessedTexts.put(msg.getRid(), new PreprocessedTextData(reactions, text.getText(),

@@ -16,35 +16,20 @@
 
 package im.actor.sdk.view.emoji.keyboard.emoji;
 
-import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 
-import im.actor.core.entity.Sticker;
 import im.actor.sdk.ActorSDK;
-import im.actor.sdk.R;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.MaterialInterpolator;
-import im.actor.sdk.view.PagerSlidingTabStrip;
 import im.actor.sdk.view.emoji.SmileProcessor;
 import im.actor.sdk.view.emoji.keyboard.BaseKeyboard;
-import im.actor.sdk.view.emoji.keyboard.BaseKeyboard2;
-import im.actor.sdk.view.emoji.keyboard.emoji.smiles.OnBackspaceClickListener;
-import im.actor.sdk.view.emoji.keyboard.emoji.smiles.OnSmileClickListener;
-import im.actor.sdk.view.emoji.keyboard.emoji.smiles.RepeatListener;
-import im.actor.sdk.view.emoji.keyboard.emoji.smiles.SmilePagerAdapter;
-import im.actor.sdk.view.emoji.smiles.SmilesPack;
 
-public class EmojiKeyboard2 extends BaseKeyboard2  {
+public class EmojiKeyboard2 extends BaseKeyboard  {
 
     private static final String TAG = "EmojiKeyboard";
     private OnStickerClickListener onStickerClickListener;
@@ -58,7 +43,6 @@ public class EmojiKeyboard2 extends BaseKeyboard2  {
 
     @Override
     protected View createView() {
-
 
         EmojiView emojiView = new EmojiView(getActivity());
         emojiView.setVisibility(View.VISIBLE);

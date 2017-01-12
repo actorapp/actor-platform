@@ -1005,7 +1005,6 @@ public class EmojiView extends FrameLayout {
         }
     }
 
-
     private class EmojiGridAdapter extends BaseAdapter {
 
         private int emojiPage;

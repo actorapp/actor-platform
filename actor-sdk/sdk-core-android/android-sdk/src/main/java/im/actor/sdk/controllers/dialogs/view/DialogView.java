@@ -477,7 +477,6 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
                 }
             }
         }
-
         return Emoji.replaceEmoji(name, textPaint.getFontMetricsInt(), Screen.dp(17), false);
     }
 
