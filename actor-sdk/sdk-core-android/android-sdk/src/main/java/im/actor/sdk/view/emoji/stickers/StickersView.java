@@ -9,15 +9,16 @@ import android.widget.LinearLayout;
 
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.emoji.keyboard.emoji.EmojiKeyboard;
+import im.actor.sdk.view.emoji.keyboard.emoji.EmojiView;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
 public class StickersView extends RecyclerView {
     boolean disableWhileFastScroll = false;
-    EmojiKeyboard keyboard;
+    EmojiView keyboard;
     private StickersAdapter stickersAdapter;
 
-    public StickersView(Context context, EmojiKeyboard keyboard) {
+    public StickersView(Context context, EmojiView keyboard) {
         super(context);
         this.keyboard = keyboard;
         init(context);
@@ -35,9 +36,6 @@ public class StickersView extends RecyclerView {
 
 
     public void init(final Context context) {
-
-
-
         buildAdapter(context);
     }
 

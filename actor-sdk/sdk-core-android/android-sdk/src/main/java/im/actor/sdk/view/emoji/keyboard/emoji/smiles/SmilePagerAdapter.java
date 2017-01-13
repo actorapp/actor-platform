@@ -137,7 +137,7 @@ public class SmilePagerAdapter extends PagerAdapter implements PagerSlidingTabSt
 
         } else {
             if (stickersView == null) {
-                stickersView = new StickersView(container.getContext(), emojiKeyboard);
+                //stickersView = new StickersView(container.getContext(), emojiKeyboard);
             }
             itemView = stickersView;
         }

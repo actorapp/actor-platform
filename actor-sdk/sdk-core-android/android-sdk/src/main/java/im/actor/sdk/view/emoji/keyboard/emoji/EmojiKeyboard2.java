@@ -44,7 +44,7 @@ public class EmojiKeyboard2 extends BaseKeyboard  {
     @Override
     protected View createView() {
 
-        EmojiView emojiView = new EmojiView(getActivity());
+        EmojiView emojiView = new EmojiView(true, getActivity());
         emojiView.setVisibility(View.VISIBLE);
 
         emojiView.setListener(new EmojiView.Listener() {

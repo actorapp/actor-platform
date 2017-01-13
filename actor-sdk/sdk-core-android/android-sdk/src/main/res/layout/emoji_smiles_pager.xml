@@ -65,11 +65,5 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="bottom" />
-    <!--
-        <View
-            android:layout_width="match_parent"
-            android:layout_below="@+id/indicator_container"
-            android:layout_height="4dp"
-            android:layout_gravity="top"
-            android:background="@drawable/card_shadow_bottom" />-->
+
 </FrameLayout>
