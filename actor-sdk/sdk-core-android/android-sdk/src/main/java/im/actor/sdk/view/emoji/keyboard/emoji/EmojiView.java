@@ -60,6 +60,7 @@ public class EmojiView extends FrameLayout {
         boolean onBackspace();
         void onEmojiSelected(String emoji);
         void onClearEmojiRecent();
+        void onStickerSelected(Sticker sticker);
     }
 
     private static final Field superListenerField;
@@ -1090,7 +1091,7 @@ public class EmojiView extends FrameLayout {
     }
 
     public void onStickerClicked(Sticker sticker) {
-
+        this.listener.onStickerSelected(sticker);
     }
 
     public LinearLayout getStickerSwitchContainer() {

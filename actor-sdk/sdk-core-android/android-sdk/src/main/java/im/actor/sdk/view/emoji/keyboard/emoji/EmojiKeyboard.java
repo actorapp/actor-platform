@@ -23,6 +23,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 
+import im.actor.core.entity.Sticker;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.MaterialInterpolator;
@@ -64,9 +65,7 @@ public class EmojiKeyboard extends BaseKeyboard  {
                 if (selectionEnd < 0) {
                     selectionEnd = messageBody.getText().length();
                 }
-
                 CharSequence localCharSequence = Emoji.replaceEmoji(symbol, messageBody.getPaint().getFontMetricsInt(), Screen.dp(20), false);
-
                 messageBody.getText().insert(selectionEnd, localCharSequence);
             }
 
@@ -87,6 +86,13 @@ public class EmojiKeyboard extends BaseKeyboard  {
                 });
                 builder.setNegativeButton("Cancelar", null);
                 builder.create().show();
+            }
+
+            @Override
+            public void onStickerSelected(Sticker sticker) {
+                if(getOnStickerClickListener() != null){
+                    getOnStickerClickListener().onStickerClicked(sticker);
+                }
             }
         });
         return emojiView;
