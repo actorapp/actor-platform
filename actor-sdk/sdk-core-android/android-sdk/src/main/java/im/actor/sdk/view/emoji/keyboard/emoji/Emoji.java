@@ -151,7 +151,6 @@ public class Emoji {
                     synchronized (lock) {
                         lock.notify();
                     }
-
                 }
             });
             try {
