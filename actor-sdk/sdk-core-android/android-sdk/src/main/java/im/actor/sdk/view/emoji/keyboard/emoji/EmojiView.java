@@ -1,11 +1,8 @@
 package im.actor.sdk.view.emoji.keyboard.emoji;
 
-import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.DataSetObserver;
 import android.graphics.Canvas;
@@ -17,7 +14,6 @@ import android.os.Build;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
@@ -49,7 +45,6 @@ import im.actor.sdk.util.LayoutHelper;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.util.Utilities;
 import im.actor.sdk.view.PagerSlidingTabStrip;
-import im.actor.sdk.view.PagerSlidingTabStrip2;
 import im.actor.sdk.view.emoji.EmojiData;
 import im.actor.sdk.view.emoji.stickers.StickersView;
 
@@ -512,6 +507,8 @@ public class EmojiView extends FrameLayout {
     private Listener listener;
     private ViewPager pager;
 
+
+    private LinearLayout stickersWrap;
     private LinearLayout stickerIndicatorContainer;
     private LinearLayout stickerSwitchContainer;
     private StickersView stickersView;
@@ -521,7 +518,7 @@ public class EmojiView extends FrameLayout {
     private ImageView backspaceButton;
     private LinearLayout emojiTab;
 
-    private PagerSlidingTabStrip2 pagerSlidingTabStrip;
+    private PagerSlidingTabStrip pagerSlidingTabStrip;
 
     private int currentPage;
 
@@ -583,7 +580,6 @@ public class EmojiView extends FrameLayout {
         if(needStickers){
 
             stickerIndicatorContainer = new LinearLayout(context);
-            //stickersWrap.setVisibility(View.INVISIBLE);
             stickerIndicatorContainer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, Screen.dp(48)));
             stickerIndicatorContainer.setOrientation(LinearLayout.HORIZONTAL);
             stickerIndicatorContainer.setId(R.id.sticker_indicator_container);
@@ -597,34 +593,33 @@ public class EmojiView extends FrameLayout {
             backToSmiles.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    pager.setCurrentItem(5);
-//
-//                    ObjectAnimator oa = ObjectAnimator.ofFloat(indicatorContainer, "translationX", 0, 0);
-//                    oa.setDuration(0);
-//                    oa.start();
-//                    if (stickerIndicatorContainer.getVisibility() == View.INVISIBLE) {
-//                        stickerIndicatorContainer.setVisibility(View.VISIBLE);
-//                    }
-//                    ObjectAnimator oas = ObjectAnimator.ofFloat(stickerIndicatorContainer, "translationX", Screen.getWidth(), Screen.getWidth());
-//                    oas.setDuration(0);
-//                    oas.start();
-//
-//                    emojiPager.setCurrentItem(1, true);
-
+                    pager.setCurrentItem(0);
                 }
             });
 
             stickerIndicatorContainer.addView(backToSmiles);
-
             stickerSwitchContainer = new LinearLayout(getContext());
             stickerSwitchContainer.setId(R.id.sticker_switch_container);
             stickerSwitchContainer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
             stickerIndicatorContainer.addView(stickerSwitchContainer);
 
-           // stickersWrap.addView(new StickersView());
+            stickersWrap = new LinearLayout(getContext());
+            stickersWrap.setOrientation(LinearLayout.VERTICAL);
+            stickersWrap.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
-            views.add(stickerIndicatorContainer);
+            stickersWrap.addView(stickerIndicatorContainer);
+
+            StickersView stickersView = new StickersView(getContext(), this);
+
+//            ViewGroup.MarginLayoutParams marginLayoutParams =
+//                    new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+//
+//            marginLayoutParams.setMargins(0, Screen.dp(48), 0, 0);
+
+            stickersWrap.addView(stickersView);
+
+            views.add(stickersWrap);
         }
 
 
@@ -651,7 +646,7 @@ public class EmojiView extends FrameLayout {
         emojiTab.setOrientation(LinearLayout.HORIZONTAL);
         addView(emojiTab, LayoutHelper.createFrame(LayoutParams.MATCH_PARENT, 48));
 
-        pagerSlidingTabStrip = new PagerSlidingTabStrip2(context);
+        pagerSlidingTabStrip = new PagerSlidingTabStrip(context);
         pagerSlidingTabStrip.setViewPager(pager);
         pagerSlidingTabStrip.setShouldExpand(true);
         pagerSlidingTabStrip.setIndicatorHeight(Screen.dp(2));
@@ -1094,26 +1089,20 @@ public class EmojiView extends FrameLayout {
         }
     }
 
-
     public void onStickerClicked(Sticker sticker) {
 
-    }
-
-
-    public LinearLayout getStickerIndicatorContainer() {
-        return stickerIndicatorContainer;
     }
 
     public LinearLayout getStickerSwitchContainer() {
         return stickerSwitchContainer;
     }
 
-    private class EmojiPagesAdapter extends PagerAdapter implements PagerSlidingTabStrip2.IconTabProvider {
+    private class EmojiPagesAdapter extends PagerAdapter implements PagerSlidingTabStrip.IconTabProvider {
 
         public void destroyItem(ViewGroup viewGroup, int position, Object object) {
             View view;
             if (position == 6) {
-                view = stickerIndicatorContainer;
+                view = stickersWrap;
             } else {
                 view = views.get(position);
             }
@@ -1141,10 +1130,7 @@ public class EmojiView extends FrameLayout {
         public Object instantiateItem(ViewGroup viewGroup, int position) {
             View view;
             if (position == 6) {
-                if (stickersView == null) {
-                    stickersView = new StickersView(getContext(), EmojiView.this);
-                }
-                view = stickerIndicatorContainer;
+                view = stickersWrap;
             } else {
                 view = views.get(position);
             }

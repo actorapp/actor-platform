@@ -2,7 +2,6 @@ package im.actor.sdk.controllers.conversation.messages.content.preprocessor;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -37,14 +36,10 @@ import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.conversation.view.MentionSpan;
 import im.actor.sdk.controllers.conversation.view.ReactionSpan;
-import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.BaseUrlSpan;
-import im.actor.sdk.view.emoji.SmileProcessor;
-import im.actor.sdk.view.emoji.keyboard.emoji.Emoji;
 import im.actor.sdk.view.markdown.AndroidMarkdown;
 import im.actor.runtime.generic.mvvm.ListProcessor;
 
-import static im.actor.sdk.view.emoji.SmileProcessor.emoji;
 import static im.actor.sdk.util.ActorSDKMessenger.groups;
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 import static im.actor.sdk.util.ActorSDKMessenger.myUid;

@@ -45,11 +45,9 @@ import im.actor.sdk.util.Fonts;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.ListItemBackgroundView;
 import im.actor.sdk.view.TintDrawable;
-import im.actor.sdk.view.emoji.SmileProcessor;
 import im.actor.sdk.view.emoji.keyboard.emoji.Emoji;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
-import static im.actor.sdk.view.emoji.SmileProcessor.emoji;
 
 public class DialogView extends ListItemBackgroundView<Dialog, DialogView.DialogLayout> {
 

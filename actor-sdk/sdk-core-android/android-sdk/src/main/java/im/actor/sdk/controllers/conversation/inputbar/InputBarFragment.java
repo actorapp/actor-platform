@@ -41,16 +41,14 @@ import im.actor.sdk.core.audio.VoiceCaptureActor;
 import im.actor.sdk.util.KeyboardHelper;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.TintImageView;
-import im.actor.sdk.view.emoji.SmileProcessor;
 import im.actor.sdk.view.emoji.keyboard.KeyboardStatusListener;
+import im.actor.sdk.view.emoji.keyboard.emoji.Emoji;
 import im.actor.sdk.view.emoji.keyboard.emoji.EmojiKeyboard;
-import im.actor.sdk.view.emoji.keyboard.emoji.EmojiKeyboard2;
 import im.actor.sdk.view.markdown.AndroidMarkdown;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 import static im.actor.sdk.util.ViewUtils.zoomInView;
 import static im.actor.sdk.util.ViewUtils.zoomOutView;
-import static im.actor.sdk.view.emoji.SmileProcessor.emoji;
 
 public class InputBarFragment extends BaseFragment implements MessagesDefaultFragment.NewMessageListener {
 
@@ -92,7 +90,7 @@ public class InputBarFragment extends BaseFragment implements MessagesDefaultFra
     protected KeyboardHelper keyboardUtils;
 
     // Emoji keyboard
-    protected EmojiKeyboard2 emojiKeyboard;
+    protected EmojiKeyboard emojiKeyboard;
     protected ImageView emojiButton;
     private Message lastMessage;
 
@@ -272,8 +270,8 @@ public class InputBarFragment extends BaseFragment implements MessagesDefaultFra
     }
 
     @NonNull
-    protected EmojiKeyboard2 getEmojiKeyboard() {
-        return new EmojiKeyboard2(getActivity(), messageEditText);
+    protected EmojiKeyboard getEmojiKeyboard() {
+        return new EmojiKeyboard(getActivity(), messageEditText);
     }
 
     public void requestFocus() {
@@ -293,8 +291,7 @@ public class InputBarFragment extends BaseFragment implements MessagesDefaultFra
     public void setText(String text, boolean selectAll) {
         isTypingDisabled = true;
         Spannable spantext = AndroidMarkdown.processOnlyLinks(text);
-        spantext = emoji().processEmojiCompatMutable(spantext, SmileProcessor.CONFIGURATION_BUBBLES);
-        messageEditText.setText(spantext);
+        messageEditText.setText(Emoji.replaceEmoji(spantext, messageEditText.getPaint().getFontMetricsInt(), Screen.sp(20), false));
         if (selectAll) {
             messageEditText.setSelection(messageEditText.getText().length());
         }
