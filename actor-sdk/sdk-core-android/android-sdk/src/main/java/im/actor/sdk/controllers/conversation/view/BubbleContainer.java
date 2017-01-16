@@ -241,7 +241,7 @@ public class BubbleContainer extends ViewGroup {
         int topOffset = 0;
 
         View messageView = findMessageView();
-        int padding = Screen.dp(8);
+        int padding = Screen.dp(6);
         if (showAvatar) {
             padding += Screen.dp(48);
         }
