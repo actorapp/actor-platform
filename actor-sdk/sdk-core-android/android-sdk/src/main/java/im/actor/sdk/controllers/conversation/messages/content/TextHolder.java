@@ -52,7 +52,7 @@ public class TextHolder extends MessageHolder {
         text.setTypeface(Fonts.regular());
 
         emojiTextPaint = new TextPaint();
-        emojiTextPaint.setTextSize(Screen.sp(30));
+        emojiTextPaint.setTextSize(Screen.sp(25));
 
         time = (TextView) itemView.findViewById(R.id.tv_time);
         ActorSDK.sharedActor().style.getConvTimeColor();
