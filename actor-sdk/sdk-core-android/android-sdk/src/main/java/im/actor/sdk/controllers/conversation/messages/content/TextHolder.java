@@ -31,6 +31,8 @@ public class TextHolder extends MessageHolder {
     protected FrameLayout messageBubble;
     protected TextView text;
 
+    protected TextPaint emojiTextPaint;
+
     protected TextView time;
     protected TintImageView status;
 
@@ -48,6 +50,9 @@ public class TextHolder extends MessageHolder {
         text = (TextView) itemView.findViewById(R.id.tv_text);
         text.setTextColor(ActorSDK.sharedActor().style.getConvTextColor());
         text.setTypeface(Fonts.regular());
+
+        emojiTextPaint = new TextPaint();
+        emojiTextPaint.setTextSize(Screen.sp(30));
 
         time = (TextView) itemView.findViewById(R.id.tv_time);
         ActorSDK.sharedActor().style.getConvTimeColor();
@@ -69,10 +74,11 @@ public class TextHolder extends MessageHolder {
         PreprocessedTextData textData = (PreprocessedTextData) preprocessedData;
         Spannable reactions = preprocessedData.getReactionsSpannable();
         CharSequence text;
+
         if (textData.getSpannableString() != null) {
-            text = Emoji.replaceEmoji(textData.getSpannableString(), this.text.getPaint().getFontMetricsInt(), Screen.sp(40), false);
+            text = Emoji.replaceEmoji(textData.getSpannableString(), emojiTextPaint.getFontMetricsInt(), Screen.dp(40), false);
         } else {
-            text = Emoji.replaceEmoji(new SpannableStringBuilder(textData.getText()), this.text.getPaint().getFontMetricsInt(), Screen.sp(40), false);
+            text = Emoji.replaceEmoji(new SpannableStringBuilder(textData.getText()), emojiTextPaint.getFontMetricsInt(), Screen.dp(40), false);
         }
         bindRawText(text, readDate, receiveDate, reactions, message, false);
     }

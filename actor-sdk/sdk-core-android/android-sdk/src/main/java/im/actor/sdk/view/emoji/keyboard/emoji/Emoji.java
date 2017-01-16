@@ -517,6 +517,7 @@ public class Emoji {
                     }
                     drawable = Emoji.getEmojiDrawable(emojiCode.subSequence(0, emojiCode.length()));
                     if (drawable != null) {
+
                         span = new EmojiSpan(drawable, DynamicDrawableSpan.ALIGN_BOTTOM, size, fontMetrics);
                         s.setSpan(span, startIndex, startIndex + startLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                         emojiCount++;

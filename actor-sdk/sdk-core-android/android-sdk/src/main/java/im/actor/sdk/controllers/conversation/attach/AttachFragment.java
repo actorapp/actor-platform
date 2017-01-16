@@ -383,6 +383,8 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
             onShown();
             messenger().getGalleryScannerActor().send(new GalleryScannerActor.Show());
             showView(root);
+
+
 //            TranslateAnimation animation = new TranslateAnimation(0, 0, root.getHeight(), 0);
 //            animation.setInterpolator(MaterialInterpolator.getInstance());
 //            animation.setDuration(200);

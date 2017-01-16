@@ -291,7 +291,7 @@ public class InputBarFragment extends BaseFragment implements MessagesDefaultFra
     public void setText(String text, boolean selectAll) {
         isTypingDisabled = true;
         Spannable spantext = AndroidMarkdown.processOnlyLinks(text);
-        messageEditText.setText(Emoji.replaceEmoji(spantext, messageEditText.getPaint().getFontMetricsInt(), Screen.sp(20), false));
+        messageEditText.setText(Emoji.replaceEmoji(spantext, messageEditText.getPaint().getFontMetricsInt(), Screen.dp(20), false));
         if (selectAll) {
             messageEditText.setSelection(messageEditText.getText().length());
         }
