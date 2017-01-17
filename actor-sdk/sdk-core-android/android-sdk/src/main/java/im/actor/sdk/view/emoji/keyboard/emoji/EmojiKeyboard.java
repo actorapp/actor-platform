@@ -18,7 +18,6 @@ package im.actor.sdk.view.emoji.keyboard.emoji;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -78,11 +77,8 @@ public class EmojiKeyboard extends BaseKeyboard  {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle(ActorSDK.sharedActor().getAppName());
                 builder.setMessage("Remover emojis recentes");
-                builder.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
+                builder.setPositiveButton("Confirmar", (dialogInterface, i)-> {
                         emojiView.clearRecentEmoji();
-                    }
                 });
                 builder.setNegativeButton("Cancelar", null);
                 builder.create().show();
@@ -100,7 +96,7 @@ public class EmojiKeyboard extends BaseKeyboard  {
 
     @Override
     protected void onDismiss() {
-
+        messageBody.requestFocus();
     }
 
     void animateView(View view) {

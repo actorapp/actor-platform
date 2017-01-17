@@ -37,6 +37,7 @@ import im.actor.sdk.R;
 import im.actor.sdk.controllers.BaseFragment;
 import im.actor.sdk.controllers.conversation.messages.MessagesDefaultFragment;
 import im.actor.sdk.controllers.conversation.messages.MessagesFragment;
+import im.actor.sdk.controllers.tools.AttachOpenCloseCallback;
 import im.actor.sdk.core.audio.VoiceCaptureActor;
 import im.actor.sdk.util.KeyboardHelper;
 import im.actor.sdk.util.Screen;
@@ -50,7 +51,8 @@ import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 import static im.actor.sdk.util.ViewUtils.zoomInView;
 import static im.actor.sdk.util.ViewUtils.zoomOutView;
 
-public class InputBarFragment extends BaseFragment implements MessagesDefaultFragment.NewMessageListener {
+public class InputBarFragment extends BaseFragment implements MessagesDefaultFragment.NewMessageListener,
+        AttachOpenCloseCallback {
 
     private static final int SLIDE_LIMIT = Screen.dp(180);
     private static final int PERMISSION_REQUEST_RECORD_AUDIO = 1;
@@ -173,7 +175,6 @@ public class InputBarFragment extends BaseFragment implements MessagesDefaultFra
             }
         });
 
-
         //
         // Send Button
         //
@@ -197,7 +198,9 @@ public class InputBarFragment extends BaseFragment implements MessagesDefaultFra
         // Emoji keyboard
         //
         emojiButton = (ImageView) res.findViewById(R.id.ib_emoji);
-        emojiButton.setOnClickListener(v -> emojiKeyboard.toggle());
+        emojiButton.setOnClickListener(v -> {
+            emojiKeyboard.toggle();
+        });
         emojiKeyboard = getEmojiKeyboard();
         emojiKeyboard.setOnStickerClickListener(sticker -> {
             Fragment parent = getParentFragment();
@@ -642,5 +645,17 @@ public class InputBarFragment extends BaseFragment implements MessagesDefaultFra
         if (emojiKeyboard instanceof MessagesFragment.NewMessageListener) {
             ((MessagesFragment.NewMessageListener) emojiKeyboard).onNewMessage(m);
         }
+    }
+
+    @Override
+    public void onAttachOpen() {
+        if(emojiKeyboard.isShowing()) {
+            emojiKeyboard.dismiss(true);
+        }
+    }
+
+    @Override
+    public void onAttachHide() {
+
     }
 }

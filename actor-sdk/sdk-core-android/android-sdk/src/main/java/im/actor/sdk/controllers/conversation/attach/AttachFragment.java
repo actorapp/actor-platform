@@ -40,6 +40,7 @@ import im.actor.core.utils.GalleryScannerActor;
 import im.actor.runtime.collections.ManagedList;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
+import im.actor.sdk.controllers.tools.AttachOpenCloseCallback;
 import im.actor.sdk.controllers.tools.MediaPickerCallback;
 import im.actor.sdk.controllers.tools.MediaPickerFragment;
 import im.actor.sdk.util.SDKFeatures;
@@ -74,6 +75,8 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
     private int fastShareWidth;
     private int spanCount;
 
+
+
     public AttachFragment(Peer peer) {
         super(peer);
     }
@@ -95,6 +98,8 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
     protected LinearLayoutManager getLayoutManager() {
         return layoutManager;
     }
+
+
 
     @Nullable
     @Override
@@ -357,6 +362,11 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
 
     @Override
     public void show() {
+
+        if(attachListener != null){
+            attachListener.onAttachOpen();
+        }
+
         prepareView();
         if (root.getVisibility() == View.INVISIBLE) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -403,6 +413,9 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
 
     @Override
     public void hide() {
+        if(attachListener != null){
+            attachListener.onAttachHide();
+        }
         if (root != null && root.getVisibility() == View.VISIBLE) {
             onHidden();
             fastAttachAdapter.clearSelected();
