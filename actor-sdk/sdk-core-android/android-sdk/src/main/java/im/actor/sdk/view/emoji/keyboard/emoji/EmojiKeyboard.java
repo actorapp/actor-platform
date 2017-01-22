@@ -43,7 +43,7 @@ public class EmojiKeyboard extends BaseKeyboard  {
     @Override
     protected View createView() {
 
-        EmojiView emojiView = new EmojiView(true, getActivity());
+        EmojiView emojiView = new EmojiView(ActorSDK.sharedActor().isStickersEnabled(), getActivity());
         emojiView.setVisibility(View.VISIBLE);
 
         emojiView.setListener(new EmojiView.Listener() {

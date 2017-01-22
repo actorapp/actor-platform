@@ -196,6 +196,8 @@ public class ActorSDK {
 
     private boolean onClientPrivacyEnabled = false;
 
+    private boolean stickersEnabled = true;
+
     private String inviteDataUrl = "https://api.actor.im/v1/groups/invites/";
 
     protected ActorSDK() {
@@ -699,6 +701,14 @@ public class ActorSDK {
      */
     public boolean isCallsEnabled() {
         return callsEnabled;
+    }
+
+    public boolean isStickersEnabled() {
+        return stickersEnabled;
+    }
+
+    public void setStickersEnabled(boolean stickersEnabled) {
+        this.stickersEnabled = stickersEnabled;
     }
 
     /**

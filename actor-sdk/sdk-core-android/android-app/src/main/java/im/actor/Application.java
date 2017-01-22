@@ -89,6 +89,8 @@ public class Application extends ActorSDKApplication {
         ActorSDK.sharedActor().setEndpoints(new String[]{"tcp://api-mtproto.im.xloto.com.br:9070"});
         ActorSDK.sharedActor().setAuthType(AuthActivity.AUTH_TYPE_PHONE);
 
+        ActorSDK.sharedActor().setStickersEnabled(false);
+
 //        ActorSDK.sharedActor().setTwitter("");
 //        ActorSDK.sharedActor().setHomePage("http://www.foo.com");
 //        ActorSDK.sharedActor().setInviteUrl("http://www.foo.com");
