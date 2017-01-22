@@ -322,16 +322,23 @@ open class AAGroupViewController: AAContentTableController {
                         let title: String
                         let action: String
                         if self.group.groupType == ACGroupType.channel() {
-                            title = AALocalized("ActionLeaveChannelMessage")
-                            action = AALocalized("ActionLeaveChannelAction")
+                            title = AALocalized("ActionLeaveChannelAction")
+                            action = AALocalized("ActionLeaveChannel")
                         } else {
                             title = AALocalized("ActionDeleteAndExitMessage")
-                            action = AALocalized("ActionDeleteAndExitMessageAction")
+                            action = AALocalized("ActionDeleteAndExitAction")
                         }
                         self.confirmDestructive(title, action: action, yes: { () -> () in
-                            self.executePromise(Actor.leaveAndDeleteGroup(withGid: jint(self.gid)))
+                            self.executePromise(Actor.leaveAndDeleteGroup(withGid: jint(self.gid)), successBlock: { (t) in
+                                 DispatchQueue.main.async {
+                                    self.navigationController?.popToRootViewController(animated: true)
+                                }
+                            }, failureBlock: { (e) in
+                                DispatchQueue.main.async {
+                                    self.alertUser(AALocalized("ActionDeleteAndExitNotAllowed"))
+                                }
+                            })
                         })
-                        
                         return true
                     }
                 })
