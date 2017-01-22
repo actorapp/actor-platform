@@ -1,6 +1,9 @@
 package im.actor.sdk.controllers.conversation.messages.content;
 
+import android.graphics.Paint;
 import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,7 +19,9 @@ import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
 import im.actor.sdk.controllers.conversation.messages.content.preprocessor.PreprocessedData;
 import im.actor.sdk.controllers.conversation.messages.content.preprocessor.PreprocessedTextData;
 import im.actor.sdk.util.Fonts;
+import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.TintImageView;
+import im.actor.sdk.view.emoji.keyboard.emoji.Emoji;
 
 import static im.actor.sdk.util.ActorSDKMessenger.myUid;
 
@@ -25,6 +30,9 @@ public class TextHolder extends MessageHolder {
     protected ViewGroup mainContainer;
     protected FrameLayout messageBubble;
     protected TextView text;
+
+    protected TextPaint emojiTextPaint;
+
     protected TextView time;
     protected TintImageView status;
 
@@ -42,6 +50,9 @@ public class TextHolder extends MessageHolder {
         text = (TextView) itemView.findViewById(R.id.tv_text);
         text.setTextColor(ActorSDK.sharedActor().style.getConvTextColor());
         text.setTypeface(Fonts.regular());
+
+        emojiTextPaint = new TextPaint();
+        emojiTextPaint.setTextSize(Screen.sp(25));
 
         time = (TextView) itemView.findViewById(R.id.tv_time);
         ActorSDK.sharedActor().style.getConvTimeColor();
@@ -63,10 +74,11 @@ public class TextHolder extends MessageHolder {
         PreprocessedTextData textData = (PreprocessedTextData) preprocessedData;
         Spannable reactions = preprocessedData.getReactionsSpannable();
         CharSequence text;
+
         if (textData.getSpannableString() != null) {
-            text = textData.getSpannableString();
+            text = Emoji.replaceEmoji(textData.getSpannableString(), emojiTextPaint.getFontMetricsInt(), Screen.dp(40), false);
         } else {
-            text = textData.getText();
+            text = Emoji.replaceEmoji(new SpannableStringBuilder(textData.getText()), emojiTextPaint.getFontMetricsInt(), Screen.dp(40), false);
         }
         bindRawText(text, readDate, receiveDate, reactions, message, false);
     }

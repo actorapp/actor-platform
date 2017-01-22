@@ -128,6 +128,9 @@ public class ChatFragment extends BaseFragment implements InputBarCallback, Mess
             if (fragment == null) {
                 fragment = new AttachFragment(peer);
             }
+
+            fragment.setAttachListener(inputBarFragment);
+
             getFragmentManager().beginTransaction()
                     .add(R.id.overlay, fragment)
                     .commit();

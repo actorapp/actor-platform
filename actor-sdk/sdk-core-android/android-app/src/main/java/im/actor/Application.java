@@ -85,9 +85,11 @@ public class Application extends ActorSDKApplication {
                 "canalxloto"
         });
 
-        ActorSDK.sharedActor().setEndpoints(new String[]{"tcp://192.168.1.8:9070"});
-//        ActorSDK.sharedActor().setEndpoints(new String[]{"tcp://api-mtproto.im.xloto.com.br:9070"});
+//        ActorSDK.sharedActor().setEndpoints(new String[]{"tcp://192.168.1.8:9070"});
+        ActorSDK.sharedActor().setEndpoints(new String[]{"tcp://api-mtproto.im.xloto.com.br:9070"});
         ActorSDK.sharedActor().setAuthType(AuthActivity.AUTH_TYPE_PHONE);
+
+        ActorSDK.sharedActor().setStickersEnabled(false);
 
 //        ActorSDK.sharedActor().setTwitter("");
 //        ActorSDK.sharedActor().setHomePage("http://www.foo.com");
@@ -175,46 +177,58 @@ public class Application extends ActorSDKApplication {
 
         @Override
         public ActorIntentFragmentActivity getSettingsIntent() {
-            return new BaseActorSettingsActivity() {
+
+            return new BaseActorSettingsActivity(){
                 @Override
                 public BaseActorSettingsFragment getSettingsFragment() {
-                    return new BaseActorSettingsFragment() {
-                        CheckBox blablaCheckBox;
+                    return new MyBaseActorSettingsFragment();
+                }
+            };
+        }
+    }
 
-                        @Override
-                        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-                            blablaCheckBox = new CheckBox(getContext());
-                            return super.onCreateView(inflater, container, savedInstanceState);
-                        }
 
-                        @Override
-                        public ActorSettingsCategories getBeforeSettingsCategories() {
-                            return new ActorSettingsCategories()
-                                    .addCategory(new ActorSettingsCategory("azaza")
-                                            .addField(new ActorSettingsField(R.id.terminateSessions)
-                                                    .setName("blabla")
-                                                    .setIconResourceId(R.drawable.ic_edit_black_24dp)
-                                                    .setRightView(blablaCheckBox)
-                                            )
-                                    );
-                        }
+    public static class MyBaseActorSettingsActivity extends BaseActorSettingsActivity {
 
-                        @Override
-                        public View.OnClickListener getMenuFieldOnClickListener() {
-                            return new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    switch (v.getId()) {
-                                        case R.id.terminateSessions:
-                                            Toast.makeText(v.getContext(), "hey", Toast.LENGTH_LONG).show();
-                                            blablaCheckBox.toggle();
-                                            break;
-                                    }
-                                }
-                            };
-                        }
+        @Override
+        public BaseActorSettingsFragment getSettingsFragment() {
+            return new MyBaseActorSettingsFragment();
+        }
+    }
 
-                    };
+
+    public static class MyBaseActorSettingsFragment extends BaseActorSettingsFragment {
+        CheckBox blablaCheckBox;
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            blablaCheckBox = new CheckBox(getContext());
+            return super.onCreateView(inflater, container, savedInstanceState);
+        }
+
+        @Override
+        public ActorSettingsCategories getBeforeSettingsCategories() {
+            return new ActorSettingsCategories()
+                    .addCategory(new ActorSettingsCategory("azaza")
+                            .addField(new ActorSettingsField(R.id.terminateSessions)
+                                    .setName("blabla")
+                                    .setIconResourceId(R.drawable.ic_edit_black_24dp)
+                                    .setRightView(blablaCheckBox)
+                            )
+                    );
+        }
+
+        @Override
+        public View.OnClickListener getMenuFieldOnClickListener() {
+            return new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    switch (v.getId()) {
+                        case R.id.terminateSessions:
+                            Toast.makeText(v.getContext(), "hey", Toast.LENGTH_LONG).show();
+                            blablaCheckBox.toggle();
+                            break;
+                    }
                 }
             };
         }

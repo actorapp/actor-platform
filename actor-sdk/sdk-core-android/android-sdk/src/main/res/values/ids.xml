@@ -9,4 +9,8 @@
     <item type="id" name="share_hide" />
     <item type="id" name="share_send" />
     <item type="id" name="peer" />
+    <item type="id" name="sticker_indicator_container" />
+    <item type="id" name="back_to_smiles" />
+    <item type="id" name="sticker_switch_container" />
+
 </resources>

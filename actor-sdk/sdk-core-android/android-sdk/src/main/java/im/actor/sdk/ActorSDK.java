@@ -46,7 +46,6 @@ import im.actor.sdk.intents.ActorIntentFragmentActivity;
 import im.actor.sdk.push.ActorPushRegister;
 import im.actor.sdk.services.KeepAliveService;
 import im.actor.sdk.util.Devices;
-import im.actor.sdk.view.emoji.SmileProcessor;
 import im.actor.runtime.android.AndroidContext;
 
 
@@ -197,6 +196,8 @@ public class ActorSDK {
 
     private boolean onClientPrivacyEnabled = false;
 
+    private boolean stickersEnabled = true;
+
     private String inviteDataUrl = "https://api.actor.im/v1/groups/invites/";
 
     protected ActorSDK() {
@@ -245,7 +246,6 @@ public class ActorSDK {
                     .build();
             Fresco.initialize(application, config);
 
-            SmileProcessor emojiProcessor = new SmileProcessor(application);
             ActorSystem.system().addDispatcher("voice_capture_dispatcher", 1);
 
             //
@@ -357,11 +357,6 @@ public class ActorSDK {
                 LOAD_LOCK.notifyAll();
             }
 
-            //
-            // Loading Emoji
-            //
-
-            emojiProcessor.loadEmoji();
         });
     }
 
@@ -706,6 +701,14 @@ public class ActorSDK {
      */
     public boolean isCallsEnabled() {
         return callsEnabled;
+    }
+
+    public boolean isStickersEnabled() {
+        return stickersEnabled;
+    }
+
+    public void setStickersEnabled(boolean stickersEnabled) {
+        this.stickersEnabled = stickersEnabled;
     }
 
     /**

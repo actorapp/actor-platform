@@ -15,6 +15,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutCompat;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.view.Gravity;
@@ -38,6 +40,7 @@ import im.actor.core.utils.GalleryScannerActor;
 import im.actor.runtime.collections.ManagedList;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
+import im.actor.sdk.controllers.tools.AttachOpenCloseCallback;
 import im.actor.sdk.controllers.tools.MediaPickerCallback;
 import im.actor.sdk.controllers.tools.MediaPickerFragment;
 import im.actor.sdk.util.SDKFeatures;
@@ -63,13 +66,16 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
 
     private boolean isLoaded = false;
     private RecyclerView fastShare;
-    private View bottomBackground;
+    private FrameLayout bottomBackground;
     private boolean isFastShareFullScreen;
-    private GridLayoutManager layoutManager;
+    //private GridLayoutManager layoutManager;
+    private LinearLayoutManager layoutManager;
     private int shareIconSize;
     private View hideClone;
     private int fastShareWidth;
     private int spanCount;
+
+
 
     public AttachFragment(Peer peer) {
         super(peer);
@@ -83,15 +89,17 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
         super.onConfigurationChanged(newConfig);
         hide();
         if (layoutManager != null) {
-            layoutManager = getGridLayoutManager();
+            layoutManager = getLinearLayoutManager();
         }
         root.removeAllViews();
         isLoaded = false;
     }
 
-    protected GridLayoutManager getLayoutManager() {
+    protected LinearLayoutManager getLayoutManager() {
         return layoutManager;
     }
+
+
 
     @Nullable
     @Override
@@ -107,10 +115,10 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
             @Override
             protected void onSizeChanged(int w, int h, int oldw, int oldh) {
                 super.onSizeChanged(w, h, oldw, oldh);
-                if (h != oldh && shareButtons != null) {
-                    shareButtons.getLayoutParams().height = root.getHeight() - Screen.dp(135);
-                    shareButtons.requestLayout();
-                }
+//                if (h != oldh && shareButtons != null) {
+                   // shareButtons.getLayoutParams().height = root.getHeight() - Screen.dp(135);
+//                    shareButtons.requestLayout();
+//                }
             }
         };
         root.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -133,7 +141,7 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
 
         shareButtons = getLayoutInflater(null).inflate(R.layout.share_menu, root, false);
         fastShare = new RecyclerView(getActivity());
-        fastShare.setOverScrollMode(View.OVER_SCROLL_NEVER);
+        //fastShare.setOverScrollMode(View.OVER_SCROLL_NEVER);
 
         shareButtons.findViewById(R.id.menu_bg).setBackgroundColor(style.getMainBackgroundColor());
         shareButtons.findViewById(R.id.cancelField).setOnClickListener(view -> hide());
@@ -142,20 +150,20 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
         // Setup appearing hide button
         //
         isFastShareFullScreen = false;
-        fastShare.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                boolean visible = layoutManager.findFirstVisibleItemPosition() == 0;
-                if (isFastShareFullScreen == visible) {
-                    isFastShareFullScreen = !visible;
-                    if (visible) {
-                        hideView(hideClone);
-                    } else {
-                        showView(hideClone);
-                    }
-                }
-            }
-        });
+//        fastShare.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//            @Override
+//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                boolean visible = layoutManager.findFirstVisibleItemPosition() == 0;
+//                if (isFastShareFullScreen == visible) {
+//                    isFastShareFullScreen = !visible;
+//                    if (visible) {
+//                        hideView(hideClone);
+//                    } else {
+//                        showView(hideClone);
+//                    }
+//                }
+//            }
+//        });
 
         //
         // Building Menu Fields
@@ -237,16 +245,21 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
         fastAttachAdapter = new FastAttachAdapter(getActivity(), () -> fastShareWidth + 1);
 
         HeaderViewRecyclerAdapter adapter = new HeaderViewRecyclerAdapter(fastAttachAdapter);
-        adapter.addHeaderView(shareButtons);
-        layoutManager = getGridLayoutManager();
+
+        //adapter.addHeaderView(shareButtons);
+        //adapter.addFooterView(shareButtons);
+       // layoutManager = getGridLayoutManager();
+        layoutManager = getLinearLayoutManager();
         fastShare.setAdapter(adapter);
         fastShare.setLayoutManager(layoutManager);
-        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                return position == 0 ? spanCount : 1;
-            }
-        });
+//        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+//            @Override
+//            public int getSpanSize(int position) {
+//                return position == 0 ? spanCount : 1;
+//            }
+//        });
+
+
         StateListDrawable background = ShareMenuButtonFactory.get(style.getMainColor(), getActivity());
 
         final View.OnClickListener finalDefaultSendOcl = defaultSendOcl;
@@ -283,24 +296,30 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
         });
 
         shareButtons.getLayoutParams().height = root.getHeight() - Screen.dp(135);
-        shareButtons.requestLayout();
 
-
-        bottomBackground = new View(getContext());
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(135), Gravity.BOTTOM);
+        bottomBackground =  new FrameLayout(getContext());
         bottomBackground.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
-        root.addView(bottomBackground, params);
-        root.addView(fastShare);
-        FrameLayout.LayoutParams params2 = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM | Gravity.RIGHT);
-        params2.setMargins(0, 0, Screen.dp(20), Screen.dp(20));
-        root.addView(hideClone, params2);
+
+        FrameLayout.LayoutParams paramsFastShare = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(90));
+        bottomBackground.addView(fastShare, paramsFastShare);
+
+        FrameLayout.LayoutParams paramsShareButtons = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(180));
+        paramsShareButtons.setMargins(0, Screen.dp(90), 0, 0);
+        bottomBackground.addView(shareButtons, paramsShareButtons);
+
+        FrameLayout.LayoutParams paramsBackground = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(270), Gravity.BOTTOM | Gravity.RIGHT);
+        root.addView(bottomBackground, paramsBackground);
+        //shareButtons.requestLayout();
+        //bottomBackground.requestLayout();
+//        FrameLayout.LayoutParams params2 = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM | Gravity.RIGHT);
+//        params2.setMargins(0, 0, Screen.dp(20), Screen.dp(20));
+//        root.addView(hideClone, params2);
     }
 
-    @NonNull
-    private GridLayoutManager getGridLayoutManager() {
+    private LinearLayoutManager getLinearLayoutManager(){
         spanCount = Screen.getWidth() / Screen.dp(88);
         fastShareWidth = Screen.getWidth() / spanCount;
-        return new GridLayoutManager(getActivity(), spanCount);
+        return new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
     }
 
     private View instantiateShareMenuItem(ShareMenuField f) {
@@ -343,6 +362,11 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
 
     @Override
     public void show() {
+
+        if(attachListener != null){
+            attachListener.onAttachOpen();
+        }
+
         prepareView();
         if (root.getVisibility() == View.INVISIBLE) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -360,11 +384,13 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
             onShown();
             messenger().getGalleryScannerActor().send(new GalleryScannerActor.Show());
             showView(root);
-            TranslateAnimation animation = new TranslateAnimation(0, 0, root.getHeight(), 0);
-            animation.setInterpolator(MaterialInterpolator.getInstance());
-            animation.setDuration(200);
+
+//            TranslateAnimation animation = new TranslateAnimation(0, 0, root.getHeight(), 0);
+//            animation.setInterpolator(MaterialInterpolator.getInstance());
+//            animation.setDuration(200);
 //            fastShare.startAnimation(animation);
 //            bottomBackground.startAnimation(animation);
+
             shareButtons.post(new Runnable() {
                 @Override
                 public void run() {
@@ -381,11 +407,15 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
                 }
             });
 
+
         }
     }
 
     @Override
     public void hide() {
+        if(attachListener != null){
+            attachListener.onAttachHide();
+        }
         if (root != null && root.getVisibility() == View.VISIBLE) {
             onHidden();
             fastAttachAdapter.clearSelected();
@@ -393,44 +423,44 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
             fastShare.scrollToPosition(0);
             hideView(root);
 
+//            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && !isFastShareFullScreen) {
+//                View internal = shareButtons;
+//                int cx = internal.getWidth() - Screen.dp(56 + 56);
+//                int cy = internal.getHeight() - Screen.dp(56 / 2);
+//                float finalRadius = (float) Math.hypot(cx, cy);
+//                Animator anim = ViewAnimationUtils.createCircularReveal(internal, cx, cy, finalRadius, 0);
+//                anim.addListener(new Animator.AnimatorListener() {
+//                    @Override
+//                    public void onAnimationStart(Animator animator) {
+//                        internal.setAlpha(1);
+//                    }
+//
+//                    @Override
+//                    public void onAnimationEnd(Animator animator) {
+//                        internal.setAlpha(0);
+//                    }
+//
+//                    @Override
+//                    public void onAnimationCancel(Animator animator) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onAnimationRepeat(Animator animator) {
+//
+//                    }
+//                });
+//
+//                anim.setDuration(200);
+//                anim.start();
+//            } else {
+//                TranslateAnimation animation = new TranslateAnimation(0, 0, 0, root.getHeight());
+//                animation.setInterpolator(MaterialInterpolator.getInstance());
+//                animation.setDuration(250);
+//                fastShare.startAnimation(animation);
+//                bottomBackground.startAnimation(animation);
+//            }
 
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && !isFastShareFullScreen) {
-                View internal = fastShare;
-                int cx = internal.getWidth() - Screen.dp(56 + 56);
-                int cy = internal.getHeight() - Screen.dp(56 / 2);
-                float finalRadius = (float) Math.hypot(cx, cy);
-                Animator anim = ViewAnimationUtils.createCircularReveal(internal, cx, cy, finalRadius, 0);
-                anim.addListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animator) {
-                        internal.setAlpha(1);
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animator animator) {
-                        internal.setAlpha(0);
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animator) {
-
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animator) {
-
-                    }
-                });
-
-                anim.setDuration(200);
-                anim.start();
-            } else {
-                TranslateAnimation animation = new TranslateAnimation(0, 0, 0, root.getHeight());
-                animation.setInterpolator(MaterialInterpolator.getInstance());
-                animation.setDuration(250);
-                fastShare.startAnimation(animation);
-                bottomBackground.startAnimation(animation);
-            }
         }
     }
 

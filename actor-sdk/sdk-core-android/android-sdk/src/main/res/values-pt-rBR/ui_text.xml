@@ -434,7 +434,7 @@
 
     <!-- Add Contact -->
     <string name="add_contact_title">Adicionar contato</string>
-    <string name="add_contact_phone_hint">Insira o número do telefone</string>
+    <string name="add_contact_phone_hint">telefone, email ou usuário</string>
     <string name="add_contact_bar_cancel">CANCELAR</string>
     <string name="add_contact_bar_continue">CONTINUE</string>
 

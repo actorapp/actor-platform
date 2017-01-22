@@ -2,8 +2,11 @@ package im.actor.sdk;
 
 import android.app.ActivityManager;
 import android.app.Application;
+import android.content.res.Configuration;
 
 import im.actor.runtime.android.AndroidContext;
+import im.actor.sdk.util.AndroidUtils;
+import im.actor.sdk.util.Screen;
 
 /**
  * Implementation of Application object that handles everything required for creating and
@@ -37,5 +40,15 @@ public class ActorSDKApplication extends Application {
      */
     public void onConfigureActorSDK() {
 
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        try {
+            Screen.checkDisplaySize(getApplicationContext(), newConfig);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

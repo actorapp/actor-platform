@@ -8,16 +8,16 @@ import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
 import im.actor.sdk.util.Screen;
-import im.actor.sdk.view.emoji.keyboard.emoji.EmojiKeyboard;
+import im.actor.sdk.view.emoji.keyboard.emoji.EmojiView;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
 public class StickersView extends RecyclerView {
     boolean disableWhileFastScroll = false;
-    EmojiKeyboard keyboard;
+    EmojiView keyboard;
     private StickersAdapter stickersAdapter;
 
-    public StickersView(Context context, EmojiKeyboard keyboard) {
+    public StickersView(Context context, EmojiView keyboard) {
         super(context);
         this.keyboard = keyboard;
         init(context);
@@ -35,9 +35,6 @@ public class StickersView extends RecyclerView {
 
 
     public void init(final Context context) {
-
-
-
         buildAdapter(context);
     }
 
@@ -55,11 +52,11 @@ public class StickersView extends RecyclerView {
         packSwitch.setLayoutManager(linearLayoutManager);
         packSwitch.setItemAnimator(null);
         packSwitch.setHasFixedSize(true);
-        PacksAdapter packsAdapter = new PacksAdapter(context, stickersAdapter, keyboard.getStickerIndicatorContainer());
+        PacksAdapter packsAdapter = new PacksAdapter(context, stickersAdapter, keyboard.getStickerSwitchContainer());
         packSwitch.setAdapter(packsAdapter);
         stickersAdapter.setPacksAdapter(packsAdapter);
-        keyboard.getStickerIndicatorContainer().removeAllViews();
-        keyboard.getStickerIndicatorContainer().addView(packSwitch, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        keyboard.getStickerSwitchContainer().removeAllViews();
+        keyboard.getStickerSwitchContainer().addView(packSwitch, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
     }
 
     public void relesase() {

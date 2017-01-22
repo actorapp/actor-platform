@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Layout;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
@@ -44,10 +45,9 @@ import im.actor.sdk.util.Fonts;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.ListItemBackgroundView;
 import im.actor.sdk.view.TintDrawable;
-import im.actor.sdk.view.emoji.SmileProcessor;
+import im.actor.sdk.view.emoji.keyboard.emoji.Emoji;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
-import static im.actor.sdk.view.emoji.SmileProcessor.emoji;
 
 public class DialogView extends ListItemBackgroundView<Dialog, DialogView.DialogLayout> {
 
@@ -396,7 +396,7 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
 
             if (arg.getPeer().getPeerType() == PeerType.GROUP) {
                 if (messenger().getFormatter().isLargeDialogMessage(arg.getMessageType())) {
-                    res.setTextLayout(singleLineText(handleEmoji(contentText), textActivePaint, maxWidth));
+                    res.setTextLayout(singleLineText(Emoji.replaceEmoji(contentText, textActivePaint.getFontMetricsInt(), Screen.dp(17), false), textActivePaint, maxWidth));
                 } else {
                     String senderName = messenger().getFormatter().formatPerformerName(arg.getSenderId()) + ": ";
                     if (arg.getMessageType() == ContentType.TEXT) {
@@ -406,15 +406,16 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
                         builder.append(contentText);
                         res.setTextLayout(singleLineText(builder, textPaint, maxWidth));
                     } else {
-                        CharSequence contentResult = handleEmoji(senderName, contentText);
+                        CharSequence contentResult = new StringBuilder(Emoji.replaceEmoji(senderName, textActivePaint.getFontMetricsInt(), Screen.dp(17), false))
+                                .append(Emoji.replaceEmoji(contentText, textActivePaint.getFontMetricsInt(), Screen.dp(17), false));
                         res.setTextLayout(singleLineText(contentResult, textActivePaint, maxWidth));
                     }
                 }
             } else {
                 if (arg.getMessageType() == ContentType.TEXT) {
-                    res.setTextLayout(singleLineText(handleEmoji(contentText), textPaint, maxWidth));
+                    res.setTextLayout(singleLineText(Emoji.replaceEmoji(contentText, textPaint.getFontMetricsInt(), Screen.dp(17), false), textPaint, maxWidth));
                 } else {
-                    res.setTextLayout(singleLineText(handleEmoji(contentText), textActivePaint, maxWidth));
+                    res.setTextLayout(singleLineText(Emoji.replaceEmoji(contentText, textActivePaint.getFontMetricsInt(), Screen.dp(17), false), textActivePaint, maxWidth));
                 }
             }
         }
@@ -439,21 +440,24 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
         }
     }
 
-    private CharSequence handleEmoji(CharSequence... args) {
-        StringBuilder builder = new StringBuilder();
-        for (CharSequence seq : args) {
-            if (SmileProcessor.containsEmoji(seq)) {
-                if (emoji().isLoaded()) {
-                    builder.append(emoji().processEmojiCompatMutable(seq, SmileProcessor.CONFIGURATION_BUBBLES));
-                } else {
-                    builder.append(seq);
-                }
-            } else {
-                builder.append(seq);
-            }
-        }
-        return builder;
-    }
+//    private CharSequence handleEmoji(CharSequence... args) {
+//        StringBuilder builder = new StringBuilder();
+//        for (CharSequence seq : args) {
+////            if (SmileProcessor.containsEmoji(seq)) {
+////                if (emoji().isLoaded()) {
+////                    builder.append(emoji().processEmojiCompatMutable(seq, SmileProcessor.CONFIGURATION_BUBBLES));
+////                } else {
+////                    builder.append(seq);
+////                }
+////                builder.append(Emoji.replaceEmoji(seq, textPaint.getFontMetricsInt(), Screen.dp(20), true));
+////            } else {
+////                builder.append(seq);
+////            }
+//
+//            builder.append(Emoji.replaceEmoji(seq, textPaint.getFontMetricsInt(), Screen.dp(20), true));
+//        }
+//        return builder;
+//    }
 
     private CharSequence buildShortName(String name) {
         if (name == null) {
@@ -471,8 +475,7 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
                 }
             }
         }
-
-        return handleEmoji(name);
+        return Emoji.replaceEmoji(name, textPaint.getFontMetricsInt(), Screen.dp(20), false);
     }
 
     private AvatarImage getAvatarImage(Avatar avatar) {
