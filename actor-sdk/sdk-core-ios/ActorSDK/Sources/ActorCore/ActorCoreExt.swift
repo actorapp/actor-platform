@@ -289,10 +289,27 @@ open class TextParser {
         let doc = markdownParser?.processDocument(with: text)
         
         if (doc?.isTrivial())! {
-            let nAttrText = NSMutableAttributedString(string: text)
-            let range = NSRange(location: 0, length: nAttrText.length)
-            nAttrText.yy_setColor(textColor, range: range)
-            nAttrText.yy_setFont(UIFont.textFontOfSize(fontSize), range: range)
+            
+            let nAttrText = NSMutableAttributedString(string: "")
+            
+            for ch in text.characters {
+                let str = String(ch)
+                
+                if(str.containsEmoji){
+                    let emoji = NSMutableAttributedString(string: str)
+                    let range = NSRange(location: 0, length: emoji.length)
+                    emoji.yy_setColor(textColor, range: range)
+                    emoji.yy_setFont(UIFont.textFontOfSize(30), range: range)
+                    nAttrText.append(emoji)
+                }else{
+                    let noEmoji = NSMutableAttributedString(string: str)
+                    let range = NSRange(location: 0, length: noEmoji.length)
+                    noEmoji.yy_setColor(textColor, range: range)
+                    noEmoji.yy_setFont(UIFont.textFontOfSize(fontSize), range: range)
+                    nAttrText.append(noEmoji)
+                }
+            }
+            
             return ParsedText(attributedText: nAttrText, isTrivial: true, code: [])
         }
         

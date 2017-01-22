@@ -411,7 +411,7 @@ final class AADialogCell: AATableViewCell, AABindedCell {
         if !statusView.isHidden {
             padding += 22
         }
-        let messageViewFrame = CGRect(x: padding, y: 44, width: render.messageWidth, height: 18)
+        let messageViewFrame = CGRect(x: padding, y: 44, width: render.messageWidth, height: 22)
         UIView.performWithoutAnimation {
             self.messageView.frame = messageViewFrame
         }
