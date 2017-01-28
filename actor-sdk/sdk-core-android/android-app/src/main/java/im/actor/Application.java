@@ -76,6 +76,8 @@ public class Application extends ActorSDKApplication {
 
         ActorSDK.sharedActor().setCallsEnabled(true);
 
+        ActorSDK.sharedActor().setAppName("XLoto Mensageiro");
+
         ActorSDK.sharedActor().setTosUrl("http://actor.im");
         ActorSDK.sharedActor().setPrivacyText("bla bla bla");
 

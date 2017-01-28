@@ -1,11 +1,15 @@
 package im.actor.sdk.controllers.auth;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v13.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.MenuItem;
 
 import java.util.Observable;
@@ -35,6 +39,8 @@ import im.actor.sdk.controllers.activity.BaseFragmentActivity;
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
 public class AuthActivity extends BaseFragmentActivity implements Observer{
+
+    private static final int PERMISSIONS_REQUEST_READ_SMS = 1;
 
     public static final String AUTH_TYPE_KEY = "auth_type";
     public static final String SIGN_TYPE_KEY = "sign_type";
@@ -151,6 +157,13 @@ public class AuthActivity extends BaseFragmentActivity implements Observer{
                 break;
             case CODE_VALIDATION_PHONE:
             case CODE_VALIDATION_EMAIL:
+
+                if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.READ_SMS},
+                            PERMISSIONS_REQUEST_READ_SMS);
+                }
+
                 Fragment signInFragment = new ValidateCodeFragment();
                 Bundle args = new Bundle();
 

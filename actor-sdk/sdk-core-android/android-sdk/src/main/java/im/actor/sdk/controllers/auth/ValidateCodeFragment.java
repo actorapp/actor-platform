@@ -1,9 +1,13 @@
 package im.actor.sdk.controllers.auth;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
+import android.support.v13.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
@@ -28,6 +32,8 @@ import im.actor.sdk.util.KeyboardHelper;
 import im.actor.sdk.view.SelectorFactory;
 
 public class ValidateCodeFragment extends BaseAuthFragment {
+
+
 
     public static final String AUTH_TYPE_EMAIL = "auth_type_email";
     public static final String AUTH_TYPE_PHONE = "auth_type_phone";
