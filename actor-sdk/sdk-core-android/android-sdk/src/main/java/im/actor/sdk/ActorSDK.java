@@ -112,6 +112,13 @@ public class ActorSDK {
      * Push Registration Id
      */
     private long pushId = 0;
+
+    /**
+     * Defines where is the sms code activation
+     * on the message
+     */
+    private int smsCodePosition = 7;
+
     /**
      * Actor Push Endpoint
      */
@@ -895,6 +902,14 @@ public class ActorSDK {
         if (!startDelegateActivity(context, delegate.getAuthStartIntent(), extras)) {
             startActivity(context, extras, AuthActivity.class);
         }
+    }
+
+    public int getSmsCodePosition() {
+        return smsCodePosition;
+    }
+
+    public void setSmsCodePosition(int smsCodePosition) {
+        this.smsCodePosition = smsCodePosition;
     }
 
     /**

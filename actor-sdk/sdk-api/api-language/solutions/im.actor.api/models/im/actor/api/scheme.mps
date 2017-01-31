@@ -18638,53 +18638,17 @@
   <node concept="2m5nkH" id="5HzswaJYSei">
     <property role="TrG5h" value="ActorApiExtension" />
     <property role="u_6dX" value="0.1" />
-    <property role="3BlOl8" value="im.actor.xloto.core.api" />
-    <property role="WhUdw" value="im.actor.xloto.api.rpc" />
-    <node concept="wd7tA" id="3wj$Iseecm6" role="3Bkp18">
-      <property role="TrG5h" value="seq_state" />
-      <node concept="2m61tm" id="3wj$Iseecma" role="wdlUs" />
-    </node>
-    <node concept="wd7tA" id="3wj$Iseecmd" role="3Bkp18">
-      <property role="TrG5h" value="date" />
-      <node concept="2m5ndQ" id="3wj$Iseecmj" role="wdlUs" />
-    </node>
-    <node concept="wd7tA" id="3wj$Iseecmm" role="3Bkp18">
-      <property role="TrG5h" value="randomId" />
-      <node concept="2m5ndQ" id="3wj$Iseecmu" role="wdlUs" />
-    </node>
-    <node concept="wd7tA" id="3wj$Iseecmx" role="3Bkp18">
-      <property role="TrG5h" value="userId" />
-      <node concept="2m5ndE" id="3wj$IseecmF" role="wdlUs" />
-    </node>
+    <property role="3BlOl8" value="im.actor.extension.api" />
+    <property role="WhUdw" value="im.actor.extension.api" />
     <node concept="2m5mJO" id="64HNz1Ipac2" role="2m5lHt">
-      <property role="TrG5h" value="GroupsExtension" />
-      <property role="3XOG$Z" value="groupsext" />
-      <node concept="2m6fVq" id="3wj$Iseecn5" role="2m5mJr">
-        <property role="TrG5h" value="LoadMyGroups" />
-        <node concept="2m7Kf5" id="3wj$Iseecnd" role="2m0hLx">
+      <node concept="2m5naR" id="64HNz1Ipac6" role="2m5mJr">
+        <property role="TrG5h" value="test" />
+        <node concept="2m7Kf5" id="64HNz1Ipac9" role="2m0hLx">
           <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="minDate" />
-          <node concept="2m5ndQ" id="3wj$IseedHm" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="3wj$Iseecnh" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="limit" />
-          <node concept="2m5ndE" id="3wj$Iseecnn" role="2m7DVh" />
-        </node>
-        <node concept="Nu42z" id="3wj$Iseecn6" role="NuuwV">
-          <property role="Nu42W" value="55" />
-        </node>
-        <node concept="2m1R6W" id="3wj$IseedHh" role="2m6efq">
-          <node concept="Nu42z" id="3wj$IseedHi" role="NuuwV">
-            <property role="Nu42W" value="56" />
+          <node concept="2m5mGg" id="64HNz1Ipacd" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6fx" resolve="Peer" />
           </node>
         </node>
-      </node>
-      <node concept="1Dx9M1" id="3wj$IseecmV" role="1Dx9rD">
-        <property role="1Dx9K7" value="teste" />
-      </node>
-      <node concept="1Dx9M1" id="3wj$IseecmX" role="1Dx9rD">
-        <property role="1Dx9K7" value="ffff" />
       </node>
     </node>
   </node>

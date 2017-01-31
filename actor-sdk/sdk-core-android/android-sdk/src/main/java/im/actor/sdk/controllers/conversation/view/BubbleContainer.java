@@ -105,7 +105,7 @@ public class BubbleContainer extends ViewGroup {
         // AVATAR
         avatarView = new AvatarViewWithOnline(getContext());
         avatarView.init(Screen.dp(42), 18);
-        addView(avatarView, new MarginLayoutParams(Screen.dp(42), Screen.dp(42)));
+        addView(avatarView, new MarginLayoutParams(Screen.dp(40), Screen.dp(40)));
     }
 
     public OnAvatarClickListener getOnClickListener() {
