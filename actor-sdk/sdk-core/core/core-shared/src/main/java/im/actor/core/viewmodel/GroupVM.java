@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
+import im.actor.core.api.ApiMapValue;
 import im.actor.core.entity.Group;
 import im.actor.core.entity.GroupMember;
 import im.actor.core.entity.GroupType;
@@ -132,6 +133,9 @@ public class GroupVM extends BaseValueModel<Group> {
     @NotNull
     @Property("nonatomic, readonly")
     private ValueModel<Integer> presence;
+    @NotNull
+    @Property("nonatomic, readonly")
+    private ValueModel<ApiMapValue> ext;
 
     @NotNull
     private ArrayList<ModelChangedListener<GroupVM>> listeners = new ArrayList<>();
@@ -178,6 +182,7 @@ public class GroupVM extends BaseValueModel<Group> {
         this.theme = new StringValueModel("group." + groupId + ".theme", rawObj.getTopic());
         this.about = new StringValueModel("group." + groupId + ".about", rawObj.getAbout());
         this.shortName = new StringValueModel("group." + groupId + ".shortname", rawObj.getShortName());
+        this.ext = new ValueModel<>("group." + groupId + ".ext", rawObj.getExt());
     }
 
     /**
@@ -529,6 +534,15 @@ public class GroupVM extends BaseValueModel<Group> {
         return presence;
     }
 
+    /**
+     * Get ext Value Model
+     *
+     * @return Value Model of ext
+     */
+    @NotNull
+    public ValueModel<ApiMapValue> getExt() {
+        return ext;
+    }
 
     /**
      * Subscribe for GroupVM updates
@@ -611,6 +625,7 @@ public class GroupVM extends BaseValueModel<Group> {
         isChanged |= isCanViewInfo.change(rawObj.isCanViewInfo());
         isChanged |= isCanJoin.change(rawObj.isCanJoin());
         isChanged |= isCanCall.change(rawObj.isCanCall());
+        isChanged |= ext.change(rawObj.getExt());
 
         if (isChanged) {
             notifyIfNeeded();
