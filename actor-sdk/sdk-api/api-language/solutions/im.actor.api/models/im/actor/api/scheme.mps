@@ -18640,43 +18640,87 @@
     <property role="u_6dX" value="0.1" />
     <property role="3BlOl8" value="im.actor.xloto.core.api" />
     <property role="WhUdw" value="im.actor.xloto.api.rpc" />
-    <node concept="wd7tA" id="3wj$Iseecm6" role="3Bkp18">
-      <property role="TrG5h" value="seq_state" />
-      <node concept="2m61tm" id="3wj$Iseecma" role="wdlUs" />
-    </node>
-    <node concept="wd7tA" id="3wj$Iseecmd" role="3Bkp18">
-      <property role="TrG5h" value="date" />
-      <node concept="2m5ndQ" id="3wj$Iseecmj" role="wdlUs" />
-    </node>
-    <node concept="wd7tA" id="3wj$Iseecmm" role="3Bkp18">
-      <property role="TrG5h" value="randomId" />
-      <node concept="2m5ndQ" id="3wj$Iseecmu" role="wdlUs" />
-    </node>
-    <node concept="wd7tA" id="3wj$Iseecmx" role="3Bkp18">
-      <property role="TrG5h" value="userId" />
-      <node concept="2m5ndE" id="3wj$IseecmF" role="wdlUs" />
-    </node>
     <node concept="2m5mJO" id="64HNz1Ipac2" role="2m5lHt">
-      <property role="TrG5h" value="GroupsExtension" />
-      <property role="3XOG$Z" value="groupsext" />
-      <node concept="2m6fVq" id="3wj$Iseecn5" role="2m5mJr">
-        <property role="TrG5h" value="LoadMyGroups" />
-        <node concept="2m7Kf5" id="3wj$Iseecnd" role="2m0hLx">
+      <property role="TrG5h" value="GroupsPre" />
+      <property role="3XOG$Z" value="groupspre" />
+      <node concept="2m5naR" id="7dWiB8xjbek" role="2m5mJr">
+        <property role="TrG5h" value="GroupPre" />
+        <node concept="2m7Kf5" id="7dWiB8xjbeE" role="2m0hLx">
           <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="minDate" />
-          <node concept="2m5ndQ" id="3wj$IseedHm" role="2m7DVh" />
+          <property role="TrG5h" value="group" />
+          <node concept="2m5mGg" id="7dWiB8xjbeI" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6pR" resolve="Group" />
+          </node>
         </node>
-        <node concept="2m7Kf5" id="3wj$Iseecnh" role="2m0hLx">
+        <node concept="2m7Kf5" id="7dWiB8xjbeL" role="2m0hLx">
           <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="limit" />
-          <node concept="2m5ndE" id="3wj$Iseecnn" role="2m7DVh" />
+          <property role="TrG5h" value="groupFatherId" />
+          <node concept="wb0Ql" id="7dWiB8xjbeR" role="2m7DVh">
+            <ref role="wb18D" node="5qm50Y0e3uO" resolve="groupId" />
+          </node>
         </node>
+      </node>
+      <node concept="2m6fVq" id="3wj$Iseecn5" role="2m5mJr">
+        <property role="TrG5h" value="LoadFullGroupsPre" />
         <node concept="Nu42z" id="3wj$Iseecn6" role="NuuwV">
           <property role="Nu42W" value="55" />
         </node>
         <node concept="2m1R6W" id="3wj$IseedHh" role="2m6efq">
+          <node concept="2m7Kf5" id="7dWiB8xjbd5" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="groups" />
+            <node concept="2m5nlk" id="7dWiB8xjbd9" role="2m7DVh">
+              <node concept="2m5mGg" id="7dWiB8xjbdf" role="3GJlyp">
+                <ref role="2m5mJy" node="GBscvBB6pR" resolve="Group" />
+              </node>
+            </node>
+          </node>
           <node concept="Nu42z" id="3wj$IseedHi" role="NuuwV">
             <property role="Nu42W" value="56" />
+          </node>
+        </node>
+      </node>
+      <node concept="2m6fVq" id="7dWiB8xj8xs" role="2m5mJr">
+        <property role="TrG5h" value="CreateGroupPre" />
+        <node concept="2m7Kf5" id="7dWiB8xj8xJ" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupId" />
+          <node concept="wb0Ql" id="7dWiB8xjbdo" role="2m7DVh">
+            <ref role="wb18D" node="5qm50Y0e3uO" resolve="groupId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="7dWiB8xjbdi" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="groupFatherId" />
+          <node concept="wb0Ql" id="7dWiB8xjbdr" role="2m7DVh">
+            <ref role="wb18D" node="5qm50Y0e3uO" resolve="groupId" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="7dWiB8xj8xt" role="NuuwV">
+          <property role="Nu42W" value="57" />
+        </node>
+        <node concept="2m1R6W" id="7dWiB8xjbdE" role="2m6efq">
+          <node concept="2m7Kf5" id="7dWiB8xjbdJ" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="seq" />
+            <node concept="2m5ndE" id="7dWiB8xjbdN" role="2m7DVh" />
+          </node>
+          <node concept="2m7Kf5" id="7dWiB8xjbdQ" role="2m0hLx">
+            <property role="2m7DUN" value="2" />
+            <property role="TrG5h" value="state" />
+            <node concept="wb0Ql" id="7dWiB8xjbdW" role="2m7DVh">
+              <ref role="wb18D" node="55bmeIQ7$gx" resolve="seq_state" />
+            </node>
+          </node>
+          <node concept="2m7Kf5" id="7dWiB8xjbeU" role="2m0hLx">
+            <property role="2m7DUN" value="3" />
+            <property role="TrG5h" value="groupPre" />
+            <node concept="2m5mGg" id="7dWiB8xjbf2" role="2m7DVh">
+              <ref role="2m5mJy" node="7dWiB8xjbek" resolve="GroupPre" />
+            </node>
+          </node>
+          <node concept="Nu42z" id="7dWiB8xjbdF" role="NuuwV">
+            <property role="Nu42W" value="58" />
           </node>
         </node>
       </node>
