@@ -23,9 +23,11 @@ public class RequestCreateSurvey extends Request<ResponseVoid> {
     }
 
     private ApiSurvey survey;
+    private List<ApiSurveyAnswer> answers;
 
-    public RequestCreateSurvey(@NotNull ApiSurvey survey) {
+    public RequestCreateSurvey(@NotNull ApiSurvey survey, @NotNull List<ApiSurveyAnswer> answers) {
         this.survey = survey;
+        this.answers = answers;
     }
 
     public RequestCreateSurvey() {
@@ -37,9 +39,19 @@ public class RequestCreateSurvey extends Request<ResponseVoid> {
         return this.survey;
     }
 
+    @NotNull
+    public List<ApiSurveyAnswer> getAnswers() {
+        return this.answers;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.survey = values.getObj(1, new ApiSurvey());
+        List<ApiSurveyAnswer> _answers = new ArrayList<ApiSurveyAnswer>();
+        for (int i = 0; i < values.getRepeatedCount(2); i ++) {
+            _answers.add(new ApiSurveyAnswer());
+        }
+        this.answers = values.getRepeatedObj(2, _answers);
     }
 
     @Override
@@ -48,6 +60,7 @@ public class RequestCreateSurvey extends Request<ResponseVoid> {
             throw new IOException();
         }
         writer.writeObject(1, this.survey);
+        writer.writeRepeatedObj(2, this.answers);
     }
 
     @Override
