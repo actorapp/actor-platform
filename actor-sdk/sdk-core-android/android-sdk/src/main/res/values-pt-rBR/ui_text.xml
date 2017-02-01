@@ -274,7 +274,7 @@
 
     <string name="chat_join">Entrar</string>
     <string name="chat_mute">Silenciar</string>
-    <string name="chat_unmute">Descilenciar</string>
+    <string name="chat_unmute">Ativar Notificações</string>
 
     <string name="chat_empty_bot">COMEÇAR</string>
     <string name="chat_empty_bot_about">Não há descrição para este bot ainda</string>
@@ -288,7 +288,7 @@
     <string name="messages_action_like">Gostar</string>
     <string name="edit_message">Editar a última mensagem</string>
     <string name="edit_message_error_not_last">Somente sua última mensagem pode ser editada</string>
-    <string name="edit_message_error_slowpoke">A mensagem é muito velha</string>
+    <string name="edit_message_error_slowpoke">A mensagem é muito antiga</string>
 
     <!-- Share menu-->
     <string name="share_menu_gallery">Galeria</string>
