@@ -140,7 +140,7 @@ public extension String {
     
     var containsEmoji: Bool {
         for scalar in unicodeScalars {
-            print(scalar.value)
+           // print(scalar.value)
             switch scalar.value {
             case
             0x1F600...0x1F64F, // Emoticons
