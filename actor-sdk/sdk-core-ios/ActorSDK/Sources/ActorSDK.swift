@@ -8,8 +8,9 @@ import PushKit
 import SafariServices
 import DZNWebViewController
 import ReachabilitySwift
+import UserNotifications
 
-@objc open class ActorSDK: NSObject, PKPushRegistryDelegate {
+@objc open class ActorSDK: NSObject, PKPushRegistryDelegate, UNUserNotificationCenterDelegate {
 
     //
     // Shared instance
@@ -355,9 +356,7 @@ import ReachabilitySwift
     }
     
     func didLoggedIn() {
-        
         // Push registration
-        
         if autoPushMode == .afterLogin {
             requestPush()
         }
@@ -422,10 +421,21 @@ import ReachabilitySwift
     }
     
     fileprivate func requestPush() {
-        let types: UIUserNotificationType = [.alert, .badge, .sound]
-        let settings: UIUserNotificationSettings = UIUserNotificationSettings(types: types, categories: nil)
-        UIApplication.shared.registerUserNotificationSettings(settings)
-        UIApplication.shared.registerForRemoteNotifications()
+        if #available(iOS 10.0, *){
+            UNUserNotificationCenter.current().delegate = self
+            UNUserNotificationCenter.current().requestAuthorization(options: [.badge, .sound, .alert], completionHandler: {(granted, error) in
+                if (granted){
+                    UIApplication.shared.registerForRemoteNotifications()
+                }else{
+                    print("Acesso ao permitido para notificacoes")
+                }
+            })
+        }else{
+            let types: UIUserNotificationType = [.alert, .badge, .sound]
+            let settings: UIUserNotificationSettings = UIUserNotificationSettings(types: types, categories: nil)
+            UIApplication.shared.registerUserNotificationSettings(settings)
+            UIApplication.shared.registerForRemoteNotifications()
+        }
     }
     
     fileprivate func requestPushKit() {
@@ -830,7 +840,7 @@ import ReachabilitySwift
             })
             
             // Wait for 40 secs before app shutdown
-            DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.default).asyncAfter(deadline: DispatchTime.now() + Double(Int64(40.0 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)) { () -> Void in
+            DispatchQueue.global(qos: DispatchQoS.QoSClass.default).asyncAfter(deadline: DispatchTime.now() + Double(Int64(40.0 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)) { () -> Void in
                 application.endBackgroundTask(completitionTask)
                 completitionTask = UIBackgroundTaskInvalid
             }
@@ -867,6 +877,7 @@ import ReachabilitySwift
     
     open func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) {
         // Nothing?
+        print("recebeu")
     }
     
     open func application(_ application: UIApplication, didRegisterUserNotificationSettings notificationSettings: UIUserNotificationSettings) {
@@ -876,6 +887,25 @@ import ReachabilitySwift
     //
     // Handling background fetch events
     //
+    
+    @available(iOS 10.0, *)
+    public func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        //print("User Info = ", notification.request.content.userInfo)
+        completionHandler([.alert, .badge, .sound])
+        
+    }
+    
+    @available(iOS 10.0, *)
+    public func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        //print("User Info = ", response.notification.request.content.userInfo)
+        
+        if !messenger.isLoggedIn() {
+            completionHandler(UIBackgroundFetchResult.noData)
+            return
+        }
+        
+        self.completionHandler = completionHandler
+    }
     
     open func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         
@@ -907,6 +937,7 @@ import ReachabilitySwift
         
         return true
     }
+    
 }
 
 public enum AAAutoPush {
