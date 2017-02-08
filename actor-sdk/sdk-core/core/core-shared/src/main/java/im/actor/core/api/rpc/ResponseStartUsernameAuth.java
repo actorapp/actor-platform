@@ -24,6 +24,7 @@ public class ResponseStartUsernameAuth extends Response {
 
     private String transactionHash;
     private boolean isRegistered;
+    private ApiPhoneActivationType activationType;
 
     public ResponseStartUsernameAuth(@NotNull String transactionHash, boolean isRegistered) {
         this.transactionHash = transactionHash;
@@ -43,10 +44,19 @@ public class ResponseStartUsernameAuth extends Response {
         return this.isRegistered;
     }
 
+    @Nullable
+    public ApiPhoneActivationType getActivationType() {
+        return this.activationType;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.transactionHash = values.getString(1);
         this.isRegistered = values.getBool(2);
+        int val_activationType = values.getInt(3, 0);
+        if (val_activationType != 0) {
+            this.activationType = ApiPhoneActivationType.parse(val_activationType);
+        }
     }
 
     @Override
