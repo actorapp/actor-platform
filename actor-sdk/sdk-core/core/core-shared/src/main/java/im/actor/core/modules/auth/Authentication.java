@@ -314,29 +314,7 @@ public class Authentication {
         }));
     }
 
-    public Promise<AuthRes> doSignup(final String name, final Sex sex, final String transactionHash, final String password) {
-        return new Promise<>(new PromiseFunc<AuthRes>() {
-            @Override
-            public void exec(@NotNull final PromiseResolver<AuthRes> resolver) {
-                request(new RequestSignUp(transactionHash, name, sex.toApi(), password), new RpcCallback<ResponseAuth>() {
-
-                    @Override
-                    public void onResult(ResponseAuth response) {
-                        resolver.result(new AuthRes(response.toByteArray()));
-                    }
-
-                    @Override
-                    public void onError(RpcException e) {
-                        if ("NICKNAME_BUSY".equals(e.getTag())) {
-                            resolver.result(new AuthRes("".getBytes()));
-                        } else {
-                            resolver.error(e);
-                        }
-                    }
-                });
-            }
-        });
-    }
+   
 
 
 
