@@ -173,6 +173,19 @@ public class Messenger {
     }
 
     /**
+     * Starting username auth
+     *
+     * @param username username for authentication
+     * @return promise of AuthStartRes
+     */
+    @NotNull
+    @ObjectiveCName("doStartAuthWithUsername:")
+    public Promise<AuthStartRes> doStartUsernameAuth(String username) {
+        return modules.getAuthModule().doStartUsernameAuth(username);
+    }
+
+
+    /**
      * Validating Confirmation Code
      *
      * @param code            code
@@ -184,6 +197,20 @@ public class Messenger {
     public Promise<AuthCodeRes> doValidateCode(String code, String transactionHash) {
         return modules.getAuthModule().doValidateCode(transactionHash, code);
     }
+
+    /**
+     * Validating password
+     *
+     * @param password        password
+     * @param transactionHash transaction hash
+     * @return promise of AuthCodeRes
+     */
+    @NotNull
+    @ObjectiveCName("doValidatePassword:withTransaction:")
+    public Promise<AuthCodeRes> doValidatePassword(String password, String transactionHash) {
+        return modules.getAuthModule().doValidatePassword(transactionHash, password);
+    }
+
 
 
     /**
