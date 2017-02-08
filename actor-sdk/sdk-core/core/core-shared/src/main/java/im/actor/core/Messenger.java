@@ -403,6 +403,21 @@ public class Messenger {
     }
 
     /**
+     * Perform signup
+     *
+     * @param name       Name of User
+     * @param sex        user sex
+     * @param avatarPath File descriptor of avatar (may be null if not set)
+     * @return Comand for execution
+     */
+    @NotNull
+    @ObjectiveCName("signUpCommandWithName:WithSex:withAvatar:")
+    public Command<AuthState> signUp(String name, Sex sex, String avatarPath , String password) {
+        return modules.getAuthModule().signUp(name, ApiSex.UNKNOWN, avatarPath,password);
+    }
+
+
+    /**
      * Get current Authentication phone.
      * Value is valid only for SIGN_UP or CODE_VALIDATION_PHONE states.
      *
