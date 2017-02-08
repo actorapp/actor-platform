@@ -201,7 +201,7 @@ public class Authentication {
     }
 
     public Promise<AuthStartRes> doStartUsernameAuth(final String username) {
-        return new Promise<>((PromiseFunc<AuthStartRes>) resolver -> request(new RequestStartPhoneAuth(username,
+        return new Promise<>((PromiseFunc<AuthStartRes>) resolver -> request(new RequestStartUsernameAuth(username,
                 apiConfiguration.getAppId(),
                 apiConfiguration.getAppKey(),
                 deviceHash,
