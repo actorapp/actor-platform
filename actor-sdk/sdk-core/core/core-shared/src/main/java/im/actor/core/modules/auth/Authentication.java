@@ -200,38 +200,30 @@ public class Authentication {
         }));
     }
 
-
     public Promise<AuthStartRes> doStartUsernameAuth(final String username) {
-        return new Promise<>(new PromiseFunc<AuthStartRes>() {
+        return new Promise<>((PromiseFunc<AuthStartRes>) resolver -> request(new RequestStartPhoneAuth(username,
+                apiConfiguration.getAppId(),
+                apiConfiguration.getAppKey(),
+                deviceHash,
+                apiConfiguration.getDeviceTitle(),
+                modules.getConfiguration().getTimeZone(),
+                langs), new RpcCallback<ResponseStartUsernameAuth>() {
             @Override
-            public void exec(@NotNull final PromiseResolver<AuthStartRes> resolver) {
-                request(new RequestStartUsernameAuth(username,
-                        apiConfiguration.getAppId(),
-                        apiConfiguration.getAppKey(),
-                        deviceHash,
-                        apiConfiguration.getDeviceTitle(),
-                        modules.getConfiguration().getTimeZone(),
-                        langs), new RpcCallback<ResponseStartUsernameAuth>() {
-                    @Override
-                    public void onResult(ResponseStartUsernameAuth response) {
-//                        resolver.result(new AuthStartRes(
-//                                response.getTransactionHash(),
-//                                AuthMode.fromApi(response.getActivationType()),
-//                                response.isRegistered()));
-                        resolver.result(new AuthStartRes(
-                                response.getTransactionHash(),
-                                AuthMode.fromApi(ApiPhoneActivationType.CODE),
-                                response.isRegistered()));
-                    }
-
-                    @Override
-                    public void onError(RpcException e) {
-                        resolver.error(e);
-                    }
-                });
+            public void onResult(ResponseStartUsernameAuth response) {
+                resolver.result(new AuthStartRes(
+                        response.getTransactionHash(),
+                        AuthMode.fromApi(response.getActivationType()),
+                        response.isRegistered()));
             }
-        });
+
+            @Override
+            public void onError(RpcException e) {
+                resolver.error(e);
+            }
+        }));
     }
+
+
 
     //
     // Code And Password Validation
