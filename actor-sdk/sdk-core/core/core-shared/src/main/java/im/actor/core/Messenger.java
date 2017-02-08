@@ -250,7 +250,7 @@ public class Messenger {
     @NotNull
     @ObjectiveCName("doSignUpCommandWithName:WithSex:withAvatar:withPassword:")
     public Command<AuthState> doSignup(String name, Sex sex, String avatarPath,String password) {
-        return modules.getAuthModule().signUp(name, ApiSex.UNKNOWN, avatarPath,password);
+        return modules.getAuthModule().doSignup(name, sex, avatarPath,password);
     }
 
     /**
