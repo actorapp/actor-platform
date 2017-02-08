@@ -201,6 +201,38 @@ public class Authentication {
     }
 
 
+    public Promise<AuthStartRes> doStartUsernameAuth(final String username) {
+        return new Promise<>(new PromiseFunc<AuthStartRes>() {
+            @Override
+            public void exec(@NotNull final PromiseResolver<AuthStartRes> resolver) {
+                request(new RequestStartUsernameAuth(username,
+                        apiConfiguration.getAppId(),
+                        apiConfiguration.getAppKey(),
+                        deviceHash,
+                        apiConfiguration.getDeviceTitle(),
+                        modules.getConfiguration().getTimeZone(),
+                        langs), new RpcCallback<ResponseStartUsernameAuth>() {
+                    @Override
+                    public void onResult(ResponseStartUsernameAuth response) {
+//                        resolver.result(new AuthStartRes(
+//                                response.getTransactionHash(),
+//                                AuthMode.fromApi(response.getActivationType()),
+//                                response.isRegistered()));
+                        resolver.result(new AuthStartRes(
+                                response.getTransactionHash(),
+                                AuthMode.fromApi(ApiPhoneActivationType.CODE),
+                                response.isRegistered()));
+                    }
+
+                    @Override
+                    public void onError(RpcException e) {
+                        resolver.error(e);
+                    }
+                });
+            }
+        });
+    }
+
     //
     // Code And Password Validation
     //
@@ -215,6 +247,24 @@ public class Authentication {
             @Override
             public void onError(RpcException e) {
                 if ("PHONE_NUMBER_UNOCCUPIED".equals(e.getTag()) || "EMAIL_UNOCCUPIED".equals(e.getTag())) {
+                    resolver.result(new AuthCodeRes(transactionHash));
+                } else {
+                    resolver.error(e);
+                }
+            }
+        }));
+    }
+
+    public Promise<AuthCodeRes> doValidatePassword(final String transactionHash, final String password) {
+        return new Promise<>((PromiseFunc<AuthCodeRes>) resolver -> request(new RequestValidatePassword(transactionHash, password), new RpcCallback<ResponseAuth>() {
+            @Override
+            public void onResult(ResponseAuth response) {
+                resolver.result(new AuthCodeRes(new AuthRes(response.toByteArray())));
+            }
+
+            @Override
+            public void onError(RpcException e) {
+                if ("USERNAME_UNOCCUPIED".equals(e.getTag())||"PHONE_NUMBER_UNOCCUPIED".equals(e.getTag()) || "EMAIL_UNOCCUPIED".equals(e.getTag())) {
                     resolver.result(new AuthCodeRes(transactionHash));
                 } else {
                     resolver.error(e);
@@ -256,6 +306,31 @@ public class Authentication {
             }
         }));
     }
+
+    public Promise<AuthRes> doSignup(final String name, final Sex sex, final String transactionHash, final String password) {
+        return new Promise<>(new PromiseFunc<AuthRes>() {
+            @Override
+            public void exec(@NotNull final PromiseResolver<AuthRes> resolver) {
+                request(new RequestSignUp(transactionHash, name, sex.toApi(), password), new RpcCallback<ResponseAuth>() {
+
+                    @Override
+                    public void onResult(ResponseAuth response) {
+                        resolver.result(new AuthRes(response.toByteArray()));
+                    }
+
+                    @Override
+                    public void onError(RpcException e) {
+                        if ("NICKNAME_BUSY".equals(e.getTag())) {
+                            resolver.result(new AuthRes("".getBytes()));
+                        } else {
+                            resolver.error(e);
+                        }
+                    }
+                });
+            }
+        });
+    }
+
 
 
     //
