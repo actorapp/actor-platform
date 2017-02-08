@@ -265,7 +265,7 @@ public class JsFacade implements Exportable {
     @UsedByApp
     public void signUp(String name, final JsAuthSuccessClosure success,
                        final JsAuthErrorClosure error) {
-        messenger.doSignUp(name, null, null).start(new CommandCallback<AuthState>() {
+        messenger.signUp(name, null, null).start(new CommandCallback<AuthState>() {
             @Override
             public void onResult(AuthState res) {
                 success.onResult(Enums.convert(res));
