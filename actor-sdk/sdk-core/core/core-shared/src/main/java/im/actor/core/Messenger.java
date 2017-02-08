@@ -249,7 +249,7 @@ public class Messenger {
      */
     @NotNull
     @ObjectiveCName("doSignUpCommandWithName:WithSex:withAvatar:withPassword:")
-    public Command<AuthState> doSignup(String name, Sex sex, String avatarPath,String password) {
+    public Promise<AuthState> doSignup(String name, Sex sex, String avatarPath,String password) {
         return modules.getAuthModule().doSignup(name, sex, avatarPath,password);
     }
 

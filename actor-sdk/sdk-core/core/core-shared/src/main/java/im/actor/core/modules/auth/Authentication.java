@@ -560,7 +560,7 @@ public class Authentication {
         });
     }
 
- 
+
 
     @Deprecated
     public Command<AuthState> signUp(final String name, final ApiSex sex, final String avatarPath) {
