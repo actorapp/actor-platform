@@ -240,6 +240,20 @@ public class Messenger {
     }
 
     /**
+     * Perform signup
+     *
+     * @param name       Name of User
+     * @param sex        user sex
+     * @param avatarPath File descriptor of avatar (may be null if not set)
+     * @return Comand for execution
+     */
+    @NotNull
+    @ObjectiveCName("signUpCommandWithName:WithSex:withAvatar:withPassword:")
+    public Command<AuthState> signUp(String name, Sex sex, String avatarPath,String password) {
+        return modules.getAuthModule().signUp(name, ApiSex.UNKNOWN, avatarPath,password);
+    }
+
+    /**
      * Complete Authentication
      *
      * @param authRes authentication result for commiting

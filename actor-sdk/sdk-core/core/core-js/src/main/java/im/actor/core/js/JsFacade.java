@@ -1795,6 +1795,7 @@ public class JsFacade implements Exportable {
         }
     }
 
+
     @UsedByApp
     public void signUpForPassword(String name, String password, final JsAuthSuccessClosure success,
                                   final JsAuthErrorClosure error) {
