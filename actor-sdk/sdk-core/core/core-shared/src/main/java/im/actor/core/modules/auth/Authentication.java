@@ -586,6 +586,35 @@ public class Authentication {
     }
 
     @Deprecated
+    public Command<AuthState> signUp(final String name, final ApiSex sex, final String avatarPath) {
+        return signUp(name,sex,avatarPath,null);
+    }
+    @Deprecated
+    public Command<AuthState> signUp(final String name, final ApiSex sex, final String avatarPath,final String password) {
+        return callback -> request(new RequestSignUp(modules.getPreferences().getString(KEY_TRANSACTION_HASH), name, sex,
+                password), new RpcCallback<ResponseAuth>() {
+            @Override
+            public void onResult(ResponseAuth response) {
+                onLoggedIn(callback, response);
+                if (avatarPath != null) {
+                    modules.getProfileModule().changeAvatar(avatarPath);
+                }
+            }
+
+            @Override
+            public void onError(final RpcException e) {
+                if ("EMAIL_CODE_EXPIRED".equals(e.getTag())) {
+                    resetAuth();
+                }
+                Runtime.postToMainThread(() -> {
+                    Log.e(TAG, e);
+                    callback.onError(e);
+                });
+            }
+        });
+    }
+
+    @Deprecated
     public Command<AuthState> requestValidateCode(final String code) {
         if (code == null) {
             throw new RuntimeException("Code couldn't be null!");
