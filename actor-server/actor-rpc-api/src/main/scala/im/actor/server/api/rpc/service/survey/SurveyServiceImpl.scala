@@ -13,7 +13,7 @@ import im.actor.api.rpc.groups._
 import im.actor.api.rpc.misc.{ ResponseSeq, ResponseSeqDate, ResponseVoid }
 import im.actor.api.rpc.peers.{ ApiGroupOutPeer, ApiUserOutPeer }
 import im.actor.api.rpc.sequence.ApiUpdateOptimization
-import im.actor.api.rpc.surveys.{ ApiSurvey, SurveysService }
+import im.actor.api.rpc.surveys.{ ApiSurvey, ApiSurveyAnswer, SurveysService }
 import im.actor.api.rpc.users.ApiUser
 import im.actor.concurrent.FutureExt
 import im.actor.server.acl.ACLUtils
@@ -25,7 +25,6 @@ import im.actor.server.model.GroupInviteToken
 import im.actor.server.names.GlobalNamesStorageKeyValueStorage
 import im.actor.server.persist.{ GroupInviteTokenRepo, GroupUserRepo }
 import im.actor.server.presences.GroupPresenceExtension
-import im.actor.server.sequence.{ SeqState, SeqStateDate, SeqUpdatesExtension }
 import im.actor.server.user.UserExtension
 import im.actor.util.ThreadLocalSecureRandom
 import im.actor.util.misc.{ IdUtils, StringUtils }
@@ -41,7 +40,8 @@ final class SurveyServiceImpl()(implicit actorSystem: ActorSystem) extends Surve
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
   /** Criar uma nova enquete */
-  override protected def doHandleCreateSurvey(survey: ApiSurvey, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+  /** Criar uma nova enquete */
+  override protected def doHandleCreateSurvey(survey: ApiSurvey, answers: IndexedSeq[ApiSurveyAnswer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     FastFuture.successful(Ok(ResponseVoid))
   }
 }

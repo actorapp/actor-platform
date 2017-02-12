@@ -14,25 +14,17 @@ import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 
-public class ApiSurvey extends BserObject {
+public class ApiSurveyAnswer extends BserObject {
 
     private long id;
     private String title;
-    private String description;
-    private long creationTime;
-    private long endTime;
-    private int userId;
 
-    public ApiSurvey(long id, @NotNull String title, @Nullable String description, long creationTime, long endTime, int userId) {
+    public ApiSurveyAnswer(long id, @NotNull String title) {
         this.id = id;
         this.title = title;
-        this.description = description;
-        this.creationTime = creationTime;
-        this.endTime = endTime;
-        this.userId = userId;
     }
 
-    public ApiSurvey() {
+    public ApiSurveyAnswer() {
 
     }
 
@@ -45,31 +37,10 @@ public class ApiSurvey extends BserObject {
         return this.title;
     }
 
-    @Nullable
-    public String getDescription() {
-        return this.description;
-    }
-
-    public long getCreationTime() {
-        return this.creationTime;
-    }
-
-    public long getEndTime() {
-        return this.endTime;
-    }
-
-    public int getUserId() {
-        return this.userId;
-    }
-
     @Override
     public void parse(BserValues values) throws IOException {
         this.id = values.getLong(1);
         this.title = values.getString(2);
-        this.description = values.optString(3);
-        this.creationTime = values.getLong(4);
-        this.endTime = values.getLong(5);
-        this.userId = values.getInt(6);
     }
 
     @Override
@@ -79,17 +50,11 @@ public class ApiSurvey extends BserObject {
             throw new IOException();
         }
         writer.writeString(2, this.title);
-        if (this.description != null) {
-            writer.writeString(3, this.description);
-        }
-        writer.writeLong(4, this.creationTime);
-        writer.writeLong(5, this.endTime);
-        writer.writeInt(6, this.userId);
     }
 
     @Override
     public String toString() {
-        String res = "struct Survey{";
+        String res = "struct SurveyAnswer{";
         res += "}";
         return res;
     }
