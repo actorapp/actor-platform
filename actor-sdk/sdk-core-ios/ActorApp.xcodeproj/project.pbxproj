@@ -17,6 +17,7 @@
 		34279C7FB8E40393FEAC939F6474BE2E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 148837AEB986AFDE519BEBD3686AB073 /* main.m */; };
 		A88F4C381ED2B98E99A68937 /* Pods_ActorApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A275ED497CA570AD01FB66A7 /* Pods_ActorApp.framework */; };
 		DFE814D1E12D2647AF2DBA3F76405F06 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A521812020DAAAA325065ADC32B7DEB /* AppDelegate.swift */; };
+		F135688C1E4DEA8200D4BA2F /* PushKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F135688B1E4DEA8200D4BA2F /* PushKit.framework */; };
 		F153992B1DF83A0900C67C7D /* AppCocoaHttpRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = F153992A1DF83A0900C67C7D /* AppCocoaHttpRuntime.swift */; };
 		F45B35E37C8CB7140417EA87AAFEFDA2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 13C57576F07AC8694C15B51DFDFDC4C6 /* InfoPlist.strings */; };
 /* End PBXBuildFile section */
@@ -74,6 +75,7 @@
 		A275ED497CA570AD01FB66A7 /* Pods_ActorApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ActorApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE8D1D9859D2C4D4C7EC7AD74BB65F0E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = "Supporting Files/Info.plist"; sourceTree = "<group>"; };
 		F105D04D1E37F58600C722F6 /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
+		F135688B1E4DEA8200D4BA2F /* PushKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PushKit.framework; path = System/Library/Frameworks/PushKit.framework; sourceTree = SDKROOT; };
 		F153992A1DF83A0900C67C7D /* AppCocoaHttpRuntime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppCocoaHttpRuntime.swift; sourceTree = "<group>"; };
 		F175DF8A1E168C8F005BCF1A /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		F76A77E9428111C798E69B43EA06A281 /* ActorApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = ActorApp.entitlements; path = "Supporting Files/ActorApp.entitlements"; sourceTree = "<group>"; };
@@ -84,6 +86,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F135688C1E4DEA8200D4BA2F /* PushKit.framework in Frameworks */,
 				06CE898E1BD841D0005A5530 /* SystemConfiguration.framework in Frameworks */,
 				06E7B24F1C109C4B0090660C /* MapKit.framework in Frameworks */,
 				06230F091BC7FF3500A4807B /* ActorSDK.framework in Frameworks */,
@@ -126,6 +129,7 @@
 		86C48777C0FD262E78F8BEC9253C9914 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F135688B1E4DEA8200D4BA2F /* PushKit.framework */,
 				F105D04D1E37F58600C722F6 /* NotificationCenter.framework */,
 				06E7B24E1C109C4B0090660C /* MapKit.framework */,
 				06CE898D1BD841D0005A5530 /* SystemConfiguration.framework */,
@@ -211,7 +215,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0700;
-				LastUpgradeCheck = 0730;
+				LastUpgradeCheck = 0820;
 				ORGANIZATIONNAME = "Actor LLC";
 				TargetAttributes = {
 					EA6B7348F8364542DDD264F741AAAA19 = {
@@ -224,6 +228,9 @@
 								enabled = 1;
 							};
 							com.apple.Push = {
+								enabled = 1;
+							};
+							com.apple.SafariKeychain = {
 								enabled = 1;
 							};
 							com.apple.iCloud = {
@@ -442,18 +449,17 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9B2EEB8CEF2E94D58EA09D9D /* Pods-ActorApp.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_MODULES_AUTOLINK = YES;
 				CODE_SIGN_ENTITLEMENTS = "ActorApp/Supporting Files/ActorApp.entitlements";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Eric Alves Nascimento (V243ZCY9W5)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Eric Alves Nascimento (V243ZCY9W5)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = HA23Y6A5LW;
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_BITCODE = NO;
 				FABRIC_BUILD_SECRET = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -464,15 +470,15 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = "ActorApp/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				J2OBJC_VERSION = 0.9.8.2.1;
+				J2OBJC_VERSION = 1.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = br.com.diegosilva.xlotomessenger;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "4d265c46-c4c1-42b1-aa2e-c579059d20f5";
-				PROVISIONING_PROFILE_SPECIFIER = "Xloto Mensageiro Desenvolver";
+				PROVISIONING_PROFILE = "1d259fb8-c16c-4d75-83c4-f2645bc3b931";
+				PROVISIONING_PROFILE_SPECIFIER = "xloto desenvolvimento";
 				SDK_PATH = "../actor-sdk";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -485,6 +491,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -494,8 +501,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -524,17 +533,16 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 404790AFDFFBD618E6175093 /* Pods-ActorApp.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_MODULES_AUTOLINK = YES;
 				CODE_SIGN_ENTITLEMENTS = "ActorApp/Supporting Files/ActorApp.entitlements";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Eric Alves Nascimento (HA23Y6A5LW)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Eric Alves Nascimento (HA23Y6A5LW)";
 				DEVELOPMENT_TEAM = HA23Y6A5LW;
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_BITCODE = NO;
 				FABRIC_BUILD_SECRET = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -545,17 +553,17 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = "ActorApp/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				J2OBJC_VERSION = 0.9.8.2.1;
+				J2OBJC_VERSION = 1.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = br.com.diegosilva.xlotomessenger;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "2560348b-ab8a-41f9-a59c-f918ba3a1600";
-				PROVISIONING_PROFILE_SPECIFIER = "Xloto Mensageiro Distribuição";
+				PROVISIONING_PROFILE = "a33aacff-7974-42a3-b66d-ddc7c940bc87";
+				PROVISIONING_PROFILE_SPECIFIER = provision_xloto_distribution;
 				SDK_PATH = "../actor-sdk";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 3.0;
 				USER_HEADER_SEARCH_PATHS = "";
 			};
@@ -565,6 +573,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -574,8 +583,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";

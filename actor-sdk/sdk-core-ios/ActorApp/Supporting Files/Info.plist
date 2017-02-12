@@ -111,5 +111,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key></key>
+	<string></string>
 </dict>
 </plist>
