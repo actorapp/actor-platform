@@ -69,13 +69,9 @@ final class ApplePushExtension(system: ActorSystem) extends Extension with AnyRe
 
     val connectFuture: Future[Client] = Future {
       blocking {
-        //        val client = new ApnsClient[SimpleApnsPushNotification](new File(cert.path), cert.password)
-        //        client.connect(host).get(20, TimeUnit.SECONDS)
-        //        log.debug("Established client connection for cert: {}, is voip: {}", certKey, cert.isVoip)
-        //        client
-
         val client = new ApnsClientBuilder().setClientCredentials(new File(cert.path), cert.password).build()
         client.connect(host).get(20, TimeUnit.SECONDS)
+        log.debug("Established client connection for cert: {}, is voip: {}", certKey, cert.isVoip)
         client
       }
     }

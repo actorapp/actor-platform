@@ -6,7 +6,6 @@ import akka.actor.Props
 import im.actor.serialization.ActorSerializer
 import im.actor.server.cqrs.TaggedEvent
 
-
 trait GroupEvent extends TaggedEvent {
   val ts: Instant
 
@@ -17,13 +16,11 @@ case object StopProcessor
 
 object GroupPreProcessor {
   def register(): Unit =
-    ActorSerializer.register(
-//      30001 → classOf[GroupCommands.Create],
-//
-//      31001 → classOf[GroupQueries.GetIntegrationToken],
-//
-//      32005 → classOf[GroupEvents.Created]
-
+    ActorSerializer.register( //      30001 → classOf[GroupCommands.Create],
+    //
+    //      31001 → classOf[GroupQueries.GetIntegrationToken],
+    //
+    //      32005 → classOf[GroupEvents.Created]
     )
 
   def persistenceIdFor(groupId: Int): String = s"Grouppre-${groupId}"
@@ -32,8 +29,8 @@ object GroupPreProcessor {
 }
 
 /**
-  * Created by 98379720172 on 31/01/17.
-  */
+ * Created by 98379720172 on 31/01/17.
+ */
 private[grouppre] final class GroupPreProcessor {
 
 }

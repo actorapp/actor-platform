@@ -9,6 +9,8 @@ import im.actor.server.model.push.ApplePushCredentials
 import im.actor.server.push.PushProvider
 import im.actor.server.sequence.PushData
 
+import scala.concurrent.Future
+
 final class ApplePushProvider(userId: Int)(implicit system: ActorSystem) extends PushProvider with APNSSend {
   import system.dispatcher
 
@@ -31,6 +33,7 @@ final class ApplePushProvider(userId: Int)(implicit system: ActorSystem) extends
         log.debug("Delivering invisible(seq:{}) to bundleId: {}", seq, creds.bundleId)
         sendNotification(payload = seqOnly(seq), creds, userId)
       }
+      deliverVoip(seq, creds)
     }
   }
 
@@ -66,7 +69,22 @@ final class ApplePushProvider(userId: Int)(implicit system: ActorSystem) extends
       } else {
         sendNotification(payload = seqOnly(seq), creds, userId)
       }
+      deliverVoip(seq, creds)
     }
+  }
+
+  def deliverVoip(
+    seq:   Int,
+    creds: ApplePushCredentials
+  ): Unit = {
+    val id = extractCredsId(creds)
+    for {
+      clientFu ← applePushExt.voipClient(id)
+      payload = seqOnly(seq)
+      _ = clientFu map { implicit c ⇒
+        sendNotification(payload, creds, userId)
+      }
+    } yield ()
   }
 
   private def seqOnly(seq: Int): String =
