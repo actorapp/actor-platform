@@ -33,7 +33,7 @@ final class ApplePushProvider(userId: Int)(implicit system: ActorSystem) extends
         log.debug("Delivering invisible(seq:{}) to bundleId: {}", seq, creds.bundleId)
         sendNotification(payload = seqOnly(seq), creds, userId)
       }
-      deliverVoip(seq, creds)
+      deliverVoip(seq, creds.authId)
     }
   }
 
@@ -69,21 +69,21 @@ final class ApplePushProvider(userId: Int)(implicit system: ActorSystem) extends
       } else {
         sendNotification(payload = seqOnly(seq), creds, userId)
       }
-      deliverVoip(seq, creds)
+      deliverVoip(seq, creds.authId)
     }
   }
 
   def deliverVoip(
     seq:   Int,
-    creds: ApplePushCredentials
+    authId: Long
   ): Unit = {
-    val id = extractCredsId(creds)
     for {
-      clientFu ← applePushExt.voipClient(id)
+      (userId, credsList) <- applePushExt.fetchVoipCreds(Set(authId)) map (userId → _)
+      creds ← credsList
+      credsId =  extractCredsId(creds)
+      clientFu ← applePushExt.voipClient(credsId)
       payload = seqOnly(seq)
-      _ = clientFu map { implicit c ⇒
-        sendNotification(payload, creds, userId)
-      }
+      _ = clientFu foreach { implicit c ⇒ sendNotification(payload, creds, userId) }
     } yield ()
   }
 
