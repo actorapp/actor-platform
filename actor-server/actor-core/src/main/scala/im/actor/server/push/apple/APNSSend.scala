@@ -15,18 +15,19 @@ trait APNSSend {
   private val listeners = TrieMap.empty[String, PushFutureListener]
 
   protected def sendNotification(payload: String, creds: ApplePushCredentials, userId: Int)(implicit client: ApplePushExtension#Client, system: ActorSystem): NFuture[PushNotificationResponse[SimpleApnsPushNotification]] = {
-    // when topic is null, it will be taken from APNs certificate
-    // http://relayrides.github.io/pushy/apidocs/0.6/com/relayrides/pushy/apns/ApnsPushNotification.html#getTopic--
+
     val token = BitVector(creds.token.toByteArray).toHex
 
-    //    val topic: String = (creds.apnsKey, creds.bundleId) match {
-    //      case (_, Some(bundleId)) ⇒ bundleId.value
-    //      case (Some(key), _)      ⇒ ApplePushExtension(system).apnsBundleId.get(key.value).orNull
-    //      case _ ⇒
-    //        system.log.warning("Wrong creds format on sending notification. Creds: {}", creds)
-    //        null
-    //    }
+    //        val topic: String = (creds.apnsKey, creds.bundleId) match {
+    //          case (_, Some(bundleId)) ⇒ bundleId.value
+    //          case (Some(key), _)      ⇒ ApplePushExtension(system).apnsBundleId.get(key.value).orNull
+    //          case _ ⇒
+    //            system.log.warning("Wrong creds format on sending notification. Creds: {}", creds)
+    //            null
+    //        }
 
+    // when topic is null, it will be taken from APNs certificate
+    // http://relayrides.github.io/pushy/apidocs/0.6/com/relayrides/pushy/apns/ApnsPushNotification.html#getTopic--
     val topic: String = creds.bundleId match {
       case Some(bundleId) ⇒ bundleId.value
       case _              ⇒ null
