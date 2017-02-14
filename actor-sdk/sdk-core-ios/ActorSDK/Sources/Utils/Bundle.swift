@@ -4,7 +4,7 @@
 
 import Foundation
 
-let frameworkBundle = Bundle(identifier: "im.actor.ActorSDK")!
+let frameworkBundle = Bundle(identifier: "cn.eaglesoft.igemSDK")!
 
 public extension Bundle {
     static var framework: Bundle {
