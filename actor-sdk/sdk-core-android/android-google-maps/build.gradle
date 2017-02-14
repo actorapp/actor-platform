@@ -141,13 +141,13 @@ project.afterEvaluate {
                 mavenDeployer {
 //                    beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-//                    repository(url: "http://64.137.170.2:8081/content/repositories/snapshots/") {
-//                        authentication(userName: ossrhUsername, password: ossrhPassword)
-//                    }
-
-                    repository(url: "http://localhost:8081/nexus/content/repositories/snapshots/") {
+                    repository(url: "http://104.233.107.117:8081/nexus/content/repositories/snapshots/") {
                         authentication(userName: ossrhUsername, password: ossrhPassword)
                     }
+
+//                    repository(url: "http://localhost:8081/nexus/content/repositories/snapshots/") {
+//                        authentication(userName: ossrhUsername, password: ossrhPassword)
+//                    }
 
                     pom.project {
                         name 'Actor SDK for Android Google Extension'

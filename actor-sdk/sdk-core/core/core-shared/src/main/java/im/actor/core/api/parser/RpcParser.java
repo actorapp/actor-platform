@@ -183,9 +183,6 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 229: return RequestNotifyAboutDeviceInfo.fromBytes(payload);
             case 116: return RequestInitWebaction.fromBytes(payload);
             case 123: return RequestCompleteWebaction.fromBytes(payload);
-            case 139: return RequestCreateSurvey.fromBytes(payload);
-            case 18: return RequestLoadGroupsPre.fromBytes(payload);
-            case 19: return RequestCreateGroupPre.fromBytes(payload);
             case 193: return ResponseStartPhoneAuth.fromBytes(payload);
             case 186: return ResponseStartEmailAuth.fromBytes(payload);
             case 2572: return ResponseStartUsernameAuth.fromBytes(payload);
@@ -255,8 +252,6 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 209: return ResponseBool.fromBytes(payload);
             case 117: return ResponseInitWebaction.fromBytes(payload);
             case 124: return ResponseCompleteWebaction.fromBytes(payload);
-            case 20: return ResponseLoadGroupsPre.fromBytes(payload);
-            case 21: return ResponseCreateGroupPre.fromBytes(payload);
             case 13: return SeqUpdate.fromBytes(payload);
             case 73: return FatSeqUpdate.fromBytes(payload);
             case 26: return WeakUpdate.fromBytes(payload);
