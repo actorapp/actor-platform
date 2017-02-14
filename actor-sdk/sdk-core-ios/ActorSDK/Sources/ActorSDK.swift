@@ -449,14 +449,9 @@ import UserNotifications
     
     @objc open func pushRegistry(_ registry: PKPushRegistry, didUpdate credentials: PKPushCredentials, forType type: PKPushType) {
         if (type == PKPushType.voIP) {
-            // let token = credentials.token.map { String(format: "%02.2hhx", $0) }.joined()
-            // let tokenString = "\(token)".replace(" ", dest: "").replace("<", dest: "").replace(">", dest: "")
-            
             let tokenString = credentials.token.map { String(format: "%02.2hhx", $0) }.joined()
-            //ActorSDK.sharedActor().pushRegisterToken(tokenString.replace(" ", dest: "").replace("<", dest: "").replace(">", dest: ""))
-            let tokenStringFinal = tokenString.replace(" ", dest: "").replace("<", dest: "").replace(">", dest: "")
-            NSLog("Vai registrar o voip para o token: \(tokenStringFinal)")
-            pushRegisterKitToken(tokenStringFinal)
+            NSLog("Vai registrar o voip para o token: \(tokenString)")
+            pushRegisterKitToken(tokenString.replace(" ", dest: "").replace("<", dest: "").replace(">", dest: ""))
         }
     }
     
@@ -881,20 +876,7 @@ import UserNotifications
             completionHandler(UIBackgroundFetchResult.noData)
             return
         }
-        
-//        if let seq = userInfo["seq"] as! jint?{
-//             if let userId = userInfo["seq"] as! jlong?{
-//                print(seq)
-//                print(userId)
-//            
-//                
-//                ActorSDK.shared.messenger.onPushReceived(withSeq: seq, withAuthId: userId)
-//            }
-//        }
-    
-       
         self.completionHandler = completionHandler
-        
     }
     
     open func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) {
