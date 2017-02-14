@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name            = "ActorSDK-iOS"
-  s.version         = "3.0.457.35"
+  s.version         = "3.0.457.36"
   s.summary         = "Actor SDK for intergration Actor Messaging Lotericas to your apps"
   s.homepage        = "https://actor.im/"
   s.license         = { :type => 'MIT', :file => 'LICENSE' }

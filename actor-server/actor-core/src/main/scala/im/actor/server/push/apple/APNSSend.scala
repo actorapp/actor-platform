@@ -20,7 +20,7 @@ trait APNSSend {
 
     val topic: String = (creds.apnsKey, creds.bundleId) match {
       case (_, Some(bundleId)) ⇒ bundleId.value
-      case (Some(key), _) ⇒ if (creds.isVoip) null else ApplePushExtension(system).apnsBundleId.get(key.value).orNull
+      case (Some(key), _) ⇒ ApplePushExtension(system).apnsBundleId(creds.isVoip).get(key.value).orNull
       case _ ⇒
         system.log.warning("Wrong creds format on sending notification. Creds: {}", creds)
         null
