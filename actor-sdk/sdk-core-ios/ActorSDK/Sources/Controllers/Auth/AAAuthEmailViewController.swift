@@ -4,7 +4,7 @@
 
 import Foundation
 
-open class AAAuthEmailViewController: AAAuthViewController {
+public class AAAuthEmailViewController: AAAuthViewController {
     
     let name: String
     
@@ -28,12 +28,12 @@ open class AAAuthEmailViewController: AAAuthViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    open override func viewDidLoad() {
+    public override func viewDidLoad() {
         
-        view.backgroundColor = UIColor.white
+        view.backgroundColor = UIColor.whiteColor()
         
-        scrollView.keyboardDismissMode = .onDrag
-        scrollView.isScrollEnabled = true
+        scrollView.keyboardDismissMode = .OnDrag
+        scrollView.scrollEnabled = true
         scrollView.alwaysBounceVertical = true
         
         welcomeLabel.font = UIFont.lightSystemFontOfSize(23)
@@ -42,20 +42,20 @@ open class AAAuthEmailViewController: AAAuthViewController {
         welcomeLabel.numberOfLines = 1
         welcomeLabel.minimumScaleFactor = 0.3
         welcomeLabel.adjustsFontSizeToFitWidth = true
-        welcomeLabel.textAlignment = .center
+        welcomeLabel.textAlignment = .Center
         
-        hintLabel.font = UIFont.systemFont(ofSize: 14)
+        hintLabel.font = UIFont.systemFontOfSize(14)
         hintLabel.textColor = ActorSDK.sharedActor().style.authHintColor
         hintLabel.text = AALocalized("AuthEmailHint")
         hintLabel.numberOfLines = 1
-        hintLabel.textAlignment = .center
+        hintLabel.textAlignment = .Center
         
-        emailField.font = UIFont.systemFont(ofSize: 17)
+        emailField.font = UIFont.systemFontOfSize(17)
         emailField.textColor = ActorSDK.sharedActor().style.authTextColor
         emailField.placeholder = AALocalized("AuthEmailPlaceholder")
-        emailField.keyboardType = .emailAddress
-        emailField.autocapitalizationType = .none
-        emailField.autocorrectionType = .no
+        emailField.keyboardType = .EmailAddress
+        emailField.autocapitalizationType = .None
+        emailField.autocorrectionType = .No
         
         emailFieldLine.backgroundColor = ActorSDK.sharedActor().style.authSeparatorColor
         
@@ -110,21 +110,21 @@ open class AAAuthEmailViewController: AAAuthViewController {
             }
             
             termsLabel.attributedText = attributedTerms
-            termsLabel.font = UIFont.systemFont(ofSize: 14)
+            termsLabel.font = UIFont.systemFontOfSize(14)
             termsLabel.numberOfLines = 2
-            termsLabel.textAlignment = .center
+            termsLabel.textAlignment = .Center
         } else {
-            termsLabel.isHidden = true
+            termsLabel.hidden = true
         }
         
-        if ActorSDK.sharedActor().authStrategy == .phoneOnly || ActorSDK.sharedActor().authStrategy == .phoneEmail {
-            usePhoneButton.setTitle(AALocalized("AuthEmailUsePhone"), for: UIControlState())
-            usePhoneButton.titleLabel?.font = UIFont.systemFont(ofSize: 14)
-            usePhoneButton.setTitleColor(ActorSDK.sharedActor().style.authTintColor, for: UIControlState())
-            usePhoneButton.setTitleColor(ActorSDK.sharedActor().style.authTintColor.alpha(0.56), for: .highlighted)
-            usePhoneButton.addTarget(self, action: #selector(AAAuthEmailViewController.usePhoneDidPressed), for: .touchUpInside)
+        if ActorSDK.sharedActor().authStrategy == .PhoneOnly || ActorSDK.sharedActor().authStrategy == .PhoneEmail {
+            usePhoneButton.setTitle(AALocalized("AuthEmailUsePhone"), forState: .Normal)
+            usePhoneButton.titleLabel?.font = UIFont.systemFontOfSize(14)
+            usePhoneButton.setTitleColor(ActorSDK.sharedActor().style.authTintColor, forState: .Normal)
+            usePhoneButton.setTitleColor(ActorSDK.sharedActor().style.authTintColor.alpha(0.56), forState: .Highlighted)
+            usePhoneButton.addTarget(self, action: #selector(AAAuthEmailViewController.usePhoneDidPressed), forControlEvents: .TouchUpInside)
         } else {
-            usePhoneButton.isHidden = true
+            usePhoneButton.hidden = true
         }
         
         scrollView.addSubview(welcomeLabel)
@@ -138,30 +138,30 @@ open class AAAuthEmailViewController: AAAuthViewController {
         super.viewDidLoad()
     }
     
-    open override func viewDidLayoutSubviews() {
+    public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        welcomeLabel.frame = CGRect(x: 20, y: 90 - 66, width: view.width - 40, height: 28)
-        hintLabel.frame = CGRect(x: 20, y: 127 - 66, width: view.width - 40, height: 18)
+        welcomeLabel.frame = CGRectMake(20, 90 - 66, view.width - 40, 28)
+        hintLabel.frame = CGRectMake(20, 127 - 66, view.width - 40, 18)
         
-        emailField.frame = CGRect(x: 20, y: 184 - 66, width: view.width - 40, height: 44)
-        emailFieldLine.frame = CGRect(x: 10, y: 228 - 66, width: view.width - 20, height: 0.5)
+        emailField.frame = CGRectMake(20, 184 - 66, view.width - 40, 44)
+        emailFieldLine.frame = CGRectMake(10, 228 - 66, view.width - 20, 0.5)
         
-        termsLabel.frame = CGRect(x: 20, y: 314 - 66, width: view.width - 40, height: 55)
+        termsLabel.frame = CGRectMake(20, 314 - 66, view.width - 40, 55)
         
-        usePhoneButton.frame = CGRect(x: 20, y: 375 - 66, width: view.width - 40, height: 38)
+        usePhoneButton.frame = CGRectMake(20, 375 - 66, view.width - 40, 38)
         
         scrollView.frame = view.bounds
-        scrollView.contentSize = CGSize(width: view.width, height: 420)
+        scrollView.contentSize = CGSizeMake(view.width, 420)
     }
     
-    open func usePhoneDidPressed() {
+    public func usePhoneDidPressed() {
         let controllers = self.navigationController!.viewControllers
         let updatedControllers = Array(controllers[0..<(controllers.count - 1)]) + [AAAuthPhoneViewController(name: name)]
         self.navigationController?.setViewControllers(updatedControllers, animated: false)
     }
     
-    open override func nextDidTap() {
+    public override func nextDidTap() {
         let email = emailField.text!
         
         if !AATools.isValidEmail(email) {
@@ -170,7 +170,7 @@ open class AAAuthEmailViewController: AAAuthViewController {
             return
         }
         
-        Actor.doStartAuth(withEmail: email).startUserAction().then { (res: ACAuthStartRes!) -> () in
+        Actor.doStartAuthWithEmail(email).startUserAction().then { (res: ACAuthStartRes!) -> () in
             if res.authMode.toNSEnum() == .OTP {
                 self.navigateNext(AAAuthOTPViewController(email: email, name: self.name, transactionHash: res.transactionHash))
             } else {
@@ -179,8 +179,8 @@ open class AAAuthEmailViewController: AAAuthViewController {
         }
     }
     
-    open override func keyboardWillAppear(_ height: CGFloat) {
-        scrollView.frame = CGRect(x: 0, y: 0, width: view.width, height: view.height - height)
+    public override func keyboardWillAppear(height: CGFloat) {
+        scrollView.frame = CGRectMake(0, 0, view.width, view.height - height)
         
         if AADevice.isiPhone4 || AADevice.isiPhone5 {
             let height = scrollView.height - height
@@ -191,11 +191,11 @@ open class AAAuthEmailViewController: AAAuthViewController {
         }
     }
     
-    open override func keyboardWillDisappear() {
-        scrollView.frame = CGRect(x: 0, y: 0, width: view.width, height: view.height)
+    public override func keyboardWillDisappear() {
+        scrollView.frame = CGRectMake(0, 0, view.width, view.height)
     }
     
-    open override func viewWillDisappear(_ animated: Bool) {
+    public override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
         emailField.resignFirstResponder()

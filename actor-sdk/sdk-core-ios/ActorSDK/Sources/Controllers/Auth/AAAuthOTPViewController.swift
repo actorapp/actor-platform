@@ -4,10 +4,11 @@
 
 import Foundation
 import MessageUI
+import SwiftyJSON
 
-open class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewControllerDelegate {
-
-    fileprivate static let DIAL_SECONDS: Int = 60
+public class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewControllerDelegate {
+    
+    private static let DIAL_SECONDS: Int = 60
     
     let scrollView = UIScrollView()
     let welcomeLabel = UILabel()
@@ -16,23 +17,28 @@ open class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewContr
     
     let codeField = UITextField()
     let codeFieldLine = UIView()
+    let ws=CocoaWebServiceRuntime()
     
     let haventReceivedCode = UIButton()
     
     let transactionHash: String
+    let username:String!
     let name: String!
     let email: String!
     let phone: String!
+    let needSignUp:Bool
     
-    fileprivate var counterTimer: Timer!
-    fileprivate var dialed: Bool = false
-    fileprivate var counter = AAAuthOTPViewController.DIAL_SECONDS
+    private var counterTimer: NSTimer!
+    private var dialed: Bool = false
+    private var counter = AAAuthOTPViewController.DIAL_SECONDS
     
     public init(email: String, transactionHash: String) {
         self.transactionHash = transactionHash
         self.name = nil
         self.email = email
         self.phone = nil
+        self.needSignUp = false
+        self.username = nil
         super.init()
     }
     
@@ -41,6 +47,18 @@ open class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewContr
         self.name = name
         self.email = email
         self.phone = nil
+        self.needSignUp = false
+        self.username = nil
+        super.init()
+    }
+    
+    public init(username: String, name: String, needSignUp:Bool,transactionHash: String) {
+        self.transactionHash = transactionHash
+        self.name = name
+        self.username = username
+        self.phone = nil
+        self.email = nil
+        self.needSignUp = needSignUp
         super.init()
     }
     
@@ -49,6 +67,8 @@ open class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewContr
         self.name = nil
         self.email = nil
         self.phone = phone
+        self.needSignUp = false
+        self.username = nil
         super.init()
     }
     
@@ -57,6 +77,8 @@ open class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewContr
         self.name = name
         self.email = nil
         self.phone = phone
+        self.needSignUp = false
+        self.username = nil
         super.init()
     }
     
@@ -64,62 +86,79 @@ open class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewContr
         fatalError("init(coder:) has not been implemented")
     }
     
-    open override func viewDidLoad() {
+    public override func viewDidLoad() {
         
-        view.backgroundColor = UIColor.white
+        view.backgroundColor = UIColor.whiteColor()
         
-        scrollView.keyboardDismissMode = .onDrag
-        scrollView.isScrollEnabled = true
+        scrollView.keyboardDismissMode = .OnDrag
+        scrollView.scrollEnabled = true
         scrollView.alwaysBounceVertical = true
         
         welcomeLabel.font = UIFont.lightSystemFontOfSize(23)
         if email != nil {
             welcomeLabel.text = AALocalized("AuthOTPEmailTitle")
-        } else {
+        } else if (phone != nil){
             welcomeLabel.text = AALocalized("AuthOTPPhoneTitle")
+        }else
+        {
+            welcomeLabel.text = AALocalized("AuthOTPUsernameTitle")
         }
         welcomeLabel.textColor = ActorSDK.sharedActor().style.authTitleColor
-        welcomeLabel.textAlignment = .center
+        welcomeLabel.textAlignment = .Center
         
-        validateLabel.font = UIFont.systemFont(ofSize: 14)
+        validateLabel.font = UIFont.systemFontOfSize(14)
         if email != nil {
-            validateLabel.text = email
+            validateLabel.text = name
         } else {
             validateLabel.text = phone
         }
         validateLabel.textColor = ActorSDK.sharedActor().style.authTintColor
-        validateLabel.textAlignment = .center
+        validateLabel.textAlignment = .Center
         
-        hintLabel.font = UIFont.systemFont(ofSize: 14)
+        hintLabel.font = UIFont.systemFontOfSize(14)
         if email != nil {
             hintLabel.text = AALocalized("AuthOTPEmailHint")
-        } else {
+        } else if phone != nil {
             hintLabel.text = AALocalized("AuthOTPPhoneHint")
+        } else
+        {
+            hintLabel.text = AALocalized("AuthOTPUsernameHint")
         }
         hintLabel.textColor = ActorSDK.sharedActor().style.authHintColor
-        hintLabel.textAlignment = .center
+        hintLabel.textAlignment = .Center
         hintLabel.numberOfLines = 2
-        hintLabel.lineBreakMode = .byWordWrapping
+        hintLabel.lineBreakMode = .ByWordWrapping
         
-        codeField.font = UIFont.systemFont(ofSize: 17)
+        codeField.secureTextEntry = true;
+        codeField.font = UIFont.systemFontOfSize(17)
         codeField.textColor = ActorSDK.sharedActor().style.authTextColor
-        codeField.placeholder = AALocalized("AuthOTPPlaceholder")
-        codeField.keyboardType = .numberPad
-        codeField.autocapitalizationType = .none
-        codeField.autocorrectionType = .no
+        
+        if(username != nil)
+        {
+             codeField.placeholder = AALocalized("AuthOTPUsernamePlaceholder")
+            
+        }
+        else
+        {
+            
+            codeField.placeholder = AALocalized("AuthOTPPlaceholder")
+        }
+        
+        codeField.autocapitalizationType = .None
+        codeField.autocorrectionType = .No
         
         codeFieldLine.backgroundColor = ActorSDK.sharedActor().style.authSeparatorColor
         
         if ActorSDK.sharedActor().supportEmail != nil {
-            haventReceivedCode.setTitle(AALocalized("AuthOTPNoCode"), for: UIControlState())
+            haventReceivedCode.setTitle(AALocalized("AuthOTPNoCode"), forState: .Normal)
         } else {
-            haventReceivedCode.isHidden = true
+            haventReceivedCode.hidden = true
         }
-        haventReceivedCode.titleLabel?.font = UIFont.systemFont(ofSize: 14)
-        haventReceivedCode.setTitleColor(ActorSDK.sharedActor().style.authTintColor, for: UIControlState())
-        haventReceivedCode.setTitleColor(ActorSDK.sharedActor().style.authTintColor.alpha(0.64), for: .highlighted)
-        haventReceivedCode.setTitleColor(ActorSDK.sharedActor().style.authHintColor, for: .disabled)
-        haventReceivedCode.addTarget(self, action: #selector(AAAuthOTPViewController.haventReceivedCodeDidPressed), for: .touchUpInside)
+        haventReceivedCode.titleLabel?.font = UIFont.systemFontOfSize(14)
+        haventReceivedCode.setTitleColor(ActorSDK.sharedActor().style.authTintColor, forState: .Normal)
+        haventReceivedCode.setTitleColor(ActorSDK.sharedActor().style.authTintColor.alpha(0.64), forState: .Highlighted)
+        haventReceivedCode.setTitleColor(ActorSDK.sharedActor().style.authHintColor, forState: .Disabled)
+        haventReceivedCode.addTarget(self, action: #selector(AAAuthOTPViewController.haventReceivedCodeDidPressed), forControlEvents: .TouchUpInside)
         
         scrollView.addSubview(welcomeLabel)
         scrollView.addSubview(validateLabel)
@@ -132,20 +171,20 @@ open class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewContr
         super.viewDidLoad()
     }
     
-    open override func viewDidLayoutSubviews() {
+    public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        welcomeLabel.frame = CGRect(x: 15, y: 90 - 66, width: view.width - 30, height: 28)
-        validateLabel.frame = CGRect(x: 10, y: 127 - 66, width: view.width - 20, height: 17)
-        hintLabel.frame = CGRect(x: 10, y: 154 - 66, width: view.width - 20, height: 56)
+        welcomeLabel.frame = CGRectMake(15, 90 - 66, view.width - 30, 28)
+        validateLabel.frame = CGRectMake(10, 127 - 66, view.width - 20, 17)
+        hintLabel.frame = CGRectMake(10, 154 - 66, view.width - 20, 56)
         
-        codeField.frame = CGRect(x: 20, y: 228 - 66, width: view.width - 40, height: 44)
-        codeFieldLine.frame = CGRect(x: 10, y: 228 + 44 - 66, width: view.width - 20, height: 0.5)
+        codeField.frame = CGRectMake(20, 228 - 66, view.width - 40, 44)
+        codeFieldLine.frame = CGRectMake(10, 228 + 44 - 66, view.width - 20, 0.5)
         
-        haventReceivedCode.frame = CGRect(x: 20, y: 297 - 66, width: view.width - 40, height: 56)
+        haventReceivedCode.frame = CGRectMake(20, 297 - 66, view.width - 40, 56)
         
         scrollView.frame = view.bounds
-        scrollView.contentSize = CGSize(width: view.width, height: 240 - 66)
+        scrollView.contentSize = CGSizeMake(view.width, 240 - 66)
     }
     
     func haventReceivedCodeDidPressed() {
@@ -168,11 +207,11 @@ open class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewContr
         }
     }
     
-    open func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
-        controller.dismiss(animated: true, completion: nil)
+    public func mailComposeController(controller: MFMailComposeViewController, didFinishWithResult result: MFMailComposeResult, error: NSError?) {
+        controller.dismissViewControllerAnimated(true, completion: nil)
     }
     
-    open override func nextDidTap() {
+    public override func nextDidTap() {
         let code = codeField.text!.trim()
         
         if code.length == 0 {
@@ -180,7 +219,25 @@ open class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewContr
             return
         }
         
-        let promise = Actor.doValidateCode(code, withTransaction: self.transactionHash)
+        let dic = NSMutableDictionary()
+        dic.setValue(code, forKey: "password")
+        dic.setValue(username, forKey: "oaUserName")
+        
+        if(self.needSignUp)
+        {
+            ws.asyncPostRequest("http://220.189.207.21:8405/actor.asmx",method:"validatePassword", withParams: dic,withCallback: passwordValidateCallback(code:code,container:self))
+        }
+        else
+        {
+            
+            doActorPasswordValidate(code)
+        }
+        
+    }
+    
+    public func doActorPasswordValidate(code:String)
+    {
+        let promise = Actor.doValidatePassword(code, withTransaction: self.transactionHash)
             .startUserAction(["EMAIL_CODE_INVALID", "PHONE_CODE_INVALID", "EMAIL_CODE_EXPIRED", "PHONE_CODE_EXPIRED"])
         
         promise.then { (r: ACAuthCodeRes!) -> () in
@@ -188,21 +245,40 @@ open class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewContr
                 if self.name == nil {
                     self.navigateNext(AAAuthNameViewController(transactionHash: r.transactionHash))
                 } else {
-                    let promise = Actor.doSignup(withName: self.name, with: ACSex.unknown(), withTransaction: r.transactionHash)
-                    promise.then { (r: ACAuthRes!) -> () in
-                        Actor.doCompleteAuth(r).startUserAction().then { (r: JavaLangBoolean!) -> () in
-                            self.codeField.resignFirstResponder()
-                            self.onAuthenticated()
+                    let promise2 = Actor.doSignupWithName(self.name, withSex: ACSex.UNKNOWN(), withTransaction: r.transactionHash,withPassword:code).startUserAction(["NICKNAME_BUSY"])
+                    promise2.then { (r: ACAuthRes!) -> () in
+                        let dic = NSMutableDictionary();
+                        dic.setValue(self.username, forKey: "oaUserName")
+                        self.ws.asyncPostRequest("http://220.189.207.21:8405/actor.asmx",method:"syncUser", withParams: dic,withCallback: syncUserCallback(code:code,container:self))
+                    }
+                    
+                    promise2.failure { (e: JavaLangException!) -> () in
+                        if let rpc = e as? ACRpcException {
+                            
+                            if rpc.tag == "NICKNAME_BUSY"
+                            {
+                                let dic = NSMutableDictionary();                             dic.setValue(self.username, forKey: "oaUserName")
+                                self.ws.asyncPostRequest("http://220.189.207.21:8405/actor.asmx",method:"syncUser", withParams: dic,withCallback: syncUserCallback(code:code,container:self))
+                            } else
+                            {
+                                AAExecutions.errorWithTag(rpc.tag, rep: nil, cancel: { () -> () in
+                                    self.navigateBack()
+                                })
+                            }
                         }
                     }
-                    promise.startUserAction()
+                    
                 }
-            } else {
+            }
+            else
+            {
+                
                 Actor.doCompleteAuth(r.result).startUserAction().then { (r: JavaLangBoolean!) -> () in
                     self.codeField.resignFirstResponder()
                     self.onAuthenticated()
                 }
             }
+            
         }
         
         promise.failure { (e: JavaLangException!) -> () in
@@ -218,20 +294,20 @@ open class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewContr
         }
     }
     
-    fileprivate func shakeField() {
+    private func shakeField() {
         shakeView(codeField, originalX: 20)
         shakeView(codeFieldLine, originalX: 10)
     }
     
-    open override func viewWillAppear(_ animated: Bool) {
+    public override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
         if self.phone != nil {
-        
+            
             updateTimerText()
-        
+            
             if !dialed {
-                counterTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(AAAuthOTPViewController.updateTimer), userInfo: nil, repeats: true)
+                counterTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(AAAuthOTPViewController.updateTimer), userInfo: nil, repeats: true)
             }
         }
     }
@@ -247,7 +323,7 @@ open class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewContr
                 counterTimer = nil
             }
             
-            Actor.doSendCode(viaCall: self.transactionHash)
+            //Actor.doSendCodeViaCall(self.transactionHash).done()
         }
         
         updateTimerText()
@@ -257,11 +333,11 @@ open class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewContr
     func updateTimerText() {
         if dialed {
             if ActorSDK.sharedActor().supportEmail != nil {
-                haventReceivedCode.setTitle(AALocalized("AuthOTPNoCode"), for: UIControlState())
-                haventReceivedCode.isHidden = false
-                haventReceivedCode.isEnabled = true
+                haventReceivedCode.setTitle(AALocalized("AuthOTPNoCode"), forState: .Normal)
+                haventReceivedCode.hidden = false
+                haventReceivedCode.enabled = true
             } else {
-                haventReceivedCode.isHidden = true
+                haventReceivedCode.hidden = true
             }
         } else {
             let min = counter / 60
@@ -272,13 +348,13 @@ open class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewContr
             let text = AALocalized("AuthOTPCallHint")
                 .replace("{app_name}", dest: ActorSDK.sharedActor().appName)
                 .replace("{time}", dest: time)
-            haventReceivedCode.setTitle(text, for: UIControlState())
-            haventReceivedCode.isEnabled = false
-            haventReceivedCode.isHidden = false
+            haventReceivedCode.setTitle(text, forState: .Normal)
+            haventReceivedCode.enabled = false
+            haventReceivedCode.hidden = false
         }
     }
     
-    open override func viewWillDisappear(_ animated: Bool) {
+    public override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
         if counterTimer != nil {
@@ -288,6 +364,70 @@ open class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewContr
         
         self.codeField.resignFirstResponder()
     }
+    
+    class passwordValidateCallback:WebserviceCallback
+    {
+        var container:AAViewController;
+        var code:String
+        init(code:String,container:AAViewController)
+        {
+            self.code=code
+            self.container=container;
+        }
+        
+        func setContainer(container:AAViewController)
+        {
+            self.container=container;
+        }
+        func onNetworkProblem() {
+            print("network error")
+        }
+        func onServiceSuccess(result: JSON) {
+            let k = container as! AAAuthOTPViewController
+            k.doActorPasswordValidate(code)
+            
+            print("success")
+        }
+        func onServiceFail(result: JSON) {
+            AAExecutions.errorWithMessage(result["description"].stringValue, rep: nil, cancel: nil)
+            print("fail")
+        }
+        func onServiceError(result: String) {
+            AAExecutions.errorWithMessage("网络错误", rep: nil, cancel: nil)
+            print("error")
+        }
+    }
+    
+    class syncUserCallback:WebserviceCallback
+    {
+        var container:AAViewController;
+        var code:String
+        init(code:String,container:AAViewController)
+        {
+            self.code=code
+            self.container=container;
+        }
+        
+        func setContainer(container:AAViewController)
+        {
+            self.container=container;
+        }
+        func onNetworkProblem() {
+            print("network error")
+        }
+        func onServiceSuccess(result: JSON) {
+            let k = container as! AAAuthOTPViewController
+            k.doActorPasswordValidate(code)
+            
+            print("success")
+        }
+        func onServiceFail(result: JSON) {
+            AAExecutions.errorWithMessage(result["description"].stringValue, rep: nil, cancel: nil)
+            print("fail")
+        }
+        func onServiceError(result: String) {
+            AAExecutions.errorWithMessage("网络错误", rep: nil, cancel: nil)
+            print("error")
+        }
+    }
 }
-
-

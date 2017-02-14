@@ -4,31 +4,31 @@
 
 import Foundation
 
-open class AAAuthNavigationController: UINavigationController {
+public class AAAuthNavigationController: UINavigationController {
     
-    open override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         
         navigationBar.setTransparentBackground()
         navigationBar.tintColor = ActorSDK.sharedActor().style.authTintColor
         navigationBar.hairlineHidden = true
         
-        view.backgroundColor = UIColor.white
+        view.backgroundColor = UIColor.whiteColor()
     }
 
-    open override func viewWillAppear(_ animated: Bool) {
+    public override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        UIApplication.shared.setStatusBarStyle(.default, animated: true)
+        UIApplication.sharedApplication().setStatusBarStyle(.Default, animated: true)
     }
     
-    open override func viewWillDisappear(_ animated: Bool) {
+    public override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
-        UIApplication.shared.setStatusBarStyle(.lightContent, animated: true)
+        UIApplication.sharedApplication().setStatusBarStyle(.LightContent, animated: true)
     }
     
-    open override var preferredStatusBarStyle : UIStatusBarStyle {
-        return .default
+    public override func preferredStatusBarStyle() -> UIStatusBarStyle {
+        return .Default
     }
 }

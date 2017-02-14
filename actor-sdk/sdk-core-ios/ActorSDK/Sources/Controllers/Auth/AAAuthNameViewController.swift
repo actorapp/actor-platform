@@ -4,7 +4,7 @@
 
 import Foundation
 
-open class AAAuthNameViewController: AAAuthViewController {
+public class AAAuthNameViewController: AAAuthViewController {
     
     let transactionHash: String?
     
@@ -20,34 +20,34 @@ open class AAAuthNameViewController: AAAuthViewController {
         self.transactionHash = transactionHash
         super.init(nibName: nil, bundle: nil)
         
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: .plain, target: self, action: #selector(AAViewController.dismissController))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: .Plain, target: self, action: #selector(AAViewController.dismiss))
     }
 
     public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    open override func viewDidLoad() {
+    public override func viewDidLoad() {
         
-        view.backgroundColor = UIColor.white
+        view.backgroundColor = UIColor.whiteColor()
         
-        scrollView.keyboardDismissMode = .onDrag
-        scrollView.isScrollEnabled = true
+        scrollView.keyboardDismissMode = .OnDrag
+        scrollView.scrollEnabled = true
         scrollView.alwaysBounceVertical = true
         
         welcomeLabel.font = UIFont.lightSystemFontOfSize(23)
         welcomeLabel.text = AALocalized("AuthNameTitle")
         welcomeLabel.textColor = ActorSDK.sharedActor().style.authTitleColor
-        welcomeLabel.textAlignment = .center
+        welcomeLabel.textAlignment = .Center
         
         field.placeholder = AALocalized("AuthNamePlaceholder")
-        field.keyboardType = .default
-        field.autocapitalizationType = .words
+        field.keyboardType = .Default
+        field.autocapitalizationType = .Words
         field.textColor = ActorSDK.sharedActor().style.authTextColor
-        field.addTarget(self, action: #selector(AAAuthNameViewController.fieldDidChanged), for: .editingChanged)
+        field.addTarget(self, action: #selector(AAAuthNameViewController.fieldDidChanged), forControlEvents: .EditingChanged)
         
         fieldLine.backgroundColor = ActorSDK.sharedActor().style.authSeparatorColor
-        fieldLine.isOpaque = false
+        fieldLine.opaque = false
         
         scrollView.addSubview(welcomeLabel)
         scrollView.addSubview(fieldLine)
@@ -58,15 +58,15 @@ open class AAAuthNameViewController: AAAuthViewController {
         super.viewDidLoad()
     }
     
-    open override func viewDidLayoutSubviews() {
+    public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        welcomeLabel.frame = CGRect(x: 15, y: 90 - 66, width: view.width - 30, height: 28)
-        fieldLine.frame = CGRect(x: 10, y: 200 - 66, width: view.width - 20, height: 0.5)
-        field.frame = CGRect(x: 20, y: 156 - 66, width: view.width - 40, height: 44)
+        welcomeLabel.frame = CGRectMake(15, 90 - 66, view.width - 30, 28)
+        fieldLine.frame = CGRectMake(10, 200 - 66, view.width - 20, 0.5)
+        field.frame = CGRectMake(20, 156 - 66, view.width - 40, 44)
         
         scrollView.frame = view.bounds
-        scrollView.contentSize = CGSize(width: view.width, height: 240 - 66)
+        scrollView.contentSize = CGSizeMake(view.width, 240 - 66)
     }
     
     func fieldDidChanged() {
@@ -77,11 +77,11 @@ open class AAAuthNameViewController: AAAuthViewController {
 //        }
     }
     
-    open  override func nextDidTap() {
+    public  override func nextDidTap() {
         let name = field.text!.trim()
         if name.length > 0 {
             if transactionHash != nil {
-                let promise = Actor.doSignup(withName: name, with: ACSex.unknown(), withTransaction: transactionHash!)
+                let promise = Actor.doSignupWithName(name, withSex: ACSex.UNKNOWN(), withTransaction: transactionHash!)
                 promise.then { (r: ACAuthRes!) -> () in
                     let promise = Actor.doCompleteAuth(r).startUserAction()
                     promise.then { (r: JavaLangBoolean!) -> () in
@@ -90,7 +90,7 @@ open class AAAuthNameViewController: AAAuthViewController {
                 }
                 promise.startUserAction()
             } else {
-                if ActorSDK.sharedActor().authStrategy == .phoneOnly || ActorSDK.sharedActor().authStrategy == .phoneEmail {
+                if ActorSDK.sharedActor().authStrategy == .PhoneOnly || ActorSDK.sharedActor().authStrategy == .PhoneEmail {
                     navigateNext(AAAuthPhoneViewController(name: name))
                 } else {
                     navigateNext(AAAuthEmailViewController(name: name))
@@ -102,7 +102,7 @@ open class AAAuthNameViewController: AAAuthViewController {
         }
     }
     
-    open override func viewWillAppear(_ animated: Bool) {
+    public override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
         if isFirstAppear {
@@ -111,7 +111,7 @@ open class AAAuthNameViewController: AAAuthViewController {
         }
     }
     
-    open override func viewWillDisappear(_ animated: Bool) {
+    public override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
         field.resignFirstResponder()

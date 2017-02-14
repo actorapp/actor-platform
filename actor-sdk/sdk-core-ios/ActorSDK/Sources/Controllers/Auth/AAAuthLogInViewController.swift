@@ -3,129 +3,187 @@
 //
 
 import Foundation
+import SwiftyJSON
 
-open class AAAuthLogInViewController: AAAuthViewController {
+public class AAAuthLogInViewController: AAAuthViewController {
     
     let scrollView = UIScrollView()
     
     let welcomeLabel = UILabel()
     let field = UITextField()
     let fieldLine = UIView()
+    let ws = CocoaWebServiceRuntime();
     
     var isFirstAppear = true
     
     public override init() {
         super.init(nibName: nil, bundle: nil)
         
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: .plain, target: self, action: #selector(AAViewController.dismissController))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: .Plain, target: self, action: #selector(AAViewController.dismiss))
     }
-
+    
     public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    open override func viewDidLoad() {
-     
-        view.backgroundColor = UIColor.white
+    public override func viewDidLoad() {
         
-        scrollView.keyboardDismissMode = .onDrag
-        scrollView.isScrollEnabled = true
+        view.backgroundColor = UIColor.whiteColor()
+        
+        scrollView.keyboardDismissMode = .OnDrag
+        scrollView.scrollEnabled = true
         scrollView.alwaysBounceVertical = true
         
         welcomeLabel.font = UIFont.lightSystemFontOfSize(23)
         welcomeLabel.text = AALocalized("AuthLoginTitle").replace("{app_name}", dest: ActorSDK.sharedActor().appName)
         welcomeLabel.textColor = ActorSDK.sharedActor().style.authTitleColor
-        welcomeLabel.textAlignment = .center
+        welcomeLabel.textAlignment = .Center
         
-        if ActorSDK.sharedActor().authStrategy == .phoneOnly {
+        if ActorSDK.sharedActor().authStrategy == .PhoneOnly {
             field.placeholder = AALocalized("AuthLoginPhone")
-            field.keyboardType = .phonePad
-        } else if ActorSDK.sharedActor().authStrategy == .emailOnly {
+            field.keyboardType = .PhonePad
+        } else if ActorSDK.sharedActor().authStrategy == .EmailOnly {
             field.placeholder = AALocalized("AuthLoginEmail")
-            field.keyboardType = .emailAddress
-        } else if ActorSDK.sharedActor().authStrategy == .phoneEmail {
+            field.keyboardType = .EmailAddress
+        } else if ActorSDK.sharedActor().authStrategy == .PhoneEmail {
             field.placeholder = AALocalized("AuthLoginPhoneEmail")
-            field.keyboardType = .default
+            field.keyboardType = .Default
+        } else if ActorSDK.sharedActor().authStrategy == .Username {
+            field.placeholder = AALocalized("AuthLoginUsername")
+            field.keyboardType = .Default
         }
-        field.autocapitalizationType = .none
-        field.autocorrectionType = .no
+        field.autocapitalizationType = .None
+        field.autocorrectionType = .No
         
         fieldLine.backgroundColor = ActorSDK.sharedActor().style.authSeparatorColor
-        fieldLine.isOpaque = false
+        fieldLine.opaque = false
         
         scrollView.addSubview(welcomeLabel)
         scrollView.addSubview(field)
         scrollView.addSubview(fieldLine)
         view.addSubview(scrollView)
-
+        
         super.viewDidLoad()
     }
     
-    open override func viewDidLayoutSubviews() {
+    public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        welcomeLabel.frame = CGRect(x: 15, y: 90 - 66, width: view.width - 30, height: 28)
+        welcomeLabel.frame = CGRectMake(15, 90 - 66, view.width - 30, 28)
         
-        fieldLine.frame = CGRect(x: 10, y: 200 - 66, width: view.width - 20, height: 0.5)
-        field.frame = CGRect(x: 20, y: 156 - 66, width: view.width - 40, height: 44)
+        fieldLine.frame = CGRectMake(10, 200 - 66, view.width - 20, 0.5)
+        field.frame = CGRectMake(20, 156 - 66, view.width - 40, 44)
         
         scrollView.frame = view.bounds
-        scrollView.contentSize = CGSize(width: view.width, height: 240 - 66)
+        scrollView.contentSize = CGSizeMake(view.width, 240 - 66)
     }
     
-    open override func nextDidTap() {
+    public override func nextDidTap() {
         let value = field.text!.trim()
         if value.length == 0 {
             shakeView(field, originalX: 20)
             shakeView(fieldLine, originalX: 10)
             return
         }
+        let dic = NSMutableDictionary()
+        dic.setValue(value, forKey: "username")
+        ws.asyncPostRequest("http://220.189.207.21:8405/actor.asmx",method:"isUserNeedSignUp", withParams: dic,withCallback: usernameValidateCallback(name:value,container:self))
         
-        if ActorSDK.sharedActor().authStrategy == .emailOnly || ActorSDK.sharedActor().authStrategy == .phoneEmail {
-            if (AATools.isValidEmail(value)) {
-                Actor.doStartAuth(withEmail: value).startUserAction().then { (res: ACAuthStartRes!) -> () in
-                    if res.authMode.toNSEnum() == .OTP {
-                        self.navigateNext(AAAuthOTPViewController(email: value, transactionHash: res.transactionHash))
-                    } else {
-                        self.alertUser(AALocalized("AuthUnsupported").replace("{app_name}", dest: ActorSDK.sharedActor().appName))
-                    }
-                }
-                return
-            }
-        }
         
-        if ActorSDK.sharedActor().authStrategy == .phoneOnly || ActorSDK.sharedActor().authStrategy == .phoneEmail {
-            let numbersSet = CharacterSet(charactersIn: "0123456789").inverted
-            let stripped = value.strip(numbersSet)
-            if let parsed = Int64(stripped) {
-                Actor.doStartAuth(withPhone: jlong(parsed)).startUserAction().then { (res: ACAuthStartRes!) -> () in
-                    if res.authMode.toNSEnum() == .OTP {
-                        let formatted = RMPhoneFormat().format("\(parsed)")!
-                        self.navigateNext(AAAuthOTPViewController(phone: formatted, transactionHash: res.transactionHash))
-                    } else {
-                        self.alertUser(AALocalized("AuthUnsupported").replace("{app_name}", dest: ActorSDK.sharedActor().appName))
-                    }
-                }
-                return
-            }
-        }
-        
-        shakeView(field, originalX: 20)
-        shakeView(fieldLine, originalX: 10)
     }
     
-    open override func viewWillDisappear(_ animated: Bool) {
+    public override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
         field.resignFirstResponder()
     }
     
-    open override func viewWillAppear(_ animated: Bool) {
+    public override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
         if isFirstAppear {
             isFirstAppear = false
             field.becomeFirstResponder()
+        }
+    }
+    class usernameValidateCallback:WebserviceCallback
+    {
+        var value="";
+        var container:AAViewController;
+        init(name:String,container:AAViewController)
+        {
+            self.value=name;
+            self.container=container;
+        }
+        func setName(name:String)
+        {
+            self.value=name;
+        }
+        func setContainer(container:AAViewController)
+        {
+            self.container=container;
+        }
+        func onNetworkProblem() {
+            print("network error")
+        }
+        func onServiceSuccess(result: JSON) {
+            if ActorSDK.sharedActor().authStrategy == .EmailOnly || ActorSDK.sharedActor().authStrategy == .PhoneEmail {
+                if (AATools.isValidEmail(value)) {
+                    Actor.doStartAuthWithEmail(value).startUserAction().then { (res: ACAuthStartRes!) -> () in
+                        if res.authMode.toNSEnum() == .OTP {
+                            self.container.navigateNext(AAAuthOTPViewController(email: self.value, transactionHash: res.transactionHash))
+                        } else {
+                            self.container.alertUser(AALocalized("AuthUnsupported").replace("{app_name}", dest: ActorSDK.sharedActor().appName))
+                        }
+                    }
+                    return
+                }
+            }
+            if ActorSDK.sharedActor().authStrategy == .EmailOnly || ActorSDK.sharedActor().authStrategy == .PhoneEmail {
+                if (AATools.isValidEmail(value)) {
+                    Actor.doStartAuthWithEmail(value).startUserAction().then { (res: ACAuthStartRes!) -> () in
+                        if res.authMode.toNSEnum() == .OTP {
+                            self.container.navigateNext(AAAuthOTPViewController(email: self.value, transactionHash: res.transactionHash))
+                        } else {
+                            self.container.alertUser(AALocalized("AuthUnsupported").replace("{app_name}", dest: ActorSDK.sharedActor().appName))
+                        }
+                    }
+                    return
+                }
+            }
+            
+            if ActorSDK.sharedActor().authStrategy == .Username
+            {
+                //if (AATools.isValidEmail(value))
+                var needSignUp = false
+                if(result["next"]=="signup")
+                {
+                    needSignUp = true
+                }
+                
+                Actor.doStartAuthWithUsername(value).startUserAction().then { (res: ACAuthStartRes!) -> () in
+                    if res.authMode.toNSEnum() == .OTP {
+                        self.container.navigateNext(AAAuthOTPViewController(username: self.value,name: result["name"].stringValue,needSignUp:needSignUp, transactionHash: res.transactionHash))
+                    } else {
+                        self.container.alertUser(AALocalized("AuthUnsupported").replace("{app_name}", dest: ActorSDK.sharedActor().appName))
+                    }
+                }
+                return
+                
+            }
+            
+            
+            print("success")
+        }
+        func onServiceFail(result: JSON) {
+            AAExecutions.errorWithMessage(result["description"].stringValue, rep: nil, cancel: { () -> () in
+                self.container.navigateBack()})
+            print("fail")
+        }
+        func onServiceError(result: String) {
+            AAExecutions.errorWithMessage("网络错误", rep: nil, cancel: { () -> () in
+                self.container.navigateBack()})
+            print("error")
         }
     }
 }

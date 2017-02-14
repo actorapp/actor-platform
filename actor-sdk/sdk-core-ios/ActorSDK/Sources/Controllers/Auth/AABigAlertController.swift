@@ -6,21 +6,21 @@
 import Foundation
 import UIKit
 
-open class AABigAlertController: UIViewController,UIViewControllerTransitioningDelegate {
+public class AABigAlertController: UIViewController,UIViewControllerTransitioningDelegate {
     
-    fileprivate let alertTitle: String
-    fileprivate let alertMessage: String
+    private let alertTitle: String
+    private let alertMessage: String
     
-    fileprivate var alertView : UIView!
-    fileprivate var alertTitleLabel : UILabel!
-    fileprivate var alertTextView : UITextView!
-    fileprivate var buttonOk : UIButton!
+    private var alertView : UIView!
+    private var alertTitleLabel : UILabel!
+    private var alertTextView : UITextView!
+    private var buttonOk : UIButton!
     
     public init(alertTitle: String, alertMessage: String)  {
         self.alertTitle = alertTitle
         self.alertMessage = alertMessage
         super.init(nibName: nil, bundle: nil)
-        self.modalPresentationStyle = .custom
+        self.modalPresentationStyle = .Custom
         self.transitioningDelegate = self
     }
 
@@ -28,66 +28,66 @@ open class AABigAlertController: UIViewController,UIViewControllerTransitioningD
         fatalError("init(coder:) has not been implemented")
     }
     
-    open override func loadView() {
+    public override func loadView() {
         super.loadView()
         
         self.alertView = UIView()
-        self.alertView.frame = CGRect(x: self.view.frame.width/2 - 120, y: self.view.frame.height/2 - 165, width: 240, height: 330)
-        self.alertView.backgroundColor = UIColor.white
+        self.alertView.frame = CGRectMake(self.view.frame.width/2 - 120, self.view.frame.height/2 - 165, 240, 330)
+        self.alertView.backgroundColor = UIColor.whiteColor()
         self.alertView.layer.cornerRadius = 10
         self.alertView.layer.masksToBounds = true
         self.view.addSubview(self.alertView)
         
         self.alertTitleLabel = UILabel()
-        self.alertTitleLabel.font = UIFont.boldSystemFont(ofSize: 17)
-        self.alertTitleLabel.frame = CGRect(x: 10,y: 10,width: 220,height: 30)
+        self.alertTitleLabel.font = UIFont.boldSystemFontOfSize(17)
+        self.alertTitleLabel.frame = CGRectMake(10,10,220,30)
         self.alertTitleLabel.text = alertTitle
-        self.alertTitleLabel.backgroundColor = UIColor.clear
-        self.alertTitleLabel.textAlignment = .center
+        self.alertTitleLabel.backgroundColor = UIColor.clearColor()
+        self.alertTitleLabel.textAlignment = .Center
         self.alertView.addSubview(self.alertTitleLabel)
         
         self.alertTextView = UITextView()
         self.alertTextView.font = UIFont.lightSystemFontOfSize(13)
-        self.alertTextView.backgroundColor = UIColor.clear
-        self.alertTextView.isEditable = false
+        self.alertTextView.backgroundColor = UIColor.clearColor()
+        self.alertTextView.editable = false
         self.alertTextView.text = alertMessage
-        self.alertTextView.frame = CGRect(x: 10, y: 45, width: 220, height: 245);
-        self.alertTextView.isUserInteractionEnabled = true
+        self.alertTextView.frame = CGRectMake(10, 45, 220, 245);
+        self.alertTextView.userInteractionEnabled = true
         self.alertView.addSubview(self.alertTextView)
         
         let separatorView = UIView()
-        separatorView.frame = CGRect(x: 0, y: 290, width: 240, height: 0.5)
-        separatorView.backgroundColor = UIColor.lightGray.withAlphaComponent(0.5)
+        separatorView.frame = CGRectMake(0, 290, 240, 0.5)
+        separatorView.backgroundColor = UIColor.lightGrayColor().colorWithAlphaComponent(0.5)
         self.alertView.addSubview(separatorView)
         
-        self.buttonOk = UIButton(type: UIButtonType.system)
-        self.buttonOk.setTitle(AALocalized("AlertOk"), for: UIControlState())
-        self.buttonOk.setTitleColor(UIColor.blue, for: UIControlState())
-        self.buttonOk.frame = CGRect(x: 0,y: 291,width: 240,height: 39)
-        self.buttonOk.addTarget(self, action: #selector(AABigAlertController.closeController), for: UIControlEvents.touchUpInside)
+        self.buttonOk = UIButton(type: UIButtonType.System)
+        self.buttonOk.setTitle(AALocalized("AlertOk"), forState: UIControlState.Normal)
+        self.buttonOk.setTitleColor(UIColor.blueColor(), forState: UIControlState.Normal)
+        self.buttonOk.frame = CGRectMake(0,291,240,39)
+        self.buttonOk.addTarget(self, action: #selector(AABigAlertController.closeController), forControlEvents: UIControlEvents.TouchUpInside)
         self.alertView.addSubview(self.buttonOk)
     }
     
-    open override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         let touch = UITapGestureRecognizer(target: self, action: #selector(AABigAlertController.closeController))
         self.view.addGestureRecognizer(touch)
     }
     
-    open func closeController() {
-        self.dismiss(animated: true, completion: nil)
+    public func closeController() {
+        self.dismissViewControllerAnimated(true, completion: nil)
     }
     
-    open func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
+    public func presentationControllerForPresentedViewController(presented: UIViewController, presentingViewController presenting: UIViewController, sourceViewController source: UIViewController) -> UIPresentationController? {
         
         if presented == self {
-            return AACustomPresentationController(presentedViewController: presented, presenting: presenting)
+            return AACustomPresentationController(presentedViewController: presented, presentingViewController: presenting)
         }
         
         return nil
     }
     
-    open func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    public func animationControllerForPresentedController(presented: UIViewController, presentingController presenting: UIViewController, sourceController source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         
         if presented == self {
             return AACustomPresentationAnimationController(isPresenting: true)
@@ -97,7 +97,7 @@ open class AABigAlertController: UIViewController,UIViewControllerTransitioningD
         }
     }
     
-    open func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    public func animationControllerForDismissedController(dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         
         if dismissed == self {
             return AACustomPresentationAnimationController(isPresenting: false)
