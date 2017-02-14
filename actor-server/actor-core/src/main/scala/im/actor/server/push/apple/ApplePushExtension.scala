@@ -6,7 +6,6 @@ import java.util.concurrent.{ ExecutionException, TimeUnit, TimeoutException }
 import akka.actor.{ ActorSystem, ExtendedActorSystem, Extension, ExtensionId, ExtensionIdProvider }
 import akka.event.Logging
 import com.relayrides.pushy.apns.{ ApnsClient, ApnsClientBuilder }
-import com.relayrides.pushy.apns.util.SimpleApnsPushNotification
 import im.actor.server.db.DbExtension
 import im.actor.server.model.push.ApplePushCredentials
 import im.actor.server.persist.push.ApplePushCredentialsRepo

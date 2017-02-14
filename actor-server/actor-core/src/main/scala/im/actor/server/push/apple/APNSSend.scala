@@ -18,15 +18,25 @@ trait APNSSend {
     // when topic is null, it will be taken from APNs certificate
     // http://relayrides.github.io/pushy/apidocs/0.6/com/relayrides/pushy/apns/ApnsPushNotification.html#getTopic--
     val token = BitVector(creds.token.toByteArray).toHex
-    val topic: String = (creds.apnsKey, creds.bundleId) match {
-      case (_, Some(bundleId)) ⇒ bundleId.value
-      case (Some(key), _)      ⇒ ApplePushExtension(system).apnsBundleId.get(key.value).orNull
-      case _ ⇒
-        system.log.warning("Wrong creds format on sending notification. Creds: {}", creds)
-        null
+
+    //    val topic: String = (creds.apnsKey, creds.bundleId) match {
+    //      case (_, Some(bundleId)) ⇒ bundleId.value
+    //      case (Some(key), _)      ⇒ ApplePushExtension(system).apnsBundleId.get(key.value).orNull
+    //      case _ ⇒
+    //        system.log.warning("Wrong creds format on sending notification. Creds: {}", creds)
+    //        null
+    //    }
+
+    val topic: String = creds.bundleId match {
+      case Some(bundleId) ⇒ bundleId.value
+      case _              ⇒ null
     }
-    system.log.debug(s"Sending APNS, token: {}, key: {}, isVoip: {}, topic: {}, payload: $payload", token, creds.apnsKey, creds.isVoip, topic)
-    val notification = new SimpleApnsPushNotification(TokenUtil.sanitizeTokenString(token), topic, payload)
+
+    val sanitizedToken = TokenUtil.sanitizeTokenString(token)
+    system.log.debug(s"Sending APNS, token: {}, key: {}, isVoip: {}, topic: {}, payload: $payload", sanitizedToken, creds.apnsKey, creds.isVoip, topic)
+
+    val notification = new SimpleApnsPushNotification(sanitizedToken, null, payload)
+
     val listener = listeners.getOrElseUpdate(token, new PushFutureListener(userId, creds, extractCredsId(creds))(system))
     client.sendNotification(notification).addListener(listener)
   }

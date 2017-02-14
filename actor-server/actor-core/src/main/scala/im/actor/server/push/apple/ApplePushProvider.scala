@@ -74,17 +74,21 @@ final class ApplePushProvider(userId: Int)(implicit system: ActorSystem) extends
   }
 
   def deliverVoip(
-    seq:   Int,
+    seq:    Int,
     authId: Long
   ): Unit = {
-    for {
-      (userId, credsList) <- applePushExt.fetchVoipCreds(Set(authId)) map (userId → _)
-      creds ← credsList
-      credsId =  extractCredsId(creds)
-      clientFu ← applePushExt.voipClient(credsId)
-      payload = seqOnly(seq)
-      _ = clientFu foreach { implicit c ⇒ sendNotification(payload, creds, userId) }
-    } yield ()
+    applePushExt.fetchVoipCreds(Seq(authId).toSet).map(userId → _).map {
+      case (userId, credsList) ⇒ {
+        for {
+          creds ← credsList
+          credsId = extractCredsId(creds)
+          clientFu ← applePushExt.voipClient(credsId)
+          payload = seqOnly(seq)
+          _ = clientFu foreach { implicit c ⇒ sendNotification(payload, creds, userId) }
+        } yield ()
+      }
+    }
+
   }
 
   private def seqOnly(seq: Int): String =
