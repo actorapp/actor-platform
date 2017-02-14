@@ -1,11 +1,11 @@
 package im.actor.server.push.apple
 
 import akka.actor.ActorSystem
-import com.google.protobuf.wrappers.{ Int32Value, StringValue }
+import com.google.protobuf.wrappers.{Int32Value, StringValue}
 import com.relayrides.pushy.apns.PushNotificationResponse
-import com.relayrides.pushy.apns.util.{ SimpleApnsPushNotification, TokenUtil }
+import com.relayrides.pushy.apns.util.{SimpleApnsPushNotification, TokenUtil}
 import im.actor.server.model.push.ApplePushCredentials
-import io.netty.util.concurrent.{ Future ⇒ NFuture }
+import io.netty.util.concurrent.{Future ⇒ NFuture}
 import scodec.bits.BitVector
 
 import scala.collection.concurrent.TrieMap
@@ -18,19 +18,12 @@ trait APNSSend {
 
     val token = BitVector(creds.token.toByteArray).toHex
 
-    //        val topic: String = (creds.apnsKey, creds.bundleId) match {
-    //          case (_, Some(bundleId)) ⇒ bundleId.value
-    //          case (Some(key), _)      ⇒ ApplePushExtension(system).apnsBundleId.get(key.value).orNull
-    //          case _ ⇒
-    //            system.log.warning("Wrong creds format on sending notification. Creds: {}", creds)
-    //            null
-    //        }
-
-    // when topic is null, it will be taken from APNs certificate
-    // http://relayrides.github.io/pushy/apidocs/0.6/com/relayrides/pushy/apns/ApnsPushNotification.html#getTopic--
-    val topic: String = creds.bundleId match {
-      case Some(bundleId) ⇒ bundleId.value
-      case _              ⇒ null
+    val topic: String = (creds.apnsKey, creds.bundleId) match {
+      case (_, Some(bundleId)) ⇒ bundleId.value
+      case (Some(key), _) ⇒ if (creds.isVoip) null else ApplePushExtension(system).apnsBundleId.get(key.value).orNull
+      case _ ⇒
+        system.log.warning("Wrong creds format on sending notification. Creds: {}", creds)
+        null
     }
 
     val sanitizedToken = TokenUtil.sanitizeTokenString(token)
@@ -43,9 +36,9 @@ trait APNSSend {
   }
 
   protected def extractCredsId(creds: ApplePushCredentials): String = (creds.apnsKey, creds.bundleId) match {
-    case (Some(Int32Value(key)), _)       ⇒ key.toString
+    case (Some(Int32Value(key)), _) ⇒ key.toString
     case (_, Some(StringValue(bundleId))) ⇒ bundleId
-    case _                                ⇒ throw new RuntimeException("Wrong credentials format")
+    case _ ⇒ throw new RuntimeException("Wrong credentials format")
   }
 
 }
