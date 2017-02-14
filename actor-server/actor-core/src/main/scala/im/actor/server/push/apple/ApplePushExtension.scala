@@ -43,7 +43,7 @@ final class ApplePushExtension(system: ActorSystem) extends Extension with AnyRe
   // to be included in apple push notification. We provide apns key -> bundle id
   // mapping for them.
   val apnsBundleId: Map[Int, String] = (config.certs collect {
-    case ApnsCert(Some(key), Some(bundleId), _, _, _, _) ⇒ key → bundleId
+    case ApnsCert(Some(key), Some(bundleId), _, _, _, isVoip) ⇒ key → bundleId
   }).toMap
 
   private val (clients, voipClients): (TrieMap[String, Future[Client]], TrieMap[String, Future[Client]]) = {
