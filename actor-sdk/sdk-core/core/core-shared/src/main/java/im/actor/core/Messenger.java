@@ -451,7 +451,7 @@ public class Messenger {
     }
 
     /**
-     * This method is called when messenger was logged in. Useful for subclasses
+     * This method is called when messenger was logged in. Useful for statesubclasses
      */
     public void onLoggedIn() {
 
@@ -462,7 +462,7 @@ public class Messenger {
     //////////////////////////////////////
 
     /**
-     * Get ViewModel of application state
+     * Get ViewModel of application
      *
      * @return view model of application state
      */
