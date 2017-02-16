@@ -66,7 +66,7 @@ public class ActorApplication {
 
 
 //        messenger.resetAuth();
-        sendUserName(myNumber);
+        sendUserName("wangc","111");
     }
 
     public void sendUserName(String username,String password)
