@@ -39,16 +39,14 @@ public class ActorApplication {
     static ClcMessenger messenger;
 
 
-    public ActorApplication(String url,String username,String password)
+    public ActorApplication(String url,String username,String password,ConfigurationBuilder builder)
     {
         this.url = url;
         this.username = username;
         this.password = password;
 
 
-        builder = new ConfigurationBuilder();
-
-        builder.addEndpoint(this.url);
+        this.builder = builder;
 
 
 
