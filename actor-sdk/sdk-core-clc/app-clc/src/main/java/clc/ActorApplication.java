@@ -35,6 +35,9 @@ public class ActorApplication {
     public ConfigurationBuilder builder;
     private static final Logger logger = LoggerFactory.getLogger(ClcApplication.class);
 
+    private static int randomSeed;
+    static ClcMessenger messenger;
+
 
     public ActorApplication(String url,String username,String password)
     {
@@ -42,6 +45,7 @@ public class ActorApplication {
         this.username = username;
         this.password = password;
 
+        messenger = new ClcMessenger(builder.build(),Integer.toString(myNumber));
         builder = new ConfigurationBuilder();
 
         builder.addEndpoint(this.url);
@@ -58,6 +62,8 @@ public class ActorApplication {
                 "najva00000000000000000000-v1-" + myNumber));
 
         messenger = new ClcMessenger(builder.build(),Integer.toString(myNumber));
+
+
 
 //        messenger.resetAuth();
         sendUserName(myNumber);
