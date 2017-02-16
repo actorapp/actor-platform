@@ -45,7 +45,7 @@ public class ActorApplication {
         this.username = username;
         this.password = password;
 
-        messenger = new ClcMessenger(builder.build(),Integer.toString(myNumber));
+
         builder = new ConfigurationBuilder();
 
         builder.addEndpoint(this.url);
