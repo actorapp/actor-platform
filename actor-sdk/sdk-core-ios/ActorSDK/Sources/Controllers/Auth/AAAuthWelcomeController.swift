@@ -66,7 +66,7 @@ open class AAWelcomeController: AAViewController {
         self.view.addSubview(self.logoView)
         self.view.addSubview(self.appNameLabel)
         self.view.addSubview(self.someInfoLabel)
-        self.view.addSubview(self.signupButton)
+        //self.view.addSubview(self.signupButton)
         self.view.addSubview(self.signinButton)
     }
     

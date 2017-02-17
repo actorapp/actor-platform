@@ -36,6 +36,15 @@ open class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewContr
         super.init()
     }
     
+    public init(name: String, transactionHash: String) {
+        self.transactionHash = transactionHash
+        self.name = name
+        self.email = nil
+        self.phone = nil
+        super.init()
+    }
+    
+    
     public init(email: String, name: String, transactionHash: String) {
         self.transactionHash = transactionHash
         self.name = name
@@ -180,7 +189,11 @@ open class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewContr
             return
         }
         
-        let promise = Actor.doValidateCode(code, withTransaction: self.transactionHash)
+       
+//        let promise2 = Actor.doValidateCode(code, withTransaction: self.transactionHash)
+//            .startUserAction(["EMAIL_CODE_INVALID", "PHONE_CODE_INVALID", "EMAIL_CODE_EXPIRED", "PHONE_CODE_EXPIRED"])
+        
+        let promise = Actor.doValidatePassword(code, withTransaction: self.transactionHash)
             .startUserAction(["EMAIL_CODE_INVALID", "PHONE_CODE_INVALID", "EMAIL_CODE_EXPIRED", "PHONE_CODE_EXPIRED"])
         
         promise.then { (r: ACAuthCodeRes!) -> () in

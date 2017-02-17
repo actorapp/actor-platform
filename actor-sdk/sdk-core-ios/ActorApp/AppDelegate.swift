@@ -26,7 +26,7 @@ open class AppDelegate : ActorApplicationDelegate {
         // Setting Development Push Id
         ActorSDK.sharedActor().apiPushId = 868547
         
-        ActorSDK.sharedActor().authStrategy = .phoneEmail
+        ActorSDK.sharedActor().authStrategy = .usernameOnly
         
         ActorSDK.sharedActor().style.dialogAvatarSize = 58
         

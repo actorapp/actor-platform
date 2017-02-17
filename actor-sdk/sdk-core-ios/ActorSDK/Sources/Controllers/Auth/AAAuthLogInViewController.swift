@@ -109,6 +109,19 @@ open class AAAuthLogInViewController: AAAuthViewController {
                 return
             }
         }
+        if ActorSDK.sharedActor().authStrategy == .usernameOnly {
+           
+                Actor.doStartAuth(withUsername: value).startUserAction().then { (res: ACAuthStartRes!) -> () in
+                    if res.authMode.toNSEnum() == .OTP {
+                        
+                        self.navigateNext(AAAuthOTPViewController(name: value, transactionHash: res.transactionHash))
+                    } else {
+                        self.alertUser(AALocalized("AuthUnsupported").replace("{app_name}", dest: ActorSDK.sharedActor().appName))
+                    }
+                }
+                return
+            }
+        
         
         shakeView(field, originalX: 20)
         shakeView(fieldLine, originalX: 10)
