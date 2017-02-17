@@ -83,7 +83,7 @@ final class ApplePushProvider(userId: Int)(implicit system: ActorSystem) extends
           creds ← credsList
           credsId = extractCredsId(creds)
           clientFu ← applePushExt.voipClient(credsId)
-          payload = seqOnly(seq)
+          payload = new ApnsPayloadBuilder().buildWithDefaultMaximumLength()
           _ = clientFu foreach { implicit c ⇒ sendNotification(payload, creds, userId) }
         } yield ()
       }
