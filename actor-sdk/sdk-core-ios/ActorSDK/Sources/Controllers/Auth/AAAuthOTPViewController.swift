@@ -194,7 +194,7 @@ open class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewContr
 //            .startUserAction(["EMAIL_CODE_INVALID", "PHONE_CODE_INVALID", "EMAIL_CODE_EXPIRED", "PHONE_CODE_EXPIRED"])
         
         let promise = Actor.doValidatePassword(code, withTransaction: self.transactionHash)
-            .startUserAction(["EMAIL_CODE_INVALID", "PHONE_CODE_INVALID", "EMAIL_CODE_EXPIRED", "PHONE_CODE_EXPIRED"])
+            .startUserAction(["EMAIL_CODE_INVALID", "PHONE_CODE_INVALID", "EMAIL_CODE_EXPIRED", "PHONE_CODE_EXPIRED" ,"PASSWORD_INVALID" , "PASSWORD_EXPIRED"])
         
         promise.then { (r: ACAuthCodeRes!) -> () in
             if r.needToSignup {

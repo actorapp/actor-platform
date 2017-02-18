@@ -74,7 +74,7 @@
                   moduleName = "ActorSDK"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/zhangshanbo/actor-platform/actor-sdk/sdk-core-ios/ActorSDK/Sources/SwiftExtensions/Promises.swift"
-                  timestampString = "509007610.606527"
+                  timestampString = "509008803.648044"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "20"
@@ -89,7 +89,7 @@
                   moduleName = "ActorSDK"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/zhangshanbo/actor-platform/actor-sdk/sdk-core-ios/ActorSDK/Sources/SwiftExtensions/Promises.swift"
-                  timestampString = "509007610.610457"
+                  timestampString = "509008803.651487"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "21"
@@ -112,6 +112,38 @@
             startingLineNumber = "115"
             endingLineNumber = "115"
             landmarkName = "nextDidTap()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ActorSDK/Sources/SwiftExtensions/Promises.swift"
+            timestampString = "509008177.863218"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "21"
+            endingLineNumber = "21"
+            landmarkName = "startUserAction(_:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ActorSDK/Sources/SwiftExtensions/Promises.swift"
+            timestampString = "509008178.895563"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "25"
+            endingLineNumber = "25"
+            landmarkName = "startUserAction(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
