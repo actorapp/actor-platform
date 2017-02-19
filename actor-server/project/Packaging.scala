@@ -22,7 +22,7 @@ private[actor] trait Packaging {
     daemonUser in Linux := "actor",
     daemonGroup in Linux := (daemonUser in Linux).value,
 
-    bashScriptExtraDefines += """addJava "-Dlogback.configurationFile=${app_home}/../conf/logback.xml"""",
+    //bashScriptExtraDefines += """addJava "-Dlogback.configurationFile=${app_home}/../conf/logback.xml"""",
     bashScriptExtraDefines += """addJava -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=${app_home}/../logs/dump-`date`.hprof""",
 
     linuxPackageMappings += {
