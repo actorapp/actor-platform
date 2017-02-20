@@ -21,6 +21,9 @@ final class PushFutureListener(userId: Int, creds: ApplePushCredentials, credsId
   private val tokenString = BitVector(tokenBytes).toHex
 
   def operationComplete(future: Future[PushNotificationResponse[SimpleApnsPushNotification]]): Unit = {
+
+    log.debug("APNS send event has completed")
+
     Try(future.get()) match {
       case Success(response) ⇒
         log.debug(

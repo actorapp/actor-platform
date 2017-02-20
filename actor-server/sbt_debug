@@ -1,3 +1,3 @@
 #!/bin/bash
-SBT_OPTS="-Xms512M -Xmx2048M -Xss1M -XX:+CMSClassUnloadingEnabled -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"
+SBT_OPTS="-Xms512M -Xmx2048M -Xss1M -XX:+CMSClassUnloadingEnabled -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005 -Dlogback.configurationFile=/home/diego/data/conf/logback.xml"
 java $SBT_OPTS -jar `dirname $0`/sbt-launch.jar "$@"
