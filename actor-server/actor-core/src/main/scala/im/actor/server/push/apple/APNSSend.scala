@@ -1,6 +1,7 @@
 package im.actor.server.push.apple
 
 import akka.actor.ActorSystem
+import akka.event.Logging
 import com.google.protobuf.wrappers.{ Int32Value, StringValue }
 import com.relayrides.pushy.apns.PushNotificationResponse
 import com.relayrides.pushy.apns.util.{ SimpleApnsPushNotification, TokenUtil }
@@ -18,9 +19,14 @@ trait APNSSend {
 
     val token = BitVector(creds.token.toByteArray).toHex
 
+    system.log.debug("Searching topic for Creds: {}", creds)
+
+    val isVoip = if (creds.isVoip) creds.isVoip else false
+    system.log.debug("Is Voip: {}", isVoip)
+
     val topic: String = (creds.apnsKey, creds.bundleId) match {
       case (_, Some(bundleId)) ⇒ bundleId.value
-      case (Some(key), _)      ⇒ ApplePushExtension(system).apnsBundleId(creds.isVoip).get(key.value).orNull
+      case (Some(key), _)      ⇒ ApplePushExtension(system).apnsBundleId(isVoip).get(key.value).orNull
       case _ ⇒
         system.log.warning("Wrong creds format on sending notification. Creds: {}", creds)
         null
