@@ -35,7 +35,7 @@ trait APNSSend {
     val sanitizedToken = TokenUtil.sanitizeTokenString(token)
     system.log.debug(s"Sending APNS, token: {}, key: {}, isVoip: {}, topic: {}, payload: $payload", sanitizedToken, creds.apnsKey, creds.isVoip, topic)
 
-    val notification = new SimpleApnsPushNotification(sanitizedToken, null, payload)
+    val notification = new SimpleApnsPushNotification(sanitizedToken, topic, payload)
 
     val listener = listeners.getOrElseUpdate(token, new PushFutureListener(userId, creds, extractCredsId(creds))(system))
     client.sendNotification(notification).addListener(listener)
