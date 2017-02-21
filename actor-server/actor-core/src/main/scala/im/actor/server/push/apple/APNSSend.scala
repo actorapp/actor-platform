@@ -17,23 +17,24 @@ trait APNSSend {
 
   protected def sendNotification(payload: String, creds: ApplePushCredentials, userId: Int)(implicit client: ApplePushExtension#Client, system: ActorSystem): NFuture[PushNotificationResponse[SimpleApnsPushNotification]] = {
 
+    val log = Logging(system, getClass)
     val token = BitVector(creds.token.toByteArray).toHex
 
-    system.log.debug("Searching topic for Creds: {}", creds)
-
-    val isVoip = if (creds.isVoip) creds.isVoip else false
-    system.log.debug("Is Voip: {}", isVoip)
+    log.debug(
+      s"Searching topic for ApnsKey: {}, BundleId: {}, AuthId: {}, IsVoip: {}, token: $token",
+      creds.apnsKey, creds.bundleId, creds.authId, creds.isVoip
+    )
 
     val topic: String = (creds.apnsKey, creds.bundleId) match {
       case (_, Some(bundleId)) ⇒ bundleId.value
-      case (Some(key), _)      ⇒ ApplePushExtension(system).apnsBundleId(isVoip).get(key.value).orNull
+      case (Some(key), _)      ⇒ ApplePushExtension(system).apnsBundleId(creds.isVoip).get(key.value).orNull
       case _ ⇒
-        system.log.warning("Wrong creds format on sending notification. Creds: {}", creds)
+        log.warning("Wrong creds format on sending notification. Creds: {}", creds)
         null
     }
 
     val sanitizedToken = TokenUtil.sanitizeTokenString(token)
-    system.log.debug(s"Sending APNS, token: {}, key: {}, isVoip: {}, topic: {}, payload: $payload", sanitizedToken, creds.apnsKey, creds.isVoip, topic)
+    log.debug(s"Sending APNS, token: {}, key: {}, isVoip: {}, topic: {}, payload: $payload", sanitizedToken, creds.apnsKey, creds.isVoip, topic)
 
     val notification = new SimpleApnsPushNotification(sanitizedToken, null, payload)
 
