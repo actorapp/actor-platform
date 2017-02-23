@@ -12,7 +12,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Layout;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
-import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
@@ -48,6 +47,7 @@ import im.actor.sdk.view.TintDrawable;
 import im.actor.sdk.view.emoji.keyboard.emoji.Emoji;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
+import static im.actor.sdk.util.ActorSDKMessenger.users;
 
 public class DialogView extends ListItemBackgroundView<Dialog, DialogView.DialogLayout> {
 
@@ -80,7 +80,7 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
     private int bindedGid;
     private ValueChangedListener<Boolean> privateTypingListener;
     private ValueChangedListener<int[]> groupTypingListener;
-    private boolean isPrivateTyping;
+    private boolean isTyping;
 
     public DialogView(Context context) {
         super(context);
@@ -176,9 +176,7 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
             //
             // Content
             //
-
-            // TODO: Implement Group Typing
-            if (isPrivateTyping) {
+            if (isTyping) {
                 canvas.drawText(typingText, Screen.dp(72), Screen.dp(54), textActivePaint);
             } else {
                 if (layout.getTextLayout() != null) {
@@ -225,24 +223,28 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
 
         if (dialog.getPeer().getPeerType() == PeerType.PRIVATE) {
             bindedUid = dialog.getPeer().getPeerId();
-
             ValueModel<Boolean> typingModel = messenger().getTyping(bindedUid);
-
             privateTypingListener = (val, Value) -> {
-                isPrivateTyping = val;
+                typingText = messenger().getFormatter().formatTyping();
+                isTyping = val;
                 invalidate();
             };
             typingModel.subscribe(privateTypingListener, false);
-            isPrivateTyping = typingModel.get();
+            isTyping = typingModel.get();
         } else if (dialog.getPeer().getPeerType() == PeerType.GROUP) {
             bindedGid = dialog.getPeer().getPeerId();
-            isPrivateTyping = false;
             groupTypingListener = (val, Value) -> {
-               
+                isTyping = val.length > 0;
+                if (val.length == 1) {
+                    typingText = messenger().getFormatter().formatTyping(users().get(val[0]).getName().get());
+                } else if(val.length > 1) {
+                    typingText = messenger().getFormatter().formatTyping(val.length);
+                }
+                invalidate();
             };
             messenger().getGroupTyping(bindedGid).subscribe(groupTypingListener);
         } else {
-            isPrivateTyping = false;
+            isTyping = false;
         }
     }
 
@@ -278,7 +280,7 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
             avatarBorder.setStrokeWidth(1);
             avatarTextColor = createTextPaint(Fonts.regular(), 20, Color.WHITE);
             avatarTextColor.setTextAlign(Paint.Align.CENTER);
-            typingText = messenger().getFormatter().formatTyping();
+
 
             stateSent = new TintDrawable(context.getResources().getDrawable(R.drawable.msg_check_1),
                     style.getDialogsStateSentColor());
@@ -440,25 +442,6 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
         }
     }
 
-//    private CharSequence handleEmoji(CharSequence... args) {
-//        StringBuilder builder = new StringBuilder();
-//        for (CharSequence seq : args) {
-////            if (SmileProcessor.containsEmoji(seq)) {
-////                if (emoji().isLoaded()) {
-////                    builder.append(emoji().processEmojiCompatMutable(seq, SmileProcessor.CONFIGURATION_BUBBLES));
-////                } else {
-////                    builder.append(seq);
-////                }
-////                builder.append(Emoji.replaceEmoji(seq, textPaint.getFontMetricsInt(), Screen.dp(20), true));
-////            } else {
-////                builder.append(seq);
-////            }
-//
-//            builder.append(Emoji.replaceEmoji(seq, textPaint.getFontMetricsInt(), Screen.dp(20), true));
-//        }
-//        return builder;
-//    }
-
     private CharSequence buildShortName(String name) {
         if (name == null) {
             name = "?";
@@ -489,7 +472,7 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
 
         if (privateTypingListener != null) {
             messenger().getTyping(bindedUid).unsubscribe(privateTypingListener);
-            isPrivateTyping = false;
+            isTyping = false;
             privateTypingListener = null;
         }
 
