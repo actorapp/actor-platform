@@ -237,10 +237,10 @@ public class DialogView extends ListItemBackgroundView<Dialog, DialogView.Dialog
         } else if (dialog.getPeer().getPeerType() == PeerType.GROUP) {
             bindedGid = dialog.getPeer().getPeerId();
             isPrivateTyping = false;
-//            groupTypingListener = (val, Value) -> {
-//                // TODO: Implement Group Typing
-//            };
-//            messenger().getGroupTyping(bindedGid).subscribe(groupTypingListener);
+            groupTypingListener = (val, Value) -> {
+               
+            };
+            messenger().getGroupTyping(bindedGid).subscribe(groupTypingListener);
         } else {
             isPrivateTyping = false;
         }
