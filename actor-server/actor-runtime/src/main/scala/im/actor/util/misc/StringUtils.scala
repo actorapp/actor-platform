@@ -12,7 +12,7 @@ object StringUtils {
 
   private val encoder = Charset.forName("US-ASCII").newEncoder()
 
-  private val usernamePattern = Pattern.compile("""^[0-9a-zA-Z_]{3,32}""", Pattern.UNICODE_CHARACTER_CLASS)
+  private val usernamePattern = Pattern.compile("""^[0-9a-zA-Z\u4e00-\u9fa5_]{1,32}""", Pattern.UNICODE_CHARACTER_CLASS)
 
   private val sha256Pattern = Pattern.compile("^[A-Fa-f0-9]{64}$", Pattern.UNICODE_CHARACTER_CLASS)
 

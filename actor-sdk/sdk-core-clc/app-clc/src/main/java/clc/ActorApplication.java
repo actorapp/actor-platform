@@ -28,25 +28,28 @@ import java.util.prefs.BackingStoreException;
 
 public class ActorApplication {
 
-    private String url;
+
     private String username;
+    private String nickname;
     private String password;
     int myNumber = 1;
     public ConfigurationBuilder builder;
     private static final Logger logger = LoggerFactory.getLogger(ClcApplication.class);
-
     private static int randomSeed;
     static ClcMessenger messenger;
+    private ActorApplicationCallback callback;
 
 
-    public ActorApplication(String url,String username,String password,ConfigurationBuilder builder)
+    public ActorApplication(String username,String nickname ,String password,ConfigurationBuilder builder,ActorApplicationCallback callback)
     {
-        this.url = url;
+
         this.username = username;
         this.password = password;
+        this.nickname = nickname;
 
 
         this.builder = builder;
+        this.callback = callback;
 
 
 
@@ -63,11 +66,12 @@ public class ActorApplication {
 
 
 
+
 //        messenger.resetAuth();
-        sendUserName("wangc","111");
+        sendUserName(username,password);
     }
 
-    public void sendUserName(String username,String password)
+    private void sendUserName(String username,String password)
     {
         messenger.requestStartUserNameAuth(username).start(new CommandCallback<AuthState>() {
             @Override
@@ -83,7 +87,7 @@ public class ActorApplication {
         });
     }
 
-    public void sendPassword(String password) {
+    private void sendPassword(String password) {
         try {
             messenger.validatePassword(password).start(new CommandCallback<AuthState>() {
                 @Override
@@ -94,12 +98,22 @@ public class ActorApplication {
                         signUp(username, Sex.MALE,null, password);
                     } else if(res == AuthState.LOGGED_IN){
                         logger.info("LOGGED_IN");
+                        callback.SignInFinished(messenger);
                     }
 
                 }
 
                 @Override
                 public void onError(Exception e) {
+                    RpcException rpcE = (RpcException)e;
+                    if(rpcE.getTag().equals("USERNAME_UNOCCUPIED"))
+                    {
+                        signUp(username, Sex.MALE,null, password);
+                    }
+                    else
+                    {
+                        callback.Error(e);
+                    }
 
                 }
             });
@@ -108,20 +122,26 @@ public class ActorApplication {
         }
     }
 
-    public void signUp(final String name, Sex sex, String avatarPath, String password) {
-        messenger.signUp(name, sex, avatarPath,password).start(new CommandCallback<AuthState>() {
+    private void signUp(final String name, Sex sex, String avatarPath, String password) {
+        messenger.signUp(nickname, sex, avatarPath,password).start(new CommandCallback<AuthState>() {
             @Override
             public void onResult(AuthState res) {
                 if (res == AuthState.LOGGED_IN){
                     logger.info("LOGGED_IN");
+                    callback.SignInFinished(messenger);
 //                    sendMessage("+989150000" + (myNumber + 20), "seed: " + randomSeed + "," + myNumber);
                 }else if(res == AuthState.SIGN_UP){
                     logger.info("SIGN_UP");
+                    callback.SignInFinished(messenger);
                 }
             }
 
             @Override
             public void onError(Exception e) {
+                RpcException rpcE = (RpcException)e;
+                if(rpcE.getTag().equals("NICKNAME_BUSY")) {
+                    callback.SignUpFinished(messenger);
+                }
 
             }
         });
