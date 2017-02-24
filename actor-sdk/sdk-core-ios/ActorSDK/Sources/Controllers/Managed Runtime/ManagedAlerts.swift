@@ -13,7 +13,7 @@ public extension UIViewController {
         closure(s)
         
         let controller = UIAlertController(title: AALocalized(s.title), message: AALocalized(s.message), preferredStyle: .actionSheet)
-            
+        
         for i in s.actions {
             controller.addAction(UIAlertAction(title: AALocalized(i.title), style: i.isDestructive ? UIAlertActionStyle.destructive : UIAlertActionStyle.default, handler: { (c) -> Void in
                 i.closure()
@@ -38,8 +38,8 @@ public extension UIViewController {
 open class AAAlertSetting {
     
     open var cancel: String!
-    open var title: String!
-    open var message: String!
+    open var title: String! = ""
+    open var message: String! = ""
     
     fileprivate var actions = [AlertActions]()
     

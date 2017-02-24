@@ -8977,6 +8977,29 @@
           <ref role="NX6Kv" node="3iWZ2kgyrUz" resolve="groupPeer" />
         </node>
       </node>
+      <node concept="2m6fVq" id="5uZ_hMrfjip" role="2m5mJr">
+        <property role="TrG5h" value="JoinGroupByGroupId" />
+        <node concept="2m7Kf5" id="5uZ_hMrfjxR" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupId" />
+          <node concept="wb0Ql" id="5WsZrvigLlo" role="2m7DVh">
+            <ref role="wb18D" node="5qm50Y0e3uO" resolve="groupId" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="5uZ_hMrfjiq" role="NuuwV">
+          <property role="Nu42W" value="AE11" />
+        </node>
+        <node concept="2m1Rp1" id="5uZ_hMrfjxY" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_W" resolve="Seq" />
+        </node>
+        <node concept="NXeRC" id="5uZ_hMrfk4v" role="1GBnQ6">
+          <property role="NXePf" value="Join group by peer without a necessity of invite" />
+        </node>
+        <node concept="NX1gA" id="5uZ_hMrfkzU" role="1GBnQ6">
+          <property role="NX6R2" value="Groups peer" />
+          <ref role="NX6Kv" node="5uZ_hMrfjxR" resolve="groupId" />
+        </node>
+      </node>
       <node concept="NvWBy" id="3c_gimmPEMd" role="2m5mJr">
         <property role="NvWrd" value="Administration" />
       </node>
@@ -18504,17 +18527,6 @@
     <property role="u_6dX" value="0.1" />
     <property role="3BlOl8" value="im.actor.extension.api" />
     <property role="WhUdw" value="im.actor.extension.api" />
-    <node concept="2m5mJO" id="64HNz1Ipac2" role="2m5lHt">
-      <node concept="2m5naR" id="64HNz1Ipac6" role="2m5mJr">
-        <property role="TrG5h" value="test" />
-        <node concept="2m7Kf5" id="64HNz1Ipac9" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <node concept="2m5mGg" id="64HNz1Ipacd" role="2m7DVh">
-            <ref role="2m5mJy" node="GBscvBB6fx" resolve="Peer" />
-          </node>
-        </node>
-      </node>
-    </node>
   </node>
 </model>
 

@@ -4,10 +4,12 @@ import android.os.Bundle;
 
 import im.actor.core.entity.Peer;
 import im.actor.sdk.controllers.BaseFragment;
+import im.actor.sdk.controllers.tools.AttachOpenCloseCallback;
 
 public abstract class AbsAttachFragment extends BaseFragment {
 
     private Peer peer;
+    protected AttachOpenCloseCallback attachListener;
 
     public AbsAttachFragment(Peer peer) {
         Bundle bundle = new Bundle();
@@ -21,6 +23,10 @@ public abstract class AbsAttachFragment extends BaseFragment {
 
     public Peer getPeer() {
         return peer;
+    }
+
+    public void setAttachListener(AttachOpenCloseCallback attachListener) {
+        this.attachListener = attachListener;
     }
 
     @Override

@@ -43,12 +43,14 @@ import AudioToolbox.AudioServices
     }
     
     
-    func onNotification(with messenger: ACMessenger!, withTopNotifications topNotifications: JavaUtilList!, withMessagesCount messagesCount: jint, withConversationsCount conversationsCount: jint) {
+    func onNotification(with messenger: ACMessenger!, withTopNotifications topNotifications: JavaUtilListProtocol!, withMessagesCount messagesCount: jint, withConversationsCount conversationsCount: jint) {
         // Not Supported
+        print("onNotification")
     }
     
-    func onUpdateNotification(with messenger: ACMessenger!, withTopNotifications topNotifications: JavaUtilList!, withMessagesCount messagesCount: jint, withConversationsCount conversationsCount: jint) {
+    func onUpdateNotification(with messenger: ACMessenger!, withTopNotifications topNotifications: JavaUtilListProtocol!, withMessagesCount messagesCount: jint, withConversationsCount conversationsCount: jint) {
         // Not Supported
+        print("onUpdateNotification")
     }
     
     func hideAllNotifications() {

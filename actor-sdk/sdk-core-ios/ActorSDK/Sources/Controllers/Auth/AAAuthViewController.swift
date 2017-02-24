@@ -14,8 +14,8 @@ open class AAAuthViewController: AAViewController {
         
         nextBarButton.setTitle(AALocalized("NavigationNext"), for: UIControlState())
         nextBarButton.setTitleColor(UIColor.white, for: UIControlState())
-        nextBarButton.setBackgroundImage(Imaging.roundedImage(UIColor(red: 94, green: 142, blue: 192), radius: 4), for: UIControlState())
-        nextBarButton.setBackgroundImage(Imaging.roundedImage(UIColor(red: 94, green: 142, blue: 192).alpha(0.7), radius: 4), for: .highlighted)
+        nextBarButton.setBackgroundImage(Imaging.roundedImage(ActorSDK.sharedActor().style.nextBarColor, radius: 4), for: UIControlState())
+        nextBarButton.setBackgroundImage(Imaging.roundedImage(ActorSDK.sharedActor().style.nextBarColor.alpha(0.7), radius: 4), for: .highlighted)
         nextBarButton.addTarget(self, action: #selector(AAAuthViewController.nextDidTap), for: .touchUpInside)
 
         view.addSubview(nextBarButton)

@@ -1,5 +1,6 @@
 package im.actor.server.cli
 
+import java.lang.Throwable
 import java.net.InetAddress
 
 import akka.actor.{ ActorPath, ActorSystem }
@@ -17,6 +18,7 @@ import scala.reflect.ClassTag
 private case class Config(
   command:       String         = "help",
   createBot:     CreateBot      = CreateBot(),
+  getBotToken:   GetBotToken    = GetBotToken(),
   updateIsAdmin: UpdateIsAdmin  = UpdateIsAdmin(),
   httpToken:     HttpToken      = HttpToken(),
   key:           Key            = Key(),
@@ -37,7 +39,15 @@ private[cli] case class CreateBot(
   override type Response = CreateBotResponse
 }
 
+private[cli] case class GetBotToken(
+  botUserId: Int = 0
+) extends Request {
+  override type Response = BotToken
+}
+
 private[cli] case class CreateBotResponse(token: String)
+
+private[cli] case class BotToken(token: String)
 
 private[cli] case class UpdateIsAdmin(
   userId:  Int     = 0,
@@ -61,6 +71,7 @@ private case class HttpTokenCreateResponse(token: String)
 private object Commands {
   val Help = "help"
   val CreateBot = "create-bot"
+  val GetBotToken = "get-bot-token"
   val AdminGrant = "admin-grant"
   val AdminRevoke = "admin-revoke"
   val MigrateUserSequence = "migrate-user-sequence"
@@ -89,6 +100,18 @@ object ActorCli extends App {
         c.copy(createBot = c.createBot.copy(isAdmin = true))
       }
     )
+
+    cmd(Commands.GetBotToken) action { (_, c) ⇒
+      c.copy(command = Commands.GetBotToken)
+    } children (
+      opt[String]("host") abbr "h" optional () action { (x, c) ⇒
+        c.copy(host = Some(x))
+      },
+      opt[Int]("botUserId") abbr "u" required () action { (x, c) ⇒
+        c.copy(getBotToken = c.getBotToken.copy(botUserId = x))
+      }
+    )
+
     cmd(Commands.AdminGrant) action { (_, c) ⇒
       c.copy(command = Commands.AdminGrant)
     } children (
@@ -155,6 +178,8 @@ object ActorCli extends App {
         cmd(FastFuture.successful(parser.showUsage))
       case Commands.CreateBot ⇒
         cmd(handlers.createBot(config.createBot))
+      case Commands.GetBotToken ⇒
+        cmd(handlers.getBotToken(config.getBotToken))
       case Commands.AdminGrant | Commands.AdminRevoke ⇒
         cmd(handlers.updateIsAdmin(config.updateIsAdmin))
       case Commands.MigrateUserSequence ⇒
@@ -167,9 +192,13 @@ object ActorCli extends App {
         }
     }
 
-    def cmd(f: Future[Unit], timeout: Duration = 10.seconds): Unit = {
+    def cmd(f: Future[Unit], timeout: Duration = 60.seconds): Unit = {
       try {
         Await.result(f, timeout)
+      } catch {
+        case e: Exception ⇒ {
+          e.printStackTrace()
+        }
       } finally {
         handlers.shutdown()
       }
@@ -197,7 +226,7 @@ final class CliHandlers(host: Option[String]) extends BotHandlers with UsersHand
 
   protected implicit lazy val ec: ExecutionContext = system.dispatcher
 
-  protected implicit val timeout: Timeout = Timeout(10.seconds)
+  protected implicit val timeout: Timeout = Timeout(60.seconds)
 
   def shutdown(): Unit = {
     system.terminate()

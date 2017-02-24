@@ -38,6 +38,7 @@ open class ActorApplicationDelegate: ActorSDKDelegateDefault, UIApplicationDeleg
     }
     
     open func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) {
+        NSLog("ActorApplicationDelegate Receive notification 1...")
         ActorSDK.sharedActor().application(application, didReceiveRemoteNotification: userInfo)
     }
     
@@ -46,15 +47,18 @@ open class ActorApplicationDelegate: ActorSDKDelegateDefault, UIApplicationDeleg
     }
     
     open func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        let tokenString = "\(deviceToken)".replace(" ", dest: "").replace("<", dest: "").replace(">", dest: "")
-        ActorSDK.sharedActor().pushRegisterToken(tokenString)
+        let tokenString = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
+        NSLog("Registrando o servico de notificacoes para o token \(tokenString)")
+        ActorSDK.sharedActor().pushRegisterToken(tokenString.replace(" ", dest: "").replace("<", dest: "").replace(">", dest: ""))
     }
     
     open func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        NSLog("ActorApplicationDelegate Receive notification 2...")
         ActorSDK.sharedActor().application(application, didReceiveRemoteNotification: userInfo, fetchCompletionHandler: completionHandler)
     }
     
     open func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        NSLog("ActorApplicationDelegate Receive notification 3...")
         ActorSDK.sharedActor().application(application, performFetchWithCompletionHandler: completionHandler)
     }
     

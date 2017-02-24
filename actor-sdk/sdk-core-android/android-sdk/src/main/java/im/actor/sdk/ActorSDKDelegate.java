@@ -1,5 +1,6 @@
 package im.actor.sdk;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 
@@ -211,6 +212,9 @@ public interface ActorSDKDelegate {
      * @return RawUpdatesHandler actor
      */
     RawUpdatesHandler getRawUpdatesHandler();
+
+
+    Class getNotificationIntentClass();
 
     /**
      * Override/add new messages view holders

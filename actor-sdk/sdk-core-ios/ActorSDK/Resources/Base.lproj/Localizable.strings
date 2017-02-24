@@ -377,6 +377,12 @@
 
 "GroupMemberKickAction" = "Kick";
 
+"ChannelMemberKick" = "Kick from Channel";
+
+"ChannelMemberKickMessage" = "Are you sure you want to kick {name} from this channel?";
+
+"ChannelMemberKickAction" = "Kick";
+
 "GroupMemberWrite" = "Write a Message";
 
 "GroupMemberCall" = "Phone Call";
@@ -699,6 +705,11 @@
 
 "ActionDeleteMessage" = "Are you sure want to delete chat?";
 
+"ActionDeleteGroupTitle" = "Remove Group";
+
+"ActionDeleteChannelTitle" = "Remove Channel";
+
+"ActionDeleteChatlTitle" = "Remove Chat";
 
 "ActionDeleteChannel" = "Delete Channel";
 
@@ -722,6 +733,8 @@
 "ActionDeleteAndExitMessage" = "Are you sure want to exit group and delete all messages?";
 
 "ActionDeleteAndExitAction" = "Exit";
+
+"ActionDeleteAndExitNotAllowed" = "You are not allowed to leave this group";
 
 
 
@@ -752,3 +765,4 @@
 "ErrorUnableToJoin" = "Unable to join to group";
 
 "ErrorUnableToCall" = "Unable to call this number";
+

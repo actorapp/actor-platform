@@ -49,7 +49,7 @@ class AAListProcessor: NSObject, ARListProcessor {
         self.peer = peer
     }
     
-    func process(withItems items: JavaUtilList, withPrevious previous: Any?) -> Any? {
+    func process(withItems items: JavaUtilListProtocol, withPrevious previous: Any?) -> Any? {
         
         var objs = [ACMessage]()
         var indexes = [jlong: Int]()

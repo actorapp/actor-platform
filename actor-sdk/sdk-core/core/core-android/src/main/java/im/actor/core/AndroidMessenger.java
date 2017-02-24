@@ -33,6 +33,7 @@ import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.SearchEntity;
 import im.actor.core.entity.content.FastThumb;
+import im.actor.core.modules.ModuleContext;
 import im.actor.core.network.NetworkState;
 import im.actor.core.utils.AppStateActor;
 import im.actor.core.utils.IOUtils;
@@ -40,6 +41,7 @@ import im.actor.core.utils.ImageHelper;
 import im.actor.core.viewmodel.AppStateVM;
 import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.GalleryVM;
+import im.actor.runtime.Log;
 import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorCreator;
@@ -482,7 +484,9 @@ public class AndroidMessenger extends im.actor.core.Messenger {
 
                 @Override
                 public void onItemTouched(Dialog item) {
-
+                    Log.d(AndroidMessenger.class.getName(), "Title"+item.getDialogTitle());
+                    Log.d(AndroidMessenger.class.getName(), "IsBot"+item.isBot());
+                    Log.d(AndroidMessenger.class.getName(), "IsChannel"+item.isChannel());
                 }
             });
         }
@@ -553,6 +557,11 @@ public class AndroidMessenger extends im.actor.core.Messenger {
 
     public void startImport() {
         modules.getContactsModule().startImport();
+
     }
 
+    @Override
+    public void onLoggedIn() {
+        super.onLoggedIn();
+    }
 }

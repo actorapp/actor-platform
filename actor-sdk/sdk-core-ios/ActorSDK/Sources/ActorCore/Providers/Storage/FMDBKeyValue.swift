@@ -53,7 +53,7 @@ import Foundation
         }
     }
     
-    func addOrUpdateItems(_ values: JavaUtilList!) {
+    func addOrUpdateItems(_ values: JavaUtilListProtocol!) {
         checkTable()
         
         db.beginTransaction()
@@ -101,7 +101,7 @@ import Foundation
         return result!.toJavaBytes()
     }
     
-    func loadAllItems() -> JavaUtilList! {
+    func loadAllItems() -> JavaUtilListProtocol! {
         checkTable()
         
         let res = JavaUtilArrayList()!
@@ -115,7 +115,7 @@ import Foundation
         return res
     }
     
-    func loadItems(_ keys: IOSLongArray!) -> JavaUtilList! {
+    func loadItems(_ keys: IOSLongArray!) -> JavaUtilListProtocol! {
         checkTable()
         
         // Converting to NSNumbers

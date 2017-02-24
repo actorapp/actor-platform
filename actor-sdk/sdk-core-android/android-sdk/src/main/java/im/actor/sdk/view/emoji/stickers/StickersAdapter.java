@@ -16,14 +16,14 @@ import im.actor.runtime.mvvm.Value;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.sdk.controllers.ActorBinder;
 import im.actor.sdk.util.Screen;
-import im.actor.sdk.view.emoji.keyboard.emoji.EmojiKeyboard;
+import im.actor.sdk.view.emoji.keyboard.emoji.EmojiView;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
 public class StickersAdapter extends RecyclerView.Adapter<StickersAdapter.StickerViewHolder> {
 
     private ArrayList<Sticker> stickers = new ArrayList<>();
-    private EmojiKeyboard keyboard;
+    private EmojiView keyboard;
     private PacksAdapter packsAdapter;
     private RecyclerView recyclerView;
     private ActorBinder binder;
@@ -31,7 +31,7 @@ public class StickersAdapter extends RecyclerView.Adapter<StickersAdapter.Sticke
 
     int topPack = -1;
 
-    public StickersAdapter(EmojiKeyboard keyboard, RecyclerView recyclerView) {
+    public StickersAdapter(EmojiView keyboard, RecyclerView recyclerView) {
         this.keyboard = keyboard;
         this.recyclerView = recyclerView;
         binder = new ActorBinder();

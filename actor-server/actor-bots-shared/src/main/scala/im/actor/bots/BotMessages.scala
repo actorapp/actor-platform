@@ -374,6 +374,21 @@ object BotMessages {
     @beanGetter userId: Int
   ) extends ResponseBody
 
+  @key("BotToken")
+  final case class BotToken(
+    @beanGetter token: String
+  ) extends ResponseBody
+
+  @key("GetBotToken")
+  final case class GetBotToken(
+    @beanGetter botUserId: Int
+  ) extends RequestBody {
+    override type Response = BotToken
+    override val service = Services.Bots
+
+    override def readResponse(obj: Js.Obj) = readJs[Response](obj)
+  }
+
   @key("RegisterHook")
   final case class RegisterHook(@beanGetter name: String) extends RequestBody {
     override type Response = Container[String]

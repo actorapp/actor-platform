@@ -17,6 +17,7 @@
 		34279C7FB8E40393FEAC939F6474BE2E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 148837AEB986AFDE519BEBD3686AB073 /* main.m */; };
 		A88F4C381ED2B98E99A68937 /* Pods_ActorApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A275ED497CA570AD01FB66A7 /* Pods_ActorApp.framework */; };
 		DFE814D1E12D2647AF2DBA3F76405F06 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A521812020DAAAA325065ADC32B7DEB /* AppDelegate.swift */; };
+		F153992B1DF83A0900C67C7D /* AppCocoaHttpRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = F153992A1DF83A0900C67C7D /* AppCocoaHttpRuntime.swift */; };
 		F45B35E37C8CB7140417EA87AAFEFDA2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 13C57576F07AC8694C15B51DFDFDC4C6 /* InfoPlist.strings */; };
 /* End PBXBuildFile section */
 
@@ -60,6 +61,7 @@
 		06E7B24E1C109C4B0090660C /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		148837AEB986AFDE519BEBD3686AB073 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = "Supporting Files/main.m"; sourceTree = "<group>"; };
 		15F89F101C21317400776ACD /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		1A5742321DAD4CFF0064C87A /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = ActorSDK/Resources/Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		2A521812020DAAAA325065ADC32B7DEB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2ACD33B73078EB46A22D2D4C45BF1E6E /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Resources/Images.xcassets; sourceTree = "<group>"; };
 		404790AFDFFBD618E6175093 /* Pods-ActorApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.release.xcconfig"; sourceTree = "<group>"; };
@@ -71,6 +73,10 @@
 		9B2EEB8CEF2E94D58EA09D9D /* Pods-ActorApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.debug.xcconfig"; sourceTree = "<group>"; };
 		A275ED497CA570AD01FB66A7 /* Pods_ActorApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ActorApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE8D1D9859D2C4D4C7EC7AD74BB65F0E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = "Supporting Files/Info.plist"; sourceTree = "<group>"; };
+		F105D04D1E37F58600C722F6 /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
+		F135688B1E4DEA8200D4BA2F /* PushKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PushKit.framework; path = System/Library/Frameworks/PushKit.framework; sourceTree = SDKROOT; };
+		F153992A1DF83A0900C67C7D /* AppCocoaHttpRuntime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppCocoaHttpRuntime.swift; sourceTree = "<group>"; };
+		F175DF8A1E168C8F005BCF1A /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		F76A77E9428111C798E69B43EA06A281 /* ActorApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = ActorApp.entitlements; path = "Supporting Files/ActorApp.entitlements"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -121,6 +127,8 @@
 		86C48777C0FD262E78F8BEC9253C9914 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F135688B1E4DEA8200D4BA2F /* PushKit.framework */,
+				F105D04D1E37F58600C722F6 /* NotificationCenter.framework */,
 				06E7B24E1C109C4B0090660C /* MapKit.framework */,
 				06CE898D1BD841D0005A5530 /* SystemConfiguration.framework */,
 				06230F031BC7FF2F00A4807B /* ActorSDK.xcodeproj */,
@@ -153,6 +161,7 @@
 				75DC9F2DE93F0AFA6A85B53C4B694EAE /* Resources */,
 				1ACEA023B930E6F261DAC0A6BDB410C1 /* Supporting Files */,
 				2A521812020DAAAA325065ADC32B7DEB /* AppDelegate.swift */,
+				F153992A1DF83A0900C67C7D /* AppCocoaHttpRuntime.swift */,
 			);
 			path = ActorApp;
 			sourceTree = "<group>";
@@ -160,6 +169,7 @@
 		D873D85572C6C400293E0DF69DBA58DD = {
 			isa = PBXGroup;
 			children = (
+				1A5742311DAD4CFF0064C87A /* Localizable.strings */,
 				D0310FF36675D7510E52D86CDA8E2C6C /* ActorApp */,
 				86C48777C0FD262E78F8BEC9253C9914 /* Frameworks */,
 				C83A7EEB1948C38ECEFC1D330C57A7B1 /* Products */,
@@ -183,6 +193,8 @@
 				AAA022A9BD9362E00B0F9BDE /* [CP] Embed Pods Frameworks */,
 				EFFD470B63C1BB419D199F19 /* [CP] Copy Pods Resources */,
 				851EE1A34619AE6677649A27 /* Embed Pods Frameworks */,
+				1A5742381DAD4FD80064C87A /* 📦 Embeded pods framework */,
+				1A5742391DAD50070064C87A /* 📦 Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -201,18 +213,22 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0700;
-				LastUpgradeCheck = 0730;
+				LastUpgradeCheck = 0820;
 				ORGANIZATIONNAME = "Actor LLC";
 				TargetAttributes = {
 					EA6B7348F8364542DDD264F741AAAA19 = {
 						CreatedOnToolsVersion = 6.4;
-						DevelopmentTeam = HVJR44Y5B6;
+						DevelopmentTeam = HA23Y6A5LW;
 						LastSwiftMigration = 0800;
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.Maps.iOS = {
 								enabled = 1;
 							};
 							com.apple.Push = {
+								enabled = 1;
+							};
+							com.apple.SafariKeychain = {
 								enabled = 1;
 							};
 							com.apple.iCloud = {
@@ -233,6 +249,7 @@
 				pt,
 				ru,
 				es,
+				"pt-BR",
 			);
 			mainGroup = D873D85572C6C400293E0DF69DBA58DD;
 			productRefGroup = C83A7EEB1948C38ECEFC1D330C57A7B1 /* Products */;
@@ -288,6 +305,34 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# Initialization of Crashlytics\n\n# Getting build secret\nBUILD_SECRET=$FABRIC_BUILD_SECRET\n\n# Getting api key from Info.plist\nAPI_KEY=$(/usr/libexec/PlistBuddy \"${PRODUCT_SETTINGS_PATH}\" -c \"Print :Fabric:APIKey\")\n\nif [ -n \"$BUILD_SECRET\" ]; then\n    if [[ $? -ne 0 ]]; then\n        echo \"Crashlytics not installed, skipping\"\n    else\n        if [ -n \"$API_KEY\" ]; then\n            echo \"Uploading symbols to crashlytics\" \"$API_KEY\" \"$BUILD_SECRET\"\n            \"${PODS_ROOT}/Fabric/Fabric.framework/run\" \"$API_KEY\" \"$BUILD_SECRET\"\n        else\n            echo \"Crashlytics not installed, skipping\"\n        fi\n    fi\nelse\n    echo \"Crashlytics build secret not set, skipping\"\nfi";
+		};
+		1A5742381DAD4FD80064C87A /* 📦 Embeded pods framework */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "📦 Embeded pods framework";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp-frameworks.sh\"";
+		};
+		1A5742391DAD50070064C87A /* 📦 Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "📦 Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp-resources.sh\"";
 		};
 		712B269FC35BFB6C85DF769C /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -358,6 +403,7 @@
 			files = (
 				DFE814D1E12D2647AF2DBA3F76405F06 /* AppDelegate.swift in Sources */,
 				34279C7FB8E40393FEAC939F6474BE2E /* main.m in Sources */,
+				F153992B1DF83A0900C67C7D /* AppCocoaHttpRuntime.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -380,9 +426,18 @@
 				6238B42B2462DBE201B457C54CA819D7 /* ru */,
 				6EE6E889CD9BA13B5A0828221608DB9A /* zh-Hans */,
 				15F89F101C21317400776ACD /* es */,
+				F175DF8A1E168C8F005BCF1A /* pt-BR */,
 			);
 			name = InfoPlist.strings;
 			path = Resources/Localizable;
+			sourceTree = "<group>";
+		};
+		1A5742311DAD4CFF0064C87A /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1A5742321DAD4CFF0064C87A /* Base */,
+			);
+			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -392,16 +447,17 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9B2EEB8CEF2E94D58EA09D9D /* Pods-ActorApp.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_MODULES_AUTOLINK = YES;
 				CODE_SIGN_ENTITLEMENTS = "ActorApp/Supporting Files/ActorApp.entitlements";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Eric Alves Nascimento (V243ZCY9W5)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Eric Alves Nascimento (V243ZCY9W5)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				DEVELOPMENT_TEAM = HA23Y6A5LW;
 				ENABLE_BITCODE = NO;
 				FABRIC_BUILD_SECRET = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -412,14 +468,15 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = "ActorApp/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				J2OBJC_VERSION = 0.9.8.2.1;
+				J2OBJC_VERSION = 1.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = im.actor.sdk.dev;
+				PRODUCT_BUNDLE_IDENTIFIER = br.com.diegosilva.xlotomessenger;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "1d259fb8-c16c-4d75-83c4-f2645bc3b931";
+				PROVISIONING_PROFILE_SPECIFIER = "xloto desenvolvimento";
 				SDK_PATH = "../actor-sdk";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -432,6 +489,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -441,8 +499,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -471,15 +531,16 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 404790AFDFFBD618E6175093 /* Pods-ActorApp.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_MODULES_AUTOLINK = YES;
 				CODE_SIGN_ENTITLEMENTS = "ActorApp/Supporting Files/ActorApp.entitlements";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Eric Alves Nascimento (HA23Y6A5LW)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Eric Alves Nascimento (HA23Y6A5LW)";
+				DEVELOPMENT_TEAM = HA23Y6A5LW;
 				ENABLE_BITCODE = NO;
 				FABRIC_BUILD_SECRET = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -490,16 +551,17 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = "ActorApp/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				J2OBJC_VERSION = 0.9.8.2.1;
+				J2OBJC_VERSION = 1.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = im.actor.sdk.dev;
+				PRODUCT_BUNDLE_IDENTIFIER = br.com.diegosilva.xlotomessenger;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "a33aacff-7974-42a3-b66d-ddc7c940bc87";
+				PROVISIONING_PROFILE_SPECIFIER = provision_xloto_distribution;
 				SDK_PATH = "../actor-sdk";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 3.0;
 				USER_HEADER_SEARCH_PATHS = "";
 			};
@@ -509,6 +571,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -518,8 +581,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";

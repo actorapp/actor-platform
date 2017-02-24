@@ -25,8 +25,8 @@
     <string name="picker_file_directory_empty">Nenhum arquivo aqui</string>
     <string name="picker_file_search_activity_title">Pesquisar</string>
     <string name="picker_file_search_query_text">Pesquisar</string>
-    <string name="picker_file_sort_name">Organizar por nome</string>
-    <string name="picker_file_sort_date">Organizar por data</string>
+    <string name="picker_file_sort_name">Ordenar por nome</string>
+    <string name="picker_file_sort_date">Ordenar por data</string>
     <string name="picker_file_camera">Câmera</string>
     <string name="picker_file_header_recent">Arquivos recentes</string>
     <string name="picker_file_header_main">Pastas Pricipais</string>

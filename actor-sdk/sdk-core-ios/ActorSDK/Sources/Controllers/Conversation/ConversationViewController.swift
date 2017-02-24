@@ -7,8 +7,11 @@ import UIKit
 import MobileCoreServices
 import AddressBook
 import AddressBookUI
+import AVFoundation
+//import AGEmojiKeyboard
 
-open class ConversationViewController:
+
+final public class ConversationViewController:
     AAConversationContentController,
     UIDocumentMenuDelegate,
     UIDocumentPickerDelegate,
@@ -18,7 +21,11 @@ open class ConversationViewController:
     ABPeoplePickerNavigationControllerDelegate,
     AAAudioRecorderDelegate,
     AAConvActionSheetDelegate,
-    AAStickersKeyboardDelegate {
+    AAStickersKeyboardDelegate
+    //,
+    //AGEmojiKeyboardViewDataSource,
+   // AGEmojiKeyboardViewDelegate
+    {
     
     // Data binder
     fileprivate let binder = AABinder()
@@ -35,7 +42,7 @@ open class ConversationViewController:
     //
     
     fileprivate let titleView: UILabel = UILabel()
-    fileprivate let subtitleView: UILabel = UILabel()
+    open let subtitleView: UILabel = UILabel()
     fileprivate let navigationView: UIView = UIView()
     fileprivate let avatarView = AABarAvatarView()
     fileprivate let backgroundView = UIImageView()
@@ -49,8 +56,9 @@ open class ConversationViewController:
     //
     
     fileprivate var stickersView: AAStickersKeyboard!
-    fileprivate var stickersButton : UIButton!
+    open var stickersButton : UIButton!
     fileprivate var stickersOpen = false
+    //fileprivate var emojiKeyboar: AGEmojiKeyboardView!
     
     
     //
@@ -66,6 +74,8 @@ open class ConversationViewController:
     
     fileprivate var textMode:Bool!
     fileprivate var micOn: Bool! = true
+    
+    open var removeExcedentControllers = true
     
 
     
@@ -93,14 +103,17 @@ open class ConversationViewController:
         backgroundView.backgroundColor = appStyle.chatBgColor
         
         // Custom background if available
-        if let bg = Actor.getSelectedWallpaper() {
-            if bg.startsWith("local:") {
-                backgroundView.image = UIImage.bundled(bg.skip(6))
-            } else {
-                let path = CocoaFiles.pathFromDescriptor(bg.skip(5))
-                backgroundView.image = UIImage(contentsOfFile:path)
-            }
+        if let bg = Actor.getSelectedWallpaper(){
+            if bg != "default" {
+                if bg.startsWith("local:") {
+                    backgroundView.image = UIImage.bundled(bg.skip(6))
+                } else {
+                    let path = CocoaFiles.pathFromDescriptor(bg.skip(5))
+                    backgroundView.image = UIImage(contentsOfFile:path)
+                }
+            }            
         }
+        
         view.insertSubview(backgroundView, at: 0)
         
         
@@ -145,7 +158,9 @@ open class ConversationViewController:
         self.stickersButton.tintColor = UIColor.lightGray.withAlphaComponent(0.5)
         self.stickersButton.setImage(UIImage.bundled("sticker_button"), for: UIControlState())
         self.stickersButton.addTarget(self, action: #selector(ConversationViewController.changeKeyboard), for: UIControlEvents.touchUpInside)
-        self.textInputbar.addSubview(stickersButton)
+        if(ActorSDK.sharedActor().delegate.showStickersButton()){
+         self.textInputbar.addSubview(stickersButton)   
+        }
         
         
         //
@@ -275,6 +290,8 @@ open class ConversationViewController:
         let frame = CGRect(x: 0, y: 0, width: self.view.frame.size.width, height: 216)
         self.stickersView = AAStickersKeyboard(frame: frame)
         self.stickersView.delegate = self
+        
+        //emojiKeyboar.frame = frame
         
         NotificationCenter.default.addObserver(
             self,
@@ -461,15 +478,18 @@ open class ConversationViewController:
         subtitleView.frame = CGRect(x: 0, y: 22, width: (navigationView.frame.width - 0), height: 20)
         
         stickersView.frame = CGRect(x: 0, y: 0, width: self.view.frame.size.width, height: 216)
+        //emojiKeyboar.frame = CGRect(x: 0, y: 0, width: self.view.frame.size.width, height: 216)
     }
     
     override open func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        if navigationController!.viewControllers.count > 2 {
-            let firstController = navigationController!.viewControllers[0]
-            let currentController = navigationController!.viewControllers[navigationController!.viewControllers.count - 1]
-            navigationController!.setViewControllers([firstController, currentController], animated: false)
+        if self.removeExcedentControllers {
+            if navigationController!.viewControllers.count > 2 {
+                let firstController = navigationController!.viewControllers[0]
+                let currentController = navigationController!.viewControllers[navigationController!.viewControllers.count - 1]
+                navigationController!.setViewControllers([firstController, currentController], animated: false)
+            }
         }
         
         if !AADevice.isiPad {
@@ -799,6 +819,11 @@ open class ConversationViewController:
     ////////////////////////////////////////////////////////////
     
     func pickImage(_ source: UIImagePickerControllerSourceType) {
+        
+        if(source == .camera && (AVAudioSession.sharedInstance().recordPermission() == AVAudioSessionRecordPermission.undetermined || AVAudioSession.sharedInstance().recordPermission() == AVAudioSessionRecordPermission.denied)){
+            AVAudioSession.sharedInstance().requestRecordPermission({_ in (Bool).self})
+        }
+        
         let pickerController = AAImagePickerController()
         pickerController.sourceType = source
         pickerController.mediaTypes = [kUTTypeImage as String,kUTTypeMovie as String]
@@ -1043,17 +1068,18 @@ open class ConversationViewController:
     // MARK: - Stickers actions
     ////////////////////////////////////////////////////////////
     
-    func updateStickersStateOnCloseKeyboard() {
+    open func updateStickersStateOnCloseKeyboard() {
         self.stickersOpen = false
         self.stickersButton.setImage(UIImage.bundled("sticker_button"), for: UIControlState())
         self.textInputbar.textView.inputView = nil
     }
     
-    func changeKeyboard() {
+    open func changeKeyboard() {
         if self.stickersOpen == false {
-            // self.stickersView.loadStickers()
+             //self.stickersView.loadStickers()
             
             self.textInputbar.textView.inputView = self.stickersView
+            //self.textInputbar.textView.inputView = self.emojiKeyboar
             self.textInputbar.textView.inputView?.isOpaque = false
             self.textInputbar.textView.inputView?.backgroundColor = UIColor.clear
             self.textInputbar.textView.refreshFirstResponder()
@@ -1081,6 +1107,54 @@ open class ConversationViewController:
     open func stickerDidSelected(_ keyboard: AAStickersKeyboard, sticker: ACSticker) {
         Actor.sendSticker(with: self.peer, with: sticker)
     }
+    
+    /*
+    public func emojiKeyboardView(_ emojiKeyboardView: AGEmojiKeyboardView!, imageForSelectedCategory category: AGEmojiKeyboardViewCategoryImage) -> UIImage{
+        switch category {
+        case .recent:
+            return UIImage.bundled("ic_smiles_recent")!
+        case .face:
+            return UIImage.bundled("ic_smiles_smile")!
+        case .car:
+            return UIImage.bundled("ic_smiles_car")!
+        case .bell:
+            return UIImage.bundled("ic_smiles_bell")!
+        case .flower:
+            return UIImage.bundled("ic_smiles_flower")!
+        case .characters:
+            return UIImage.bundled("ic_smiles_grid")!
+        }
+    }
+    
+    public func emojiKeyboardView(_ emojiKeyboardView: AGEmojiKeyboardView!, imageForNonSelectedCategory category: AGEmojiKeyboardViewCategoryImage) -> UIImage!{
+        switch category {
+        case .recent:
+            return UIImage.bundled("ic_smiles_recent")!
+        case .face:
+            return UIImage.bundled("ic_smiles_smile")!
+        case .car:
+            return UIImage.bundled("ic_smiles_car")!
+        case .bell:
+            return UIImage.bundled("ic_smiles_bell")!
+        case .flower:
+            return UIImage.bundled("ic_smiles_flower")!
+        case .characters:
+            return UIImage.bundled("ic_smiles_grid")!
+        }
+    }
+    
+    public func backSpaceButtonImage(for emojiKeyboardView: AGEmojiKeyboardView!) -> UIImage!{
+        return UIImage.bundled("ic_smiles_backspace")!
+    }
+    
+    public func emojiKeyBoardView(_ emojiKeyBoardView: AGEmojiKeyboardView!, didUseEmoji emoji: String!){
+        self.textView.text = self.textView.text.appending(emoji)
+    }
+
+    public func emojiKeyBoardViewDidPressBackSpace(_ emojiKeyBoardView: AGEmojiKeyboardView!){
+        self.textView.deleteBackward()
+    }
+ */
 }
 
 class AABarAvatarView : AAAvatarView {

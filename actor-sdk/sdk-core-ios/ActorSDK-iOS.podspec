@@ -1,23 +1,19 @@
 Pod::Spec.new do |s|
-  s.name         		= "ActorSDK-iOS"
-  s.version      		= "0.0.26"
-  s.summary      		= "Actor SDK for intergration Actor Messaging to your apps"
+  s.name            = "ActorSDK-iOS"
+  s.version         = "3.0.457.36"
+  s.summary         = "Actor SDK for intergration Actor Messaging Lotericas to your apps"
   s.homepage        = "https://actor.im/"
   s.license         = { :type => 'MIT', :file => 'LICENSE' }
-  s.author       		= { "Actor LLC" => "steve@actor.im" }
-  s.source          = { :git => "https://github.com/actorapp/ActorSDK-iOS.git", :tag => "v#{s.version}" }
+  s.author          = { "Actor LLC" => "steve@actor.im" }
+  s.source          = { :http => "file:///Users/diego/Documents/projetos/actor-platform/actor-sdk/sdk-core-ios/build/ActorSDK.zip"}
 
-  s.platform     		= :ios, "8.0"
-  s.requires_arc 		= true
-
-  s.prepare_command = <<-CMD
-      Scripts/download.sh
-  CMD
+  s.platform        = :ios, "8.0"
+  s.requires_arc    = true
 
   # Core
   s.dependency 'RegexKitLite'
   s.dependency 'zipzap'
-  s.dependency 'J2ObjC-Framework'
+  #s.dependency 'J2ObjC-Framework', :podspec => 'https://raw.githubusercontent.com/dfsilva/J2ObjC-Framework/v1.2a/J2ObjC-Framework.podspec'
   s.dependency 'ReachabilitySwift'
 
   # UI
@@ -31,15 +27,16 @@ Pod::Spec.new do |s|
   s.dependency 'YYCategories'
   s.dependency 'YYWebImage'
   s.dependency 'DZNWebViewController'
+  s.dependency 'AGEmojiKeyboard'
 
   s.dependency 'TTTAttributedLabel'
   s.dependency 'M13ProgressSuite'
 
-  s.preserve_paths = 'Frameworks'
-  s.vendored_framework = 'Frameworks/ActorSDK.framework'
+  s.ios.preserve_paths = '**/*'
+  s.ios.vendored_frameworks = 'ActorSDK.framework'
 
-  s.xcconfig = { 
-     "SWIFT_INCLUDE_PATHS" => "$(PROJECT_DIR)/ActorSDK-iOS/Frameworks/",
-     "FRAMEWORK_SEARCH_PATHS" => "$(PROJECT_DIR)/ActorSDK-iOS/Frameworks/"
-  }
+  # s.xcconfig = { 
+  #    "SWIFT_INCLUDE_PATHS" => "$(PROJECT_DIR)/ActorSDK-iOS/Frameworks/",
+  #    "FRAMEWORK_SEARCH_PATHS" => "$(PROJECT_DIR)/ActorSDK-iOS/Frameworks/"
+  # }
 end

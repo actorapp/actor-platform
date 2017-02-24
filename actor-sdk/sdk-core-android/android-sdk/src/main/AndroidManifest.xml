@@ -23,6 +23,10 @@
     <uses-permission android:name="android.permission.LOCATION_HARDWARE" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
+    <uses-permission android:name="com.android.launcher.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.RECEIVE_MMS" />
+    <uses-permission android:name="android.permission.READ_SMS" />
 
     <uses-feature
         android:glEsVersion="0x00020000"
@@ -78,6 +82,10 @@
                     android:scheme="https" />
                 <data
                     android:host="actor.im"
+                    android:pathPrefix="/join/"
+                    android:scheme="https" />
+                <data
+                    android:host="im.xloto.com.br"
                     android:pathPrefix="/join/"
                     android:scheme="https" />
             </intent-filter>
@@ -333,6 +341,12 @@
             <intent-filter>
                 <action android:name="im.actor.push.intent.RECEIVE" />
                 <category android:name="${applicationId}" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name="im.actor.sdk.activation.SMSActivationReceiver">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
 

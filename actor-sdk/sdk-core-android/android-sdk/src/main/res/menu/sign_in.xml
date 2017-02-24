@@ -12,9 +12,9 @@
         android:title="@string/tour_sign_up"
         app:showAsAction="always" />
 
-    <item
-        android:id="@+id/change_endpoint"
-        android:title="@string/auth_change_endpoint"
-        app:showAsAction="never" />
+    <!--<item-->
+        <!--android:id="@+id/change_endpoint"-->
+        <!--android:title="@string/auth_change_endpoint"-->
+        <!--app:showAsAction="never" />-->
 
 </menu>

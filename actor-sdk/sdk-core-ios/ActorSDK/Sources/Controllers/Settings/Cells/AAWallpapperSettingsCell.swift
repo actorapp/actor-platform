@@ -16,27 +16,27 @@ open class AAWallpapperSettingsCell: AATableViewCell {
     fileprivate let label = UILabel()
     fileprivate let disclose = UIImageView()
     
-    open var wallpapperDidTap: ((_ name: String) -> ())?
+    open var wallpapperDidTap: ((_ name: String?) -> ())?
     
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         wallpapper1.clipsToBounds = true
         wallpapper1.contentMode = .scaleAspectFill
-        wallpapper1.image = UIImage.bundled("bg_1_preview.jpg")!
-        wallpapper1.viewDidTap = { [unowned self] () -> () in self.wallpapperDidTap?("bg_1.jpg") }
+        wallpapper1.backgroundColor = ActorSDK.sharedActor().style.chatBgColor
+        wallpapper1.viewDidTap = { [unowned self] () -> () in self.wallpapperDidTap?(nil) }
         wallpapper1Icon.image = UIImage.bundled("ImageSelectedOn")
 
         wallpapper2.clipsToBounds = true
         wallpapper2.contentMode = .scaleAspectFill
-        wallpapper2.image = UIImage.bundled("bg_2_preview.jpg")!
-        wallpapper2.viewDidTap = { [unowned self] () -> () in self.wallpapperDidTap?("bg_2.jpg") }
+        wallpapper2.image = UIImage.bundled("bg_1_preview.jpg")!
+        wallpapper2.viewDidTap = { [unowned self] () -> () in self.wallpapperDidTap?("bg_1.jpg") }
         wallpapper2Icon.image = UIImage.bundled("ImageSelectedOn")
 
         wallpapper3.clipsToBounds = true
         wallpapper3.contentMode = .scaleAspectFill
-        wallpapper3.image = UIImage.bundled("bg_3_preview.jpg")!
-        wallpapper3.viewDidTap = { [unowned self] () -> () in self.wallpapperDidTap?("bg_3.jpg") }
+        wallpapper3.image = UIImage.bundled("bg_2_preview.jpg")!
+        wallpapper3.viewDidTap = { [unowned self] () -> () in self.wallpapperDidTap?("bg_2.jpg") }
         wallpapper3Icon.image = UIImage.bundled("ImageSelectedOn")
 
         label.font = UIFont.systemFont(ofSize: 17)
@@ -85,8 +85,8 @@ open class AAWallpapperSettingsCell: AATableViewCell {
     }
     
     open func bind() {
-        wallpapper1Icon.isHidden = ActorSDK.sharedActor().messenger.getSelectedWallpaper() != "local:bg_1.jpg"
-        wallpapper2Icon.isHidden = ActorSDK.sharedActor().messenger.getSelectedWallpaper() != "local:bg_2.jpg"
-        wallpapper3Icon.isHidden = ActorSDK.sharedActor().messenger.getSelectedWallpaper() != "local:bg_3.jpg"
+        wallpapper1Icon.isHidden = ActorSDK.sharedActor().messenger.getSelectedWallpaper() != "default"
+        wallpapper2Icon.isHidden = ActorSDK.sharedActor().messenger.getSelectedWallpaper() != "local:bg_1.jpg"
+        wallpapper3Icon.isHidden = ActorSDK.sharedActor().messenger.getSelectedWallpaper() != "local:bg_2.jpg"
     }
 }

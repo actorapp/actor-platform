@@ -4,12 +4,14 @@
 
 import UIKit
 
-class AAUserViewController: AAContentTableController {
+open class AAUserViewController: AAContentTableController {
     
     var headerRow: AAAvatarRow!
     var isContactRow: AACommonRow!
+    open var setRingtoneController: AARingtonesViewController!
+    open var sound: String!
     
-    init(uid: Int) {
+    public init(uid: Int) {
         super.init(style: AAContentTableStyle.settingsPlain)
         
         self.uid = uid
@@ -18,11 +20,11 @@ class AAUserViewController: AAContentTableController {
         self.title = AALocalized("ProfileTitle")
     }
     
-    required init(coder aDecoder: NSCoder) {
+    public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func tableDidLoad() {
+    override open func tableDidLoad() {
         
         // Profile
         section { (s) -> () in
@@ -101,43 +103,46 @@ class AAUserViewController: AAContentTableController {
                     s.titled("ProfileUsername", content: "@\(n)")
                 }
                 
-                // Contact: Phones
-                s.arrays { (r: AAManagedArrayRows<ACUserPhone, AATitledCell>) -> () in
-                    r.height = 55
-                    r.data = self.user.getPhonesModel().get().toSwiftArray()
-                    r.bindData = { (c: AATitledCell, d: ACUserPhone) -> () in
-                        c.setContent(AALocalized("SettingsMobilePhone"), content: "+\(d.phone)", isAction: false)
-                    }
-                    r.bindCopy = { (d: ACUserPhone) -> String? in
-                        return "+\(d.phone)"
-                    }
-                    r.selectAction = { (c: ACUserPhone) -> Bool in
-                        let phoneNumber = c.phone
-                        let hasPhone = UIApplication.shared.canOpenURL(URL(string: "telprompt://")!)
-                        if (!hasPhone) {
-                            UIPasteboard.general.string = "+\(phoneNumber)"
-                            self.alertUser("NumberCopied")
-                        } else {
-                            ActorSDK.sharedActor().openUrl("telprompt://+\(phoneNumber)")
+                if  !ActorSDK.sharedActor().delegate.useOnClientPrivacy() || self.user.isInPhoneBookModel().get().booleanValue() {
+                    // Contact: Phones
+                    s.arrays { (r: AAManagedArrayRows<ACUserPhone, AATitledCell>) -> () in
+                        r.height = 55
+                        r.data = self.user.getPhonesModel().get().toSwiftArray()
+                        r.bindData = { (c: AATitledCell, d: ACUserPhone) -> () in
+                            c.setContent(AALocalized("SettingsMobilePhone"), content: "+\(d.phone)", isAction: false)
                         }
-                        return true
+                        r.bindCopy = { (d: ACUserPhone) -> String? in
+                            return "+\(d.phone)"
+                        }
+                        r.selectAction = { (c: ACUserPhone) -> Bool in
+                            let phoneNumber = c.phone
+                            let hasPhone = UIApplication.shared.canOpenURL(URL(string: "telprompt://")!)
+                            if (!hasPhone) {
+                                UIPasteboard.general.string = "+\(phoneNumber)"
+                                self.alertUser("NumberCopied")
+                            } else {
+                                ActorSDK.sharedActor().openUrl("telprompt://+\(phoneNumber)")
+                            }
+                            return true
+                        }
                     }
-                }
-                
-                // Contact: Emails
-                s.arrays { (r: AAManagedArrayRows<ACUserEmail, AATitledCell>) -> () in
-                    r.height = 55
-                    r.data = self.user.getEmailsModel().get().toSwiftArray()
-                    r.bindData = { (c: AATitledCell, d: ACUserEmail) -> () in
-                        c.setContent(d.title, content: d.email, isAction: false)
+                    
+                    // Contact: Emails
+                    s.arrays { (r: AAManagedArrayRows<ACUserEmail, AATitledCell>) -> () in
+                        r.height = 55
+                        r.data = self.user.getEmailsModel().get().toSwiftArray()
+                        r.bindData = { (c: AATitledCell, d: ACUserEmail) -> () in
+                            c.setContent(d.title, content: d.email, isAction: false)
+                        }
+                        r.bindCopy = { (d: ACUserEmail) -> String? in
+                            return d.email
+                        }
+                        r.selectAction = { (c: ACUserEmail) -> Bool in
+                            ActorSDK.sharedActor().openUrl("mailto:\(c.email)")
+                            return true
+                        }
                     }
-                    r.bindCopy = { (d: ACUserEmail) -> String? in
-                        return d.email
-                    }
-                    r.selectAction = { (c: ACUserEmail) -> Bool in
-                        ActorSDK.sharedActor().openUrl("mailto:\(c.email)")
-                        return true
-                    }
+
                 }
                 
                 // Contact: About
@@ -175,13 +180,13 @@ class AAUserViewController: AAContentTableController {
                     if(Actor.isNotificationsEnabled(with: peer)){
                         r.selectAction = {() -> Bool in
                             // Sound: Choose sound
-                            let setRingtoneController = AARingtonesViewController()
-                            let sound = Actor.getNotificationsSound(with: peer)
-                            setRingtoneController.selectedRingtone = (sound != nil) ? sound! : ""
-                            setRingtoneController.completion = {(selectedSound:String) in
+                            self.setRingtoneController = AARingtonesViewController()
+                            self.sound = Actor.getNotificationsSound(with: peer)
+                            self.setRingtoneController.selectedRingtone = (self.sound != nil) ? self.sound! : ""
+                            self.setRingtoneController.completion = {(selectedSound:String) in
                                 Actor.changeNotificationsSound(peer, withValue: selectedSound)
                             }
-                            let navigationController = AANavigationController(rootViewController: setRingtoneController)
+                            let navigationController = AANavigationController(rootViewController: self.setRingtoneController)
                             if (AADevice.isiPad) {
                                 navigationController.isModalInPopover = true
                                 navigationController.modalPresentationStyle = UIModalPresentationStyle.currentContext
@@ -293,7 +298,7 @@ class AAUserViewController: AAContentTableController {
         }
     }
     
-    override func tableWillBind(_ binder: AABinder) {
+    override open func tableWillBind(_ binder: AABinder) {
         binder.bind(user.getAvatarModel(), closure: { (value: ACAvatar?) -> () in
             self.headerRow.reload()
         })

@@ -99,9 +99,9 @@ public class SignUpFragment extends BaseAuthFragment {
         super.onPrepareOptionsMenu(menu);
         menu.clear();
         getActivity().getMenuInflater().inflate(R.menu.sign_up, menu);
-        MenuItem item = menu.findItem(R.id.change_endpoint);
-        if (item != null) {
-            item.setVisible(ActorSDK.sharedActor().isUseAlternateEndpointsEnabled());
-        }
+//        MenuItem item = menu.findItem(R.id.change_endpoint);
+//        if (item != null) {
+//            item.setVisible(ActorSDK.sharedActor().isUseAlternateEndpointsEnabled());
+//        }
     }
 }
