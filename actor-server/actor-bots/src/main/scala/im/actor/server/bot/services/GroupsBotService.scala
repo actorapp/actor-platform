@@ -23,30 +23,30 @@ private[bot] final class GroupsBotService(system: ActorSystem) extends BotServic
   private val groupExt = GroupExtension(system)
 
   override val handlers: Handlers = {
-    case CreateGroup(title)                       ⇒ createGroup(title).toWeak
-    case CreateGroupWithOwner(title, ownerUserId) ⇒ createGroupWithOwner(title, ownerUserId).toWeak
-    case UpdateGroupShortName(groupId, shortName) ⇒ updateShortName(groupId, shortName).toWeak
-    case AddGroupExtString(groupId, key, value)   ⇒ addGroupExtString(groupId, key, value).toWeak
-    case AddGroupExtBool(groupId, key, value)     ⇒ addGroupExtBool(groupId, key, value).toWeak
-    case RemoveGroupExt(groupId, key)             ⇒ removeExt(groupId, key).toWeak
-    case InviteUser(groupPeer, userPeer)          ⇒ inviteUser(groupPeer, userPeer).toWeak
+    case CreateGroup(title)                          ⇒ createGroup(title).toWeak
+    case CreateGroupWithOwner(title, owner, members) ⇒ createGroupWithOwner(title, owner, members).toWeak
+    case UpdateGroupShortName(groupId, shortName)    ⇒ updateShortName(groupId, shortName).toWeak
+    case AddGroupExtString(groupId, key, value)      ⇒ addGroupExtString(groupId, key, value).toWeak
+    case AddGroupExtBool(groupId, key, value)        ⇒ addGroupExtBool(groupId, key, value).toWeak
+    case RemoveGroupExt(groupId, key)                ⇒ removeExt(groupId, key).toWeak
+    case InviteUser(groupPeer, userPeer)             ⇒ inviteUser(groupPeer, userPeer).toWeak
   }
 
   private def createGroup(title: String) = RequestHandler[CreateGroup, CreateGroup#Response](
     (botUserId: Int, _: Long, _: Int) ⇒ {
-      create(title, botUserId)
+      create(title, botUserId, Set.empty)
     }
   )
 
-  private def createGroupWithOwner(title: String, userPeer: UserPeer) = RequestHandler[CreateGroup, CreateGroup#Response](
+  private def createGroupWithOwner(title: String, owner: UserPeer, members: Seq[UserPeer]) = RequestHandler[CreateGroup, CreateGroup#Response](
     (botUserId: Int, _: Long, _: Int) ⇒ {
       ifIsAdmin(botUserId) {
-        create(title, userPeer.id)
+        create(title, owner.id, (members map (_.id)).toSet)
       }
     }
   )
 
-  private def create(title: String, ownerUserId: Int) = {
+  private def create(title: String, ownerUserId: Int, memberIds: Set[Int]) = {
     val groupId = IdUtils.nextIntId()
     val randomId = ThreadLocalRandom.current().nextLong()
 
@@ -57,7 +57,7 @@ private[bot] final class GroupsBotService(system: ActorSystem) extends BotServic
         clientAuthId = 0L,
         title = title,
         randomId = randomId,
-        userIds = Set.empty
+        userIds = memberIds
       )
     } yield Right(ResponseCreateGroup(GroupOutPeer(groupId, ack.accessHash)))
   }

@@ -74,8 +74,9 @@ public class RootFragment extends BaseFragment {
 
         if (!isInited) {
             isInited = true;
+            DialogsDefaultFragment dialogsDefaultFragment = ActorSDK.sharedActor().getDelegate().fragmentForDialogs();
             getChildFragmentManager().beginTransaction()
-                    .add(R.id.content, new DialogsDefaultFragment())
+                    .add(R.id.content, dialogsDefaultFragment != null ? dialogsDefaultFragment : new DialogsDefaultFragment())
                     .add(R.id.fab, new ComposeFabFragment())
                     .add(R.id.search, new GlobalSearchDefaultFragment())
                     .add(R.id.placeholder, new GlobalPlaceholderFragment())

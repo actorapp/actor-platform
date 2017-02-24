@@ -76,8 +76,7 @@ public class EditAboutFragment extends BaseFragment {
             public void onClick(View v) {
                 String about = aboutEdit.getText().toString().trim();
                 if (about.length() == 0) {
-                    Toast.makeText(getActivity(), R.string.toast_empty_about, Toast.LENGTH_SHORT).show();
-                    return;
+                    about = null;
                 }
 
                 if (type == EditAboutActivity.TYPE_ME) {
