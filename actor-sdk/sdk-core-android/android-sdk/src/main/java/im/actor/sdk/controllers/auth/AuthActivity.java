@@ -1,12 +1,19 @@
 package im.actor.sdk.controllers.auth;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v13.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.MenuItem;
+
+import java.util.Observable;
+import java.util.Observer;
 
 import im.actor.core.AuthState;
 import im.actor.core.entity.AuthCodeRes;
@@ -31,7 +38,9 @@ import im.actor.sdk.controllers.activity.BaseFragmentActivity;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
-public class AuthActivity extends BaseFragmentActivity {
+public class AuthActivity extends BaseFragmentActivity implements Observer{
+
+    private static final int PERMISSIONS_REQUEST_READ_SMS = 1;
 
     public static final String AUTH_TYPE_KEY = "auth_type";
     public static final String SIGN_TYPE_KEY = "sign_type";
@@ -80,6 +89,8 @@ public class AuthActivity extends BaseFragmentActivity {
         String savedState = preferences.getString("auth_state");
         state = Enum.valueOf(AuthState.class, savedState != null ? savedState : "AUTH_START");
         updateState(state, true);
+
+        SMSActivationObservable.getInstance().addObserver(this);
     }
 
 
@@ -146,6 +157,13 @@ public class AuthActivity extends BaseFragmentActivity {
                 break;
             case CODE_VALIDATION_PHONE:
             case CODE_VALIDATION_EMAIL:
+
+                if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.READ_SMS},
+                            PERMISSIONS_REQUEST_READ_SMS);
+                }
+
                 Fragment signInFragment = new ValidateCodeFragment();
                 Bundle args = new Bundle();
 
@@ -476,6 +494,13 @@ public class AuthActivity extends BaseFragmentActivity {
 
     public String getTransactionHash() {
         return transactionHash;
+    }
+
+    @Override
+    public void update(Observable o, Object data) {
+        if(data instanceof String){
+            validateCode(messenger().doValidateCode(data.toString(), getTransactionHash()), data.toString());
+        }
     }
 }
 

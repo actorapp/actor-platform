@@ -59,6 +59,11 @@ public extension UIViewController {
         
         let controller = UIAlertController(title: title, message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
         
+        if (AADevice.isiPad) {
+            controller.popoverPresentationController?.sourceView = sourceView
+            controller.popoverPresentationController?.sourceRect = sourceRect
+        }
+        
         if cancelButton != nil {
             controller.addAction(UIAlertAction(title: AALocalized(cancelButton!), style: UIAlertActionStyle.cancel, handler: { (alertView) -> () in
                 tapClosure(-1)

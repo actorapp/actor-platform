@@ -171,8 +171,8 @@ object Build extends sbt.Build with Versioning with Releasing with Packaging {
     base = file("actor-cli"),
     settings = defaultSettingsServer ++ Revolver.settings ++ Seq(
       libraryDependencies ++= Dependencies.cli,
-      mainClass in Revolver.reStart := Some("im.actor.server.cli.ActorCliApp"),
-      mainClass in Compile := Some("im.actor.server.cli.ActorCliApp")
+      mainClass in Revolver.reStart := Some("im.actor.server.cli.ActorCli"),
+      mainClass in Compile := Some("im.actor.server.cli.ActorCli")
     )
   )
     .dependsOn(actorCore, actorFrontend)

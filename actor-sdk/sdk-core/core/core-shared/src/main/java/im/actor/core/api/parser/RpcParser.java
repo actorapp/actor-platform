@@ -90,6 +90,7 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 2721: return RequestLeaveAndDelete.fromBytes(payload);
             case 71: return RequestKickUser.fromBytes(payload);
             case 2722: return RequestJoinGroupByPeer.fromBytes(payload);
+            case 44561: return RequestJoinGroupByGroupId.fromBytes(payload);
             case 2784: return RequestMakeUserAdmin.fromBytes(payload);
             case 2791: return RequestDismissUserAdmin.fromBytes(payload);
             case 2789: return RequestTransferOwnership.fromBytes(payload);

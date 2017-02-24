@@ -41,7 +41,9 @@ open class AAGroupViewMembersController: AAContentTableController {
                     Actor.onUserVisible(withUid: d.uid)
                 }
                 
+                var id = 0
                 r.itemShown = { (index, d) in
+                    id = index
                     if index > r.data.count - 10 {
                         self.loadMore()
                     }
@@ -108,11 +110,15 @@ open class AAGroupViewMembersController: AAContentTableController {
                                 (self.group.isCanKickInvited.get().booleanValue() && d.inviterUid == Actor.myUid()))
                         
                         if canKick {
+                            let isChannel = self.group.groupType == ACGroupType.channel()
                             let name = Actor.getUserWithUid(d.uid).getNameModel().get()
-                            a.destructive("GroupMemberKick") { () -> () in
-                                self.confirmDestructive(AALocalized("GroupMemberKickMessage")
-                                    .replace("{name}", dest: name!), action: AALocalized("GroupMemberKickAction")) {
-                                        self.executeSafe(Actor.kickMemberCommand(withGid: jint(self.gid), withUid: user.getId()))
+                            a.destructive(isChannel ? "ChannelMemberKick" : "GroupMemberKick") { () -> () in
+                                self.confirmDestructive(AALocalized(isChannel ? "ChannelMemberKickMessage" : "GroupMemberKickMessage")
+                                    .replace("{name}", dest: name!), action: AALocalized(isChannel ? "ChannelMemberKickAction" : "GroupMemberKickAction")) {
+                                        self.executeSafe(Actor.kickMemberCommand(withGid: jint(self.gid), withUid: user.getId()), successBlock: { (r) in
+                                            self.membersRow.data.remove(at: id)
+                                            self.tableView.reloadData()
+                                        })
                                 }
                             }
                         }
@@ -147,6 +153,8 @@ open class AAGroupViewMembersController: AAContentTableController {
             self.isLoading = false
         }
     }
+    
+    
     
     func didAddPressed() {
         navigateNext(AAAddParticipantViewController(gid: self.gid))

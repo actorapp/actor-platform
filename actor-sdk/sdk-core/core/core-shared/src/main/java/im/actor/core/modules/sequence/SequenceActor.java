@@ -105,17 +105,25 @@ public class SequenceActor extends ModuleActor {
         if (context().getApiModule() == null) {
             return;
         }
-        context().getApiModule().checkIsCurrentAuthId(authId).then(same -> {
-            if (same) {
-                if (seq <= this.seq) {
-                    Log.d(TAG, "Ignored PushSeq {seq:" + seq + "}");
-                } else {
-                    Log.w(TAG, "External Out of sequence: starting timer for invalidation");
-                    startInvalidationTimer();
+        if (authId != 0) {
+            context().getApiModule().checkIsCurrentAuthId(authId).then(same -> {
+                if (same) {
+                    if (seq <= this.seq) {
+                        Log.d(TAG, "Ignored PushSeq {seq:" + seq + "}");
+                    } else {
+                        Log.w(TAG, "External Out of sequence: starting timer for invalidation");
+                        startInvalidationTimer();
+                    }
                 }
+            });
+        } else {
+            if (seq <= this.seq) {
+                Log.d(TAG, "Ignored PushSeq {seq:" + seq + "}");
+            } else {
+                Log.w(TAG, "External Out of sequence: starting timer for invalidation");
+                startInvalidationTimer();
             }
-        });
-
+        }
     }
 
     @Deprecated

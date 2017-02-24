@@ -5,8 +5,7 @@ import java.util.concurrent.{ ExecutionException, TimeUnit, TimeoutException }
 
 import akka.actor.{ ActorSystem, ExtendedActorSystem, Extension, ExtensionId, ExtensionIdProvider }
 import akka.event.Logging
-import com.relayrides.pushy.apns.ApnsClient
-import com.relayrides.pushy.apns.util.SimpleApnsPushNotification
+import com.relayrides.pushy.apns.{ ApnsClient, ApnsClientBuilder }
 import im.actor.server.db.DbExtension
 import im.actor.server.model.push.ApplePushCredentials
 import im.actor.server.persist.push.ApplePushCredentialsRepo
@@ -29,7 +28,7 @@ final class ApplePushExtension(system: ActorSystem) extends Extension with AnyRe
 
   private val MaxCreateAttempts = 50
 
-  type Client = ApnsClient[SimpleApnsPushNotification]
+  type Client = ApnsClient
 
   import system.dispatcher
 
@@ -43,8 +42,12 @@ final class ApplePushExtension(system: ActorSystem) extends Extension with AnyRe
   // there are some apple push keys, that require topic(bundleId)
   // to be included in apple push notification. We provide apns key -> bundle id
   // mapping for them.
-  val apnsBundleId: Map[Int, String] = (config.certs collect {
-    case ApnsCert(Some(key), Some(bundleId), _, _, _, _) ⇒ key → bundleId
+  //    val apnsBundleId: Map[Int, String] = (config.certs collect {
+  //      case ApnsCert(Some(key), Some(bundleId), _, _, _, _) ⇒ key → bundleId
+  //    }).toMap
+
+  def apnsBundleId(isVoip: Boolean): Map[Int, String] = (config.certs filter (_.isVoip == isVoip) collect {
+    case ApnsCert(Some(key), bundleId, _, _, _, _) ⇒ key → bundleId.getOrElse(null)
   }).toMap
 
   private val (clients, voipClients): (TrieMap[String, Future[Client]], TrieMap[String, Future[Client]]) = {
@@ -69,7 +72,7 @@ final class ApplePushExtension(system: ActorSystem) extends Extension with AnyRe
 
     val connectFuture: Future[Client] = Future {
       blocking {
-        val client = new ApnsClient[SimpleApnsPushNotification](new File(cert.path), cert.password)
+        val client = new ApnsClientBuilder().setClientCredentials(new File(cert.path), cert.password).build()
         client.connect(host).get(20, TimeUnit.SECONDS)
         log.debug("Established client connection for cert: {}, is voip: {}", certKey, cert.isVoip)
         client

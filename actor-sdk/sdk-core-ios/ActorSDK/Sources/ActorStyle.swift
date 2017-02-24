@@ -45,6 +45,9 @@ open class ActorStyle {
     /// View Controller background color for settings
     open var vcBackyardColor = UIColor(rgb: 0xf0eff5)
     
+    
+    open var nextBarColor = UIColor(red: 94, green: 142, blue: 192)
+    
     //
     // UINavigationBar
     //
@@ -52,6 +55,8 @@ open class ActorStyle {
     open var navigationBgColor: UIColor = UIColor(red: 247.0/255.0, green: 247.0/255.0, blue: 247.0/255.0, alpha: 1)
     /// Main Navigation bar hairline color
     open var navigationHairlineHidden = false
+    /// Main Navigation bar hairline color
+    open var navigationIsTransluent = false
     /// Navigation Bar icons colors
     open var navigationTintColor: UIColor = UIColor(rgb: 0x5085CB)
     /// Navigation Bar title color

@@ -8,8 +8,9 @@ import PushKit
 import SafariServices
 import DZNWebViewController
 import ReachabilitySwift
+import UserNotifications
 
-@objc open class ActorSDK: NSObject, PKPushRegistryDelegate {
+@objc open class ActorSDK: NSObject, PKPushRegistryDelegate, UNUserNotificationCenterDelegate {
 
     //
     // Shared instance
@@ -145,6 +146,9 @@ import ReachabilitySwift
     /// Should perform auto join only after first message or contact
     open var autoJoinOnReady = true
     
+    // Use call to active app
+    open var enableCallToValidateCode = false
+    
     //
     // User Onlines
     //
@@ -233,13 +237,16 @@ import ReachabilitySwift
         // Api Connections
         let deviceKey = UUID().uuidString
         let deviceName = UIDevice.current.name
-        let appTitle = "Actor iOS"
+        let appTitle = "XlotoMensageiro"
         for url in endpoints {
             builder.addEndpoint(url)
         }
         for key in trustedKeys {
             builder.addTrustedKey(key)
         }
+        
+        builder.setOnClientPrivacyEnabled(jboolean(delegate.useOnClientPrivacy()))
+        
         builder.setApiConfiguration(ACApiConfiguration(appTitle: appTitle, withAppId: jint(apiId), withAppKey: apiKey, withDeviceTitle: deviceName, withDeviceId: deviceKey))
         
         // Providers
@@ -349,17 +356,21 @@ import ReachabilitySwift
     }
     
     func didLoggedIn() {
-        
         // Push registration
-        
         if autoPushMode == .afterLogin {
             requestPush()
         }
         
-        var controller: UIViewController! = delegate.actorControllerAfterLogIn()
-        if controller == nil {
-            controller = delegate.actorControllerForStart()
-        }
+        self.showMainController()
+    }
+    
+    open func didLoggedInWithoutPush() {
+        self.showMainController()
+    }
+    
+    func showMainController(){
+        var controller = delegate.actorControllerForStart()
+        
         if controller == nil {
             let tab = AARootTabViewController()
             
@@ -394,6 +405,7 @@ import ReachabilitySwift
         }
         
         if apiPushId != nil {
+            NSLog("Fazendo o registro no push pushRegisterToken")
             messenger.registerApplePush(withApnsId: jint(apiPushId!), withToken: token)
         }
     }
@@ -404,19 +416,32 @@ import ReachabilitySwift
         }
         
         if apiPushId != nil {
+            NSLog("Fazendo o registro no pushkit pushRegisterKitToken")
             messenger.registerApplePushKit(withApnsId: jint(apiPushId!), withToken: token)
         }
 
     }
     
     fileprivate func requestPush() {
-        let types: UIUserNotificationType = [.alert, .badge, .sound]
-        let settings: UIUserNotificationSettings = UIUserNotificationSettings(types: types, categories: nil)
-        UIApplication.shared.registerUserNotificationSettings(settings)
-        UIApplication.shared.registerForRemoteNotifications()
+        if #available(iOS 10.0, *){
+            UNUserNotificationCenter.current().delegate = self
+            UNUserNotificationCenter.current().requestAuthorization(options: [.badge, .sound, .alert], completionHandler: {(granted, error) in
+                if (granted){
+                    UIApplication.shared.registerForRemoteNotifications()
+                }else{
+                    print("Acesso ao permitido para notificacoes")
+                }
+            })
+        }else{
+            let types: UIUserNotificationType = [.alert, .badge, .sound]
+            let settings: UIUserNotificationSettings = UIUserNotificationSettings(types: types, categories: nil)
+            UIApplication.shared.registerUserNotificationSettings(settings)
+            UIApplication.shared.registerForRemoteNotifications()
+        }
     }
     
     fileprivate func requestPushKit() {
+        NSLog("Requisitando o pushKit requestPushKit")
         let voipRegistry = PKPushRegistry(queue: DispatchQueue.main)
         voipRegistry.delegate = self        
         voipRegistry.desiredPushTypes = Set([PKPushType.voIP])
@@ -424,18 +449,21 @@ import ReachabilitySwift
     
     @objc open func pushRegistry(_ registry: PKPushRegistry, didUpdate credentials: PKPushCredentials, forType type: PKPushType) {
         if (type == PKPushType.voIP) {
-            let tokenString = "\(credentials.token)".replace(" ", dest: "").replace("<", dest: "").replace(">", dest: "")
-            pushRegisterKitToken(tokenString)
+            let tokenString = credentials.token.map { String(format: "%02.2hhx", $0) }.joined()
+            NSLog("Vai registrar o voip para o token: \(tokenString)")
+            pushRegisterKitToken(tokenString.replace(" ", dest: "").replace("<", dest: "").replace(">", dest: ""))
         }
     }
     
     @objc open func pushRegistry(_ registry: PKPushRegistry, didInvalidatePushTokenForType type: PKPushType) {
+        NSLog("Invalidando o push token para voip didInvalidatePushTokenForType")
         if (type == PKPushType.voIP) {
             
         }
     }
     
     @objc open func pushRegistry(_ registry: PKPushRegistry, didReceiveIncomingPushWith payload: PKPushPayload, forType type: PKPushType) {
+        NSLog("Recebendo pushKit notification didReceiveIncomingPushWith")
         if (type == PKPushType.voIP) {
             let aps = payload.dictionaryPayload["aps"] as! [NSString: AnyObject]
             if let callId = aps["callId"] as? String {
@@ -590,7 +618,7 @@ import ReachabilitySwift
     //
     
     /// Handling URL Opening in application
-    func openUrl(_ url: String) {
+    open func openUrl(_ url: String) {
         if let u = URL(string: url) {
             
             // Handle phone call
@@ -817,7 +845,7 @@ import ReachabilitySwift
             })
             
             // Wait for 40 secs before app shutdown
-            DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.default).asyncAfter(deadline: DispatchTime.now() + Double(Int64(40.0 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)) { () -> Void in
+            DispatchQueue.global(qos: DispatchQoS.QoSClass.default).asyncAfter(deadline: DispatchTime.now() + Double(Int64(40.0 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)) { () -> Void in
                 application.endBackgroundTask(completitionTask)
                 completitionTask = UIBackgroundTaskInvalid
             }
@@ -843,7 +871,35 @@ import ReachabilitySwift
     //
     
     open func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        NSLog("Recebendo notificacao normal didReceiveRemoteNotification")
+        if !messenger.isLoggedIn() {
+            completionHandler(UIBackgroundFetchResult.noData)
+            return
+        }
+        self.completionHandler = completionHandler
+    }
+    
+    open func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) {
+        // Nothing?
+        NSLog("Recebendo notificacao normal 2 didReceiveRemoteNotification")
+    }
+    
+    open func application(_ application: UIApplication, didRegisterUserNotificationSettings notificationSettings: UIUserNotificationSettings) {
+        NSLog("Vai requisitar o pushkit didRegisterUserNotificationSettings")
+        requestPushKit()
+    }
+    
+    //
+    // Handling background fetch events
+    //
+    @available(iOS 10.0, *)
+    public func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        completionHandler([.alert, .badge, .sound])
         
+    }
+    
+    @available(iOS 10.0, *)
+    public func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         if !messenger.isLoggedIn() {
             completionHandler(UIBackgroundFetchResult.noData)
             return
@@ -852,20 +908,8 @@ import ReachabilitySwift
         self.completionHandler = completionHandler
     }
     
-    open func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) {
-        // Nothing?
-    }
-    
-    open func application(_ application: UIApplication, didRegisterUserNotificationSettings notificationSettings: UIUserNotificationSettings) {
-        requestPushKit()
-    }
-    
-    //
-    // Handling background fetch events
-    //
-    
     open func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        
+        NSLog("Perform with fetch performFetchWithCompletionHandler")
         if !messenger.isLoggedIn() {
             completionHandler(UIBackgroundFetchResult.noData)
             return
@@ -894,6 +938,7 @@ import ReachabilitySwift
         
         return true
     }
+    
 }
 
 public enum AAAutoPush {

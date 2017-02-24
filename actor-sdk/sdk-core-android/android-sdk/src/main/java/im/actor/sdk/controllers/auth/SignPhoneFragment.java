@@ -23,6 +23,7 @@ import android.widget.TextView;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.util.Devices;
+import im.actor.sdk.util.Mask;
 import im.actor.sdk.util.country.Country;
 import im.actor.sdk.util.country.Countries;
 import im.actor.sdk.util.Fonts;
@@ -177,7 +178,10 @@ public class SignPhoneFragment extends BaseAuthFragment {
 
         phoneNumberEditText = (BackspaceKeyEditText) v.findViewById(R.id.tv_phone_number);
         phoneNumberEditText.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
-        phoneNumberEditText.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
+        //phoneNumberEditText.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
+
+        phoneNumberEditText.addTextChangedListener(Mask.telephoneMask(phoneNumberEditText));
+
         phoneNumberEditText.setBackspaceListener(new BackspaceKeyEditText.BackspacePressListener() {
             @Override
             public boolean onBackspacePressed() {
@@ -273,6 +277,10 @@ public class SignPhoneFragment extends BaseAuthFragment {
                 requestCode();
             }
         });
+
+
+        setCountry(Countries.getInstance().getCountryByShortName("BR"));
+
     }
 
     private void requestCode() {

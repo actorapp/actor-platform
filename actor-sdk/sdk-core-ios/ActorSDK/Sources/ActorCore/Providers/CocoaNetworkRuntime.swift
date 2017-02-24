@@ -85,7 +85,7 @@ class CocoaTcpConnection: ARAsyncConnection, GCDAsyncSocketDelegate {
             let size = data.readUInt32(5)
             gcdSocket?.readData(toLength: UInt(size + 4), withTimeout: -1, tag: READ_BODY)
         } else if (tag == READ_BODY) {
-            //            NSLog("\(TAG) Body received")
+            NSLog("\(TAG) Body received")
             var package = Data()
             package.append(self.header!)
             package.append(data)
@@ -100,8 +100,9 @@ class CocoaTcpConnection: ARAsyncConnection, GCDAsyncSocketDelegate {
     }
     
     override func doClose() {
+        NSLog("\(TAG) Will try to close connection...")
         if (gcdSocket != nil) {
-            //            NSLog("\(TAG) Closing...")
+            NSLog("\(TAG) Closing connection...")
             gcdSocket?.disconnect()
             gcdSocket = nil
         }

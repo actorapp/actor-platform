@@ -34,7 +34,7 @@ public extension ACCocoaMessenger {
         
         if let videoData = try? Data(contentsOf: url) { // if data have on this local path url go to upload
             
-            let descriptor = "/tmp/"+UUID().uuidString
+            let descriptor = "/tmp/"+UUID().uuidString + ".mp4"
             let path = CocoaFiles.pathFromDescriptor(descriptor);
             
             try? videoData.write(to: URL(fileURLWithPath: path), options: [.atomic]) // write to file
@@ -130,7 +130,7 @@ extension JavaUtilAbstractCollection : Sequence {
 }
 
 
-public extension JavaUtilList {
+public extension JavaUtilListProtocol {
     public func toSwiftArray<T>() -> [T] {
         var res = [T]()
         for i in 0..<self.size() {
@@ -289,10 +289,27 @@ open class TextParser {
         let doc = markdownParser?.processDocument(with: text)
         
         if (doc?.isTrivial())! {
-            let nAttrText = NSMutableAttributedString(string: text)
-            let range = NSRange(location: 0, length: nAttrText.length)
-            nAttrText.yy_setColor(textColor, range: range)
-            nAttrText.yy_setFont(UIFont.textFontOfSize(fontSize), range: range)
+            
+            let nAttrText = NSMutableAttributedString(string: "")
+            
+            for ch in text.characters {
+                let str = String(ch)
+                
+                if(str.containsEmoji){
+                    let emoji = NSMutableAttributedString(string: str)
+                    let range = NSRange(location: 0, length: emoji.length)
+                    emoji.yy_setColor(textColor, range: range)
+                    emoji.yy_setFont(UIFont.textFontOfSize(30), range: range)
+                    nAttrText.append(emoji)
+                }else{
+                    let noEmoji = NSMutableAttributedString(string: str)
+                    let range = NSRange(location: 0, length: noEmoji.length)
+                    noEmoji.yy_setColor(textColor, range: range)
+                    noEmoji.yy_setFont(UIFont.textFontOfSize(fontSize), range: range)
+                    nAttrText.append(noEmoji)
+                }
+            }
+            
             return ParsedText(attributedText: nAttrText, isTrivial: true, code: [])
         }
         
@@ -422,7 +439,7 @@ open class AAPromiseFunc: NSObject, ARPromiseFunc {
     }
 }
 
-extension ARPromise {
+public extension ARPromise {
     convenience init(closure: @escaping (_ resolver: ARPromiseResolver) -> ()) {
         self.init(executor: AAPromiseFunc(closure: closure))
     }

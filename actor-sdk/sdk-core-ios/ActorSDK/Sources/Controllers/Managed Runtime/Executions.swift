@@ -61,12 +61,12 @@ open class AAExecutions {
         
         command.start(with: AACommandCallback(result: { (val:Any?) -> () in
             dispatchOnUi {
-                hud?.hide(true)
+                hud?.hide(animated: true)
                 successBlock?(val)
             }
             }, error: { (val) -> () in
                 dispatchOnUi {
-                    hud?.hide(true)
+                    hud?.hide(animated: true)
                     
                     if type == .safe {
                         
@@ -141,13 +141,13 @@ open class AAExecutions {
     }
 
     class fileprivate func showProgress() -> MBProgressHUD {
-        let window = UIApplication.shared.windows[1]
-        let hud = MBProgressHUD(window: window)
+        let window = UIApplication.shared.windows[0]
+        let hud = MBProgressHUD(view: window)
         hud.mode = MBProgressHUDMode.indeterminate
         hud.removeFromSuperViewOnHide = true
         window.addSubview(hud)
         window.bringSubview(toFront: hud)
-        hud.show(true)
+        hud.show(animated: true)
         return hud
     }
 }

@@ -12,6 +12,7 @@ open class AAEditRow: AAManagedRow, UITextFieldDelegate {
     open var text: String?
     open var placeholder: String?
     open var returnKeyType = UIReturnKeyType.default
+    open var keyboardType = UIKeyboardType.default
     open var autocorrectionType = UITextAutocorrectionType.default
     open var autocapitalizationType = UITextAutocapitalizationType.sentences
     open var returnAction: (()->())?
@@ -37,6 +38,7 @@ open class AAEditRow: AAManagedRow, UITextFieldDelegate {
         res.textField.delegate = self
         res.textField.removeTarget(nil, action: nil, for: .allEvents)
         res.textField.addTarget(self, action: #selector(AAEditRow.textFieldDidChange(_:)), for: .editingChanged)
+        res.textField.keyboardType = keyboardType
         
         if prefix != nil {
             res.textPrefix.text = prefix

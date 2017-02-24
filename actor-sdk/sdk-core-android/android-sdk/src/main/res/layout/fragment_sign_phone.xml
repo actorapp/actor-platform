@@ -68,24 +68,20 @@
                         android:id="@+id/tv_country_code"
                         android:layout_width="70dp"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
+                        android:gravity="center_horizontal"
                         android:imeOptions="actionGo"
                         android:inputType="phone"
                         android:maxLength="4"
-                        android:maxLines="1"
-                        android:singleLine="true" />
+                        android:maxLines="1"/>
 
                     <im.actor.sdk.controllers.auth.BackspaceKeyEditText
                         android:id="@+id/tv_phone_number"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="12dp"
-                        android:hint="@string/auth_phone_number_hint"
+                        android:layout_marginRight="15dp"
                         android:imeOptions="actionGo"
                         android:inputType="phone"
-                        android:maxLines="1"
-                        android:singleLine="true"
-                        android:textColorHint="#a6a6a6" />
+                        android:maxLines="1"/>
 
                 </LinearLayout>
 

@@ -110,6 +110,7 @@ open class AADialogsListContentController: AAContentTableController, UISearchBar
                                 })
                             }
                             
+                            a.title = AALocalized(isChannel ? "ActionDeleteChannelTitle" : "ActionDeleteGroupTitle")
                             // Cancel
                             a.cancel = AALocalized("ActionCancel")
                         })
@@ -122,6 +123,7 @@ open class AADialogsListContentController: AAContentTableController, UISearchBar
                             a.destructive(AALocalized("ActionDelete"), closure: {
                                 self.executeSafe(Actor.deleteChatCommand(with: dialog.peer))
                             })
+                            a.title = AALocalized("ActionDeleteChatTitle")
                             a.cancel = AALocalized("ActionCancel")
                         })
                     }

@@ -2,11 +2,15 @@ package im.actor.sdk.controllers.activity;
 
 import android.app.ProgressDialog;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import im.actor.core.entity.Avatar;
@@ -45,6 +49,18 @@ public class BaseActivity extends AppCompatActivity {
 
         if (getSupportActionBar() != null && STYLE.getToolBarColor() != 0) {
             getSupportActionBar().setBackgroundDrawable(new ColorDrawable(STYLE.getToolBarColor()));
+        }
+
+        changeStatusBarColor();
+
+    }
+
+    public void changeStatusBarColor(){
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.setStatusBarColor(STYLE.getStatusBarColor());
         }
     }
 

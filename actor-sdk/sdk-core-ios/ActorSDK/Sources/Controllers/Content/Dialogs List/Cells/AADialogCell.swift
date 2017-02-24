@@ -4,7 +4,7 @@
 
 import UIKit
 
-open class AADialogCell: AATableViewCell, AABindedCell {
+final class AADialogCell: AATableViewCell, AABindedCell {
     
     // Binding data type
     
@@ -42,12 +42,14 @@ open class AADialogCell: AATableViewCell, AABindedCell {
     
     open let avatarView = AAAvatarView()
     open let titleView = YYLabel()
+    open let dialogTypeView = UIImageView()
     open let messageView = YYLabel()
     
     open let dateView = YYLabel()
     open let statusView = UIImageView()
     open let counterView = YYLabel()
     open let counterViewBg = UIImageView()
+    
         
     // Binding Data
     
@@ -84,6 +86,7 @@ open class AADialogCell: AATableViewCell, AABindedCell {
         
         self.contentView.addSubview(avatarView)
         self.contentView.addSubview(titleView)
+        self.contentView.addSubview(dialogTypeView)
         self.contentView.addSubview(messageView)
         self.contentView.addSubview(dateView)
         self.contentView.addSubview(statusView)
@@ -119,7 +122,6 @@ open class AADialogCell: AATableViewCell, AABindedCell {
         //
         avatarView.bind(item.dialogTitle, id: Int(item.peer.peerId), avatar: item.dialogAvatar)
         
-        
         // Forcing Async Rendering.
         // This flag can became false when cell was resized
         if !titleView.displaysAsynchronously {
@@ -129,7 +131,7 @@ open class AADialogCell: AATableViewCell, AABindedCell {
         if !messageView.displaysAsynchronously {
             messageView.displaysAsynchronously = true
         }
-
+    
         
         // Reseting Text Layout on new peer binding
         if !isRebind {
@@ -170,21 +172,43 @@ open class AADialogCell: AATableViewCell, AABindedCell {
             }
         }
         
+        
+        
+ 
         // Cancelling Renderer and forcing layouting to start new rendering
         cellRenderer.cancelRender()
 
         setNeedsLayout()
     }
     
-    open override func willTransition(to state: UITableViewCellStateMask) {
-        super.willTransition(to: state)
+//    open override func willTransition(to state: UITableViewCellStateMask) {
+//        super.willTransition(to: state)
+//        
+//        if state.contains(UITableViewCellStateMask.showingEditControlMask) {
+//            isEditing = true
+//        } else {
+//            isEditing = false
+//        }
+//    }
+    
+  
+    
+    open func addImageDialogType(_ image: UIImage!){
+        dialogTypeView.image = image
+        let dialogTypeFrame = CGRect(x: 76, y: 17, width: 18, height: 18)
+        dialogTypeView.frame = dialogTypeFrame
+        self.titleView.left = self.titleView.left+20
         
-        if state.contains(UITableViewCellStateMask.showingEditControlMask) {
-            isEditing = true
-        } else {
-            isEditing = false
-        }
     }
+    
+    open func removeImageDialogType(){
+        dialogTypeView.image = UIImage()
+        let dialogTypeFrame = CGRect(x: 76, y: 17, width: 18, height: 18)
+        dialogTypeView.frame = dialogTypeFrame
+        self.titleView.left = 76
+        
+    }
+ 
     
     open override func layoutSubviews() {
         super.layoutSubviews()
@@ -209,11 +233,9 @@ open class AADialogCell: AATableViewCell, AABindedCell {
             self.titleView.frame = titleFrame
         }
         
-        
         //
         // Status Icon
         //
-
         if (!self.statusView.isHidden) {
             statusView.frame = CGRect(x: leftPadding, y: 44, width: 20, height: 18)
         }
@@ -222,10 +244,9 @@ open class AADialogCell: AATableViewCell, AABindedCell {
         //
         // Rest of Elements are layouted on the last phase
         //
-        
-        if bindedItem != nil {
+        if let binItem = bindedItem {
             let config = AADialogCellConfig(
-                item: bindedItem!,
+                item: binItem,
                 isStatusVisible: !statusView.isHidden,
                 titleWidth: titleFrame.width,
                 contentWidth: width)
@@ -242,6 +263,31 @@ open class AADialogCell: AATableViewCell, AABindedCell {
                 counterView.displaysAsynchronously = false
                 counterView.clearContentsBeforeAsynchronouslyDisplay = false
             }
+            
+            
+            //
+            //Image Type
+            //
+            
+            let isBot = binItem.isBot
+            let isChannel = binItem.isChannel
+            
+            if(binItem.peer.peerType == ACPeerType.group()){
+                if(isChannel){
+                    addImageDialogType(UIImage.bundled("ic_channel"))
+                }else {
+                    addImageDialogType(UIImage.bundled("ic_group"))
+                }
+            }else if(binItem.peer.peerType == ACPeerType.private()){
+                if(isBot){
+                    addImageDialogType(UIImage.bundled("ic_robot"))
+                }else{
+                    removeImageDialogType()
+                }
+            }else{
+                removeImageDialogType()
+            }
+            
         }
     }
     
@@ -258,7 +304,6 @@ open class AADialogCell: AATableViewCell, AABindedCell {
         titleContainer.maximumNumberOfRows = 1
         titleContainer.truncationType = .end
         let titleLayout = YYTextLayout(container: titleContainer, text: title)!
-        
         
         //
         // Message Status
@@ -366,7 +411,7 @@ open class AADialogCell: AATableViewCell, AABindedCell {
         if !statusView.isHidden {
             padding += 22
         }
-        let messageViewFrame = CGRect(x: padding, y: 44, width: render.messageWidth, height: 18)
+        let messageViewFrame = CGRect(x: padding, y: 44, width: render.messageWidth, height: 22)
         UIView.performWithoutAnimation {
             self.messageView.frame = messageViewFrame
         }

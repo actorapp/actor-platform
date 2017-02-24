@@ -137,7 +137,7 @@
     <string name="auth_profile_done">COMEÇAR A CONVERSAR</string>
 
     <!-- Auth errors -->
-    <string name="auth_error_wrong_auth_id">Por favor, informe um telefone ou email válido</string>
+    <string name="auth_error_wrong_auth_id">Por favor, informe um telefone válido</string>
     <string name="auth_error_empty_phone">Por favor, insira seu número de telefone</string>
     <string name="auth_error_empty_email">por favor, insira seu e-mail</string>
     <string name="auth_error_code_expired">O código expirou. Por favor reinicie o processo de validação.</string>
@@ -202,7 +202,7 @@
     <string name="dialogs_title">Conversas</string>
     <string name="dialogs_hint">Pressione demoradamnete para opções adicionais</string>
     <string name="dialogs_empty_title">Iniciar conversas</string>
-    <string name="dialogs_empty">Selecione um contato da sua lista ou pressione o potão mais para começar a conversar agora mesmo.</string>
+    <string name="dialogs_empty">Selecione um contato da sua lista ou pressione o botão mais para começar a conversar agora mesmo.</string>
 
     <string name="dialogs_menu_contact_view">Ver contato</string>
     <string name="dialogs_menu_contact_rename">Renomear contato</string>
@@ -213,6 +213,11 @@
     <string name="dialogs_menu_group_leave">Sair do grupo</string>
     <string name="dialogs_menu_group_delete">Remover grupo</string>
 
+    <string name="dialogs_menu_channel_view">Ver informações do canal</string>
+    <string name="dialogs_menu_channel_rename">Renomear canal</string>
+    <string name="dialogs_menu_channel_leave">Sair do canal</string>
+    <string name="dialogs_menu_channel_delete">Excluir canal</string>
+
     <!-- Contacts -->
     <string name="contacts_title">Contatos</string>
     <string name="contacts_empty_short">Não há contatos</string>
@@ -222,7 +227,7 @@
     <string name="contacts_empty_title">Convide seus amigos</string>
     <string name="contacts_empty_invite_hint">Nenhum dos seus contatos usa {appName}. Use o botão abaixo para convidá-los.</string>
     <string name="contacts_empty_invite_action">Avise um amigo</string>
-    <string name="contacts_empty_add_hint">ou adicione manualmente usando o botão abaixo.</string>
+    <string name="contacts_empty_add_hint">ou adicione manualmente usando a busca geral na tela principal.</string>
 
     <string name="contacts_menu_remove">Remove {0} dos contatos</string>
     <string name="contacts_menu_remove_progress">Removendo…</string>
@@ -264,10 +269,12 @@
     <string name="chat_voice_record_cancel">DESLIZE PARA CANCELAR</string>
 
     <string name="chat_not_member">Você não é membro desse grupo</string>
+    <string name="group_deleted">Grupo excluído</string>
+    <string name="channel_deleted">Canal excluído</string>
 
     <string name="chat_join">Entrar</string>
     <string name="chat_mute">Silenciar</string>
-    <string name="chat_unmute">Descilenciar</string>
+    <string name="chat_unmute">Ativar Notificações</string>
 
     <string name="chat_empty_bot">COMEÇAR</string>
     <string name="chat_empty_bot_about">Não há descrição para este bot ainda</string>
@@ -281,7 +288,7 @@
     <string name="messages_action_like">Gostar</string>
     <string name="edit_message">Editar a última mensagem</string>
     <string name="edit_message_error_not_last">Somente sua última mensagem pode ser editada</string>
-    <string name="edit_message_error_slowpoke">A mensagem é muito velha</string>
+    <string name="edit_message_error_slowpoke">A mensagem é muito antiga</string>
 
     <!-- Share menu-->
     <string name="share_menu_gallery">Galeria</string>
@@ -427,7 +434,7 @@
 
     <!-- Add Contact -->
     <string name="add_contact_title">Adicionar contato</string>
-    <string name="add_contact_phone_hint">Insira o número do telefone</string>
+    <string name="add_contact_phone_hint">telefone, email ou usuário</string>
     <string name="add_contact_bar_cancel">CANCELAR</string>
     <string name="add_contact_bar_continue">CONTINUE</string>
 
@@ -452,6 +459,20 @@
     <!-- Group add -->
     <string name="group_add_title">Adicionar membro</string>
 
+    <!-- Join public group -->
+    <string name="join_public_group_title">grupos públicos</string>
+    <string name="join_public_group_members_count">Membros:</string>
+    <string name="join_public_group_friends_count">Amigos:</string>
+
+    <string name="join">ENTRAR</string>
+    <string name="open">ABRIR</string>
+
+    <string name="join_public_group_top_title">Ei!</string>
+    <string name="join_public_group_top_subtitle">Confira as nossas primeiras conversas públicas</string>
+    <string name="join_public_group_top_by_friends_title">Conversar com amigos!</string>
+    <string name="join_public_group_top_by_friends_subtitle">Conversas principais com os seus amigos</string>
+    <string name="join_public_group_all_groups">Todos os grupos</string>
+
     <!-- Invite link-->
     <string name="invite_link_title">Link do convite</string>
     <string name="invite_link_hint">Qualquer um que tenha {appName} instalado poderá entrar no seu grupo acessando esse link</string>
@@ -463,6 +484,7 @@
     <string name="invite_link_error_get_link">Não foi possível obter link do convite</string>
     <string name="invite_link_error_revoke_link">Não foi possível remover link do convite</string>
     <string name="invite_link_empty_view">Carregando o link do convite</string>
+
 
     <string name="invite_link_join_confirm">Entrar "%1$s"?</string>
 

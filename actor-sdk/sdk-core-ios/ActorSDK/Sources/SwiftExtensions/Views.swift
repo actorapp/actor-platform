@@ -111,6 +111,26 @@ public extension UIView {
         self.frame = CGRect(x: rect.origin.x + (rect.width - self.bounds.width) / 2, y: rect.origin.y,
             width: self.bounds.width, height: self.bounds.height)
     }
+    
+    public func addConstraintsWithFormat(_ format: String, views: UIView...) {
+        var viewsDictionary = [String: UIView]()
+        for (index, view) in views.enumerated() {
+            let key = "v\(index)"
+            view.translatesAutoresizingMaskIntoConstraints = false
+            viewsDictionary[key] = view
+        }
+        addConstraints(NSLayoutConstraint.constraints(withVisualFormat: format, options: NSLayoutFormatOptions(), metrics: nil, views: viewsDictionary))
+    }
+    
+    public func addConstraintsWithFormat(_ format: String, formatOptions: NSLayoutFormatOptions, views: UIView...) {
+        var viewsDictionary = [String: UIView]()
+        for (index, view) in views.enumerated() {
+            let key = "v\(index)"
+            view.translatesAutoresizingMaskIntoConstraints = false
+            viewsDictionary[key] = view
+        }
+        addConstraints(NSLayoutConstraint.constraints(withVisualFormat: format, options: formatOptions, metrics: nil, views: viewsDictionary))
+    }
 }
 
 // Text measuring

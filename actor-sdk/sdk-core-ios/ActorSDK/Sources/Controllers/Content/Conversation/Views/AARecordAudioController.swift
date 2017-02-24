@@ -226,7 +226,7 @@ class AARecordAudioController: UIViewController,UIViewControllerTransitioningDel
                 self.sendRecord.isEnabled = true
                 self.cleanRecord.isEnabled = true
             })
-            
+
         })
         
     }

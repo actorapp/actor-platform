@@ -32,7 +32,7 @@ trait Releasing {
   val releaseSettings = Seq(
     taskSetting,
     releaseCommitMessage := s"chore(server): setting version to ${(version in ThisBuild).value}",
-    GithubRelease.repo := "actorapp/actor-platform",
+    GithubRelease.repo := "dfsilva/actor-platform",
     GithubRelease.releaseName := "Actor Server",
     GithubRelease.draft := false,
     GithubRelease.tag := s"server/v${(version in ThisBuild).value}",

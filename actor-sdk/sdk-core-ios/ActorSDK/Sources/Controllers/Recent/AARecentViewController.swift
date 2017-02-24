@@ -65,11 +65,21 @@ open class AARecentViewController: AADialogsListContentController, AADialogsList
     }
     
     open func compose() {
-        if AADevice.isiPad {
-            self.presentElegantViewController(AANavigationController(rootViewController: AAComposeController()))
-        } else {
-            navigateNext(AAComposeController())
+        if let composeController = ActorSDK.sharedActor().delegate.actiorControllerForCompose() {
+            if AADevice.isiPad {
+                self.presentElegantViewController(AANavigationController(rootViewController: composeController))
+            } else {
+                navigateNext(composeController)
+            }
+        }else{
+            if AADevice.isiPad {
+                self.presentElegantViewController(AANavigationController(rootViewController: AAComposeController()))
+            } else {
+                navigateNext(AAComposeController())
+            }
         }
+        
+        
     }
     
     // Tracking app state

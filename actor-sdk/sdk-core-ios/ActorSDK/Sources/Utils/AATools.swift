@@ -5,17 +5,17 @@
 import Foundation
 import zipzap
 
-class AATools {
+open class AATools {
     
-    class func copyFileCommand(_ from: String, to: String) -> ACCommand {
+    open class func copyFileCommand(_ from: String, to: String) -> ACCommand {
         return CopyCommand(from: from, to: to)
     }
     
-    class func zipDirectoryCommand(_ from: String, to: String) -> ACCommand {
+    open class func zipDirectoryCommand(_ from: String, to: String) -> ACCommand {
         return ZipCommand(dir: from, to: to)
     }
     
-    class func isValidEmail(_ testStr:String) -> Bool {
+    open class func isValidEmail(_ testStr:String) -> Bool {
         
         let emailRegEx = "^[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}"
         

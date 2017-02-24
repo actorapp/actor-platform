@@ -22,11 +22,12 @@ import java.lang.reflect.Field;
 import im.actor.sdk.R;
 import im.actor.runtime.Log;
 import im.actor.sdk.controllers.conversation.KeyboardLayout;
+import im.actor.sdk.controllers.tools.AttachOpenCloseCallback;
 import im.actor.sdk.util.KeyboardHelper;
 import im.actor.sdk.util.Screen;
 
 public class BaseKeyboard implements
-        ViewTreeObserver.OnGlobalLayoutListener {
+        ViewTreeObserver.OnGlobalLayoutListener{
 
 
     private static final String TAG = "BaseKeyboard";
@@ -144,8 +145,6 @@ public class BaseKeyboard implements
                     PixelFormat.TRANSLUCENT);
             params.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
             windowManager.updateViewLayout(emojiKeyboardView, params);
-        } else {
-
         }
     }
 
@@ -215,7 +214,6 @@ public class BaseKeyboard implements
 
     public void destroy() {
         dismiss(true);
-
         if (keyboardStatusListener != null) {
             keyboardStatusListener.onDismiss();
         }
@@ -294,16 +292,12 @@ public class BaseKeyboard implements
         // FIXME verify root view applied new padding after keyboard state change
         // workaround for [some of android versions] bug, when keyboard closing not causing relayout, or causing it with delay
         if (changed && root != null) {
-
             root.postDelayed(() -> {
                 if (!root.isSync()) {
                     root.requestLayout();
                 }
             }, 30);
         }
-
-
-
     }
 
     public Activity getActivity() {
@@ -341,29 +335,30 @@ public class BaseKeyboard implements
     }
 
     public static int getViewInset(View view, int statusBarHeight) {
-        if (view == null || view.getRootView() == null) {
-            return 0;
-        }
-
-        view = view.getRootView();
-
-        if (Build.VERSION.SDK_INT < 21 || view.getHeight() == Screen.getHeight() || view.getHeight() == Screen.getHeight() - statusBarHeight) {
-            return 0;
-        }
-
-        try {
-            Field mAttachInfoField = View.class.getDeclaredField("mAttachInfo");
-            mAttachInfoField.setAccessible(true);
-            Object mAttachInfo = mAttachInfoField.get(view);
-            if (mAttachInfo != null) {
-                Field mStableInsetsField = mAttachInfo.getClass().getDeclaredField("mStableInsets");
-                mStableInsetsField.setAccessible(true);
-                Rect insets = (Rect) mStableInsetsField.get(mAttachInfo);
-                return insets.bottom;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        if (view == null || view.getRootView() == null) {
+//            return 0;
+//        }
+//
+//        view = view.getRootView();
+//
+//        if (Build.VERSION.SDK_INT < 21 || view.getHeight() == Screen.getHeight() || view.getHeight() == Screen.getHeight() - statusBarHeight) {
+//            return 0;
+//        }
+//
+//        try {
+//            Field mAttachInfoField = View.class.getDeclaredField("mAttachInfo");
+//            mAttachInfoField.setAccessible(true);
+//            Object mAttachInfo = mAttachInfoField.get(view);
+//            if (mAttachInfo != null) {
+//                Field mStableInsetsField = mAttachInfo.getClass().getDeclaredField("mStableInsets");
+//                mStableInsetsField.setAccessible(true);
+//                Rect insets = (Rect) mStableInsetsField.get(mAttachInfo);
+//                return insets.bottom;
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
         return 0;
     }
+
 }

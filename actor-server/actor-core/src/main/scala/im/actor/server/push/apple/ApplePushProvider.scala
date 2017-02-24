@@ -9,6 +9,8 @@ import im.actor.server.model.push.ApplePushCredentials
 import im.actor.server.push.PushProvider
 import im.actor.server.sequence.PushData
 
+import scala.concurrent.Future
+
 final class ApplePushProvider(userId: Int)(implicit system: ActorSystem) extends PushProvider with APNSSend {
   import system.dispatcher
 
@@ -31,6 +33,7 @@ final class ApplePushProvider(userId: Int)(implicit system: ActorSystem) extends
         log.debug("Delivering invisible(seq:{}) to bundleId: {}", seq, creds.bundleId)
         sendNotification(payload = seqOnly(seq), creds, userId)
       }
+      deliverVoip(seq, creds.authId)
     }
   }
 
@@ -66,7 +69,26 @@ final class ApplePushProvider(userId: Int)(implicit system: ActorSystem) extends
       } else {
         sendNotification(payload = seqOnly(seq), creds, userId)
       }
+      deliverVoip(seq, creds.authId)
     }
+  }
+
+  def deliverVoip(
+    seq:    Int,
+    authId: Long
+  ): Unit = {
+    applePushExt.fetchVoipCreds(Seq(authId).toSet).map(userId → _).map {
+      case (userId, credsList) ⇒ {
+        for {
+          creds ← credsList
+          credsId = extractCredsId(creds)
+          clientFu ← applePushExt.voipClient(credsId)
+          payload = new ApnsPayloadBuilder().buildWithDefaultMaximumLength()
+          _ = clientFu foreach { implicit c ⇒ sendNotification(payload, creds, userId) }
+        } yield ()
+      }
+    }
+
   }
 
   private def seqOnly(seq: Int): String =
@@ -76,7 +98,7 @@ final class ApplePushProvider(userId: Int)(implicit system: ActorSystem) extends
 
   private def isLegacyCreds(creds: ApplePushCredentials) = creds.bundleId.isEmpty
 
-  private def withClient[A](creds: ApplePushCredentials)(f: ApnsClient[SimpleApnsPushNotification] ⇒ A): Unit = {
+  private def withClient[A](creds: ApplePushCredentials)(f: ApnsClient ⇒ A): Unit = {
     val credsKey = extractCredsId(creds)
     applePushExt.client(credsKey) match {
       case Some(futureClient) ⇒ futureClient foreach { f(_) }

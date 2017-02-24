@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import im.actor.core.api.ApiAdminSettings;
 import im.actor.core.api.ApiGroupOutPeer;
 import im.actor.core.api.ApiGroupType;
 import im.actor.core.api.ApiMember;
@@ -26,6 +25,7 @@ import im.actor.core.api.rpc.RequestGetGroupInviteUrl;
 import im.actor.core.api.rpc.RequestGetIntegrationToken;
 import im.actor.core.api.rpc.RequestInviteUser;
 import im.actor.core.api.rpc.RequestJoinGroup;
+import im.actor.core.api.rpc.RequestJoinGroupByGroupId;
 import im.actor.core.api.rpc.RequestJoinGroupByPeer;
 import im.actor.core.api.rpc.RequestKickUser;
 import im.actor.core.api.rpc.RequestLeaveAndDelete;
@@ -63,6 +63,7 @@ import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.eventbus.BusSubscriber;
 import im.actor.runtime.eventbus.Event;
+import im.actor.runtime.function.Consumer;
 import im.actor.runtime.function.Function;
 import im.actor.runtime.mvvm.MVVMCollection;
 import im.actor.runtime.promise.Promise;
@@ -144,6 +145,14 @@ public class GroupsModule extends AbsModule implements BusSubscriber {
                 .map((Function<int[], List<ApiUserOutPeer>>) ints -> {
                     ArrayList<ApiUserOutPeer> peers = new ArrayList<>();
                     for (int u : uids) {
+
+//                        users().getValueAsync(u).then(new Consumer<User>() {
+//                            @Override
+//                            public void apply(User user) {
+//                                peers.add(new ApiUserOutPeer(u, user.getAccessHash()));
+//                            }
+//                        });
+
                         User user = users().getValue(u);
                         if (user != null) {
                             peers.add(new ApiUserOutPeer(u, user.getAccessHash()));
@@ -358,6 +367,12 @@ public class GroupsModule extends AbsModule implements BusSubscriber {
                 .flatMap(group ->
                         api(new RequestJoinGroupByPeer(
                                 new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()))))
+                .chain(r -> updates().waitForUpdate(r.getSeq()))
+                .map(r -> null);
+    }
+
+    public Promise<Void> joinGroupById(int gid) {
+        return api(new RequestJoinGroupByGroupId(gid))
                 .chain(r -> updates().waitForUpdate(r.getSeq()))
                 .map(r -> null);
     }

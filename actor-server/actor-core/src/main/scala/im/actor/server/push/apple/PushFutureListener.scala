@@ -21,16 +21,22 @@ final class PushFutureListener(userId: Int, creds: ApplePushCredentials, credsId
   private val tokenString = BitVector(tokenBytes).toHex
 
   def operationComplete(future: Future[PushNotificationResponse[SimpleApnsPushNotification]]): Unit = {
+
+    log.debug(
+      "APNS send event has completed user: {}, token: {}, cert id: {}, isVoip: {}",
+      userId, tokenString, credsId, creds.isVoip
+    )
+
     Try(future.get()) match {
       case Success(response) ⇒
         log.debug(
-          "APNS send complete, user: {}, token: {}, cert id: {}",
-          userId, tokenString, credsId
+          "APNS send complete, user: {}, token: {}, cert id: {}, isVoip: {}",
+          userId, tokenString, credsId, creds.isVoip
         )
         if (response.isAccepted) {
           log.debug(
-            "Successfully delivered APNS notification to user: {}, token: {}, cert id: {}",
-            userId, tokenString, credsId
+            "Successfully delivered APNS notification to user: {}, token: {}, cert id: {}, isVoip: {}",
+            userId, tokenString, credsId, creds.isVoip
           )
         } else {
           log.warning(
@@ -43,8 +49,8 @@ final class PushFutureListener(userId: Int, creds: ApplePushCredentials, credsId
           }
         }
       case Failure(e) ⇒
-        log.error(e, "Failed to send APNS notification for user: {}, token: {}, cert id: {}",
-          userId, tokenString, credsId)
+        log.error(e, "Failed to send APNS notification for user: {}, token: {}, cert id: {}, isVoip: {}",
+          userId, tokenString, credsId, creds.isVoip)
     }
   }
 

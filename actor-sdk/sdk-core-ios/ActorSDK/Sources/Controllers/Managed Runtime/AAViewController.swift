@@ -17,7 +17,7 @@ open class AAViewController: UIViewController, UINavigationControllerDelegate, U
     
     var pendingPickClosure: ((_ image: UIImage) -> ())?
     
-    var popover: UIPopoverController?
+    open var popover: UIPopoverController?
     
     // Content type for view tracking
     
@@ -93,8 +93,10 @@ open class AAViewController: UIViewController, UINavigationControllerDelegate, U
     
     open func showPlaceholder() {
         if placeholder.superview == nil {
-            placeholder.frame = view.bounds
+            //placeholder.frame = view.frame
             view.addSubview(placeholder)
+            view.addConstraintsWithFormat("H:|[v0]|", views: placeholder)
+            view.addConstraintsWithFormat("V:|[v0]|", views: placeholder)
         }
     }
     

@@ -500,7 +500,7 @@ private class AAManagedSearchController<BindCell>: NSObject, UISearchBarDelegate
         if let ds = searchList {
             return ds.item(with: jint((indexPath as NSIndexPath).row)) as! BindCell.BindData
         } else if let sm = searchModel {
-            let list = sm.getResults().get() as! JavaUtilList
+            let list = sm.getResults().get() as! JavaUtilListProtocol
             return list.getWith(jint((indexPath as NSIndexPath).row)) as! BindCell.BindData
         } else {
             fatalError("No search model or search list is set!")
@@ -521,7 +521,7 @@ private class AAManagedSearchController<BindCell>: NSObject, UISearchBarDelegate
         if let ds = searchList {
             return Int(ds.size())
         } else if let sm = searchModel {
-            let list = sm.getResults().get() as! JavaUtilList
+            let list = sm.getResults().get() as! JavaUtilListProtocol
             return Int(list.size())
         } else {
             fatalError("No search model or search list is set!")

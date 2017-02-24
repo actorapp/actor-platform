@@ -11,6 +11,7 @@ import im.actor.api.rpc.push.PushService
 import im.actor.server.db.DbExtension
 import im.actor.server.model.push.{ ActorPushCredentials, ApplePushCredentials, FirebasePushCredentials, GCMPushCredentials }
 import im.actor.server.persist.push.{ ActorPushCredentialsRepo, ApplePushCredentialsRepo, FirebasePushCredentialsKV, GooglePushCredentialsRepo }
+import im.actor.server.push.apple.ApplePushExtension
 import im.actor.server.sequence.SeqUpdatesExtension
 import scodec.bits.BitVector
 import slick.driver.PostgresDriver.api._
@@ -64,6 +65,7 @@ final class PushServiceImpl(
           token = ByteString.copyFrom(tokenBytes),
           isVoip = false
         )
+
         val action: DBIO[HandlerResult[ResponseVoid]] = for {
           _ ← ApplePushCredentialsRepo.deleteByToken(tokenBytes)
           _ ← ApplePushCredentialsRepo.createOrUpdate(creds)
