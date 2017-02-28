@@ -40,19 +40,15 @@ public class ActorApplication {
     private ActorApplicationCallback callback;
 
 
-    public ActorApplication(String username,String nickname ,String password,ConfigurationBuilder builder,ActorApplicationCallback callback)
+    public ActorApplication(String username,String nickname ,String password,String cacheName,ConfigurationBuilder builder,ActorApplicationCallback callback)
     {
 
         this.username = username;
         this.password = password;
         this.nickname = nickname;
 
-
         this.builder = builder;
         this.callback = callback;
-
-
-
         builder.setDeviceCategory(DeviceCategory.DESKTOP);
         builder.setPlatformType(PlatformType.GENERIC);
         builder.setApiConfiguration(new ApiConfiguration(
@@ -62,13 +58,14 @@ public class ActorApplication {
                 "najva00000000000000000123-" + myNumber,
                 "najva00000000000000000000-v1-" + myNumber));
 
-        messenger = new ClcMessenger(builder.build(),Integer.toString(myNumber));
-
-
-
-
+        messenger = new ClcMessenger(builder.build(),cacheName);
 //        messenger.resetAuth();
         sendUserName(username,password);
+    }
+
+    public void clearCache()
+    {
+        messenger.clearPref();
     }
 
     private void sendUserName(String username,String password)
