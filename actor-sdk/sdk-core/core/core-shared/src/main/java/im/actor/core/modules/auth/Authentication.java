@@ -212,7 +212,7 @@ public class Authentication {
             public void onResult(ResponseStartUsernameAuth response) {
                 resolver.result(new AuthStartRes(
                         response.getTransactionHash(),
-                        AuthMode.fromApi(response.getActivationType()),
+                        AuthMode.fromApi(ApiPhoneActivationType.CODE),
                         response.isRegistered()));
             }
 

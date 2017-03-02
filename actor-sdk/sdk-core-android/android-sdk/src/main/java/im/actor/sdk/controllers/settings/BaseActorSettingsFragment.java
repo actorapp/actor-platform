@@ -153,11 +153,11 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
                 nickContainer.removeAllViews();
                 nickContainer.addView(recordView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                         Screen.dp(72)));
-
                 recordView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        getActivity().startActivity(Intents.editUserNick(getActivity()));
+                        //修改姓名
+//                        getActivity().startActivity(Intents.editUserNick(getActivity()));
                     }
                 });
             }
@@ -564,15 +564,17 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
             FrameLayout settingsTop = (FrameLayout) view.findViewById(R.id.settings_top_container);
             settingsTop.addView(getSettingsTopView(), FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         }
+
         if (getSettingsBottomView() != null) {
             FrameLayout settingsBot = (FrameLayout) view.findViewById(R.id.settings_bottom_container);
             settingsBot.addView(getSettingsBottomView(), FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         }
 
-        if (getBeforeSettingsCategories() != null) {
-            LinearLayout beforeSettings = (LinearLayout) view.findViewById(R.id.before_settings_container);
-            addCategories(beforeSettings, getBeforeSettingsCategories(), inflater);
-        }
+        //blabla
+//        if (getBeforeSettingsCategories() != null) {
+//            LinearLayout beforeSettings = (LinearLayout) view.findViewById(R.id.before_settings_container);
+//            addCategories(beforeSettings, getBeforeSettingsCategories(), inflater);
+//        }
 
         if (getAfterSettingsCategories() != null) {
             LinearLayout afterSettings = (LinearLayout) view.findViewById(R.id.after_settings_container);
@@ -760,6 +762,9 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.my_profile, menu);
+
+        MenuItem item = menu.findItem(R.id.editProfile);
+        item.setVisible(false);
     }
 
     @Override
