@@ -7,7 +7,8 @@ import Foundation
 open class AAAuthViewController: AAViewController {
     
     open let nextBarButton = UIButton()
-    fileprivate var keyboardHeight: CGFloat = 0
+    var keyboardHeight: CGFloat = 0
+
     
     override open func viewDidLoad() {
         super.viewDidLoad()
@@ -32,35 +33,41 @@ open class AAAuthViewController: AAViewController {
         // Forcing initial layout before keyboard show to avoid weird animations
         layoutNextBar()
         
-        NotificationCenter.default.addObserver(self, selector: #selector(AAAuthViewController.keyboardWillAppearInt(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(AAAuthViewController.keyboardWillAppearInt(_:)), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(AAAuthViewController.keyboardWillAppearInt(_:)), name:NSNotification.Name.UITextInputCurrentInputModeDidChange, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(AAAuthViewController.keyboardWillDisappearInt(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
     
-    fileprivate func layoutNextBar() {
+    func layoutNextBar() {
         nextBarButton.frame = CGRect(x: view.width - 95, y: view.height - 44 - keyboardHeight + 6, width: 85, height: 32)
     }
     
     func keyboardWillAppearInt(_ notification: Notification) {
         let dict = (notification as NSNotification).userInfo!
-        let rect = (dict[UIKeyboardFrameBeginUserInfoKey]! as AnyObject).cgRectValue
+//        let duration = (dict[UIKeyboardAnimationDurationUserInfoKey] as! Float)
+//        let beginKeyboardRect = dict[UIKeyboardFrameBeginUserInfoKey] as! CGRect
+        let endKeyBoardRect = dict[UIKeyboardFrameEndUserInfoKey] as! CGRect
+        let heightCoveredByKeyboard = self.view.frame.size.height - endKeyBoardRect.origin.y
         
-        let orientation = UIApplication.shared.statusBarOrientation
-        let frameInWindow = self.view.superview!.convert(view.bounds, to: nil)
-        let windowBounds = view.window!.bounds
-        
-        let keyboardTop: CGFloat = windowBounds.size.height - rect!.height
-        let heightCoveredByKeyboard: CGFloat
-        if AADevice.isiPad {
-            if orientation == .landscapeLeft || orientation == .landscapeRight {
-                heightCoveredByKeyboard = frameInWindow.maxY - keyboardTop - 52 /*???*/
-            } else if orientation == .portrait || orientation == .portraitUpsideDown {
-                heightCoveredByKeyboard = frameInWindow.maxY - keyboardTop
-            } else {
-                heightCoveredByKeyboard = 0
-            }
-        } else {
-            heightCoveredByKeyboard = (rect?.height)!
-        }
+//        let rect = (dict[UIKeyboardFrameBeginUserInfoKey]! as AnyObject).cgRectValue
+//        
+//        let orientation = UIApplication.shared.statusBarOrientation
+//        let frameInWindow = self.view.superview!.convert(view.bounds, to: nil)
+//        let windowBounds = view.window!.bounds
+//        
+//        let keyboardTop: CGFloat = windowBounds.size.height - rect!.height
+//        let heightCoveredByKeyboard: CGFloat
+//        if AADevice.isiPad {
+//            if orientation == .landscapeLeft || orientation == .landscapeRight {
+//                heightCoveredByKeyboard = frameInWindow.maxY - keyboardTop - 52 /*???*/
+//            } else if orientation == .portrait || orientation == .portraitUpsideDown {
+//                heightCoveredByKeyboard = frameInWindow.maxY - keyboardTop
+//            } else {
+//                heightCoveredByKeyboard = 0
+//            }
+//        } else {
+//            heightCoveredByKeyboard = (rect?.height)!
+//        }
         
         keyboardHeight = max(0, heightCoveredByKeyboard)
         layoutNextBar()

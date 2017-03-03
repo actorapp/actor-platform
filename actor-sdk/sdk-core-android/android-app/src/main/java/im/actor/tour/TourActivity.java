@@ -62,10 +62,11 @@ public class TourActivity extends ActionBarActivity {
         background.findViewById(R.id.background_colored).setBackgroundColor(ActorSDK.sharedActor().style.getMainColor());
         TextView signupButtonText = (TextView) findViewById(R.id.signUpButtonText);
         StateListDrawable states = SelectorFactory.get(ActorSDK.sharedActor().style.getPrimaryAltColor(), this);
-        signupButtonText.setBackgroundDrawable(states);
+//        signupButtonText.setBackgroundDrawable(states);
         signupButtonText.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryInvColor());
         signupButtonText.setTypeface(Fonts.medium());
         TextView buttonSignUp = (TextView) findViewById(R.id.signIn);
+        buttonSignUp.setBackgroundDrawable(states);
         buttonSignUp.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryInvColor());
         buttonSignUp.setTypeface(Fonts.medium());
         ((TextView) findViewById(R.id.app_name)).setTextColor(ActorSDK.sharedActor().style.getTextPrimaryInvColor());

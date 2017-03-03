@@ -44,7 +44,7 @@
     <string name="tour_sign_using_oauth">(使用谷歌)</string>
     <string name="tour_back_to_top">返回顶部</string>
 
-    <string name="tour_welcome_title">{appName}</string>
+    <string name="tour_welcome_title">优聆</string>
     <string name="tour_welcome_subtitle">针对团队和朋友的安全交流工具</string>
 
     <string name="tour_groups_title">超多人的群组</string>
@@ -59,6 +59,7 @@
     <!-- Phone Sign Fragment -->
     <string name="auth_phone_title">验证手机</string>
     <string name="auth_phone_hint">请选择你的国家并输入你的手机号码。</string>
+    <string name="auth_password_hnit">请输入你的密码</string>
     <string name="auth_phone_number_hint">你的手机号码</string>
     <string name="auth_phone_get_code">确认</string>
     <string name="auth_phone_why">为什么我们需要你的手机号码?</string>
@@ -83,15 +84,25 @@
     <string name="auth_email_get_code">确认</string>
 
     <!-- Sign In Fragment -->
+    <string name="sign_in_title">登录</string>
+    <string name="sign_in_nickname_hint">请输入您的用户名</string>
+    <string name="sign_in_edit_text_hint">用户名</string>
+    <string name="sign_in_edit_text_hint_phone_only">phone</string>
+    <string name="sign_in_edit_text_hint_email_only">email</string>
+    <string name="sign_in_get_code">登录</string>
+
     <string name="auth_code_phone_hint">已经发送验证码到您的手机： {0}</string>
     <string name="auth_code_email_hint">已经发送验证码到您的电子邮件： {0}</string>
     <string name="auth_code_title">输入短信中的验证码</string>
     <string name="auth_code_sms_hint">短信验证码</string>
+    <string name="auth_password_title">输入密码</string>
     <string name="auth_code_done">完成</string>
+    <string name="auth_code_wrong_username">账号错误?</string>
     <string name="auth_code_wrong_number">手机号码错误?</string>
     <string name="auth_code_wrong_email">电子邮件错误?</string>
     <string name="auth_code_phone_change">确定要变更手机号码吗?</string>
     <string name="auth_code_email_change">确定要变更电子邮件吗?</string>
+    <string name="auth_code_username_change">确定要变更账号名吗?</string>
     <string name="auth_code_change_yes">变更</string>
 
     <!-- Sign Up Fragment -->

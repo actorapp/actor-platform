@@ -110,7 +110,7 @@ import ReachabilitySwift
     open var supportAccount: String? = nil
     
     /// Support home page
-    open var supportHomepage: String? = "https://actor.im"
+    open var supportHomepage: String? = "http://www.eaglesoft.cn"
 
     /// Support account
     open var supportTwitter: String? = "actorapp"

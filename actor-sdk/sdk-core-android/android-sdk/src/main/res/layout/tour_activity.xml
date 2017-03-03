@@ -122,7 +122,8 @@
             android:layout_marginRight="8dp"
             android:layout_marginTop="16dp"
             android:background="@drawable/shadow_square_3"
-            android:clickable="true">
+            android:clickable="true"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/signUpButtonText"
@@ -136,17 +137,29 @@
                 android:textSize="15sp" />
         </FrameLayout>
 
-        <Button
-            android:id="@+id/signIn"
+        <FrameLayout
+            android:id="@+id/signInButton"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:background="@android:color/transparent"
-            android:minWidth="88dp"
-            android:text="@string/tour_sign_in"
-            android:textAllCaps="true"
-            android:textSize="14sp" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/shadow_square_3"
+            android:clickable="true">
 
-
+            <Button
+                android:id="@+id/signIn"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:gravity="center"
+                android:minWidth="88dp"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:text="@string/tour_sign_in"
+                android:textSize="15sp" />
+        </FrameLayout>
+        <!--android:textAllCaps="true"-->
     </LinearLayout>
 
     <TextView
