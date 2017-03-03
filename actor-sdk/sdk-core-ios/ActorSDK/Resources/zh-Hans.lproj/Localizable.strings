@@ -589,11 +589,13 @@
 
 "AuthOTPPhoneTitle" = "确认手机号码";
 
+"AuthOTPasswordTitle" = "请输入密码";
+
 "AuthOTPEmailHint" = "验证码邮件已发送。\n请输入";
 
 "AuthOTPPhoneHint" = "验证码短信已发送。\n请输入";
 
-"AuthOTPPlaceholder" = "验证码";
+"AuthOTPPlaceholder" = "密码";
 
 "AuthOTPNoCode" = "收不到验证码?";
 

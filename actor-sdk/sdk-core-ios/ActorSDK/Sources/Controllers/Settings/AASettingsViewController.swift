@@ -113,33 +113,33 @@ open class AASettingsViewController: AAContentTableController {
             }
             
             // Profile: Set Name
-            s.action("SettingsChangeName") { [unowned self] (r) -> () in
-                r.selectAction = { [unowned self] () -> Bool in
-                    
-                    self.startEditField { (c) -> () in
-                        c.title = "SettingsEditHeader"
-                        c.hint = "SettingsEditHint"
-                        
-                        c.initialText = self.user.getNameModel().get()
-                        
-                        c.fieldAutocapitalizationType = .words
-                        c.fieldHint = "SettingsEditFieldHint"
-                        
-                        c.didDoneTap = { (t, c) -> () in
-
-                            if t.length == 0 {
-                                return
-                            }
-                            
-                            c.executeSafeOnlySuccess(Actor.editMyNameCommand(withName: t)!) { (val) -> Void in
-                                c.dismissController()
-                            }
-                        }
-                    }
-                    
-                    return true
-                }
-            }
+//            s.action("SettingsChangeName") { [unowned self] (r) -> () in
+//                r.selectAction = { [unowned self] () -> Bool in
+//                    
+//                    self.startEditField { (c) -> () in
+//                        c.title = "SettingsEditHeader"
+//                        c.hint = "SettingsEditHint"
+//                        
+//                        c.initialText = self.user.getNameModel().get()
+//                        
+//                        c.fieldAutocapitalizationType = .words
+//                        c.fieldHint = "SettingsEditFieldHint"
+//                        
+//                        c.didDoneTap = { (t, c) -> () in
+//
+//                            if t.length == 0 {
+//                                return
+//                            }
+//                            
+//                            c.executeSafeOnlySuccess(Actor.editMyNameCommand(withName: t)!) { (val) -> Void in
+//                                c.dismissController()
+//                            }
+//                        }
+//                    }
+//                    
+//                    return true
+//                }
+//            }
             
             ActorSDK.sharedActor().delegate.actorSettingsHeaderDidCreated(self, section: s)
         }
@@ -350,9 +350,9 @@ open class AASettingsViewController: AAContentTableController {
             }
 
             // Support: Twitter
-            if let twitter = ActorSDK.sharedActor().supportTwitter {
-                s.url("SettingsTwitter", url: "https://twitter.com/\(twitter)")
-            }
+//            if let twitter = ActorSDK.sharedActor().supportTwitter {
+//                s.url("SettingsTwitter", url: "https://twitter.com/\(twitter)")
+//            }
 
             // Support: Home page
             if let homePage = ActorSDK.sharedActor().supportHomepage {

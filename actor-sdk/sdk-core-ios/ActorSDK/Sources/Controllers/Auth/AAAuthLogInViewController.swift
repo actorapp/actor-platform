@@ -4,7 +4,7 @@
 
 import Foundation
 
-open class AAAuthLogInViewController: AAAuthViewController {
+open class AAAuthLogInViewController: AAAuthViewController, UITextFieldDelegate {
     
     let scrollView = UIScrollView()
     
@@ -49,6 +49,7 @@ open class AAAuthLogInViewController: AAAuthViewController {
         }
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
+        field.delegate = self
         
         fieldLine.backgroundColor = ActorSDK.sharedActor().style.authSeparatorColor
         fieldLine.isOpaque = false
@@ -127,12 +128,31 @@ open class AAAuthLogInViewController: AAAuthViewController {
         shakeView(fieldLine, originalX: 10)
     }
     
-    open override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
+    public func textFieldDidBeginEditing(_ textField: UITextField) {
         
-        field.resignFirstResponder()
+        
+    }
+    public func textFieldDidEndEditing(_ textField: UITextField) {
+
     }
     
+    
+    override open func keyboardWillAppear(_ height: CGFloat) {
+        scrollView.frame = CGRect(x: 0, y: 0, width: view.width, height: view.height - height)
+        
+        if AADevice.isiPhone4 || AADevice.isiPhone5 {
+            
+            let height = scrollView.height - height
+            let offset: CGFloat = 245 + 44
+            let destOffset = height * 0.66  - offset / 2
+            
+            scrollView.setContentOffset(CGPoint(x: 0, y: -destOffset), animated: true)
+        }
+    }
+    
+    override open func keyboardWillDisappear() {
+        scrollView.frame = CGRect(x: 0, y: 0, width: view.width, height: view.height)
+    }
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         

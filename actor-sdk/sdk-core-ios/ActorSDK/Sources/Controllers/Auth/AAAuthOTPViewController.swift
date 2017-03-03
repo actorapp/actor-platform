@@ -85,7 +85,7 @@ open class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewContr
         if email != nil {
             welcomeLabel.text = AALocalized("AuthOTPEmailTitle")
         } else {
-            welcomeLabel.text = AALocalized("AuthOTPPhoneTitle")
+            welcomeLabel.text = AALocalized("AuthOTPasswordTitle")
         }
         welcomeLabel.textColor = ActorSDK.sharedActor().style.authTitleColor
         welcomeLabel.textAlignment = .center
@@ -103,7 +103,7 @@ open class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewContr
         if email != nil {
             hintLabel.text = AALocalized("AuthOTPEmailHint")
         } else {
-            hintLabel.text = AALocalized("AuthOTPPhoneHint")
+            hintLabel.text = ""/*AALocalized("AuthOTPPhoneHint")*/
         }
         hintLabel.textColor = ActorSDK.sharedActor().style.authHintColor
         hintLabel.textAlignment = .center
