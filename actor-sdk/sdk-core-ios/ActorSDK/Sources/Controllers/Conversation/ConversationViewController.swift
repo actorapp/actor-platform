@@ -536,9 +536,9 @@ open class ConversationViewController:
     
     func onCallTap() {
         if (self.peer.isGroup) {
-            execute(ActorSDK.sharedActor().messenger.doCall(withGid: self.peer.peerId))
+            executeHidden(ActorSDK.sharedActor().messenger.doCall(withGid: self.peer.peerId))
         } else if (self.peer.isPrivate) {
-            execute(ActorSDK.sharedActor().messenger.doCall(withUid: self.peer.peerId))
+            executeHidden(ActorSDK.sharedActor().messenger.doCall(withUid: self.peer.peerId))
         }
     }
     
