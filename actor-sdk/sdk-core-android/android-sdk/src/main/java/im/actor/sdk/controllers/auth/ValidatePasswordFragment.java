@@ -72,7 +72,7 @@ public class ValidatePasswordFragment extends BaseAuthFragment {
             );
         } else {
             sendHint.setText(
-                    Html.fromHtml(getString(R.string.auth_password_hnit).replace("{0}", "<b>" + authId + "</b>"))
+                    Html.fromHtml(getString(R.string.auth_password).replace("{0}", "<b>" + authId + "</b>"))
             );
 
             TextView sendName = (TextView) v.findViewById(R.id.sendUserName);
@@ -163,7 +163,7 @@ public class ValidatePasswordFragment extends BaseAuthFragment {
     @Override
     public void onResume() {
         super.onResume();
-        setTitle(R.string.auth_password_title);
+        setTitle(R.string.auth_code_title);
         keyboardHelper.setImeVisibility(codeEnterEditText, true);
         focus(codeEnterEditText);
     }

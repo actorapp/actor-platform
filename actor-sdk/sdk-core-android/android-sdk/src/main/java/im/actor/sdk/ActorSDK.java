@@ -142,11 +142,12 @@ public class ActorSDK {
     /**
      * Home page
      */
-    private String homePage = "https://actor.im";
+//    private String homePage = "https://actor.im";
+    private String homePage = "http://www.eaglesoft.cn";
     /**
      * Twitter
      */
-    private String twitter = "actorapp";
+    private String twitter = "";
 
     /**
      * Terms of service

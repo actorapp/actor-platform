@@ -14,8 +14,6 @@ public class InviteActivity extends BaseFragmentActivity {
         super.onCreate(savedInstanceState);
 
         getSupportActionBar().setTitle(R.string.contacts_invite_via_link);
-
-
         if (savedInstanceState == null) {
             showFragment(new InviteFragment(), false);
         }

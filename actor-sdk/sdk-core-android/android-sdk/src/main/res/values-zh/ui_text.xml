@@ -4,7 +4,7 @@
   -->
 
 <resources>
-    <string name="app_name">优聆</string>
+    <string name="app_name">易联</string>
     <string name="app_locale">Cn</string>
 
     <string name="dialog_ok">确定</string>
@@ -44,7 +44,7 @@
     <string name="tour_sign_using_oauth">(使用谷歌)</string>
     <string name="tour_back_to_top">返回顶部</string>
 
-    <string name="tour_welcome_title">优聆</string>
+    <string name="tour_welcome_title">易联</string>
     <string name="tour_welcome_subtitle">针对团队和朋友的安全交流工具</string>
 
     <string name="tour_groups_title">超多人的群组</string>
@@ -57,9 +57,8 @@
     <string name="tour_secure_text">不必担心别人可以看到你的消息。共享的文档、文件、照片不用担心落入他人手中。</string>
 
     <!-- Phone Sign Fragment -->
-    <string name="auth_phone_title">验证手机</string>
-    <string name="auth_phone_hint">请选择你的国家并输入你的手机号码。</string>
-    <string name="auth_password_hnit">请输入你的密码</string>
+    <string name="auth_phone_title">账号名称</string>
+    <string name="auth_phone_hint">请输入你的用户名。</string>
     <string name="auth_phone_number_hint">你的手机号码</string>
     <string name="auth_phone_get_code">确认</string>
     <string name="auth_phone_why">为什么我们需要你的手机号码?</string>
@@ -85,25 +84,23 @@
 
     <!-- Sign In Fragment -->
     <string name="sign_in_title">登录</string>
-    <string name="sign_in_nickname_hint">请输入您的用户名</string>
+    <string name="sign_in_nickname_hint">请输入您的用户名.</string>
     <string name="sign_in_edit_text_hint">用户名</string>
-    <string name="sign_in_edit_text_hint_phone_only">phone</string>
-    <string name="sign_in_edit_text_hint_email_only">email</string>
-    <string name="sign_in_get_code">登录</string>
-
     <string name="auth_code_phone_hint">已经发送验证码到您的手机： {0}</string>
+    <string name="auth_password">请输入您的密码： {0}</string>
+    <string name="auth_password_init">请输入您的密码</string>
     <string name="auth_code_email_hint">已经发送验证码到您的电子邮件： {0}</string>
-    <string name="auth_code_title">输入短信中的验证码</string>
+    <string name="auth_code_title">请输入密码</string>
     <string name="auth_code_sms_hint">短信验证码</string>
-    <string name="auth_password_title">输入密码</string>
     <string name="auth_code_done">完成</string>
-    <string name="auth_code_wrong_username">账号错误?</string>
     <string name="auth_code_wrong_number">手机号码错误?</string>
     <string name="auth_code_wrong_email">电子邮件错误?</string>
+    <string name="auth_code_wrong_username">用户名错误?</string>
     <string name="auth_code_phone_change">确定要变更手机号码吗?</string>
     <string name="auth_code_email_change">确定要变更电子邮件吗?</string>
-    <string name="auth_code_username_change">确定要变更账号名吗?</string>
+    <string name="auth_code_username_change">确定要变更用户名吗?</string>
     <string name="auth_code_change_yes">变更</string>
+    <string name="auth_password_hint">密码</string>
 
     <!-- Sign Up Fragment -->
     <string name="auth_profile_title">个人信息</string>
@@ -115,9 +112,10 @@
     <string name="auth_error_empty_phone">请输入手机号码</string>
     <string name="auth_error_empty_email">请输入电子邮件</string>
     <string name="auth_error_code_expired">验证码已过期，请重新请求。</string>
-    au
     <string name="auth_error_code_invalid">验证码不正确，请重试。</string>
     <string name="auth_error_failed_get_oauth2_token">验证服务器发送异常，请重试。</string>
+    <string name="auth_error_password_invalid">密码不正确，请重试。</string>
+    <string name="auth_error_wrong_auth_id">请输入正确的用户名</string>
 
     <!-- Typing -->
     <string name="typing_private">正在输入…</string>
@@ -135,6 +133,7 @@
 
     <string name="main_fab_compose">发消息</string>
     <string name="main_fab_new_group">创建群组</string>
+    <string name="main_fab_new_channel">创建频道</string>
     <string name="main_fab_join_public_group">加入公共群组</string>
     <string name="main_fab_add_contact">添加好友</string>
 
@@ -155,9 +154,15 @@
     <string name="settings_header">设置</string>
     <string name="settings_help">帮助</string>
     <string name="settings_ask">提问</string>
+    <string name="settings_blocked_list">黑名单</string>
     <string name="settings_notifications">推送通知</string>
     <string name="settings_chat">聊天设置</string>
     <string name="settings_security">安全</string>
+    <string name="settings_home_page">开发公司主页</string>
+    <string name="nickname">用户名</string>
+    <string name="about_user_me">个人说明</string>
+    <string name="about_header">关于</string>
+    <string name="wallpaper">壁纸</string>
 
     <!-- Profile controls -->
     <string name="phone_menu_call">拨打 {0}</string>
@@ -195,8 +200,11 @@
     <string name="contacts_menu_remove_progress">移除中…</string>
     <string name="contacts_menu_edit">编辑名字</string>
 
+    <string name="invites_share_link_one">分享链接</string>
+    <string name="invites_share_link_multiple">通过短信/电子邮件发送链接到多个联系人</string>
     <string name="contacts_invite_via_link">通过链接邀请</string>
-
+    <string name="invites_select_all">全选</string>
+    <string name="invites_select_none">清空</string>
     <!-- Chat -->
     <string name="chat_menu_group_info">群组信息</string>
     <string name="chat_menu_view_contact">查看通讯录</string>
@@ -225,6 +233,21 @@
     <string name="chat_not_member">你不是这个群组的成员</string>
 
     <string name="chat_unsupported">这个版本不支持此消息。请等待应用升级，之后就可以看到消息了。</string>
+
+
+    <!-- Share menu-->
+    <string name="share_menu_gallery">图库</string>
+    <string name="share_menu_video">录像</string>
+    <string name="share_menu_file">文件</string>
+    <string name="share_menu_camera">照相</string>
+    <string name="share_menu_contact">通讯录</string>
+    <string name="share_menu_location">定位</string>
+
+    <!-- Map -->
+    <string name="map_title">Location</string>
+    <string name="map_type_normal">Map</string>
+    <string name="map_type_satellite">Satellite</string>
+    <string name="map_type_hybrid">Hybrid</string>
 
     <!-- Profile -->
     <string name="profile_title">个人信息</string>
@@ -274,18 +297,22 @@
     <string name="group_add_member">添加成员</string>
 
     <string name="group_not_member">你不是这个群组的成员</string>
-
+    <string name="about_group">群组说明</string>
+    <string name="about_group_empty">描述群组</string>
+    <string name="theme_group">群组主题</string>
+    <string name="theme_group_empty">描述群组主题</string>
     <!-- Avatar -->
     <string name="avatar_title_your">你的头像</string>
     <string name="avatar_title_person">头像</string>
     <string name="avatar_title_group">群组头像</string>
     <string name="avatar_no_photo">未设置头像</string>
-    <string name="actor_menu_edit">编辑</string>
+    <string name="avatar_menu_edit">编辑</string>
     <string name="avatar_menu_set_as">设置为…</string>
 
     <!-- Add Contact -->
     <string name="add_contact_title">添加好友</string>
-    <string name="add_contact_phone_hint">输入电话号码</string>
+    <string name="add_contact_phone_hint">电话号码、昵称</string>
+    <string name="add_contact_username_hint">输入用户名</string>
     <string name="add_contact_bar_cancel">取消</string>
     <string name="add_contact_bar_continue">确认</string>
 
@@ -298,6 +325,15 @@
     <string name="create_group_hint">进入群组主题设置群组图片</string>
     <string name="create_group_search_hint">通过群名检索</string>
     <string name="create_group_done">完成</string>
+
+    <!-- Create Channel -->
+    <string name="create_channel_title">创建频道</string>
+    <string name="create_channel_name_hint">频道名称</string>
+    <string name="create_channel_hint">请输入频道名称并设置频道图标</string>
+
+    <string name="group_name_hint">Name</string>
+    <string name="group_description_hint">Description</string>
+
 
     <!-- Group add -->
     <string name="group_add_title">添加成员</string>
@@ -351,6 +387,9 @@
     <string name="edit_name_cancel">取消</string>
     <string name="edit_name_save">保存</string>
     <string name="edit_name_process">正在更改名称…</string>
+    <string name="edit_about_edittext_hint">自我介绍</string>
+    <string name="edit_name_title_group_theme">输入群组主题</string>
+
 
     <!-- Help -->
     <string name="help_title">帮助</string>
@@ -394,6 +433,19 @@
     <string name="security_terminate_message">确定要要退出其它所有设备吗？</string>
     <string name="security_authorized_header">授权的设备和服务</string>
     <string name="security_authorized_loading">正在载入…</string>
+
+    <!-- Blocked list -->
+    <string name="blocked_title">黑名单</string>
+    <string name="blocked_empty_list">没有黑名单</string>
+    <string name="blocked_loading">加载中...</string>
+    <string name="blocked_unblock">解锁</string>
+
+    <!-- Last Seen -->
+    <string name="security_last_seen_title">最后一次露面</string>
+    <string name="security_last_seen_subtitle">选择谁能看到你的最后登录时间。</string>
+    <string name="security_last_seen_everybody">每个人都可见</string>
+    <string name="security_last_seen_contacts">联系人可见</string>
+    <string name="security_last_seen_nobody">无人可见</string>
 
     <!-- Alerts -->
     <string name="alert_delete_messages_text">是否要删除这{0}条信息?</string>

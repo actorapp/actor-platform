@@ -22,7 +22,7 @@ public class AttachFragmentEx extends AttachFragment {
     @Override
     protected List<ShareMenuField> onCreateFields() {
         List<ShareMenuField> res = super.onCreateFields();
-        res.add(new ShareMenuField(R.id.share_test, R.drawable.ic_edit_white_24dp, ActorSDK.sharedActor().style.getAccentColor(), "lol"));
+//        res.add(new ShareMenuField(R.id.share_test, R.drawable.ic_edit_white_24dp, ActorSDK.sharedActor().style.getAccentColor(), "lol"));
         return res;
     }
 

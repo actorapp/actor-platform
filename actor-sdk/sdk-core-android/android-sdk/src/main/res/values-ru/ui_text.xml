@@ -552,7 +552,8 @@
 
     <string name="notification_multiple_canversations_after_msg_count">" сообщений в "</string>
     <string name="notifications_multiple_canversations_after_coversations_count">" чатах"</string>
-    <string name="notifications_single_conversation_аfter_messages_count">" сообщений"</string>
+    <string name="notifications_single_conversation_after_messages_count">" сообщений"</string>
+
 
     <!-- Pick user -->
     <string name="pick_user_title">Выберите человека</string>

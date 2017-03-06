@@ -538,7 +538,7 @@
     <string name="not_sound_picker_subtitle">Set notification sound</string>
     <string name="notification_multiple_canversations_after_msg_count">" messages in "</string>
     <string name="notifications_multiple_canversations_after_coversations_count">" chats"</string>
-    <string name="notifications_single_conversation_аfter_messages_count">" messages"</string>
+    <string name="notifications_single_conversation_after_messages_count">" messages"</string>
 
     <!-- Pick user -->
     <string name="pick_user_title">Pick person</string>
