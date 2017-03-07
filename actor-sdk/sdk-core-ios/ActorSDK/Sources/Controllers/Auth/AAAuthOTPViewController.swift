@@ -113,7 +113,7 @@ open class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewContr
         codeField.font = UIFont.systemFont(ofSize: 17)
         codeField.textColor = ActorSDK.sharedActor().style.authTextColor
         codeField.placeholder = AALocalized("AuthOTPPlaceholder")
-        codeField.keyboardType = .numberPad
+        codeField.keyboardType = .default
         codeField.autocapitalizationType = .none
         codeField.autocorrectionType = .no
         
