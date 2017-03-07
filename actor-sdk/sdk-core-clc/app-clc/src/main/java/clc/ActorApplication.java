@@ -40,7 +40,7 @@ public class ActorApplication {
     private ActorApplicationCallback callback;
 
 
-    public ActorApplication(String username,String nickname ,String password,String cacheName,ConfigurationBuilder builder,ActorApplicationCallback callback)
+    public ActorApplication(String username,String nickname ,String password,String cacheName,boolean clearCache,ConfigurationBuilder builder,ActorApplicationCallback callback)
     {
 
         this.username = username;
@@ -59,14 +59,18 @@ public class ActorApplication {
                 "najva00000000000000000000-v1-" + myNumber));
 
         messenger = new ClcMessenger(builder.build(),cacheName);
+        if(clearCache)
+        {
+            messenger.clearPref();
+        }
 //        messenger.resetAuth();
         sendUserName(username,password);
     }
 
-    public void clearCache()
-    {
-        messenger.clearPref();
-    }
+    //public void clearCache()
+//    {
+//        messenger.clearPref();
+//    }
 
     private void sendUserName(String username,String password)
     {
