@@ -218,7 +218,7 @@
                   moduleName = "ActorSDK"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/zhangshanbo/actor-platform/actor-sdk/sdk-core-ios/ActorSDK/Sources/Controllers/Contacts/AAContactsViewController.swift"
-                  timestampString = "510215615.665271"
+                  timestampString = "510629302.206025"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "170"
@@ -233,7 +233,7 @@
                   moduleName = "ActorSDK"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/zhangshanbo/actor-platform/actor-sdk/sdk-core-ios/ActorSDK/Sources/Controllers/Contacts/AAContactsViewController.swift"
-                  timestampString = "510215615.668582"
+                  timestampString = "510629302.209503"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "171"
@@ -1725,6 +1725,198 @@
             startingLineNumber = "144"
             endingLineNumber = "144"
             landmarkName = "showProgress()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ActorSDK/Sources/Controllers/Group/AAGroupViewController.swift"
+            timestampString = "510540694.263693"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "383"
+            endingLineNumber = "383"
+            landmarkName = "editDidPressed()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ActorSDK/Sources/Controllers/Content/Dialogs List/Cells/AADialogCell.swift"
+            timestampString = "510540764.410469"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "179"
+            endingLineNumber = "179"
+            landmarkName = "willTransition(to:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ActorSDK/Sources/Controllers/Content/Dialogs List/Cells/AADialogCell.swift"
+            timestampString = "510540765.621644"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "180"
+            endingLineNumber = "180"
+            landmarkName = "willTransition(to:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ActorSDK/Sources/Controllers/Managed Runtime/ManagedAlerts.swift"
+            timestampString = "510542315.496784"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "15"
+            endingLineNumber = "15"
+            landmarkName = "alertSheet(_:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ActorSDK/Sources/SwiftExtensions/AALocalized.swift"
+            timestampString = "510550549.513895"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "11"
+            endingLineNumber = "11"
+            landmarkName = "AALocalized(_:)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ActorSDK/Sources/Controllers/Managed Runtime/ManagedAlerts.swift"
+            timestampString = "510550798.586087"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "47"
+            endingLineNumber = "47"
+            landmarkName = "action(_:closure:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ActorSDK/Sources/Controllers/Managed Runtime/ManagedAlerts.swift"
+            timestampString = "510550799.379103"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "54"
+            endingLineNumber = "54"
+            landmarkName = "destructive(_:closure:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ActorSDK/Sources/Controllers/Content/Dialogs List/AADialogsListContentController.swift"
+            timestampString = "510551268.295543"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "120"
+            endingLineNumber = "120"
+            landmarkName = "tableDidLoad()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ActorSDK/Sources/Controllers/Content/Dialogs List/AADialogsListContentController.swift"
+            timestampString = "510551272.551334"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "119"
+            endingLineNumber = "119"
+            landmarkName = "tableDidLoad()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ActorSDK.AADialogsListContentController.(tableDidLoad () -&gt; ()).(closure #2).(closure #1).(closure #3).(closure #2)"
+                  moduleName = "ActorSDK"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/zhangshanbo/actor-platform/actor-sdk/sdk-core-ios/ActorSDK/Sources/Controllers/Content/Dialogs%20List/AADialogsListContentController.swift"
+                  timestampString = "510629302.257562"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "119"
+                  endingLineNumber = "119"
+                  offsetFromSymbolStart = "28">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ActorSDK.AADialogsListContentController.(tableDidLoad () -&gt; ()).(closure #2).(closure #1).(closure #3).(closure #2).(closure #1)"
+                  moduleName = "ActorSDK"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/zhangshanbo/actor-platform/actor-sdk/sdk-core-ios/ActorSDK/Sources/Controllers/Content/Dialogs%20List/AADialogsListContentController.swift"
+                  timestampString = "510629302.26078"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "120"
+                  endingLineNumber = "120"
+                  offsetFromSymbolStart = "20">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ActorSDK/Sources/Controllers/Managed Runtime/ManagedAlerts.swift"
+            timestampString = "510551538.298157"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "13"
+            endingLineNumber = "13"
+            landmarkName = "alertSheet(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
