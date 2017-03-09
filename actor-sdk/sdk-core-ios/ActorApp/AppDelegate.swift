@@ -24,7 +24,7 @@ open class AppDelegate : ActorApplicationDelegate {
         ActorSDK.sharedActor().enableVideoCalls = true
         
         // Setting Development Push Id
-        ActorSDK.sharedActor().apiPushId = 868547
+        ActorSDK.sharedActor().apiPushId = 1
         
         ActorSDK.sharedActor().authStrategy = .usernameOnly
         

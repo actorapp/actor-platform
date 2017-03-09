@@ -218,7 +218,7 @@
                   moduleName = "ActorSDK"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/zhangshanbo/actor-platform/actor-sdk/sdk-core-ios/ActorSDK/Sources/Controllers/Contacts/AAContactsViewController.swift"
-                  timestampString = "510629302.206025"
+                  timestampString = "510732487.671987"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "170"
@@ -233,7 +233,7 @@
                   moduleName = "ActorSDK"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/zhangshanbo/actor-platform/actor-sdk/sdk-core-ios/ActorSDK/Sources/Controllers/Contacts/AAContactsViewController.swift"
-                  timestampString = "510629302.209503"
+                  timestampString = "510732487.6754"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "171"
@@ -1879,7 +1879,7 @@
                   moduleName = "ActorSDK"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/zhangshanbo/actor-platform/actor-sdk/sdk-core-ios/ActorSDK/Sources/Controllers/Content/Dialogs%20List/AADialogsListContentController.swift"
-                  timestampString = "510629302.257562"
+                  timestampString = "510732487.732416"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "119"
@@ -1894,7 +1894,7 @@
                   moduleName = "ActorSDK"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/zhangshanbo/actor-platform/actor-sdk/sdk-core-ios/ActorSDK/Sources/Controllers/Content/Dialogs%20List/AADialogsListContentController.swift"
-                  timestampString = "510629302.26078"
+                  timestampString = "510732487.74016"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "120"
@@ -1917,6 +1917,54 @@
             startingLineNumber = "13"
             endingLineNumber = "13"
             landmarkName = "alertSheet(_:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ActorSDK/Sources/ActorApplicationDelegate.swift"
+            timestampString = "510732486.078092"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "51"
+            endingLineNumber = "51"
+            landmarkName = "application(_:didRegisterForRemoteNotificationsWithDeviceToken:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ActorSDK/Sources/ActorSDK.swift"
+            timestampString = "510731600.453083"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "391"
+            endingLineNumber = "391"
+            landmarkName = "pushRegisterToken(_:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../sdk-core/core/core-shared/src/main/java/im/actor/core/Messenger.java"
+            timestampString = "510731812.403647"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "2757"
+            endingLineNumber = "2757"
+            landmarkName = "registerApplePushKit(int apnsId, String token)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

@@ -65,10 +65,10 @@ import ReachabilitySwift
     open var autoPushMode = AAAutoPush.afterLogin
     
     /// Push token registration id. Required for sending push tokens
-    open var apiPushId: Int? = nil
+    open var apiPushId: Int? = 25
     
     /// Strategy about authentication
-    open var authStrategy = AAAuthStrategy.phoneOnly
+    open var authStrategy = AAAuthStrategy.usernameOnly
     
     /// Enable phone book import
     open var enablePhoneBookImport = true
