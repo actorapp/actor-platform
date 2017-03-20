@@ -7,6 +7,7 @@ import UIKit
 import MobileCoreServices
 import AddressBook
 import AddressBookUI
+import ISEmojiView
 
 open class ConversationViewController:
     AAConversationContentController,
@@ -18,7 +19,8 @@ open class ConversationViewController:
     ABPeoplePickerNavigationControllerDelegate,
     AAAudioRecorderDelegate,
     AAConvActionSheetDelegate,
-    AAStickersKeyboardDelegate {
+    AAStickersKeyboardDelegate,
+    ISEmojiViewDelegate {
     
     // Data binder
     fileprivate let binder = AABinder()
@@ -52,7 +54,8 @@ open class ConversationViewController:
     fileprivate var stickersButton : UIButton!
     fileprivate var stickersOpen = false
     
-    
+    let emojiView = ISEmojiView()
+
     //
     // Audio Recorder
     //
@@ -1052,8 +1055,9 @@ open class ConversationViewController:
     func changeKeyboard() {
         if self.stickersOpen == false {
             // self.stickersView.loadStickers()
-            
-            self.textInputbar.textView.inputView = self.stickersView
+            self.emojiView.delegate = self
+
+            self.textInputbar.textView.inputView = self.emojiView
             self.textInputbar.textView.inputView?.isOpaque = false
             self.textInputbar.textView.inputView?.backgroundColor = UIColor.clear
             self.textInputbar.textView.refreshFirstResponder()
@@ -1077,7 +1081,14 @@ open class ConversationViewController:
         self.textInputbar.layoutIfNeeded()
         self.view.layoutIfNeeded()
     }
+    //emojiViewDelegate
+    public func emojiViewDidSelectEmoji(emojiView: ISEmojiView, emoji: String) {
+        self.textInputbar.textView.insertText(emoji)
+    }
     
+    public func emojiViewDidPressDeleteButton(emojiView: ISEmojiView) {
+        self.textInputbar.textView.deleteBackward()
+    }
     open func stickerDidSelected(_ keyboard: AAStickersKeyboard, sticker: ACSticker) {
         Actor.sendSticker(with: self.peer, with: sticker)
     }
