@@ -198,18 +198,19 @@ open class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewContr
         
         promise.then { (r: ACAuthCodeRes!) -> () in
             if r.needToSignup {
-                if self.name == nil {
-                    self.navigateNext(AAAuthNameViewController(transactionHash: r.transactionHash))
-                } else {
-                    let promise = Actor.doSignup(withName: self.name, with: ACSex.unknown(), withTransaction: r.transactionHash)
-                    promise.then { (r: ACAuthRes!) -> () in
-                        Actor.doCompleteAuth(r).startUserAction().then { (r: JavaLangBoolean!) -> () in
-                            self.codeField.resignFirstResponder()
-                            self.onAuthenticated()
-                        }
-                    }
-                    promise.startUserAction()
-                }
+                self.shakeField()
+//                if self.name == nil {
+//                    self.navigateNext(AAAuthNameViewController(transactionHash: r.transactionHash))
+//                } else {
+//                    let promise = Actor.doSignup(withName: self.name, with: ACSex.unknown(), withTransaction: r.transactionHash)
+//                    promise.then { (r: ACAuthRes!) -> () in
+//                        Actor.doCompleteAuth(r).startUserAction().then { (r: JavaLangBoolean!) -> () in
+//                            self.codeField.resignFirstResponder()
+//                            self.onAuthenticated()
+//                        }
+//                    }
+//                    promise.startUserAction()
+//                }
             } else {
                 Actor.doCompleteAuth(r.result).startUserAction().then { (r: JavaLangBoolean!) -> () in
                     self.codeField.resignFirstResponder()
