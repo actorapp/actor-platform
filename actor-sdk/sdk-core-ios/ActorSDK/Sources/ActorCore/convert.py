@@ -1,5 +1,6 @@
 import sys
 import os
+import codecs
 
 if not os.path.exists('Public'):
     os.makedirs('Public')
@@ -42,12 +43,11 @@ for root, directories, filenames in os.walk('Sources/'):
         if not os.path.exists(os.path.dirname(externalFile)):
             os.makedirs(os.path.dirname(externalFile))
         
-        with open(srcFile, 'r') as f:
-            
+        with codecs.open(srcFile, 'r', encoding='utf-8') as f:
             allLines = f.read()
             destLines = ""
             
-            with open(externalFile, 'w') as d:
+            with codecs.open(externalFile, 'w', encoding='utf-8') as d:
                 d.write(allLines)
             
             for line in allLines.splitlines():
@@ -67,13 +67,13 @@ for root, directories, filenames in os.walk('Sources/'):
             isUpdated = True
 
             if os.path.exists(destFile):
-                with open(destFile, 'rw') as d:
+                with codecs.open(destFile, 'rw', encoding='utf-8') as d:
                     if d.read() == destLines:
                         # print "Not Updated"
                         isUpdated = False
 
             if isUpdated:
-                with open(destFile, 'w') as d:
+                with codecs.open(destFile, 'w', encoding='utf-8') as d:
                     d.write(destLines)
 
 isUmbrellaChanged = True
@@ -83,11 +83,11 @@ for line in allFiles:
     umbrellaContent += "#import \"" + line + "\"\n"
 
 if os.path.exists('Public/ActorCoreUmbrella.h'):
-    with open('Public/ActorCoreUmbrella.h', 'r') as d:
+    with codecs.open('Public/ActorCoreUmbrella.h', 'r', encoding='utf-8') as d:
         if d.read() == umbrellaContent:
             isUmbrellaChanged = False
 
 if isUmbrellaChanged:
-    with open('Public/ActorCoreUmbrella.h', 'w') as d:
+    with codecs.open('Public/ActorCoreUmbrella.h', 'w', encoding='utf-8') as d:
         d.write(umbrellaContent)
 
