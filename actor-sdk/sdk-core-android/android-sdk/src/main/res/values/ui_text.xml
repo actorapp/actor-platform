@@ -128,6 +128,9 @@
     <string name="auth_code_email_hint">We\'ve sent an email with activation code to {0}</string>
     <string name="auth_code_title">Enter SMS code</string>
     <string name="auth_code_sms_hint">Code</string>
+
+    <string name="auth_password">请输入您的密码： {0}</string>
+    <string name="auth_password_init">请输入您的密码</string>
     <string name="auth_code_done">DONE</string>
     <string name="auth_code_wrong_number">WRONG PHONE NUMBER?</string>
     <string name="auth_code_wrong_email">WRONG EMAIL?</string>

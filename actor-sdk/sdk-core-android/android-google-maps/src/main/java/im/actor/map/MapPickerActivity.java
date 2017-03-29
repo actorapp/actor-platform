@@ -109,6 +109,7 @@ public class MapPickerActivity extends AppCompatActivity
         });
 
         defineMyLocationButton = findViewById(R.id.define_my_location);
+        defineMyLocationButton.setVisibility(View.GONE);
         defineMyLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -366,12 +367,13 @@ public class MapPickerActivity extends AppCompatActivity
         }
 
         if (currentLocation != null) {
+            geoData = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), 14));
             fetchPlaces(null);
         }
         mMap.setOnMyLocationChangeListener(this);
-        mMap.getUiSettings().setMyLocationButtonEnabled(false);
-        mMap.getUiSettings().setZoomControlsEnabled(false);
+        mMap.getUiSettings().setMyLocationButtonEnabled(true);
+        mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.getUiSettings().setCompassEnabled(false);
         mMap.setMyLocationEnabled(true);
         mMap.setOnMapLongClickListener(this);
@@ -444,16 +446,6 @@ public class MapPickerActivity extends AppCompatActivity
 
     private void showItemsOnTheMap(ArrayList<MapItem> array) {
         markers = new HashMap<String, Marker>();
-        for (MapItem mapItem : array) {
-
-            markers.put(mapItem.id,
-                    mMap.addMarker(new MarkerOptions()
-                            .position(mapItem.getLatLng())
-                            // .title(mapItem.name)
-                            .draggable(false)
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.picker_map_marker))
-                    ));
-        }
     }
 
     @Override
@@ -486,6 +478,7 @@ public class MapPickerActivity extends AppCompatActivity
         /*
         select.setEnabled(true);
         findViewById(R.id.select_text).setEnabled(true);
+
         geoData = mapItem.getLatLng();
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(geoData, 16));
         */
@@ -503,8 +496,8 @@ public class MapPickerActivity extends AppCompatActivity
             MarkerOptions currentPickOptions = new MarkerOptions()
                     .draggable(true)
                     .position(geoData);
-
-            //currentPick = mMap.addMarker(currentPickOptions);
+            mMap.addMarker(currentPickOptions);
+//            currentPick = mMap.addMarker(currentPickOptions);
         } else {
 
             //currentPick.setPosition(geoData);

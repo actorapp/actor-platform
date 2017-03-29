@@ -4,7 +4,7 @@
   -->
 
 <resources>
-    <string name="app_name">易联</string>
+    <string name="app_name">iGem</string>
     <string name="app_locale">Cn</string>
 
     <string name="dialog_ok">确定</string>
@@ -44,7 +44,7 @@
     <string name="tour_sign_using_oauth">(使用谷歌)</string>
     <string name="tour_back_to_top">返回顶部</string>
 
-    <string name="tour_welcome_title">易联</string>
+    <string name="tour_welcome_title">iGem</string>
     <string name="tour_welcome_subtitle">针对团队和朋友的安全交流工具</string>
 
     <string name="tour_groups_title">超多人的群组</string>
@@ -244,10 +244,10 @@
     <string name="share_menu_location">定位</string>
 
     <!-- Map -->
-    <string name="map_title">Location</string>
-    <string name="map_type_normal">Map</string>
-    <string name="map_type_satellite">Satellite</string>
-    <string name="map_type_hybrid">Hybrid</string>
+    <string name="map_title">定位</string>
+    <string name="map_type_normal">地图</string>
+    <string name="map_type_satellite">卫星</string>
+    <string name="map_type_hybrid">混合</string>
 
     <!-- Profile -->
     <string name="profile_title">个人信息</string>
@@ -486,7 +486,7 @@
 
     <string name="alert_revoke_integration_token_message">重置令牌吗?</string>
     <string name="alert_revoke_integration_token_yes">重置</string>
-
+    <string name="confirm_share">分享给</string>
     <!-- Errors -->
     <string name="error_connection">无法连接。请检查是否可以连接互联网并重试。\n\n如果连接问题一直无法解决，请重新启动手机。</string>
     <string name="error_unknown">无法执行操作。\n\n如果无法解决问题，请重新启动手机。</string>
