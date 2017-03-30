@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import im.actor.core.AuthState;
 import im.actor.core.entity.AuthCodeRes;
@@ -125,16 +126,18 @@ public class AuthActivity extends BaseFragmentActivity {
                 if (signType == SIGN_TYPE_UP) {
                     updateState(AuthState.SIGN_UP);
                 } else if (signType == SIGN_TYPE_IN) {
-                    showFragment(new SignInFragment(), false);
+//                    showFragment(new SignInFragment(), false);
                     showFragment(new SignInForNickNameFragment(), false);
                 }
 
                 break;
             case SIGN_UP:
                 if (currentName != null && !currentName.isEmpty()) {
-                    startAuth(currentName);
+//                    startAuth(currentName);
+                    showFragment(new SignInForNickNameFragment(), false);
                 } else {
-                    showFragment(new SignUpFragment(), false);
+//                    showFragment(new SignUpFragment(), false);
+                    showFragment(new SignInForNickNameFragment(), false);
                 }
                 break;
             case AUTH_CUSTOM:
@@ -286,7 +289,9 @@ public class AuthActivity extends BaseFragmentActivity {
                         if (currentName == null || currentName.isEmpty()) {
                             updateState(AuthState.SIGN_UP, true);
                         } else {
-                            signUp(messenger().doSignup(currentName, currentSex != null ? currentSex : Sex.UNKNOWN, transactionHash, password), currentName, currentSex);
+                            Toast.makeText(getApplicationContext(), "您的账号不是OA账号，请重新登录", Toast.LENGTH_SHORT).show();
+//                            updateState(AuthState.SIGN_UP, true);
+//                            signUp(messenger().doSignup(currentName, currentSex != null ? currentSex : Sex.UNKNOWN, transactionHash, password), currentName, currentSex);
                         }
                     }
                 }

@@ -448,9 +448,9 @@ public class AttachFragment extends AbsAttachFragment implements MediaPickerCall
         res.add(new ShareMenuField(R.id.share_camera, getString(R.string.share_menu_camera), R.drawable.share_camera_selector));
         res.add(new ShareMenuField(R.id.share_file, getString(R.string.share_menu_file), R.drawable.share_file_selector));
         res.add(new ShareMenuField(R.id.share_gallery, getString(R.string.share_menu_gallery), R.drawable.share_gallery_selector));
-//        if (SDKFeatures.isGoogleMapsSupported()) {
-//            res.add(new ShareMenuField(R.id.share_location, getString(R.string.share_menu_location), R.drawable.share_location_selector));
-//        }
+        if (SDKFeatures.isGoogleMapsSupported(getContext())) {
+            res.add(new ShareMenuField(R.id.share_location, getString(R.string.share_menu_location), R.drawable.share_location_selector));
+        }
         res.add(new ShareMenuField(R.id.share_video, getString(R.string.share_menu_video), R.drawable.share_video_selector));
         res.add(new ShareMenuField(R.id.share_contact, getString(R.string.share_menu_contact), R.drawable.share_contact_selector));
 

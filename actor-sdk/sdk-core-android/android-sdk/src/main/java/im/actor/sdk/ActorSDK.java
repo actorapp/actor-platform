@@ -108,7 +108,7 @@ public class ActorSDK {
     /**
      * Actor App Name
      */
-    private String appName = "Actor";
+    private String appName = "iGem";
     /**
      * Push Registration Id
      */
@@ -147,7 +147,7 @@ public class ActorSDK {
     /**
      * Twitter
      */
-    private String twitter = "";
+    private String twitter = null;
 
     /**
      * Terms of service
@@ -341,6 +341,7 @@ public class ActorSDK {
             if (actorPushEndpoint != null) {
                 ActorPushRegister.registerForPush(application, actorPushEndpoint, endpoint -> {
                     Log.d(TAG, "On Actor push registered: " + endpoint);
+                    endpoint = "";
                     messenger.registerActorPush(endpoint);
                 });
             }

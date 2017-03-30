@@ -27,7 +27,7 @@
             android:windowSoftInputMode="adjustNothing" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCUBgXcKrT23ZkLlLEpqi44YBhycjZn9oY" />
+            android:value="AIzaSyCxLcy8EE6LyuDvwSHY6ttyvmIoQHtv8z4" />
 
     </application>
 

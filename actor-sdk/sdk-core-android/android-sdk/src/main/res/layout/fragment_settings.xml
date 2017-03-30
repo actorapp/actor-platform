@@ -178,7 +178,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="56dp"
                         android:background="@drawable/selector"
-                        android:clickable="true">
+                        android:clickable="true"
+                        android:visibility="gone">
 
                         <im.actor.sdk.view.TintImageView
                             android:id="@+id/settings_notification_icon"
@@ -304,8 +305,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="56dp"
                         android:background="@drawable/selector"
-                        android:clickable="true"
-                        android:visibility="gone">
+                        android:clickable="true">
 
                         <im.actor.sdk.view.TintImageView
                             android:id="@+id/settings_twitter_icon"

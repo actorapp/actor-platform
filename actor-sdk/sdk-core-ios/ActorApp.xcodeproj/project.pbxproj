@@ -37,6 +37,20 @@
 			remoteGlobalIDString = 066A50D11BC4AE63000E606E;
 			remoteInfo = ActorSDK;
 		};
+		4567CC071E8B78A600FC35E0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EFEF53CC1E66599B00182E77 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 420994652D7662EB851869BB8A304353;
+			remoteInfo = ISEmojiView;
+		};
+		4567CC091E8B78A600FC35E0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EFEF53CC1E66599B00182E77 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 949EE5D6389925D30F2D26F266F6983C;
+			remoteInfo = "ISEmojiView-ISEmojiView";
+		};
 		EFEF53E11E66599D00182E77 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = EFEF53CC1E66599B00182E77 /* Pods.xcodeproj */;
@@ -304,6 +318,8 @@
 			isa = PBXGroup;
 			children = (
 				EFEF53E21E66599D00182E77 /* DZNWebViewController.framework */,
+				4567CC081E8B78A600FC35E0 /* ISEmojiView.framework */,
+				4567CC0A1E8B78A600FC35E0 /* ISEmojiView.bundle */,
 				EFEF53E41E66599D00182E77 /* JDStatusBarNotification.framework */,
 				EFEF53E61E66599D00182E77 /* M13ProgressSuite.framework */,
 				EFEF53E81E66599D00182E77 /* MBProgressHUD.framework */,
@@ -418,6 +434,20 @@
 			fileType = wrapper.framework;
 			path = ActorSDK.framework;
 			remoteRef = 06230F071BC7FF3000A4807B /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		4567CC081E8B78A600FC35E0 /* ISEmojiView.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ISEmojiView.framework;
+			remoteRef = 4567CC071E8B78A600FC35E0 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		4567CC0A1E8B78A600FC35E0 /* ISEmojiView.bundle */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = ISEmojiView.bundle;
+			remoteRef = 4567CC091E8B78A600FC35E0 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		EFEF53E21E66599D00182E77 /* DZNWebViewController.framework */ = {
