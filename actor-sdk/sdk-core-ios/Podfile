@@ -36,6 +36,8 @@ target 'ActorApp' do
     
     # Calls
     # pod 'libjingle_peerconnection'
+    pod 'ISEmojiView'
+
 end
 
 target 'ActorSDK' do

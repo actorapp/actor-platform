@@ -24,7 +24,7 @@ open class AAPhotoPreviewController: NYTPhotosViewController, NYTPhotosViewContr
     public convenience init(file: ACFileReference, previewFile: ACFileReference?, size: CGSize?, fromView: UIView?) {
         self.init(photos: [PreviewImage(file: file, previewFile: previewFile, size: size)], fromView: fromView)
     }
-    
+
     public init(photos: [PreviewImage], initialPhoto: Int, fromView: UIView?) {
         
         var converted = [AAPhoto]()
@@ -115,6 +115,7 @@ open class AAPhotoPreviewController: NYTPhotosViewController, NYTPhotosViewContr
         }
     }
     
+    
     open func photosViewController(_ photosViewController: NYTPhotosViewController, referenceViewFor photo: NYTPhoto) -> UIView? {
         return self.fromView
     }
@@ -187,7 +188,6 @@ class AAPhoto: NSObject, NYTPhoto {
         self.attributedCaptionSummary = attributedCaptionSummary
         self.attributedCaptionCredit = attributedCaptionCredit
     }
-    
     
     /*
     @available(iOS 2.0, *)

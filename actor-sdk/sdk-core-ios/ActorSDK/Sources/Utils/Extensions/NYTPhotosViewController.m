@@ -331,7 +331,8 @@ static const UIEdgeInsets NYTPhotosViewControllerCloseButtonImageInsets = {3, 0,
 #pragma mark - Gesture Recognizers
 
 - (void)didSingleTapWithGestureRecognizer:(UITapGestureRecognizer *)tapGestureRecognizer {
-    [self setOverlayViewHidden:!self.overlayView.hidden animated:YES];
+//    [self setOverlayViewHidden:!self.overlayView.hidden animated:YES];
+     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)didPanWithGestureRecognizer:(UIPanGestureRecognizer *)panGestureRecognizer {
@@ -513,5 +514,7 @@ static const UIEdgeInsets NYTPhotosViewControllerCloseButtonImageInsets = {3, 0,
         [self didNavigateToPhoto:photoViewController.photo];
     }
 }
+    
+
 
 @end
