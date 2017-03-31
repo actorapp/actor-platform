@@ -1,6 +1,6 @@
 buildscript {
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.3'
+        classpath 'com.android.tools.build:gradle:2.3.0'
         classpath 'com.github.dcendents:android-maven-plugin:1.2'
         classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3"
         classpath 'me.tatarka:gradle-retrolambda:3.2.5'
@@ -21,7 +21,7 @@ def baseVersion = "3.0"
 
 android {
     compileSdkVersion 24
-    buildToolsVersion "24.0.0"
+    buildToolsVersion '25.0.0'
 
     defaultConfig {
         minSdkVersion 15
@@ -52,7 +52,9 @@ dependencies {
     compile project(':actor-sdk:sdk-core-android:android-sdk')
 
     compile 'com.google.android.gms:play-services-gcm:9.4.0'
+    compile(name: 'HMS-SDK-2.4.0.300', ext: 'aar')
 }
+repositories { flatDir { dirs 'aars' } }
 
 //
 // Publishing of SDK to Maven Central

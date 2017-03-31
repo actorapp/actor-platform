@@ -338,26 +338,26 @@ public class ActorSDK {
             //
             // Actor Push
             //
-            if (actorPushEndpoint != null) {
-                ActorPushRegister.registerForPush(application, actorPushEndpoint, endpoint -> {
-                    Log.d(TAG, "On Actor push registered: " + endpoint);
-                    endpoint = "";
-                    messenger.registerActorPush(endpoint);
-                });
-            }
+//            if (actorPushEndpoint != null) {
+//                ActorPushRegister.registerForPush(application, actorPushEndpoint, endpoint -> {
+//                    Log.d(TAG, "On Actor push registered: " + endpoint);
+//                    endpoint = "";
+//                    messenger.registerActorPush(endpoint);
+//                });
+//            }
 
 
             //
             // GCM
             //
-            try {
-                if (pushId != 0) {
-                    final ActorPushManager pushManager = (ActorPushManager) Class.forName("im.actor.push.PushManager").newInstance();
-                    pushManager.registerPush(application);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+//            try {
+//                if (pushId != 0) {
+//                    final ActorPushManager pushManager = (ActorPushManager) Class.forName("im.actor.push.PushManager").newInstance();
+//                    pushManager.registerPush(application);
+//                }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
 
             synchronized (LOAD_LOCK) {
                 isLoaded = true;
