@@ -289,7 +289,7 @@ open class ConversationViewController:
     open override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        self.stickersButton.frame = CGRect(x: self.view.frame.size.width-77, y: 12, width: 20, height: 20)
+        self.stickersButton.frame = CGRect(x: self.view.frame.size.width-77, y: self.textInputbar.frame.height - 32, width: 20, height: 20)
         self.voiceRecorderView.frame = CGRect(x: 0, y: 0, width: view.width - 30, height: 44)
         self.inputOverlay.frame = CGRect(x: 0, y: 0, width: view.width, height: 44)
         self.inputOverlayLabel.frame = CGRect(x: 0, y: 0, width: view.width, height: 44)
