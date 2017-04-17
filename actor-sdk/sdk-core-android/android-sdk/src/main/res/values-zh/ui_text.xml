@@ -4,8 +4,6 @@
   -->
 
 <resources>
-    <string name="hwpush_ability_value" translatable="false">successRateAnalytics</string>
-
     <string name="app_name">iGem</string>
     <string name="app_locale">Cn</string>
 

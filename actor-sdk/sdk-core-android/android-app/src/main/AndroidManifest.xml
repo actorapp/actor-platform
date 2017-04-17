@@ -57,6 +57,13 @@
             android:name="api_key"
             android:value="pTAzc5hjeja1GmbzMoXGUExG" />
 
+        <provider
+            android:name="com.huawei.hms.update.provider.UpdateProvider"
+            android:authorities="im.actor.develop.hms.update.provider"
+            android:exported="false"
+            android:grantUriPermissions="true" >
+        </provider>
+
     </application>
 
 </manifest>
