@@ -7,6 +7,7 @@ import UIKit
 import MobileCoreServices
 import AddressBook
 import AddressBookUI
+import ISEmojiView
 
 open class ConversationViewController:
     AAConversationContentController,
@@ -18,7 +19,8 @@ open class ConversationViewController:
     ABPeoplePickerNavigationControllerDelegate,
     AAAudioRecorderDelegate,
     AAConvActionSheetDelegate,
-    AAStickersKeyboardDelegate {
+    AAStickersKeyboardDelegate,
+    ISEmojiViewDelegate {
     
     // Data binder
     fileprivate let binder = AABinder()
@@ -52,7 +54,8 @@ open class ConversationViewController:
     fileprivate var stickersButton : UIButton!
     fileprivate var stickersOpen = false
     
-    
+    let emojiView = ISEmojiView()
+
     //
     // Audio Recorder
     //
@@ -172,7 +175,7 @@ open class ConversationViewController:
             
             self.textMode = true
             
-            self.stickersButton.isHidden = true
+           // self.stickersButton.isHidden = true
             
             self.rightButton.setTitle(AALocalized("ChatSend"), for: UIControlState())
             self.rightButton.setTitleColor(appStyle.chatSendColor, for: UIControlState())
@@ -286,7 +289,7 @@ open class ConversationViewController:
     open override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        self.stickersButton.frame = CGRect(x: self.view.frame.size.width-67, y: 12, width: 20, height: 20)
+        self.stickersButton.frame = CGRect(x: self.view.frame.size.width-77, y: self.textInputbar.frame.height - 32, width: 20, height: 20)
         self.voiceRecorderView.frame = CGRect(x: 0, y: 0, width: view.width - 30, height: 44)
         self.inputOverlay.frame = CGRect(x: 0, y: 0, width: view.width, height: 44)
         self.inputOverlayLabel.frame = CGRect(x: 0, y: 0, width: view.width, height: 44)
@@ -398,7 +401,7 @@ open class ConversationViewController:
                             self.inputOverlayLabel.text = AALocalized("ActionUnmute")
                         }
                     }
-                    self.stickersButton.isHidden = true
+                  //  self.stickersButton.isHidden = true
                     self.stopAudioRecording()
                     self.textInputbar.textView.text = ""
                     self.inputOverlay.isHidden = false
@@ -536,9 +539,9 @@ open class ConversationViewController:
     
     func onCallTap() {
         if (self.peer.isGroup) {
-            execute(ActorSDK.sharedActor().messenger.doCall(withGid: self.peer.peerId))
+            executeHidden(ActorSDK.sharedActor().messenger.doCall(withGid: self.peer.peerId))
         } else if (self.peer.isPrivate) {
-            execute(ActorSDK.sharedActor().messenger.doCall(withUid: self.peer.peerId))
+            executeHidden(ActorSDK.sharedActor().messenger.doCall(withUid: self.peer.peerId))
         }
     }
     
@@ -573,7 +576,7 @@ open class ConversationViewController:
             
             self.rebindRightButton()
             
-            self.stickersButton.isHidden = true
+           // self.stickersButton.isHidden = true
             
             self.rightButton.setTitle(AALocalized("ChatSend"), for: UIControlState())
             self.rightButton.setTitleColor(appStyle.chatSendColor, for: UIControlState())
@@ -1052,8 +1055,9 @@ open class ConversationViewController:
     func changeKeyboard() {
         if self.stickersOpen == false {
             // self.stickersView.loadStickers()
-            
-            self.textInputbar.textView.inputView = self.stickersView
+            self.emojiView.delegate = self
+
+            self.textInputbar.textView.inputView = self.emojiView
             self.textInputbar.textView.inputView?.isOpaque = false
             self.textInputbar.textView.inputView?.backgroundColor = UIColor.clear
             self.textInputbar.textView.refreshFirstResponder()
@@ -1077,7 +1081,14 @@ open class ConversationViewController:
         self.textInputbar.layoutIfNeeded()
         self.view.layoutIfNeeded()
     }
+    //emojiViewDelegate
+    public func emojiViewDidSelectEmoji(emojiView: ISEmojiView, emoji: String) {
+        self.textInputbar.textView.insertText(emoji)
+    }
     
+    public func emojiViewDidPressDeleteButton(emojiView: ISEmojiView) {
+        self.textInputbar.textView.deleteBackward()
+    }
     open func stickerDidSelected(_ keyboard: AAStickersKeyboard, sticker: ACSticker) {
         Actor.sendSticker(with: self.peer, with: sticker)
     }

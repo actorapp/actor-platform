@@ -4,7 +4,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.3'
+        classpath 'com.android.tools.build:gradle:2.3.0'
         classpath 'me.tatarka:gradle-retrolambda:3.2.5'
     }
 }
@@ -14,7 +14,7 @@ apply plugin: 'me.tatarka.retrolambda'
 
 android {
     compileSdkVersion 24
-    buildToolsVersion '24.0.0'
+    buildToolsVersion '25.0.0'
 
     defaultConfig {
         minSdkVersion 15

@@ -108,7 +108,8 @@ object Dependencies {
 
     val guava                   = "com.google.guava"              % "guava"                          % "19.0"
     val alpn                    = "org.eclipse.jetty.alpn"        % "alpn-api"                       % "1.1.2.v20150522" % "runtime"
-    val tcnative                = "io.netty"                      % "netty-tcnative"                 % "1.1.33.Fork15" classifier "linux-x86_64"
+    val tcnative                = "io.netty"                      % "netty-tcnative"                 % "1.1.33.Fork15" classifier "linux-x86_64-fedora"
+    val tcnativeboringssl       = "io.netty"                      % "netty-tcnative-boringssl-static"                 % "1.1.33.Fork15"
     val silencer                = "com.github.ghik"               % "silencer-lib"                   % "0.4"
   }
 
@@ -128,6 +129,7 @@ object Dependencies {
   val shared = Seq(
     alpn,
     tcnative,
+    tcnativeboringssl,
     configs,
     actorUtil,
     javaCompat,

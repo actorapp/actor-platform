@@ -46,7 +46,10 @@ open class ActorApplicationDelegate: ActorSDKDelegateDefault, UIApplicationDeleg
     }
     
     open func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        let tokenString = "\(deviceToken)".replace(" ", dest: "").replace("<", dest: "").replace(">", dest: "")
+        //swift3需要做个转换否则无法转换成string 为什么别问我。。。
+        let nsataStr = NSData.init(data:deviceToken)
+        
+        let tokenString = "\(nsataStr)".replace(" ", dest: "").replace("<", dest: "").replace(">", dest: "")
         ActorSDK.sharedActor().pushRegisterToken(tokenString)
     }
     

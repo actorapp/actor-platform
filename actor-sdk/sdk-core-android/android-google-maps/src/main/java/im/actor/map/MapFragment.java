@@ -24,6 +24,10 @@ public class MapFragment extends BaseFragment {
     double longitude;
     double latitude;
 
+    public MapFragment(){
+        setHasOptionsMenu(true);
+    }
+
     public static MapFragment create(double longitude, double latitude) {
         MapFragment res = new MapFragment();
         Bundle arguments = new Bundle();

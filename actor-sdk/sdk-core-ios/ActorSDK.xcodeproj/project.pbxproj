@@ -1932,7 +1932,7 @@
 				TargetAttributes = {
 					066A50D11BC4AE63000E606E = {
 						CreatedOnToolsVersion = 7.0;
-						DevelopmentTeam = HVJR44Y5B6;
+						DevelopmentTeam = D94R58LQ65;
 						LastSwiftMigration = 0800;
 					};
 				};
@@ -2418,6 +2418,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = D94R58LQ65;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -2451,7 +2452,7 @@
 					"-framework",
 					j2objc,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = im.actor.ActorSDK;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.eaglesoft.igemSDK;
 				PRODUCT_NAME = ActorSDK;
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
@@ -2474,6 +2475,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = D94R58LQ65;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -2507,7 +2509,7 @@
 					"-framework",
 					j2objc,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = im.actor.ActorSDK;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.eaglesoft.igemSDK;
 				PRODUCT_NAME = ActorSDK;
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;

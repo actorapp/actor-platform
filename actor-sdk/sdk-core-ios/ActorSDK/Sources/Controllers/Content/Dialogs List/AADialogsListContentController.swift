@@ -122,6 +122,8 @@ open class AADialogsListContentController: AAContentTableController, UISearchBar
                             a.destructive(AALocalized("ActionDelete"), closure: {
                                 self.executeSafe(Actor.deleteChatCommand(with: dialog.peer))
                             })
+                            a.title = AALocalized("ActionClearHistory")
+                            a.message = AALocalized("ActionClearHistoryMessage")
                             a.cancel = AALocalized("ActionCancel")
                         })
                     }

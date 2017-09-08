@@ -453,7 +453,7 @@
     <string name="not_show_text_subtitle">نام فرستنده و پیام را در پانل اعلان‌ها نشان بده</string>
     <string name="notification_multiple_canversations_after_msg_count">" پیام در "</string>
     <string name="notifications_multiple_canversations_after_coversations_count">" گپ‌"</string>
-    <string name="notifications_single_conversation_аfter_messages_count">" پیام"</string>
+    <string name="notifications_single_conversation_after_messages_count">" پیام"</string>
 
     <!-- Pick user -->
     <string name="pick_user_title">فردی را انتخاب کنید</string>

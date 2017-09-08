@@ -173,6 +173,19 @@ public class Messenger {
     }
 
     /**
+     * Starting username auth
+     *
+     * @param username username for authentication
+     * @return promise of AuthStartRes
+     */
+    @NotNull
+    @ObjectiveCName("doStartAuthWithUsername:")
+    public Promise<AuthStartRes> doStartUsernameAuth(String username) {
+        return modules.getAuthModule().doStartUsernameAuth(username);
+    }
+
+
+    /**
      * Validating Confirmation Code
      *
      * @param code            code
@@ -184,6 +197,20 @@ public class Messenger {
     public Promise<AuthCodeRes> doValidateCode(String code, String transactionHash) {
         return modules.getAuthModule().doValidateCode(transactionHash, code);
     }
+
+    /**
+     * Validating password
+     *
+     * @param password        password
+     * @param transactionHash transaction hash
+     * @return promise of AuthCodeRes
+     */
+    @NotNull
+    @ObjectiveCName("doValidatePassword:withTransaction:")
+    public Promise<AuthCodeRes> doValidatePassword(String password, String transactionHash) {
+        return modules.getAuthModule().doValidatePassword(transactionHash, password);
+    }
+
 
 
     /**
@@ -210,6 +237,20 @@ public class Messenger {
     @ObjectiveCName("doSignupWithName:withSex:withTransaction:")
     public Promise<AuthRes> doSignup(String name, Sex sex, String transactionHash) {
         return modules.getAuthModule().doSignup(name, sex, transactionHash);
+    }
+
+    /**
+     * Perform signup
+     *
+     * @param name       Name of User
+     * @param sex        user sex
+     * @param avatarPath File descriptor of avatar (may be null if not set)
+     * @return Comand for execution
+     */
+    @NotNull
+    @ObjectiveCName("doSignUpCommandWithName:WithSex:withAvatar:withPassword:")
+    public Promise<AuthRes> doSignup(String name, Sex sex, String avatarPath,String password) {
+        return modules.getAuthModule().doSignup(name, sex, avatarPath,password);
     }
 
     /**
@@ -362,6 +403,21 @@ public class Messenger {
     }
 
     /**
+     * Perform signup
+     *
+     * @param name       Name of User
+     * @param sex        user sex
+     * @param avatarPath File descriptor of avatar (may be null if not set)
+     * @return Comand for execution
+     */
+    @NotNull
+    @ObjectiveCName("signUpCommandWithName:WithSex:withAvatar:withPassword:")
+    public Command<AuthState> signUp(String name, Sex sex, String avatarPath , String password) {
+        return modules.getAuthModule().signUp(name, ApiSex.UNKNOWN, avatarPath,password);
+    }
+
+
+    /**
      * Get current Authentication phone.
      * Value is valid only for SIGN_UP or CODE_VALIDATION_PHONE states.
      *
@@ -395,7 +451,7 @@ public class Messenger {
     }
 
     /**
-     * This method is called when messenger was logged in. Useful for subclasses
+     * This method is called when messenger was logged in. Useful for statesubclasses
      */
     public void onLoggedIn() {
 
@@ -406,7 +462,7 @@ public class Messenger {
     //////////////////////////////////////
 
     /**
-     * Get ViewModel of application state
+     * Get ViewModel of application
      *
      * @return view model of application state
      */

@@ -297,10 +297,15 @@ public class PictureActivity extends BaseActivity {
             attacher.setOnDoubleTapListener(new DefaultOnDoubleTapListener(attacher) {
                 @Override
                 public boolean onSingleTapConfirmed(MotionEvent e) {
-                    if (!uiIsHidden) {
-                        hideSystemUi();
-                    } else {
-                        showSystemUi();
+//                    if (!uiIsHidden) {
+//                        hideSystemUi();
+//                    } else {
+//                        showSystemUi();
+//                    }
+
+                    Activity activity = getActivity();
+                    if (activity instanceof PictureActivity) {
+                        activity.onBackPressed();
                     }
                     return super.onSingleTapConfirmed(e);
                 }
@@ -317,6 +322,19 @@ public class PictureActivity extends BaseActivity {
                     return super.onDoubleTapEvent(e);
                 }
             });
+
+            attacher.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    if (!uiIsHidden) {
+                        hideSystemUi();
+                    } else {
+                        showSystemUi();
+                    }
+                    return false;
+                }
+            });
+
 
 //            imageView = (ImageKitView) rootView.findViewById(R.id.image);
 //            imageView.setExtraReceiverCallback(new ReceiverCallback() {

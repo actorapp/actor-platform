@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import im.actor.core.AuthState;
 import im.actor.core.entity.AuthCodeRes;
@@ -37,6 +38,8 @@ public class AuthActivity extends BaseFragmentActivity {
     public static final String SIGN_TYPE_KEY = "sign_type";
     public static final int AUTH_TYPE_PHONE = 1;
     public static final int AUTH_TYPE_EMAIL = 2;
+
+    public static final int AUTH_TYPE_NICKNAME = 5;
 
     public static final int SIGN_TYPE_IN = 3;
     public static final int SIGN_TYPE_UP = 4;
@@ -123,16 +126,24 @@ public class AuthActivity extends BaseFragmentActivity {
                 if (signType == SIGN_TYPE_UP) {
                     updateState(AuthState.SIGN_UP);
                 } else if (signType == SIGN_TYPE_IN) {
-                    showFragment(new SignInFragment(), false);
+//                    showFragment(new SignInFragment(), false);
+                    showFragment(new SignInForNickNameFragment(), false);
                 }
 
                 break;
             case SIGN_UP:
                 if (currentName != null && !currentName.isEmpty()) {
-                    startAuth(currentName);
+//                    startAuth(currentName);
+                    showFragment(new SignInForNickNameFragment(), false);
                 } else {
-                    showFragment(new SignUpFragment(), false);
+//                    showFragment(new SignUpFragment(), false);
+                    showFragment(new SignInForNickNameFragment(), false);
                 }
+                break;
+            case AUTH_CUSTOM:
+                currentAuthType = AUTH_TYPE_NICKNAME;
+                currentCode = "";
+                showFragment(ActorSDK.sharedActor().getDelegatedFragment(ActorSDK.sharedActor().getDelegate().getAuthStartIntent(), new SignInForNickNameFragment(), BaseAuthFragment.class), false);
                 break;
             case AUTH_PHONE:
                 currentAuthType = AUTH_TYPE_PHONE;
@@ -154,6 +165,15 @@ public class AuthActivity extends BaseFragmentActivity {
                 args.putString("authId", state == AuthState.CODE_VALIDATION_EMAIL ? currentEmail : Long.toString(currentPhone));
                 signInFragment.setArguments(args);
                 showFragment(signInFragment, false);
+                break;
+            case PASSWORD_VALIDATION:
+                Fragment signInPasswordFragment = new ValidatePasswordFragment();
+                Bundle args2 = new Bundle();
+                args2.putString("authType", "auth_type_nickname");
+                args2.putBoolean(ValidatePasswordFragment.AUTH_TYPE_SIGN, signType == SIGN_TYPE_IN);
+                args2.putString("authId", currentName);
+                signInPasswordFragment.setArguments(args2);
+                showFragment(signInPasswordFragment, false);
                 break;
             case LOGGED_IN:
                 finish();
@@ -182,6 +202,15 @@ public class AuthActivity extends BaseFragmentActivity {
         } else {
             signUp(messenger().doSignup(currentName, currentSex != null ? currentSex : Sex.UNKNOWN, transactionHash), currentName, currentSex);
         }
+    }
+
+    public void startNickNameAuth(Promise<AuthStartRes> promise, String nickName) {
+        currentAuthType = AUTH_TYPE_NICKNAME;
+        currentName = nickName;
+//        currentNickName = nickName;
+        currentSex = Sex.UNKNOWN;
+        availableAuthType = ActorSDK.sharedActor().getAuthType();
+        startAuth(promise);
     }
 
     public void startPhoneAuth(Promise<AuthStartRes> promise, long phone) {
@@ -214,11 +243,56 @@ public class AuthActivity extends BaseFragmentActivity {
                                 case AUTH_TYPE_EMAIL:
                                     updateState(AuthState.CODE_VALIDATION_EMAIL);
                                     break;
+                                case AUTH_TYPE_NICKNAME:
+                                    transactionHash = authStartRes.getTransactionHash();
+                                    isRegistered = authStartRes.isRegistered();
+                                    updateState(AuthState.PASSWORD_VALIDATION);
+                                    break;
                             }
                             break;
 
                         default:
                             //not supported AuthMode - force crash?
+                    }
+                }
+            }
+        }).failure(new Consumer<Exception>() {
+            @Override
+            public void apply(Exception e) {
+                handleAuthError(e);
+            }
+        });
+    }
+
+    public void validatePassword(Promise<AuthCodeRes> promise, String password) {
+        currentCode = password;
+        showProgress();
+        promise.then(new Consumer<AuthCodeRes>() {
+            @Override
+            public void apply(AuthCodeRes authCodeRes) {
+                if (dismissProgress()) {
+                    codeValidated = true;
+                    transactionHash = authCodeRes.getTransactionHash();
+                    if (!authCodeRes.isNeedToSignup()) {
+                        messenger().doCompleteAuth(authCodeRes.getResult()).then(new Consumer<Boolean>() {
+                            @Override
+                            public void apply(Boolean aBoolean) {
+                                updateState(AuthState.LOGGED_IN);
+                            }
+                        }).failure(new Consumer<Exception>() {
+                            @Override
+                            public void apply(Exception e) {
+                                handleAuthError(e);
+                            }
+                        });
+                    } else {
+                        if (currentName == null || currentName.isEmpty()) {
+                            updateState(AuthState.SIGN_UP, true);
+                        } else {
+                            Toast.makeText(getApplicationContext(), "您的账号不是OA账号，请重新登录", Toast.LENGTH_SHORT).show();
+//                            updateState(AuthState.SIGN_UP, true);
+//                            signUp(messenger().doSignup(currentName, currentSex != null ? currentSex : Sex.UNKNOWN, transactionHash, password), currentName, currentSex);
+                        }
                     }
                 }
             }
@@ -362,7 +436,7 @@ public class AuthActivity extends BaseFragmentActivity {
                                                     break;
 
                                                 case SIGN_UP:
-                                                    signUp(messenger().doSignup(currentName, currentSex!=null?currentSex:Sex.UNKNOWN, transactionHash), currentName, currentSex);
+                                                    signUp(messenger().doSignup(currentName, currentSex != null ? currentSex : Sex.UNKNOWN, transactionHash), currentName, currentSex);
                                                     break;
                                             }
 
@@ -418,6 +492,11 @@ public class AuthActivity extends BaseFragmentActivity {
 
     public void switchToEmailAuth() {
         updateState(AuthState.AUTH_EMAIL);
+    }
+
+
+    public void switchToNickNameAuth() {
+        updateState(AuthState.AUTH_CUSTOM);
     }
 
     public void switchToPhoneAuth() {

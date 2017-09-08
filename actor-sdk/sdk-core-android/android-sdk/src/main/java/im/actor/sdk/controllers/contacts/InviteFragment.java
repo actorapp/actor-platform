@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,6 +22,10 @@ import im.actor.core.entity.PhoneBookContact;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.BaseFragment;
+import im.actor.sdk.controllers.compose.ComposeFabFragment;
+import im.actor.sdk.controllers.dialogs.DialogsDefaultFragment;
+import im.actor.sdk.controllers.placeholder.GlobalPlaceholderFragment;
+import im.actor.sdk.controllers.search.GlobalSearchDefaultFragment;
 import im.actor.sdk.core.AndroidPhoneBook;
 import im.actor.sdk.view.adapters.OnItemClickedListener;
 import im.actor.sdk.view.adapters.RecyclerListView;
@@ -36,14 +41,13 @@ public class InviteFragment extends BaseFragment {
     private MenuInflater inflater;
 
     public InviteFragment() {
+        setHasOptionsMenu(true);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View res = inflater.inflate(R.layout.fragment_list, container, false);
-
         res.findViewById(R.id.listView).setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
-
         emptyText = (TextView) res.findViewById(R.id.emptyView);
         emptyText.setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
         emptyText.setText(R.string.progress_common);
@@ -56,14 +60,11 @@ public class InviteFragment extends BaseFragment {
 
         phoneBookLoader.loadPhoneBook(contacts -> {
             if (contacts.size() > 0) {
-
                 getActivity().runOnUiThread(() -> {
                     InviteFragment.this.contacts = contacts;
-
                     adapter = new InviteAdapter(getActivity(), contacts, new OnItemClickedListener<PhoneBookContact>() {
                         @Override
                         public void onClicked(PhoneBookContact item) {
-
                             onItemClicked(item);
                         }
 
@@ -81,6 +82,9 @@ public class InviteFragment extends BaseFragment {
                     showMenu();
                 });
 
+            } else {
+                hideView(emptyText);
+                Toast.makeText(getContext(), "没有联系人", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -121,6 +125,13 @@ public class InviteFragment extends BaseFragment {
         }
     }
 
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        menu.clear();
+        getActivity().getMenuInflater().inflate(R.menu.invite, menu);
+    }
+
     public void select(PhoneBookContact id, int type) {
         getAdapter().select(id, type);
     }
@@ -133,6 +144,7 @@ public class InviteFragment extends BaseFragment {
         return getAdapter().isSelected(id);
     }
 
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
@@ -144,6 +156,7 @@ public class InviteFragment extends BaseFragment {
     public void showMenu() {
         if (menu != null && inflater != null && adapter != null) {
             if (adapter.getCount() > 0) {
+                menu.clear();
                 inflater.inflate(R.menu.invite, menu);
             }
         }

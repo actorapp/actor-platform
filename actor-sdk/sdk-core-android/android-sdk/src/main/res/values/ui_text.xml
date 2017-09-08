@@ -3,6 +3,8 @@
   -->
 
 <resources>
+    <string name="hwpush_ability_value" translatable="false">successRateAnalytics</string>
+
     <string name="app_name">Actor</string>
     <string name="app_locale">En</string>
 
@@ -114,6 +116,7 @@
 
     <!-- Sign in Fragment-->
     <string name="sign_in_title">Sign in</string>
+    <string name="sign_in_nickname_hint">Please enter your nickname.</string>
     <string name="sign_in_hint">Please enter your phone or email.</string>
     <string name="sign_in_hint_phone_only">Please enter your phone.</string>
     <string name="sign_in_hint_email_only">Please enter your email.</string>
@@ -127,6 +130,9 @@
     <string name="auth_code_email_hint">We\'ve sent an email with activation code to {0}</string>
     <string name="auth_code_title">Enter SMS code</string>
     <string name="auth_code_sms_hint">Code</string>
+
+    <string name="auth_password">请输入您的密码： {0}</string>
+    <string name="auth_password_init">请输入您的密码</string>
     <string name="auth_code_done">DONE</string>
     <string name="auth_code_wrong_number">WRONG PHONE NUMBER?</string>
     <string name="auth_code_wrong_email">WRONG EMAIL?</string>
@@ -537,7 +543,7 @@
     <string name="not_sound_picker_subtitle">Set notification sound</string>
     <string name="notification_multiple_canversations_after_msg_count">" messages in "</string>
     <string name="notifications_multiple_canversations_after_coversations_count">" chats"</string>
-    <string name="notifications_single_conversation_аfter_messages_count">" messages"</string>
+    <string name="notifications_single_conversation_after_messages_count">" messages"</string>
 
     <!-- Pick user -->
     <string name="pick_user_title">Pick person</string>

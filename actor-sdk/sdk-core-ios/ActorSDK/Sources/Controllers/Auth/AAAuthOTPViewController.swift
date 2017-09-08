@@ -36,6 +36,15 @@ open class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewContr
         super.init()
     }
     
+    public init(name: String, transactionHash: String) {
+        self.transactionHash = transactionHash
+        self.name = name
+        self.email = nil
+        self.phone = nil
+        super.init()
+    }
+    
+    
     public init(email: String, name: String, transactionHash: String) {
         self.transactionHash = transactionHash
         self.name = name
@@ -76,7 +85,7 @@ open class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewContr
         if email != nil {
             welcomeLabel.text = AALocalized("AuthOTPEmailTitle")
         } else {
-            welcomeLabel.text = AALocalized("AuthOTPPhoneTitle")
+            welcomeLabel.text = AALocalized("AuthOTPasswordTitle")
         }
         welcomeLabel.textColor = ActorSDK.sharedActor().style.authTitleColor
         welcomeLabel.textAlignment = .center
@@ -94,7 +103,7 @@ open class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewContr
         if email != nil {
             hintLabel.text = AALocalized("AuthOTPEmailHint")
         } else {
-            hintLabel.text = AALocalized("AuthOTPPhoneHint")
+            hintLabel.text = ""/*AALocalized("AuthOTPPhoneHint")*/
         }
         hintLabel.textColor = ActorSDK.sharedActor().style.authHintColor
         hintLabel.textAlignment = .center
@@ -104,7 +113,7 @@ open class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewContr
         codeField.font = UIFont.systemFont(ofSize: 17)
         codeField.textColor = ActorSDK.sharedActor().style.authTextColor
         codeField.placeholder = AALocalized("AuthOTPPlaceholder")
-        codeField.keyboardType = .numberPad
+        codeField.keyboardType = .default
         codeField.autocapitalizationType = .none
         codeField.autocorrectionType = .no
         
@@ -180,23 +189,28 @@ open class AAAuthOTPViewController: AAAuthViewController, MFMailComposeViewContr
             return
         }
         
-        let promise = Actor.doValidateCode(code, withTransaction: self.transactionHash)
-            .startUserAction(["EMAIL_CODE_INVALID", "PHONE_CODE_INVALID", "EMAIL_CODE_EXPIRED", "PHONE_CODE_EXPIRED"])
+       
+//        let promise2 = Actor.doValidateCode(code, withTransaction: self.transactionHash)
+//            .startUserAction(["EMAIL_CODE_INVALID", "PHONE_CODE_INVALID", "EMAIL_CODE_EXPIRED", "PHONE_CODE_EXPIRED"])
+        
+        let promise = Actor.doValidatePassword(code, withTransaction: self.transactionHash)
+            .startUserAction(["EMAIL_CODE_INVALID", "PHONE_CODE_INVALID", "EMAIL_CODE_EXPIRED", "PHONE_CODE_EXPIRED" ,"PASSWORD_INVALID" , "PASSWORD_EXPIRED"])
         
         promise.then { (r: ACAuthCodeRes!) -> () in
             if r.needToSignup {
-                if self.name == nil {
-                    self.navigateNext(AAAuthNameViewController(transactionHash: r.transactionHash))
-                } else {
-                    let promise = Actor.doSignup(withName: self.name, with: ACSex.unknown(), withTransaction: r.transactionHash)
-                    promise.then { (r: ACAuthRes!) -> () in
-                        Actor.doCompleteAuth(r).startUserAction().then { (r: JavaLangBoolean!) -> () in
-                            self.codeField.resignFirstResponder()
-                            self.onAuthenticated()
-                        }
-                    }
-                    promise.startUserAction()
-                }
+                self.shakeField()
+//                if self.name == nil {
+//                    self.navigateNext(AAAuthNameViewController(transactionHash: r.transactionHash))
+//                } else {
+//                    let promise = Actor.doSignup(withName: self.name, with: ACSex.unknown(), withTransaction: r.transactionHash)
+//                    promise.then { (r: ACAuthRes!) -> () in
+//                        Actor.doCompleteAuth(r).startUserAction().then { (r: JavaLangBoolean!) -> () in
+//                            self.codeField.resignFirstResponder()
+//                            self.onAuthenticated()
+//                        }
+//                    }
+//                    promise.startUserAction()
+//                }
             } else {
                 Actor.doCompleteAuth(r.result).startUserAction().then { (r: JavaLangBoolean!) -> () in
                     self.codeField.resignFirstResponder()

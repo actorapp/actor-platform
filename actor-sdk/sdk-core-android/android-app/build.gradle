@@ -1,6 +1,6 @@
 buildscript {
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.3'
+        classpath 'com.android.tools.build:gradle:2.3.0'
         classpath 'me.tatarka:gradle-retrolambda:3.2.5'
         classpath "com.google.gms:google-services:3.0.0"
     }
@@ -11,8 +11,7 @@ apply plugin: 'me.tatarka.retrolambda'
 
 android {
     compileSdkVersion 24
-    buildToolsVersion "24.0.0"
-
+    buildToolsVersion '25.0.0'
     defaultConfig {
         applicationId "im.actor.develop"
         minSdkVersion 15
@@ -21,29 +20,36 @@ android {
         versionName "1.0"
         multiDexEnabled true
     }
+    dexOptions {
+        javaMaxHeapSize "2g"//gradle build use
+    }
+
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
     lintOptions {
         abortOnError false
     }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    productFlavors {
+    }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile project(':actor-sdk:sdk-core-android:android-sdk')
-    compile project(':actor-sdk:sdk-core-android:android-google-push')
+    // compile project(':actor-sdk:sdk-core-android:android-google-push')
     compile project(':actor-sdk:sdk-core-android:android-google-maps')
-
+    compile project(':actor-sdk:sdk-core-android:android-eaglesoft-push')
     compile 'com.roughike:bottom-bar:1.3.9'
     compile 'com.android.support:multidex:1.0.1'
+    compile(name: 'HMS-SDK-2.4.0.300', ext: 'aar')
 }
+repositories{flatDir{dirs 'aars'}}

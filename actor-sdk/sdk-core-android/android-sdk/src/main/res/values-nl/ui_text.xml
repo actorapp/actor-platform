@@ -536,7 +536,7 @@
     <string name="not_sound_picker_subtitle">Geluidsmelding instellen</string>
     <string name="notification_multiple_canversations_after_msg_count">" berichten in "</string>
     <string name="notifications_multiple_canversations_after_coversations_count">" gesprekken"</string>
-    <string name="notifications_single_conversation_аfter_messages_count">" berichten"</string>
+    <string name="notifications_single_conversation_after_messages_count">" berichten"</string>
 
     <!-- Pick user -->
     <string name="pick_user_title">Kies iemand</string>

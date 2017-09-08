@@ -12,6 +12,10 @@ import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import im.actor.runtime.threading.ThreadDispatcher;
+import im.actor.runtime.Runtime;
+import im.actor.core.entity.Contact;
+
 
 import java.util.HashMap;
 import java.util.prefs.BackingStoreException;
@@ -21,6 +25,7 @@ public class ClcMessenger extends Messenger {
 
     private static final Logger logger = LoggerFactory.getLogger(ClcMessenger.class);
     private HashMap<Peer, BindedDisplayList<Message>> messagesLists = new HashMap<Peer, BindedDisplayList<Message>>();
+    private HashMap<Peer, BindedDisplayList<Contact>> contactLists = new HashMap<Peer, BindedDisplayList<Contact>>();
 
     /**
      * Construct messenger
@@ -32,6 +37,8 @@ public class ClcMessenger extends Messenger {
         //context for preferences
         setContext(context);
         //context for databases(index,keyvalue,list)
+        ThreadDispatcher.pushDispatcher(Runtime::postToMainThread);
+
         ((ClcContext)Storage.getStorageRuntime()).setContext(context);
     }
 

@@ -72,7 +72,7 @@ class AAAuthPhoneViewController: AAAuthViewController, AACountryViewControllerDe
         phoneCodeLabel.textAlignment = .center
         
         phoneNumberLabel.currentIso = currentCountry.iso
-        phoneNumberLabel.keyboardType = .phonePad
+//        phoneNumberLabel.keyboardType = .default
         phoneNumberLabel.placeholder = AALocalized("AuthPhonePlaceholder")
         phoneNumberLabel.textColor = ActorSDK.sharedActor().style.authTextColor
         

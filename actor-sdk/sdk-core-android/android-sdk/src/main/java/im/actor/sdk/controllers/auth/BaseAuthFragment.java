@@ -63,6 +63,11 @@ public abstract class BaseAuthFragment extends BaseFragment {
         ((AuthActivity) getActivity()).startSignUp();
     }
 
+    protected void startNickNameAuth(String nickName) {
+        messenger().getPreferences().putString("sign_in_auth_id", nickName);
+        ((AuthActivity) getActivity()).startNickNameAuth(messenger().doStartUsernameAuth(nickName), nickName);
+    }
+
     protected void startPhoneAuth(long phone) {
         messenger().getPreferences().putString("sign_in_auth_id", Long.toString(phone));
         ((AuthActivity) getActivity()).startPhoneAuth(messenger().doStartPhoneAuth(phone), phone);
@@ -77,6 +82,12 @@ public abstract class BaseAuthFragment extends BaseFragment {
         AuthActivity activity = (AuthActivity) getActivity();
         activity.validateCode(messenger().doValidateCode(code, activity.getTransactionHash()), code);
     }
+
+    protected void validatePassword(String password) {
+        AuthActivity activity = (AuthActivity) getActivity();
+        activity.validatePassword(messenger().doValidatePassword(password, activity.getTransactionHash()), password);
+    }
+
 
     protected void signUp(String name, Sex sex) {
         AuthActivity activity = (AuthActivity) getActivity();
@@ -94,6 +105,10 @@ public abstract class BaseAuthFragment extends BaseFragment {
 
     protected void switchToPhone() {
         ((AuthActivity) getActivity()).switchToPhoneAuth();
+    }
+
+    protected void switchToNickName() {
+        ((AuthActivity) getActivity()).switchToNickNameAuth();
     }
 
     protected void setSuggestedEmail(EditText et) {

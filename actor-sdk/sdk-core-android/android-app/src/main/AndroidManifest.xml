@@ -2,6 +2,29 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="im.actor.develop" >
 
+    <!-- Push service 运行需要的权限 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!-- 适配Android N系统必需的ContentProvider写权限声明，写权限包含应用包名 -->
+    <uses-permission android:name="baidu.push.permission.WRITE_PUSHINFOPROVIDER.im.actor.develop" />
+
+    <permission
+        android:name="baidu.push.permission.WRITE_PUSHINFOPROVIDER.im.actor.develop"
+        android:protectionLevel="normal" />
+
+    <permission
+        android:name="im.actor.develop.permission.MIPUSH_RECEIVE"
+        android:protectionLevel="signature" />
+    <uses-permission android:name="im.actor.develop.permission.MIPUSH_RECEIVE" />
+
     <application
         android:name="im.actor.Application"
         android:allowBackup="true"
@@ -28,6 +51,18 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCUBgXcKrT23ZkLlLEpqi44YBhycjZn9oY" />
+
+        <!-- 在百度开发者中心查询应用的API Key -->
+        <meta-data
+            android:name="api_key"
+            android:value="pTAzc5hjeja1GmbzMoXGUExG" />
+
+        <provider
+            android:name="com.huawei.hms.update.provider.UpdateProvider"
+            android:authorities="im.actor.develop.hms.update.provider"
+            android:exported="false"
+            android:grantUriPermissions="true" >
+        </provider>
 
     </application>
 

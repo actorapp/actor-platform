@@ -15,6 +15,8 @@
 		06E7B24F1C109C4B0090660C /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06E7B24E1C109C4B0090660C /* MapKit.framework */; };
 		2CE3FEBEF881B465BDE1045A959BFB0A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2ACD33B73078EB46A22D2D4C45BF1E6E /* Images.xcassets */; };
 		34279C7FB8E40393FEAC939F6474BE2E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 148837AEB986AFDE519BEBD3686AB073 /* main.m */; };
+		45E942511E7A416300D9BE17 /* ActorSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45E942501E7A416300D9BE17 /* ActorSDK.framework */; };
+		45E942531E7A489800D9BE17 /* ActorSDK.framework.dSYM in Resources */ = {isa = PBXBuildFile; fileRef = 45E942521E7A489800D9BE17 /* ActorSDK.framework.dSYM */; };
 		A88F4C381ED2B98E99A68937 /* Pods_ActorApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A275ED497CA570AD01FB66A7 /* Pods_ActorApp.framework */; };
 		DFE814D1E12D2647AF2DBA3F76405F06 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A521812020DAAAA325065ADC32B7DEB /* AppDelegate.swift */; };
 		F45B35E37C8CB7140417EA87AAFEFDA2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 13C57576F07AC8694C15B51DFDFDC4C6 /* InfoPlist.strings */; };
@@ -35,6 +37,146 @@
 			remoteGlobalIDString = 066A50D11BC4AE63000E606E;
 			remoteInfo = ActorSDK;
 		};
+		4567CC071E8B78A600FC35E0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EFEF53CC1E66599B00182E77 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 420994652D7662EB851869BB8A304353;
+			remoteInfo = ISEmojiView;
+		};
+		4567CC091E8B78A600FC35E0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EFEF53CC1E66599B00182E77 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 949EE5D6389925D30F2D26F266F6983C;
+			remoteInfo = "ISEmojiView-ISEmojiView";
+		};
+		EFEF53E11E66599D00182E77 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EFEF53CC1E66599B00182E77 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3D888D3CC3792CA07AF4C9A4522A4D17;
+			remoteInfo = DZNWebViewController;
+		};
+		EFEF53E31E66599D00182E77 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EFEF53CC1E66599B00182E77 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 4CB952DC31C9960A33622503DC85D716;
+			remoteInfo = JDStatusBarNotification;
+		};
+		EFEF53E51E66599D00182E77 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EFEF53CC1E66599B00182E77 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 4D2EA05F42DAA0702336F3221D300170;
+			remoteInfo = M13ProgressSuite;
+		};
+		EFEF53E71E66599D00182E77 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EFEF53CC1E66599B00182E77 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = C65C1597B6FB6492CAF6B00A1B004E68;
+			remoteInfo = MBProgressHUD;
+		};
+		EFEF53E91E66599D00182E77 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EFEF53CC1E66599B00182E77 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 35A86531F21F6F4E9AFFFCF8C89874CA;
+			remoteInfo = "Pods-ActorApp";
+		};
+		EFEF53EB1E66599D00182E77 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EFEF53CC1E66599B00182E77 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 0BFB422069EB0DC1A94F34DBA07D8A04;
+			remoteInfo = "Pods-ActorSDK";
+		};
+		EFEF53ED1E66599D00182E77 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EFEF53CC1E66599B00182E77 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DF1B314D6EFBBE9E80FFB41816759EC4;
+			remoteInfo = pop;
+		};
+		EFEF53EF1E66599D00182E77 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EFEF53CC1E66599B00182E77 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = AB05E118887F026D7E7AA5352DBAD9AA;
+			remoteInfo = ReachabilitySwift;
+		};
+		EFEF53F11E66599D00182E77 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EFEF53CC1E66599B00182E77 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 05346035CF375D9D5AB485FCF5C972C8;
+			remoteInfo = RegexKitLite;
+		};
+		EFEF53F31E66599D00182E77 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EFEF53CC1E66599B00182E77 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 227B794808FBF4C46430E1C288C79237;
+			remoteInfo = RSKImageCropper;
+		};
+		EFEF53F51E66599D00182E77 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EFEF53CC1E66599B00182E77 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BC82379DC65B5B1381779D453E8BE07F;
+			remoteInfo = SZTextView;
+		};
+		EFEF53F71E66599D00182E77 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EFEF53CC1E66599B00182E77 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = AEB873276BA47EE2822ADEB51998E97E;
+			remoteInfo = TTTAttributedLabel;
+		};
+		EFEF53F91E66599D00182E77 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EFEF53CC1E66599B00182E77 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 49FD2D573FEDE99179C737235D599EE0;
+			remoteInfo = VBFPopFlatButton;
+		};
+		EFEF53FB1E66599D00182E77 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EFEF53CC1E66599B00182E77 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = EB6BDB87DA14CB5F40FC868DA3FDF0BB;
+			remoteInfo = YYCache;
+		};
+		EFEF53FD1E66599D00182E77 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EFEF53CC1E66599B00182E77 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 257C10CDAC5D53A995C4E84D0280C212;
+			remoteInfo = YYCategories;
+		};
+		EFEF53FF1E66599D00182E77 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EFEF53CC1E66599B00182E77 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = E66574F0531DBB5C6E4A213C7F1E3038;
+			remoteInfo = YYImage;
+		};
+		EFEF54011E66599D00182E77 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EFEF53CC1E66599B00182E77 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = C2A895234972B2B6CFDB5AAD17A1AE11;
+			remoteInfo = YYWebImage;
+		};
+		EFEF54031E66599D00182E77 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EFEF53CC1E66599B00182E77 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 13AC1731FD9172DB37390C68A27BA75D;
+			remoteInfo = zipzap;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -53,7 +195,6 @@
 
 /* Begin PBXFileReference section */
 		06230F031BC7FF2F00A4807B /* ActorSDK.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ActorSDK.xcodeproj; sourceTree = "<group>"; };
-		065974E11BC6926C00B8C7DF /* ActorSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = ActorSDK.framework; path = "/Users/ex3ndr/Library/Developer/Xcode/DerivedData/ActorApp-clcqncodqhdxutfqgjvteqywzxue/Build/Products/Debug-iphoneos/ActorSDK.framework"; sourceTree = "<absolute>"; };
 		068B397A1C85386A002BFF73 /* ringtone.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; name = ringtone.m4a; path = Resources/ringtone.m4a; sourceTree = "<group>"; };
 		068C6E4E1BBC4BF900182516 /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = "Launch Screen.storyboard"; path = "Supporting Files/Launch Screen.storyboard"; sourceTree = "<group>"; };
 		06CE898D1BD841D0005A5530 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -63,6 +204,8 @@
 		2A521812020DAAAA325065ADC32B7DEB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2ACD33B73078EB46A22D2D4C45BF1E6E /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Resources/Images.xcassets; sourceTree = "<group>"; };
 		404790AFDFFBD618E6175093 /* Pods-ActorApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.release.xcconfig"; sourceTree = "<group>"; };
+		45E942501E7A416300D9BE17 /* ActorSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ActorSDK.framework; path = build/Output/ActorSDK.framework; sourceTree = "<group>"; };
+		45E942521E7A489800D9BE17 /* ActorSDK.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = ActorSDK.framework.dSYM; path = build/Output/ActorSDK.framework.dSYM; sourceTree = "<group>"; };
 		6238B42B2462DBE201B457C54CA819D7 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		65E498AE225CBED71E8F3CD1CA2767B7 /* ActorApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ActorApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6EE6E889CD9BA13B5A0828221608DB9A /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
@@ -71,6 +214,7 @@
 		9B2EEB8CEF2E94D58EA09D9D /* Pods-ActorApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.debug.xcconfig"; sourceTree = "<group>"; };
 		A275ED497CA570AD01FB66A7 /* Pods_ActorApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ActorApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE8D1D9859D2C4D4C7EC7AD74BB65F0E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = "Supporting Files/Info.plist"; sourceTree = "<group>"; };
+		EFEF53CC1E66599B00182E77 /* Pods.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Pods.xcodeproj; path = Pods/Pods.xcodeproj; sourceTree = "<group>"; };
 		F76A77E9428111C798E69B43EA06A281 /* ActorApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = ActorApp.entitlements; path = "Supporting Files/ActorApp.entitlements"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -82,6 +226,7 @@
 				06CE898E1BD841D0005A5530 /* SystemConfiguration.framework in Frameworks */,
 				06E7B24F1C109C4B0090660C /* MapKit.framework in Frameworks */,
 				06230F091BC7FF3500A4807B /* ActorSDK.framework in Frameworks */,
+				45E942511E7A416300D9BE17 /* ActorSDK.framework in Frameworks */,
 				A88F4C381ED2B98E99A68937 /* Pods_ActorApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -124,7 +269,8 @@
 				06E7B24E1C109C4B0090660C /* MapKit.framework */,
 				06CE898D1BD841D0005A5530 /* SystemConfiguration.framework */,
 				06230F031BC7FF2F00A4807B /* ActorSDK.xcodeproj */,
-				065974E11BC6926C00B8C7DF /* ActorSDK.framework */,
+				45E942501E7A416300D9BE17 /* ActorSDK.framework */,
+				45E942521E7A489800D9BE17 /* ActorSDK.framework.dSYM */,
 				A275ED497CA570AD01FB66A7 /* Pods_ActorApp.framework */,
 			);
 			name = Frameworks;
@@ -160,11 +306,39 @@
 		D873D85572C6C400293E0DF69DBA58DD = {
 			isa = PBXGroup;
 			children = (
+				EFEF53CC1E66599B00182E77 /* Pods.xcodeproj */,
 				D0310FF36675D7510E52D86CDA8E2C6C /* ActorApp */,
 				86C48777C0FD262E78F8BEC9253C9914 /* Frameworks */,
 				C83A7EEB1948C38ECEFC1D330C57A7B1 /* Products */,
 				BFFF6424C537CA65F6346593 /* Pods */,
 			);
+			sourceTree = "<group>";
+		};
+		EFEF53CD1E66599B00182E77 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				EFEF53E21E66599D00182E77 /* DZNWebViewController.framework */,
+				4567CC081E8B78A600FC35E0 /* ISEmojiView.framework */,
+				4567CC0A1E8B78A600FC35E0 /* ISEmojiView.bundle */,
+				EFEF53E41E66599D00182E77 /* JDStatusBarNotification.framework */,
+				EFEF53E61E66599D00182E77 /* M13ProgressSuite.framework */,
+				EFEF53E81E66599D00182E77 /* MBProgressHUD.framework */,
+				EFEF53EA1E66599D00182E77 /* Pods_ActorApp.framework */,
+				EFEF53EC1E66599D00182E77 /* Pods_ActorSDK.framework */,
+				EFEF53EE1E66599D00182E77 /* pop.framework */,
+				EFEF53F01E66599D00182E77 /* ReachabilitySwift.framework */,
+				EFEF53F21E66599D00182E77 /* RegexKitLite.framework */,
+				EFEF53F41E66599D00182E77 /* RSKImageCropper.framework */,
+				EFEF53F61E66599D00182E77 /* SZTextView.framework */,
+				EFEF53F81E66599D00182E77 /* TTTAttributedLabel.framework */,
+				EFEF53FA1E66599D00182E77 /* VBFPopFlatButton.framework */,
+				EFEF53FC1E66599D00182E77 /* YYCache.framework */,
+				EFEF53FE1E66599D00182E77 /* YYCategories.framework */,
+				EFEF54001E66599D00182E77 /* YYImage.framework */,
+				EFEF54021E66599D00182E77 /* YYWebImage.framework */,
+				EFEF54041E66599D00182E77 /* zipzap.framework */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -206,7 +380,7 @@
 				TargetAttributes = {
 					EA6B7348F8364542DDD264F741AAAA19 = {
 						CreatedOnToolsVersion = 6.4;
-						DevelopmentTeam = HVJR44Y5B6;
+						DevelopmentTeam = D94R58LQ65;
 						LastSwiftMigration = 0800;
 						SystemCapabilities = {
 							com.apple.Maps.iOS = {
@@ -242,6 +416,10 @@
 					ProductGroup = 06230F041BC7FF2F00A4807B /* Products */;
 					ProjectRef = 06230F031BC7FF2F00A4807B /* ActorSDK.xcodeproj */;
 				},
+				{
+					ProductGroup = EFEF53CD1E66599B00182E77 /* Products */;
+					ProjectRef = EFEF53CC1E66599B00182E77 /* Pods.xcodeproj */;
+				},
 			);
 			projectRoot = "";
 			targets = (
@@ -258,6 +436,146 @@
 			remoteRef = 06230F071BC7FF3000A4807B /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		4567CC081E8B78A600FC35E0 /* ISEmojiView.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ISEmojiView.framework;
+			remoteRef = 4567CC071E8B78A600FC35E0 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		4567CC0A1E8B78A600FC35E0 /* ISEmojiView.bundle */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = ISEmojiView.bundle;
+			remoteRef = 4567CC091E8B78A600FC35E0 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		EFEF53E21E66599D00182E77 /* DZNWebViewController.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = DZNWebViewController.framework;
+			remoteRef = EFEF53E11E66599D00182E77 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		EFEF53E41E66599D00182E77 /* JDStatusBarNotification.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = JDStatusBarNotification.framework;
+			remoteRef = EFEF53E31E66599D00182E77 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		EFEF53E61E66599D00182E77 /* M13ProgressSuite.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = M13ProgressSuite.framework;
+			remoteRef = EFEF53E51E66599D00182E77 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		EFEF53E81E66599D00182E77 /* MBProgressHUD.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = MBProgressHUD.framework;
+			remoteRef = EFEF53E71E66599D00182E77 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		EFEF53EA1E66599D00182E77 /* Pods_ActorApp.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Pods_ActorApp.framework;
+			remoteRef = EFEF53E91E66599D00182E77 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		EFEF53EC1E66599D00182E77 /* Pods_ActorSDK.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Pods_ActorSDK.framework;
+			remoteRef = EFEF53EB1E66599D00182E77 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		EFEF53EE1E66599D00182E77 /* pop.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = pop.framework;
+			remoteRef = EFEF53ED1E66599D00182E77 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		EFEF53F01E66599D00182E77 /* ReachabilitySwift.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ReachabilitySwift.framework;
+			remoteRef = EFEF53EF1E66599D00182E77 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		EFEF53F21E66599D00182E77 /* RegexKitLite.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = RegexKitLite.framework;
+			remoteRef = EFEF53F11E66599D00182E77 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		EFEF53F41E66599D00182E77 /* RSKImageCropper.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = RSKImageCropper.framework;
+			remoteRef = EFEF53F31E66599D00182E77 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		EFEF53F61E66599D00182E77 /* SZTextView.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = SZTextView.framework;
+			remoteRef = EFEF53F51E66599D00182E77 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		EFEF53F81E66599D00182E77 /* TTTAttributedLabel.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = TTTAttributedLabel.framework;
+			remoteRef = EFEF53F71E66599D00182E77 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		EFEF53FA1E66599D00182E77 /* VBFPopFlatButton.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = VBFPopFlatButton.framework;
+			remoteRef = EFEF53F91E66599D00182E77 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		EFEF53FC1E66599D00182E77 /* YYCache.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = YYCache.framework;
+			remoteRef = EFEF53FB1E66599D00182E77 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		EFEF53FE1E66599D00182E77 /* YYCategories.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = YYCategories.framework;
+			remoteRef = EFEF53FD1E66599D00182E77 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		EFEF54001E66599D00182E77 /* YYImage.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = YYImage.framework;
+			remoteRef = EFEF53FF1E66599D00182E77 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		EFEF54021E66599D00182E77 /* YYWebImage.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = YYWebImage.framework;
+			remoteRef = EFEF54011E66599D00182E77 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		EFEF54041E66599D00182E77 /* zipzap.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = zipzap.framework;
+			remoteRef = EFEF54031E66599D00182E77 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
@@ -267,6 +585,7 @@
 			files = (
 				2CE3FEBEF881B465BDE1045A959BFB0A /* Images.xcassets in Resources */,
 				F45B35E37C8CB7140417EA87AAFEFDA2 /* InfoPlist.strings in Resources */,
+				45E942531E7A489800D9BE17 /* ActorSDK.framework.dSYM in Resources */,
 				068B397B1C85386A002BFF73 /* ringtone.m4a in Resources */,
 				068C6E4F1BBC4BF900182516 /* Launch Screen.storyboard in Resources */,
 			);
@@ -401,6 +720,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = D94R58LQ65;
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_BITCODE = NO;
 				FABRIC_BUILD_SECRET = "";
@@ -408,6 +728,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Pods/J2ObjC-Framework/Frameworks",
 					"$(PROJECT_DIR)/build/Debug-iphoneos",
+					"$(PROJECT_DIR)/build/Output",
 				);
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = "ActorApp/Supporting Files/Info.plist";
@@ -417,7 +738,7 @@
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = im.actor.sdk.dev;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.eaglesoft.igem;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SDK_PATH = "../actor-sdk";
@@ -479,6 +800,7 @@
 				CODE_SIGN_ENTITLEMENTS = "ActorApp/Supporting Files/ActorApp.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = D94R58LQ65;
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_BITCODE = NO;
 				FABRIC_BUILD_SECRET = "";
@@ -486,6 +808,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Pods/J2ObjC-Framework/Frameworks",
 					"$(PROJECT_DIR)/build/Debug-iphoneos",
+					"$(PROJECT_DIR)/build/Output",
 				);
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = "ActorApp/Supporting Files/Info.plist";
@@ -494,7 +817,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = im.actor.sdk.dev;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.eaglesoft.igem;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SDK_PATH = "../actor-sdk";
