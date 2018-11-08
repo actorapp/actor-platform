@@ -33,7 +33,6 @@ import im.actor.core.modules.messaging.dialogs.entity.UserChanged;
 import im.actor.core.modules.messaging.history.entity.DialogHistory;
 import im.actor.core.modules.ModuleActor;
 import im.actor.runtime.Log;
-import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.messages.Void;
 import im.actor.runtime.annotations.Verified;
 import im.actor.runtime.promise.Promise;
@@ -79,7 +78,7 @@ public class DialogsActor extends ModuleActor {
         } else {
             Dialog dialog = dialogs.getValue(peer.getUnuqueId());
 
-            ContentDescription contentDescription = ContentDescription.fromContent(message.getContent());
+            ContentDescription contentDescription = AbsContent.fromContent(message.getContent());
 
             DialogBuilder builder = new DialogBuilder()
                     .setRid(message.getRid())
@@ -238,7 +237,7 @@ public class DialogsActor extends ModuleActor {
         // If message is on top
         if (dialog != null && dialog.getRid() == rid) {
 
-            ContentDescription description = ContentDescription.fromContent(content);
+            ContentDescription description = AbsContent.fromContent(content);
 
             addOrUpdateItem(new DialogBuilder(dialog)
                     .setText(description.getText())
@@ -278,7 +277,7 @@ public class DialogsActor extends ModuleActor {
                 continue;
             }
 
-            ContentDescription description = ContentDescription.fromContent(dialogHistory.getContent());
+            ContentDescription description = AbsContent.fromContent(dialogHistory.getContent());
 
             DialogBuilder builder = new DialogBuilder()
                     .setPeer(dialogHistory.getPeer())
