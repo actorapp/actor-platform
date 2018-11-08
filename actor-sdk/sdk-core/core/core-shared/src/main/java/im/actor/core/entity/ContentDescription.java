@@ -43,69 +43,6 @@ public class ContentDescription extends BserObject {
         return Bser.parse(new ContentDescription(), data);
     }
 
-    public static ContentDescription fromContent(AbsContent msg) {
-        if (msg instanceof TextContent) {
-            return new ContentDescription(ContentType.TEXT,
-                    ((TextContent) msg).getText());
-        } else if (msg instanceof PhotoContent) {
-            return new ContentDescription(ContentType.DOCUMENT_PHOTO);
-        } else if (msg instanceof VideoContent) {
-            return new ContentDescription(ContentType.DOCUMENT_VIDEO);
-        } else if (msg instanceof VoiceContent) {
-            return new ContentDescription(ContentType.DOCUMENT_AUDIO);
-        } else if (msg instanceof DocumentContent) {
-            return new ContentDescription(ContentType.DOCUMENT);
-        } else if (msg instanceof LocationContent) {
-            return new ContentDescription(ContentType.LOCATION);
-        } else if (msg instanceof ContactContent) {
-            return new ContentDescription(ContentType.CONTACT);
-        } else if (msg instanceof StickerContent) {
-            return new ContentDescription(ContentType.STICKER);
-        } else if (msg instanceof ServiceUserRegistered) {
-            return new ContentDescription(ContentType.SERVICE_REGISTERED);
-        } else if (msg instanceof ServiceCallEnded) {
-            return new ContentDescription(ContentType.SERVICE_CALL_ENDED);
-        } else if (msg instanceof ServiceCallMissed) {
-            return new ContentDescription(ContentType.SERVICE_CALL_MISSED);
-        } else if (msg instanceof ServiceGroupAvatarChanged) {
-            if (((ServiceGroupAvatarChanged) msg).getNewAvatar() == null) {
-                return new ContentDescription(ContentType.SERVICE_AVATAR_REMOVED);
-            } else {
-                return new ContentDescription(ContentType.SERVICE_AVATAR);
-            }
-        } else if (msg instanceof ServiceGroupTitleChanged) {
-            return new ContentDescription(ContentType.SERVICE_TITLE,
-                    ((ServiceGroupTitleChanged) msg).getNewTitle());
-        } else if (msg instanceof ServiceGroupTopicChanged) {
-            return new ContentDescription(ContentType.SERVICE_TOPIC,
-                    ((ServiceGroupTopicChanged) msg).getNewTopic());
-        } else if (msg instanceof ServiceGroupAboutChanged) {
-            return new ContentDescription(ContentType.SERVICE_ABOUT,
-                    ((ServiceGroupAboutChanged) msg).getNewAbout());
-        } else if (msg instanceof ServiceGroupCreated) {
-            return new ContentDescription(ContentType.SERVICE_CREATED);
-        } else if (msg instanceof ServiceGroupUserInvited) {
-            return new ContentDescription(ContentType.SERVICE_ADD, "",
-                    ((ServiceGroupUserInvited) msg).getAddedUid(), false);
-        } else if (msg instanceof ServiceGroupUserKicked) {
-            return new ContentDescription(ContentType.SERVICE_KICK, "",
-                    ((ServiceGroupUserKicked) msg).getKickedUid(), false);
-        } else if (msg instanceof ServiceGroupUserLeave) {
-            return new ContentDescription(ContentType.SERVICE_LEAVE, "",
-                    0, true);
-        } else if (msg instanceof ServiceGroupUserJoined) {
-            return new ContentDescription(ContentType.SERVICE_JOINED, "",
-                    0, false);
-        } else if (msg instanceof ServiceContent) {
-            return new ContentDescription(ContentType.SERVICE,
-                    ((ServiceContent) msg).getCompatText(), 0, false);
-        } else if (msg instanceof JsonContent) {
-            return new ContentDescription(ContentType.TEXT, ((JsonContent) msg).getContentDescription());
-        } else {
-            return new ContentDescription(ContentType.UNKNOWN_CONTENT);
-        }
-    }
-
     @Property("readonly, nonatomic")
     private ContentType contentType;
     @Property("readonly, nonatomic")

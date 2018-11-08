@@ -22,7 +22,6 @@ import im.actor.core.api.updates.UpdateMessageReceived;
 import im.actor.core.api.updates.UpdateMessageSent;
 import im.actor.core.api.updates.UpdateReactionsUpdate;
 import im.actor.core.entity.Avatar;
-import im.actor.core.entity.ContentDescription;
 import im.actor.core.entity.ConversationState;
 import im.actor.core.entity.Group;
 import im.actor.core.entity.Message;
@@ -329,7 +328,7 @@ public class RouterActor extends ModuleActor {
                             peer,
                             m.getSenderId(),
                             m.getSortDate(),
-                            ContentDescription.fromContent(m.getContent()),
+                            AbsContent.fromContent(m.getContent()),
                             hasCurrentMention,
                             messagesCount,
                             dialogsCount);
