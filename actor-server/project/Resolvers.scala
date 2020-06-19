@@ -18,6 +18,8 @@ object Resolvers {
     // for akka-rabbitmq (needed by op-rabbit)
     "SpinGo OSS" at "http://spingo-oss.s3.amazonaws.com/repositories/releases",
 
-    Resolver.sonatypeRepo("snapshots")
+    Resolver.sonatypeRepo("snapshots"),
+
+    "Typesafe" at "https://repo.typesafe.com/typesafe/maven-releases/"
   )
 }
